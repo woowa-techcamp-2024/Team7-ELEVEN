@@ -16,4 +16,8 @@ public class MemberService {
         memberRepository.save(signInId);
         session.setAttribute("signInId", signInId);
     }
+
+    public void signOut(HttpSession session) {
+        session.invalidate();
+    }
 }
