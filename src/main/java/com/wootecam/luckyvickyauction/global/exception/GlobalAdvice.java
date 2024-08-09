@@ -26,21 +26,21 @@ public class GlobalAdvice {
     public ResponseEntity<ErrorResponse> handleUnauthorized(final UnauthorizedException e) {
         log.warn("ERROR CODE {} : {}", e.getErrorCode(), e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ErrorResponse.of(e.getMessage(), e.getErrorCode()));
+                .body(ErrorResponse.of(e.getMessage(), e.getErrorCode().name()));
     }
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusiness(final BusinessException e) {
         log.warn("ERROR CODE {} : {}", e.getErrorCode(), e.getMessage());
         return ResponseEntity.status(e.getStatusCode())
-                .body(ErrorResponse.of(e.getMessage(), e.getErrorCode()));
+                .body(ErrorResponse.of(e.getMessage(), e.getErrorCode().name()));
     }
 
     @ExceptionHandler(InfraStructureException.class)
     public ResponseEntity<ErrorResponse> handleInfraStructure(final InfraStructureException e) {
         log.warn("ERROR CODE {} : {}", e.getErrorCode(), e.getMessage());
         return ResponseEntity.internalServerError()
-                .body(ErrorResponse.of(e.getMessage(), e.getErrorCode()));
+                .body(ErrorResponse.of(e.getMessage(), e.getErrorCode().name()));
     }
 
 //    @ExceptionHandler(Exception.class)
