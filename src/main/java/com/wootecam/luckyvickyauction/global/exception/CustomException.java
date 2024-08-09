@@ -2,14 +2,14 @@ package com.wootecam.luckyvickyauction.global.exception;
 
 public class CustomException extends RuntimeException {
 
-    private final String errorCode;
+    private final ErrorCode errorCode;
 
-    public CustomException(final String message, final String errorCode) {
+    public CustomException(final String message, final ErrorCode errorCode) {
         super(message);
         this.errorCode = errorCode;
     }
 
-    public String getErrorCode() {
+    public ErrorCode getErrorCode() {
         return errorCode;
     }
 }
