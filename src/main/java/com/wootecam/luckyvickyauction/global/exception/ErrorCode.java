@@ -2,8 +2,8 @@ package com.wootecam.luckyvickyauction.global.exception;
 
 public enum ErrorCode {
 
-    // test 에러 코드
-    T000("API문서에서 에러 코드에 대한 정보를 담을때 사용됩니다.");
+    // Member 관련 예외 코드
+    M000("로그인(회원가입) 시, 이미 존재하는 회원 아이디로 로그인을 시도한 경우 예외가 발생합니다.");
 
     private final String description;
 
