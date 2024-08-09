@@ -1,6 +1,8 @@
 package com.wootecam.luckyvickyauction.core.member.service;
 
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -10,7 +12,7 @@ public class MemberService {
 
     public void signIn(String signInId, HttpSession session) {
         if (memberRepository.isExist(signInId)) {
-            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
+            throw new BadRequestException("이미 존재하는 아이디입니다. input=" + signInId, ErrorCode.M000);
         }
 
         memberRepository.save(signInId);
