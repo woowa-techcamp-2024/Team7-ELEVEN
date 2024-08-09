@@ -3,9 +3,9 @@ package com.wootecam.luckyvickyauction.global.exception;
 public class BusinessException extends RuntimeException {
 
     private final int statusCode;
-    private final String errorCode;
+    private final ErrorCode errorCode;
 
-    public BusinessException(final String message, final int statusCode, final String errorCode) {
+    public BusinessException(final String message, final int statusCode, final ErrorCode errorCode) {
         super(message);
         this.statusCode = statusCode;
         this.errorCode = errorCode;
@@ -15,7 +15,7 @@ public class BusinessException extends RuntimeException {
         return statusCode;
     }
 
-    public String getErrorCode() {
+    public ErrorCode getErrorCode() {
         return errorCode;
     }
 }
