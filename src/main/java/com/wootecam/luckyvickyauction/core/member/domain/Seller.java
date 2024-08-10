@@ -1,4 +1,4 @@
 package com.wootecam.luckyvickyauction.core.member.domain;
 
-public class Member {
+public class Seller {
 }
