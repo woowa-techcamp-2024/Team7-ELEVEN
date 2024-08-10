@@ -10,7 +10,16 @@ public class PercentagePricePolicy implements PricePolicy {
     private final double discountRate;
 
     public PercentagePricePolicy(double discountRate) {
+        validateDiscountRate(discountRate);
         this.discountRate = discountRate;
+    }
+
+    private void validateDiscountRate(double discountRate) {
+        if (discountRate <= 0 || discountRate >= 100) {
+            throw new BadRequestException(
+                    String.format("할인율은 0 초과 100 미만이어야 합니다. 할인율: %f", discountRate),
+                    ErrorCode.A010);
+        }
     }
 
     @Override
