@@ -16,7 +16,6 @@ import java.util.Objects;
  * @param stock                     재고 수량
  * @param maximumPurchaseLimitCount 최대 구매 제한 수량 (인당 구매 가능 수량)
  * @param pricePolicy               경매 유형 {@link PricePolicy}
- * @param variationWidth            가격 변동 폭
  * @param variationDuration        가격 변동 주기
  * @param startedAt                 경매 시작 시간
  * @param finishedAt                경매 종료 시간
@@ -29,7 +28,6 @@ public record CreateAuctionCommand(
     int stock,
     int maximumPurchaseLimitCount,
     PricePolicy pricePolicy,
-    long variationWidth,
     Duration variationDuration,
     ZonedDateTime startedAt,
     ZonedDateTime finishedAt,
@@ -55,7 +53,6 @@ public record CreateAuctionCommand(
         validateProductName(productName);
         validateOriginPrice(originPrice);
         validateMaximumPurchaseLimitCount(maximumPurchaseLimitCount);
-        validateVariationWidth(variationWidth);
         validateVariationDuration(variationDuration);
         validateAuctionTime(startedAt, finishedAt);
         validateStock(stock, maximumPurchaseLimitCount);
@@ -76,12 +73,6 @@ public record CreateAuctionCommand(
     private void validateMaximumPurchaseLimitCount(int maximumPurchaseLimitCount) {
         if (maximumPurchaseLimitCount <= 0) {
             throw new BadRequestException(String.format(ERROR_MAX_PURCHASE_LIMIT, maximumPurchaseLimitCount), ErrorCode.A003);
-        }
-    }
-
-    private void validateVariationWidth(long variationWidth) {
-        if (variationWidth <= 0) {
-            throw new BadRequestException(String.format(ERROR_VARIATION_WIDTH, variationWidth), ErrorCode.A004);
         }
     }
 

@@ -31,11 +31,6 @@ class CreateAuctionCommandTest {
                         new ConstantPricePolicy(1000),
                         1000, Duration.ofMinutes(1L),
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now()),
-                Arguments.of("가격 변동폭은 0보다 커야한다.", ErrorCode.A004,
-                        1L, "상품이름", 10000, 999999, 10,
-                        new ConstantPricePolicy(0),
-                        0, Duration.ofMinutes(1L),
-                        ZonedDateTime.now().minusHours(1L), ZonedDateTime.now()),
                 Arguments.of("변동 시간 단위는 0보다 커야한다.", ErrorCode.A005,
                         1L, "상품이름", 10000, 999999, 10,
                         new ConstantPricePolicy(1000), 1000, Duration.ofMinutes(0L),
@@ -105,7 +100,7 @@ class CreateAuctionCommandTest {
 
         // expect
         assertThatNoException().isThrownBy(() -> new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy, variationWidth,
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, startedAt, finishedAt, true
         ));
     }
@@ -121,7 +116,7 @@ class CreateAuctionCommandTest {
     ) {
         // expect
         assertThatThrownBy(() -> new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType,
                 varitationDuration, startedAt, finishedAt, true))
                 .isInstanceOf(BadRequestException.class)
                 .satisfies(exception -> {

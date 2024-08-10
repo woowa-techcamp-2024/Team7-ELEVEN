@@ -51,7 +51,7 @@ class AuctionServiceTest {
         ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy, variationWidth,
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, startedAt, finishedAt, true
         );
 
@@ -81,7 +81,7 @@ class AuctionServiceTest {
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy, variationWidth,
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, startedAt, finishedAt, true
         );
 
@@ -108,7 +108,7 @@ class AuctionServiceTest {
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy, variationWidth,
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, startedAt, finishedAt, true
         );
 
