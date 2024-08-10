@@ -11,7 +11,7 @@ public class Auction {
     private int currentPrice;
     private int stock;
     private int maximumPurchaseLimitCount;
-    private AuctionType auctionType;
+    private PricePolicy pricePolicy;
     private int variationWidth;
     private Duration variationDuration;
     private ZonedDateTime startedAt;
@@ -20,7 +20,7 @@ public class Auction {
     @Builder
     private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName, final int originPrice,
                     final int stock,
-                    final int maximumPurchaseLimitCount, final AuctionType auctionType, final int variationWidth,
+                    final int maximumPurchaseLimitCount, final PricePolicy pricePolicy, final int variationWidth,
                     final Duration variationDuration,
                     final ZonedDateTime finishedAt) {
         this.startedAt = startedAt;
@@ -30,7 +30,7 @@ public class Auction {
         this.originPrice = originPrice;
         this.stock = stock;
         this.maximumPurchaseLimitCount = maximumPurchaseLimitCount;
-        this.auctionType = auctionType;
+        this.pricePolicy = pricePolicy;
         this.variationWidth = variationWidth;
         this.variationDuration = variationDuration;
         this.finishedAt = finishedAt;

@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.dto;
 
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionType;
+import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
@@ -15,7 +15,7 @@ import java.util.Objects;
  * @param originPrice               상품 원가
  * @param stock                     재고 수량
  * @param maximumPurchaseLimitCount 최대 구매 제한 수량 (인당 구매 가능 수량)
- * @param auctionType               경매 유형 {@link AuctionType}
+ * @param pricePolicy               경매 유형 {@link PricePolicy}
  * @param variationWidth            가격 변동 폭
  * @param variationDuration        가격 변동 주기
  * @param startedAt                 경매 시작 시간
@@ -28,7 +28,7 @@ public record CreateAuctionCommand(
     int originPrice,
     int stock,
     int maximumPurchaseLimitCount,
-    AuctionType auctionType,
+    PricePolicy pricePolicy,
     int variationWidth,
     Duration variationDuration,
     ZonedDateTime startedAt,
@@ -46,7 +46,7 @@ public record CreateAuctionCommand(
     public CreateAuctionCommand {
         validateNotNull(sellerId, "판매자 ID");
         validateNotNull(productName, "상품 이름");
-        validateNotNull(auctionType, "경매 유형");
+        validateNotNull(pricePolicy, "경매 유형");
         validateNotNull(variationDuration, "가격 변동 주기");
         validateNotNull(startedAt, "경매 시작 시간");
         validateNotNull(finishedAt, "경매 종료 시간");

@@ -32,7 +32,7 @@ public class AuctionService {
             .originPrice(command.originPrice())
             .stock(command.stock())
             .maximumPurchaseLimitCount(command.maximumPurchaseLimitCount())
-            .auctionType(command.auctionType())
+                .pricePolicy(command.pricePolicy())
             .variationWidth(command.variationWidth())
             .variationDuration(command.variationDuration())
             .startedAt(command.startedAt())

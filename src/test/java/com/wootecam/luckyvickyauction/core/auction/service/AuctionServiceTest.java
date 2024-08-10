@@ -7,8 +7,8 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionType;
-import com.wootecam.luckyvickyauction.core.auction.domain.ConstantAuctionType;
+import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
+import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
@@ -42,7 +42,7 @@ class AuctionServiceTest {
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
-        AuctionType auctionType = new ConstantAuctionType();
+        PricePolicy auctionType = new ConstantPricePolicy();
 
         int variationWidth = 1000;
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
@@ -72,7 +72,7 @@ class AuctionServiceTest {
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
-        AuctionType auctionType = new ConstantAuctionType();
+        PricePolicy auctionType = new ConstantPricePolicy();
 
         int variationWidth = 1000;
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
@@ -99,7 +99,7 @@ class AuctionServiceTest {
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
-        AuctionType auctionType = new ConstantAuctionType();
+        PricePolicy auctionType = new ConstantPricePolicy();
 
         int variationWidth = 1000;
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
