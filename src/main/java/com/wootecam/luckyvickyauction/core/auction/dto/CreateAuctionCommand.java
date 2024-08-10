@@ -75,13 +75,13 @@ public record CreateAuctionCommand(
             throw new BadRequestException(String.format(ERROR_AUCTION_TIME, startedAt, finishedAt), ErrorCode.A006);
         }
         if (stock < maximumPurchaseLimitCount) {
-            throw new BadRequestException(String.format(ERROR_STOCK, stock, maximumPurchaseLimitCount), ErrorCode.A000);
+            throw new BadRequestException(String.format(ERROR_STOCK, stock, maximumPurchaseLimitCount), ErrorCode.A007);
         }
     }
 
     private void validateNotNull(Object value, String fieldName) {
         if (Objects.isNull(value)) {
-            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.A007);
+            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.A000);
         }
     }
 }

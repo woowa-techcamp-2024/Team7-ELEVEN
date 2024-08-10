@@ -64,7 +64,7 @@ class CreateAuctionCommandTest {
 
     static Stream<Arguments> dtoArguments() {
         return Stream.of(
-            Arguments.of("경매 재고는 인당 구매수량보다 작을 수 없다.", ErrorCode.A000,
+            Arguments.of("경매 재고는 인당 구매수량보다 작을 수 없다.", ErrorCode.A007,
                 1L, "상품이름", 10000, 1, 10, new ConstantAuctionType(), 1000, Duration.ofMinutes(1L),
                 ZonedDateTime.now().minusHours(1L), ZonedDateTime.now()),
             Arguments.of("최대 구매 수량 제한은 0보다 커야한다.", ErrorCode.A003,
@@ -85,22 +85,22 @@ class CreateAuctionCommandTest {
             Arguments.of("상품 원가는 0보다 커야한다.", ErrorCode.A002,
                 1L, "상품이름", 0, 999999, 10, new ConstantAuctionType(), 1000, Duration.ofMinutes(1L),
                 ZonedDateTime.now().minusHours(1L), ZonedDateTime.now()),
-            Arguments.of("경매 유형은 Null일 수 없다.", ErrorCode.A007,
+            Arguments.of("경매 유형은 Null일 수 없다.", ErrorCode.A000,
                 1L, "상품이름", 10000, 999999, 10, null, 1000, Duration.ofMinutes(1L),
                 ZonedDateTime.now().minusHours(1L), ZonedDateTime.now()),
-            Arguments.of("sellerId는 Null일 수 없다.", ErrorCode.A007,
+            Arguments.of("sellerId는 Null일 수 없다.", ErrorCode.A000,
                 null, "상품이름", 10000, 999999, 10, new ConstantAuctionType(), 1000, Duration.ofMinutes(1L),
                 ZonedDateTime.now().minusHours(1L), ZonedDateTime.now()),
-            Arguments.of("상품 이름(productName)은 Null일 수 없다.", ErrorCode.A007,
+            Arguments.of("상품 이름(productName)은 Null일 수 없다.", ErrorCode.A000,
                 1L, null, 10000, 999999, 10, new ConstantAuctionType(), 1000, Duration.ofMinutes(1L),
                 ZonedDateTime.now().minusHours(1L), ZonedDateTime.now()),
-            Arguments.of("변동 주기(variationDuration)는 Null일 수 없다.", ErrorCode.A007,
+            Arguments.of("변동 주기(variationDuration)는 Null일 수 없다.", ErrorCode.A000,
                 1L, "상품이름", 10000, 999999, 10, new ConstantAuctionType(), 1000, null,
                 ZonedDateTime.now().minusHours(1L), ZonedDateTime.now()),
-            Arguments.of("시작 시간(startedAt)은 Null일 수 없다.", ErrorCode.A007,
+            Arguments.of("시작 시간(startedAt)은 Null일 수 없다.", ErrorCode.A000,
                 1L, "상품이름", 10000, 999999, 10, new ConstantAuctionType(), 1000, Duration.ofMinutes(1L),
                 null, ZonedDateTime.now()),
-            Arguments.of("종료 시간(finishedAt)은 Null일 수 없다.", ErrorCode.A007,
+            Arguments.of("종료 시간(finishedAt)은 Null일 수 없다.", ErrorCode.A000,
                 1L, "상품이름", 10000, 999999, 10, new ConstantAuctionType(), 1000, Duration.ofMinutes(1L),
                 ZonedDateTime.now().minusHours(1L), null)
         );
