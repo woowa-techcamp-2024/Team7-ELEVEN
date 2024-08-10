@@ -4,10 +4,12 @@ public abstract class Member {
 
     private String signInId;
     private Role role;
+    private Point point;
 
-    public Member(final String signInId, final Role role) {
+    public Member(final String signInId, final Role role, final Point point) {
         this.signInId = signInId;
         this.role = role;
+        this.point = point;
     }
 
     public static Member createMemberWithRole(final String signInId, final String userRole) {
