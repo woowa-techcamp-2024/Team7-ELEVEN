@@ -2,6 +2,7 @@ package com.wootecam.luckyvickyauction.core.member.domain;
 
 public abstract class Member {
 
+    private Long id;
     private String signInId;
     private Role role;
     protected Point point;
@@ -18,5 +19,9 @@ public abstract class Member {
             return new Buyer(signInId, role, new Point(0L));
         }
         return new Seller(signInId, role, new Point(0L));
+    }
+
+    public boolean isBuyer() {
+        return role.equals(Role.BUYER);
     }
 }
