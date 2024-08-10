@@ -12,7 +12,14 @@ public class AuctionService {
     /**
      * 경매 생성
      */
-    public void createAuction(CreateAuctionCommand createAuctionCommand) {
+    public void createAuction(CreateAuctionCommand command) {
+        // 경매 지속 시간 검증
+        Duration diff = Duration.between(command.startedAt(), command.finishedAt());
+        if (!(diff.getSeconds() % (60 * 10) == 0 && diff.getSeconds() / (60 * 10) <= 6)) {
+            throw new BadRequestException("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: " + diff.getSeconds() % (60 * 10), ErrorCode.A008);
+        }
+
+        // TODO 로직
     }
 
     /**

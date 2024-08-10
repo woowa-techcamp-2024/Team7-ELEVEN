@@ -1,10 +1,14 @@
 package com.wootecam.luckyvickyauction.core.auction.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionType;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantAuctionType;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
