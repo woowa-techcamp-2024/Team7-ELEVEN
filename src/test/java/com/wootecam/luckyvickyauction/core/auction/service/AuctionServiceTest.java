@@ -3,11 +3,14 @@ package com.wootecam.luckyvickyauction.core.auction.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionType;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantAuctionType;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
+import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
@@ -15,14 +18,23 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class AuctionServiceTest {
-    private AuctionService auctionService = new AuctionService();
+    @Mock
+    private AuctionRepository auctionRepository;
+
+    @InjectMocks
+    private AuctionService auctionService;
 
     @Test
-    @DisplayName("경매가 성공적으로 생성되면 예외가 발생하지 않는다.")
+    @DisplayName("경매가 성공적으로 생성된다.")
     void create_auction_success_case() {
         // given
         Long sellerId = 1L;  // 판매자 정보
@@ -43,8 +55,11 @@ class AuctionServiceTest {
                 varitationDuration, startedAt, finishedAt
         );
 
-        // expect
-        assertThatNoException().isThrownBy(() -> auctionService.createAuction(command));
+        // when
+        auctionService.createAuction(command);
+
+        // then
+        verify(auctionRepository).save(any(Auction.class));
     }
 
     @ParameterizedTest
@@ -77,7 +92,7 @@ class AuctionServiceTest {
     @ParameterizedTest(name = "경매 지속시간이 {0}인 경우 BadRequestException 예외가 발생하고 에러 코드는 A008이다.")
     @ValueSource(ints = {9, 11, 19, 21, 29, 31, 39, 41, 49, 51, 59, 61})
     @DisplayName("경매의 지속시간이 10, 20, 30, 40, 50, 60이 아닌 경우 예외가 발생한다.")
-    public void auction_duration_should_be_between_10_and_60_minutes_fail(long durationTime){
+    void auction_duration_should_be_between_10_and_60_minutes_fail(long durationTime) {
         // given
         Long sellerId = 1L;  // 판매자 정보
         String productName = "상품이름";
