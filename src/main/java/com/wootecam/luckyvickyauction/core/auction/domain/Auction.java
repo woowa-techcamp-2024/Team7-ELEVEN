@@ -9,21 +9,22 @@ import lombok.Builder;
 public class Auction {
     private final Long sellerId;
     private final String productName;
-    private int originPrice;
-    private int currentPrice;
+    private long originPrice;
+    private long currentPrice;
     private int stock;
     private int maximumPurchaseLimitCount;
     private PricePolicy pricePolicy;
-    private int variationWidth;
+    private long variationWidth;
     private Duration variationDuration;
     private ZonedDateTime startedAt;
     private ZonedDateTime finishedAt;
     private boolean isShowStock;
 
     @Builder
-    private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName, final int originPrice,
+    private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName,
+                    final long originPrice,
                     final int stock,
-                    final int maximumPurchaseLimitCount, final PricePolicy pricePolicy, final int variationWidth,
+                    final int maximumPurchaseLimitCount, final PricePolicy pricePolicy, final long variationWidth,
                     final Duration variationDuration,
                     final ZonedDateTime finishedAt,
                     final boolean isShowStock
@@ -44,7 +45,7 @@ public class Auction {
         validatePriceShouldBeBiggerThanVariationWidth(originPrice, variationWidth);
     }
 
-    private void validatePriceShouldBeBiggerThanVariationWidth(int originPrice, int variationWidth) {
+    private void validatePriceShouldBeBiggerThanVariationWidth(long originPrice, long variationWidth) {
         if (originPrice <= variationWidth) {
             throw new BadRequestException(
                     String.format("상품 원가는 가격 변동폭보다 커야 합니다. 상품 원가: %d, 가격 변동폭: %d", originPrice, variationWidth),

@@ -25,11 +25,11 @@ import java.util.Objects;
 public record CreateAuctionCommand(
     Long sellerId,
     String productName,
-    int originPrice,
+    long originPrice,
     int stock,
     int maximumPurchaseLimitCount,
     PricePolicy pricePolicy,
-    int variationWidth,
+    long variationWidth,
     Duration variationDuration,
     ZonedDateTime startedAt,
     ZonedDateTime finishedAt,
@@ -67,7 +67,7 @@ public record CreateAuctionCommand(
         }
     }
 
-    private void validateOriginPrice(int originPrice) {
+    private void validateOriginPrice(long originPrice) {
         if (originPrice <= 0) {
             throw new BadRequestException(String.format(ERROR_ORIGIN_PRICE, originPrice), ErrorCode.A002);
         }
@@ -79,7 +79,7 @@ public record CreateAuctionCommand(
         }
     }
 
-    private void validateVariationWidth(int variationWidth) {
+    private void validateVariationWidth(long variationWidth) {
         if (variationWidth <= 0) {
             throw new BadRequestException(String.format(ERROR_VARIATION_WIDTH, variationWidth), ErrorCode.A004);
         }
