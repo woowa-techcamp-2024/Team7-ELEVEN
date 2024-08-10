@@ -8,7 +8,14 @@ public class ConstantPricePolicy implements PricePolicy {
     private final long variationWidth;
 
     public ConstantPricePolicy(long variationWidth) {
+        validateVariationWidth(variationWidth);
         this.variationWidth = variationWidth;
+    }
+
+    private void validateVariationWidth(long variationWidth) {
+        if (variationWidth <= 0) {
+            throw new BadRequestException("가격 변동폭은 0보다 커야 합니다.", ErrorCode.A004);
+        }
     }
 
     @Override
