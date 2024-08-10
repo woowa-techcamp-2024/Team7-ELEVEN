@@ -6,7 +6,7 @@ public class Buyer extends Member {
         super(signInId, role, point);
     }
 
-    public boolean canBuy(final Long price, final int quantity) {
-        return point.isEnoughToBuy(price, quantity);
+    public void usePoint(final long price, final int quantity) {
+        point.minus(price * quantity);
     }
 }

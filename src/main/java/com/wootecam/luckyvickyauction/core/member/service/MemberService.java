@@ -14,6 +14,7 @@ public class MemberService {
 
     /**
      * 로그인(회원가입)을 동시에 처리한다.
+     *
      * @param signInId 로그인(회원가입)할 아이디
      * @param userRole 사용자의 역할(구매자, 판매자)
      */

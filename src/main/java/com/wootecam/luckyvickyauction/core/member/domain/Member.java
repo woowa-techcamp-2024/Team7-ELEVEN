@@ -1,5 +1,8 @@
 package com.wootecam.luckyvickyauction.core.member.domain;
 
+import lombok.Getter;
+
+@Getter
 public abstract class Member {
 
     private Long id;
