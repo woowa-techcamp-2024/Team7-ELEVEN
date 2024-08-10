@@ -1,5 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.domain;
 
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import lombok.Builder;
@@ -34,5 +36,16 @@ public class Auction {
         this.variationWidth = variationWidth;
         this.variationDuration = variationDuration;
         this.finishedAt = finishedAt;
+
+        validatePriceShouldBeBiggerThanVariationWidth(originPrice, variationWidth);
     }
+
+    private void validatePriceShouldBeBiggerThanVariationWidth(int originPrice, int variationWidth) {
+        if (originPrice <= variationWidth) {
+            throw new BadRequestException(
+                    String.format("상품 원가는 가격 변동폭보다 커야 합니다. 상품 원가: %d, 가격 변동폭: %d", originPrice, variationWidth),
+                    ErrorCode.A009);
+        }
+    }
+
 }
