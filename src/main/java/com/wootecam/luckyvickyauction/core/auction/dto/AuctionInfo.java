@@ -6,3 +6,4 @@ package com.wootecam.luckyvickyauction.core.auction.dto;
  */
 public record AuctionInfo(long price, long quantity) {
 }
+
