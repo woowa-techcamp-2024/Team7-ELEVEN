@@ -83,7 +83,7 @@ class CreateAuctionCommandTest {
         // expect
         assertThatNoException().isThrownBy(() -> new CreateAuctionCommand(
             sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
-            varitationDuration, startedAt, finishedAt
+                varitationDuration, startedAt, finishedAt, true
         ));
     }
 
@@ -99,7 +99,7 @@ class CreateAuctionCommandTest {
         // expect
         assertThatThrownBy(() -> new CreateAuctionCommand(
             sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
-            varitationDuration, startedAt, finishedAt))
+                varitationDuration, startedAt, finishedAt, true))
                 .isInstanceOf(BadRequestException.class)
                 .satisfies(exception -> {
                     assertThat(exception).hasFieldOrPropertyWithValue("errorCode", expectedErrorCode);

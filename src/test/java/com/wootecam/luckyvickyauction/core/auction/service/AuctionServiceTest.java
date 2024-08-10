@@ -52,7 +52,7 @@ class AuctionServiceTest {
 
         CreateAuctionCommand command = new CreateAuctionCommand(
                 sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
-                varitationDuration, startedAt, finishedAt
+                varitationDuration, startedAt, finishedAt, true
         );
 
         // when
@@ -81,8 +81,8 @@ class AuctionServiceTest {
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-            sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
-            varitationDuration, startedAt, finishedAt
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
+                varitationDuration, startedAt, finishedAt, true
         );
 
         // expect
@@ -108,15 +108,15 @@ class AuctionServiceTest {
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-            sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
-            varitationDuration, startedAt, finishedAt
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
+                varitationDuration, startedAt, finishedAt, true
         );
 
         // expect
         assertThatThrownBy(() -> auctionService.createAuction(command))
-            .isInstanceOf(BadRequestException.class)
-            .satisfies(exception -> {
-                assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);
-            });
+                .isInstanceOf(BadRequestException.class)
+                .satisfies(exception -> {
+                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);
+                });
     }
 }

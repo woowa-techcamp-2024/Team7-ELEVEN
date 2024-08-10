@@ -41,6 +41,7 @@ class AuctionTest {
                         .variationDuration(varitationDuration)
                         .startedAt(ZonedDateTime.now().minusHours(1L))
                         .finishedAt(ZonedDateTime.now())
+                        .isShowStock(true)
                         .build();
             }).isInstanceOf(BadRequestException.class)
                     .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A009);

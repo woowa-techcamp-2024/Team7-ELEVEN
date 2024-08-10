@@ -32,7 +32,8 @@ public record CreateAuctionCommand(
     int variationWidth,
     Duration variationDuration,
     ZonedDateTime startedAt,
-    ZonedDateTime finishedAt
+    ZonedDateTime finishedAt,
+    boolean isShowStock
 ) {
     private static final String ERROR_MAX_PURCHASE_LIMIT = "최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: %d";
     private static final String ERROR_VARIATION_WIDTH = "가격 변동폭은 0보다 커야 합니다. 가격 변동폭: %d";

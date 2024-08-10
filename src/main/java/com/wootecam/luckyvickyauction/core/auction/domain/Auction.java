@@ -18,13 +18,16 @@ public class Auction {
     private Duration variationDuration;
     private ZonedDateTime startedAt;
     private ZonedDateTime finishedAt;
+    private boolean isShowStock;
 
     @Builder
     private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName, final int originPrice,
                     final int stock,
                     final int maximumPurchaseLimitCount, final PricePolicy pricePolicy, final int variationWidth,
                     final Duration variationDuration,
-                    final ZonedDateTime finishedAt) {
+                    final ZonedDateTime finishedAt,
+                    final boolean isShowStock
+    ) {
         this.startedAt = startedAt;
         this.sellerId = sellerId;
         this.productName = productName;
@@ -36,6 +39,7 @@ public class Auction {
         this.variationWidth = variationWidth;
         this.variationDuration = variationDuration;
         this.finishedAt = finishedAt;
+        this.isShowStock = isShowStock;
 
         validatePriceShouldBeBiggerThanVariationWidth(originPrice, variationWidth);
     }

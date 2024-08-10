@@ -23,27 +23,28 @@ public class AuctionService {
         // 경매 지속 시간 검증
         Duration diff = Duration.between(command.startedAt(), command.finishedAt());
         if (!(diff.getSeconds() % (60 * 10) == 0 && diff.getSeconds() / (60 * 10) <= 6)) {
-            throw new BadRequestException("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: " + diff.getSeconds() % (60 * 10), ErrorCode.A008);
+            throw new BadRequestException("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: " + diff.getSeconds() % (60 * 10),
+                    ErrorCode.A008);
         }
 
         Auction auction = Auction.builder()
-            .sellerId(command.sellerId())
-            .productName(command.productName())
-            .originPrice(command.originPrice())
-            .stock(command.stock())
-            .maximumPurchaseLimitCount(command.maximumPurchaseLimitCount())
+                .sellerId(command.sellerId())
+                .productName(command.productName())
+                .originPrice(command.originPrice())
+                .stock(command.stock())
+                .maximumPurchaseLimitCount(command.maximumPurchaseLimitCount())
                 .pricePolicy(command.pricePolicy())
-            .variationWidth(command.variationWidth())
-            .variationDuration(command.variationDuration())
-            .startedAt(command.startedAt())
-            .finishedAt(command.finishedAt())
-            .build();
+                .variationWidth(command.variationWidth())
+                .variationDuration(command.variationDuration())
+                .startedAt(command.startedAt())
+                .finishedAt(command.finishedAt())
+                .isShowStock(command.isShowStock())
+                .build();
         auctionRepository.save(auction);
     }
 
     /**
-     * 경매 종료
-     * 경매 시작 전에는 경매를 종료할 수 있다.
+     * 경매 종료 경매 시작 전에는 경매를 종료할 수 있다.
      */
     public void closeAuction(long auctionId) {
     }
