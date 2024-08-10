@@ -9,4 +9,12 @@ public abstract class Member {
         this.signInId = signInId;
         this.role = role;
     }
+
+    public static Member createMemberWithRole(final String signInId, final String userRole) {
+        Role role = Role.find(userRole);
+        if (role.equals(Role.BUYER)) {
+            return new Buyer(signInId, role);
+        }
+        return new Seller(signInId, role);
+    }
 }
