@@ -1,7 +1,5 @@
 package com.wootecam.luckyvickyauction.core.auction.domain;
 
-import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import lombok.Builder;
@@ -14,7 +12,6 @@ public class Auction {
     private int stock;
     private int maximumPurchaseLimitCount;
     private PricePolicy pricePolicy;
-    private long variationWidth;
     private Duration variationDuration;
     private ZonedDateTime startedAt;
     private ZonedDateTime finishedAt;
@@ -24,7 +21,7 @@ public class Auction {
     private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName,
                     final long originPrice,
                     final int stock,
-                    final int maximumPurchaseLimitCount, final PricePolicy pricePolicy, final long variationWidth,
+                    final int maximumPurchaseLimitCount, final PricePolicy pricePolicy,
                     final Duration variationDuration,
                     final ZonedDateTime finishedAt,
                     final boolean isShowStock
@@ -37,20 +34,10 @@ public class Auction {
         this.stock = stock;
         this.maximumPurchaseLimitCount = maximumPurchaseLimitCount;
         this.pricePolicy = pricePolicy;
-        this.variationWidth = variationWidth;
         this.variationDuration = variationDuration;
         this.finishedAt = finishedAt;
         this.isShowStock = isShowStock;
 
-        validatePriceShouldBeBiggerThanVariationWidth(originPrice, variationWidth);
+        pricePolicy.validate(originPrice);
     }
-
-    private void validatePriceShouldBeBiggerThanVariationWidth(long originPrice, long variationWidth) {
-        if (originPrice <= variationWidth) {
-            throw new BadRequestException(
-                    String.format("상품 원가는 가격 변동폭보다 커야 합니다. 상품 원가: %d, 가격 변동폭: %d", originPrice, variationWidth),
-                    ErrorCode.A009);
-        }
-    }
-
 }

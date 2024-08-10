@@ -34,7 +34,6 @@ public class AuctionService {
                 .stock(command.stock())
                 .maximumPurchaseLimitCount(command.maximumPurchaseLimitCount())
                 .pricePolicy(command.pricePolicy())
-                .variationWidth(command.variationWidth())
                 .variationDuration(command.variationDuration())
                 .startedAt(command.startedAt())
                 .finishedAt(command.finishedAt())

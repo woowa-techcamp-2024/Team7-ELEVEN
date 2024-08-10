@@ -23,10 +23,10 @@ class AuctionTest {
             int originPrice = 10000;
             int stock = 999999;
             int maximumPurchaseLimitCount = 10;
-            PricePolicy pricePolicy = new ConstantPricePolicy();
 
             int variationWidth = 10000;
             Duration varitationDuration = Duration.ofMinutes(1L);
+            PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
             // when & then
             assertThatThrownBy(() -> {
@@ -37,7 +37,6 @@ class AuctionTest {
                         .stock(stock)
                         .pricePolicy(pricePolicy)
                         .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
-                        .variationWidth(variationWidth)
                         .variationDuration(varitationDuration)
                         .startedAt(ZonedDateTime.now().minusHours(1L))
                         .finishedAt(ZonedDateTime.now())

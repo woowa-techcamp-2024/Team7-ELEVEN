@@ -42,16 +42,16 @@ class AuctionServiceTest {
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
-        PricePolicy auctionType = new ConstantPricePolicy();
 
         int variationWidth = 1000;
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+        PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
         ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy, variationWidth,
                 varitationDuration, startedAt, finishedAt, true
         );
 
@@ -72,16 +72,16 @@ class AuctionServiceTest {
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
-        PricePolicy auctionType = new ConstantPricePolicy();
 
         int variationWidth = 1000;
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+        PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy, variationWidth,
                 varitationDuration, startedAt, finishedAt, true
         );
 
@@ -99,16 +99,16 @@ class AuctionServiceTest {
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
-        PricePolicy auctionType = new ConstantPricePolicy();
 
         int variationWidth = 1000;
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+        PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy, variationWidth,
                 varitationDuration, startedAt, finishedAt, true
         );
 
