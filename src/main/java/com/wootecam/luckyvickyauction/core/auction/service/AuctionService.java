@@ -19,7 +19,6 @@ public class AuctionService {
             throw new BadRequestException("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: " + diff.getSeconds() % (60 * 10), ErrorCode.A008);
         }
 
-        // TODO 로직
     }
 
     /**
