@@ -2,6 +2,7 @@ package com.wootecam.luckyvickyauction.global.exception;
 
 public enum ErrorCode {
     // Auction
+    // TODO 어느 시점에 발생하는 에러d인지 명시
     A000("경매 재고는 인당 구매 수량보다 작을 수 없습니다."),
     A001("상품 이름은 비어있을 수 없습니다."),
     A002("상품 원가는 0과 같거나 작을 수 없습니다."),

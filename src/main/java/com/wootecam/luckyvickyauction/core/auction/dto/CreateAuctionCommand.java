@@ -51,29 +51,52 @@ public record CreateAuctionCommand(
         validateNotNull(startedAt, "경매 시작 시간");
         validateNotNull(finishedAt, "경매 종료 시간");
 
-        validate(productName, originPrice, stock, maximumPurchaseLimitCount, variationWidth, variationDuration, startedAt, finishedAt);
+        validateProductName(productName);
+        validateOriginPrice(originPrice);
+        validateMaximumPurchaseLimitCount(maximumPurchaseLimitCount);
+        validateVariationWidth(variationWidth);
+        validateVariationDuration(variationDuration);
+        validateAuctionTime(startedAt, finishedAt);
+        validateStock(stock, maximumPurchaseLimitCount);
     }
 
-    private void validate(String productName, int originPrice, int stock, int maximumPurchaseLimitCount,
-                          int variationWidth, Duration variationDuration, ZonedDateTime startedAt, ZonedDateTime finishedAt) {
+    private void validateProductName(String productName) {
         if (productName.trim().isEmpty()) {
             throw new BadRequestException(ERROR_PRODUCT_NAME, ErrorCode.A001);
         }
+    }
+
+    private void validateOriginPrice(int originPrice) {
         if (originPrice <= 0) {
             throw new BadRequestException(String.format(ERROR_ORIGIN_PRICE, originPrice), ErrorCode.A002);
         }
+    }
+
+    private void validateMaximumPurchaseLimitCount(int maximumPurchaseLimitCount) {
         if (maximumPurchaseLimitCount <= 0) {
             throw new BadRequestException(String.format(ERROR_MAX_PURCHASE_LIMIT, maximumPurchaseLimitCount), ErrorCode.A003);
         }
+    }
+
+    private void validateVariationWidth(int variationWidth) {
         if (variationWidth <= 0) {
             throw new BadRequestException(String.format(ERROR_VARIATION_WIDTH, variationWidth), ErrorCode.A004);
         }
+    }
+
+    private void validateVariationDuration(Duration variationDuration) {
         if (variationDuration.isNegative() || variationDuration.isZero()) {
             throw new BadRequestException(String.format(ERROR_VARIATION_DURATION, variationDuration), ErrorCode.A005);
         }
+    }
+
+    private void validateAuctionTime(ZonedDateTime startedAt, ZonedDateTime finishedAt) {
         if (!startedAt.isBefore(finishedAt)) {
             throw new BadRequestException(String.format(ERROR_AUCTION_TIME, startedAt, finishedAt), ErrorCode.A006);
         }
+    }
+
+    private void validateStock(int stock, int maximumPurchaseLimitCount) {
         if (stock < maximumPurchaseLimitCount) {
             throw new BadRequestException(String.format(ERROR_STOCK, stock, maximumPurchaseLimitCount), ErrorCode.A000);
         }
