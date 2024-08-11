@@ -1,23 +1,49 @@
 package com.wootecam.luckyvickyauction.core.auction.service;
 
+import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
-
+import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import java.time.Duration;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class AuctionService {
+    private final AuctionRepository auctionRepository;
 
     /**
      * 경매 생성
      */
-    public void createAuction(CreateAuctionCommand createAuctionCommand) {
+    public void createAuction(CreateAuctionCommand command) {
+        // 경매 지속 시간 검증
+        Duration diff = Duration.between(command.startedAt(), command.finishedAt());
+        if (!(diff.getSeconds() % (60 * 10) == 0 && diff.getSeconds() / (60 * 10) <= 6)) {
+            throw new BadRequestException("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: " + diff.getSeconds() % (60 * 10),
+                    ErrorCode.A008);
+        }
+
+        Auction auction = Auction.builder()
+                .sellerId(command.sellerId())
+                .productName(command.productName())
+                .originPrice(command.originPrice())
+                .stock(command.stock())
+                .maximumPurchaseLimitCount(command.maximumPurchaseLimitCount())
+                .pricePolicy(command.pricePolicy())
+                .variationDuration(command.variationDuration())
+                .startedAt(command.startedAt())
+                .finishedAt(command.finishedAt())
+                .isShowStock(command.isShowStock())
+                .build();
+        auctionRepository.save(auction);
     }
 
     /**
-     * 경매 종료
-     * 경매 시작 전에는 경매를 종료할 수 있다.
+     * 경매 종료 경매 시작 전에는 경매를 종료할 수 있다.
      */
     public void closeAuction(long auctionId) {
     }
