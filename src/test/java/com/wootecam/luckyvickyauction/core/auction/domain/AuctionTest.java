@@ -1,9 +1,11 @@
 package com.wootecam.luckyvickyauction.core.auction.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.DisplayName;
@@ -50,5 +52,61 @@ class AuctionTest {
     @Nested
     @DisplayName("퍼센트 가격 정책 적용시")
     public class PercentagePricePolicyTest {
+    }
+
+    @Nested
+    @DisplayName("경매 정책 변경 기능")
+    public class UpdateAuctionTest {
+
+        @Test
+        @DisplayName("동일한 판매자는 현재 경매의 가격 노출 정책을 변경할 수 있다.")
+        public void updateAuctionShowStock() {
+            // given
+            Auction auction = Auction.builder()
+                    .sellerId(1L)
+                    .productName("상품이름")
+                    .originPrice(10000)
+                    .stock(999999)
+                    .pricePolicy(new ConstantPricePolicy(1000))
+                    .maximumPurchaseLimitCount(10)
+                    .variationDuration(Duration.ofMinutes(1L))
+                    .startedAt(ZonedDateTime.now().minusHours(1L))
+                    .finishedAt(ZonedDateTime.now())
+                    .isShowStock(true)
+                    .build();
+
+            Long requestSellerId = 1L;
+
+            // when
+            auction.updateShowStock(false, requestSellerId);
+
+            // then
+            assertThat(auction.isShowStock()).isFalse();
+        }
+
+        @Test
+        @DisplayName("동일한 판매자가 아닌 경우 가격 노출 정책을 변경할 수 없다.")
+        public void dd() {
+            // given
+            Auction auction = Auction.builder()
+                    .sellerId(1L)
+                    .productName("상품이름")
+                    .originPrice(10000)
+                    .stock(999999)
+                    .pricePolicy(new ConstantPricePolicy(1000))
+                    .maximumPurchaseLimitCount(10)
+                    .variationDuration(Duration.ofMinutes(1L))
+                    .startedAt(ZonedDateTime.now().minusHours(1L))
+                    .finishedAt(ZonedDateTime.now())
+                    .isShowStock(true)
+                    .build();
+
+            Long requestSellerId = 2L;
+
+            // when & then
+            assertThatThrownBy(() -> auction.updateShowStock(false, requestSellerId))
+                    .isInstanceOf(UnauthorizedException.class)
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A013);
+        }
     }
 }
