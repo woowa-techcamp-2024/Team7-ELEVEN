@@ -2,7 +2,6 @@ package com.wootecam.luckyvickyauction.core.payment.service;
 
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
-import com.wootecam.luckyvickyauction.core.member.domain.Buyer;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
@@ -28,8 +27,7 @@ public class PaymentService {
         }
 
         // TODO 입찰 내역 도메인 설계 필요 -> id값을 가질건지, 도메인을 가질건지
-        Buyer signInBuyer = (Buyer) signInMember;
-        signInBuyer.usePoint(auctionInfo.price(), quantity);
+        signInMember.usePoint(auctionInfo.price() * quantity);
 
         BidHistory bidHistory = new BidHistory();
         bidHistoryRepository.save(bidHistory);
