@@ -135,6 +135,7 @@ class AuctionServiceTest {
         void notFound_should_throw_exception() {
             // given
             Long auctionId = 1L;  // 경매 정보
+            Long sellerId = 1L;
             int originPrice = 10000;
             int stock = 999999;  // 재고
             int maximumPurchaseLimitCount = 10;
@@ -147,7 +148,7 @@ class AuctionServiceTest {
             ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
             final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
-                auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                    auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
             );
 
@@ -167,6 +168,7 @@ class AuctionServiceTest {
 
             // given
             Long auctionId = 1L;  // 경매 정보
+            Long sellerId = 1L;
             int originPrice = 10000;
             int stock = 999999;  // 재고
             int maximumPurchaseLimitCount = 10;
@@ -180,7 +182,7 @@ class AuctionServiceTest {
             ZonedDateTime requestTime = ZonedDateTime.of(2024, 8, 9, 2, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
             final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
-                auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                    auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, startedAt, finishedAt, true, requestTime
             );
 

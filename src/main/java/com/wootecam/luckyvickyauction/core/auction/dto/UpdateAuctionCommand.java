@@ -11,6 +11,7 @@ import java.util.Objects;
  * 경매 생성을 위한 명령 객체
  *
  * @param auctionId                 경매 ID
+ * @param sellerId                  변경을 요청하는 판매자 ID
  * @param originPrice               상품 원가
  * @param stock                     재고 수량
  * @param maximumPurchaseLimitCount 최대 구매 제한 수량 (인당 구매 가능 수량)
@@ -22,6 +23,7 @@ import java.util.Objects;
  */
 public record UpdateAuctionCommand(
     Long auctionId,
+    Long sellerId,
     long originPrice,
     int stock,
     int maximumPurchaseLimitCount,
