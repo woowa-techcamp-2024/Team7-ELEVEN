@@ -83,7 +83,6 @@ class UpdateAuctionCommandTest {
     void success_case() {
         // given
         Long auctionId = 1L;  // 판매자 정보
-        String productName = "상품이름";
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
@@ -96,9 +95,9 @@ class UpdateAuctionCommandTest {
         ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
         // expect
-        assertThatNoException().isThrownBy(() -> new CreateAuctionCommand(
-            auctionId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-            varitationDuration, startedAt, finishedAt, true
+        assertThatNoException().isThrownBy(() -> new UpdateAuctionCommand(
+            auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+            varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
         ));
     }
 
@@ -108,12 +107,12 @@ class UpdateAuctionCommandTest {
     void validation_test(
         String displayName, ErrorCode expectedErrorCode,
         Long auctionId, int originPrice, int stock, int maximumPurchaseLimitCount,
-        PricePolicy auctionType, Duration varitationDuration,
+        PricePolicy pricePolicy, Duration varitationDuration,
         ZonedDateTime startedAt, ZonedDateTime finishedAt, ZonedDateTime requestedAt
     ) {
         // expect
         assertThatThrownBy(() -> new UpdateAuctionCommand(
-            auctionId, originPrice, stock, maximumPurchaseLimitCount, auctionType,
+            auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
             varitationDuration, startedAt, finishedAt, true, requestedAt))
             .isInstanceOf(BadRequestException.class)
             .satisfies(exception -> {
