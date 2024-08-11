@@ -97,4 +97,8 @@ public class AuctionService {
         // 저장
         auctionRepository.save(auction);
     }
+
+    public void submitBid(long auctionId, long price, long quantity) {
+
+    }
 }

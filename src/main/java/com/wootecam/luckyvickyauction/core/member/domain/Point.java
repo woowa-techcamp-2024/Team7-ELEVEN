@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class Point {
+
     private long amount;
 
     public Point(final long amount) {

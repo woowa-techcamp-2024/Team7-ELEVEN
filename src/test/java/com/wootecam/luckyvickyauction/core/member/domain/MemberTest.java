@@ -34,4 +34,16 @@ class MemberTest {
                 .hasMessage("포인트가 부족합니다.")
                 .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.P001));
     }
+
+    @Test
+    void 포인트를_충전할_수_있다() {
+        // given
+        Member seller = new Member("testID", Role.SELLER, new Point(0));
+
+        // when
+        seller.chargePoint(100);
+
+        // then
+        assertThat(seller.getPoint()).isEqualTo(new Point(100));
+    }
 }
