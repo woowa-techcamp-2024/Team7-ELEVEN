@@ -6,6 +6,7 @@ import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
+import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
@@ -42,6 +43,7 @@ public class PaymentService {
                 .productName(auctionInfo.productName())
                 .price(price)
                 .quantity(quantity)
+                .bidStatus(BidStatus.BID)
                 .seller(savedSeller)
                 .buyer(savedBuyer)
                 .build();
