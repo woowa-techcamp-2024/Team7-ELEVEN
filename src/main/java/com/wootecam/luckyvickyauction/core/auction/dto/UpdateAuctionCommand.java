@@ -6,6 +6,7 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import lombok.Builder;
 
 /**
  * 경매 생성을 위한 명령 객체
@@ -21,6 +22,7 @@ import java.util.Objects;
  * @param finishedAt                경매 종료 시간
  * @param requestTime               사용자가 요청한 시간
  */
+@Builder
 public record UpdateAuctionCommand(
     Long auctionId,
     Long sellerId,
@@ -31,7 +33,7 @@ public record UpdateAuctionCommand(
     Duration variationDuration,
     ZonedDateTime startedAt,
     ZonedDateTime finishedAt,
-    boolean isShowStock,
+    Boolean isShowStock,
     // command meta info
     ZonedDateTime requestTime
 ) {

@@ -11,6 +11,8 @@ import java.time.ZonedDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class AuctionTest {
 
@@ -107,6 +109,33 @@ class AuctionTest {
             assertThatThrownBy(() -> auction.updateShowStock(false, requestSellerId))
                     .isInstanceOf(UnauthorizedException.class)
                     .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A013);
+        }
+
+        @ParameterizedTest
+        @ValueSource(booleans = {true, false})
+        @DisplayName("가격 노출 정책이 null인 경우 변경이 반영되지 않는다.")
+        public void updateShowStockWhenShowStockIsNull(boolean isShowStock) {
+            // given
+            Auction auction = Auction.builder()
+                    .sellerId(1L)
+                    .productName("상품이름")
+                    .originPrice(10000)
+                    .stock(999999)
+                    .pricePolicy(new ConstantPricePolicy(1000))
+                    .maximumPurchaseLimitCount(10)
+                    .variationDuration(Duration.ofMinutes(1L))
+                    .startedAt(ZonedDateTime.now().minusHours(1L))
+                    .finishedAt(ZonedDateTime.now())
+                    .isShowStock(isShowStock)
+                    .build();
+
+            Long requestSellerId = 1L;
+
+            // when
+            auction.updateShowStock(null, requestSellerId);
+
+            // then
+            assertThat(auction.isShowStock()).isEqualTo(isShowStock);
         }
     }
 }
