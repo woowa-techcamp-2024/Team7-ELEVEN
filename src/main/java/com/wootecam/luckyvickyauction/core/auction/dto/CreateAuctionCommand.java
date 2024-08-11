@@ -19,6 +19,7 @@ import java.util.Objects;
  * @param variationDuration        가격 변동 주기
  * @param startedAt                 경매 시작 시간
  * @param finishedAt                경매 종료 시간
+ * @param isShowStock               재고 노출 여부
  */
 
 public record CreateAuctionCommand(
