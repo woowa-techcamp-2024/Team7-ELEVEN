@@ -30,6 +30,6 @@ class PointTest {
         assertThatThrownBy(() -> point.minus(101))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("포인트가 부족합니다.")
-                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.P002));
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.P001));
     }
 }
