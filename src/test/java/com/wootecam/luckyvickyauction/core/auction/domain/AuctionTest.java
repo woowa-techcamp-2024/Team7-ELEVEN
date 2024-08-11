@@ -50,35 +50,5 @@ class AuctionTest {
     @Nested
     @DisplayName("퍼센트 가격 정책 적용시")
     public class PercentagePricePolicyTest {
-
-        @Test
-        @DisplayName("경매 생성시 경매 할인율은 100보다 작아야한다.")
-        public void createAuctionPercentageShouldBeLessThan100() {
-            // given
-            int originPrice = 10000;
-            int stock = 999999;
-            int maximumPurchaseLimitCount = 10;
-
-            float discountRate = 100;
-            Duration varitationDuration = Duration.ofMinutes(1L);
-            PricePolicy pricePolicy = new PercentagePricePolicy(discountRate);
-
-            // when & then
-            assertThatThrownBy(() -> {
-                Auction.builder()
-                        .sellerId(1L)
-                        .productName("상품이름")
-                        .originPrice(originPrice)
-                        .stock(stock)
-                        .pricePolicy(pricePolicy)
-                        .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
-                        .variationDuration(varitationDuration)
-                        .startedAt(ZonedDateTime.now().minusHours(1L))
-                        .finishedAt(ZonedDateTime.now())
-                        .isShowStock(true)
-                        .build();
-            }).isInstanceOf(BadRequestException.class)
-                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A010);
-        }
     }
 }

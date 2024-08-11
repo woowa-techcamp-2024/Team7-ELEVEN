@@ -3,7 +3,9 @@ package com.wootecam.luckyvickyauction.core.auction.domain;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class Auction {
     private final Long sellerId;
     private final String productName;
@@ -39,5 +41,19 @@ public class Auction {
         this.isShowStock = isShowStock;
 
         pricePolicy.validate(originPrice);
+    }
+
+    public Long getId() {
+        // TODO id반환 구현
+        return 0L;
+    }
+
+    public AuctionStatus getStatus() {
+        // TODO 경매 상태 반환 구현
+        return AuctionStatus.WAITING;
+    }
+
+    public void update() {
+        // TODO 경매 옵션을 변경하는 로직 (Update)
     }
 }
