@@ -7,8 +7,8 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionType;
-import com.wootecam.luckyvickyauction.core.auction.domain.ConstantAuctionType;
+import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
+import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
@@ -42,17 +42,17 @@ class AuctionServiceTest {
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
-        AuctionType auctionType = new ConstantAuctionType();
 
         int variationWidth = 1000;
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+        PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
         ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
-                varitationDuration, startedAt, finishedAt
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                varitationDuration, startedAt, finishedAt, true
         );
 
         // when
@@ -72,17 +72,17 @@ class AuctionServiceTest {
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
-        AuctionType auctionType = new ConstantAuctionType();
 
         int variationWidth = 1000;
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+        PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-            sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
-            varitationDuration, startedAt, finishedAt
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                varitationDuration, startedAt, finishedAt, true
         );
 
         // expect
@@ -99,24 +99,24 @@ class AuctionServiceTest {
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
-        AuctionType auctionType = new ConstantAuctionType();
 
         int variationWidth = 1000;
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+        PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
-            sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, auctionType, variationWidth,
-            varitationDuration, startedAt, finishedAt
+                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                varitationDuration, startedAt, finishedAt, true
         );
 
         // expect
         assertThatThrownBy(() -> auctionService.createAuction(command))
-            .isInstanceOf(BadRequestException.class)
-            .satisfies(exception -> {
-                assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);
-            });
+                .isInstanceOf(BadRequestException.class)
+                .satisfies(exception -> {
+                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);
+                });
     }
 }

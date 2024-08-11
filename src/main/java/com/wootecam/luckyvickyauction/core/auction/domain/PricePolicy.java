@@ -1,4 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.domain;
 
-public class ConstantAuctionType implements AuctionType {
+public interface PricePolicy {
+
+    void validate(long price);
 }
