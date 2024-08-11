@@ -1,6 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.service;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
+import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
@@ -8,6 +9,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import java.time.Duration;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -78,5 +80,21 @@ public class AuctionService {
      * 경매 옵션 변경
      */
     public void changeOption(UpdateAuctionCommand command) {
+        // 검증
+        Auction auction = auctionRepository.findById(command.auctionId())
+            .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + command.auctionId(),
+                ErrorCode.A011));
+
+        if (auction.getStatus() != AuctionStatus.WAITING) {
+            throw new BadRequestException(
+                "시작 전인 경매만 변경할 수 있습니다. 변경요청시간: " + command.requestTime() + ", 경매시작시간: " + auction.getStartedAt(),
+                ErrorCode.A012);
+        }
+
+        // 변경 TODO
+        // auction.변경해줘(command);
+
+        // 저장
+        auctionRepository.save(auction);
     }
 }

@@ -5,18 +5,24 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
+import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -118,5 +124,86 @@ class AuctionServiceTest {
                 .satisfies(exception -> {
                     assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);
                 });
+    }
+
+    @Nested
+    @DisplayName("changeOption test")
+    class changeOption {
+
+        @Test
+        @DisplayName("경매 ID에 해당하는 경매를 찾을 수 없는 경우 예외가 발생하고 에러 코드는 A011이다.")
+        void notFound_should_throw_exception() {
+            // given
+            Long auctionId = 1L;  // 경매 정보
+            int originPrice = 10000;
+            int stock = 999999;  // 재고
+            int maximumPurchaseLimitCount = 10;
+
+            int variationWidth = 1000;
+            Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+            PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+
+            ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+            ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+
+            final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
+                auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
+            );
+
+            // when
+            when(auctionRepository.findById(auctionId)).thenReturn(Optional.empty());
+
+            // then
+            assertThatThrownBy(() -> auctionService.changeOption(updateAuctionCommand))
+                .isInstanceOf(NotFoundException.class)
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A011));
+        }
+
+        @Test
+        @Disabled
+        @DisplayName("이미 시작한 경매를 변경하려는 경우 예외가 발생하고 에러 코드는 A012이다.")
+        void when_change_auction_that_is_started() {
+
+            // given
+            Long auctionId = 1L;  // 경매 정보
+            int originPrice = 10000;
+            int stock = 999999;  // 재고
+            int maximumPurchaseLimitCount = 10;
+
+            int variationWidth = 1000;
+            Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+            PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+
+            ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+            ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+            ZonedDateTime requestTime = ZonedDateTime.of(2024, 8, 9, 2, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+
+            final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
+                auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                varitationDuration, startedAt, finishedAt, true, requestTime
+            );
+
+            Auction auction = Auction.builder()
+                .startedAt(startedAt)
+                .finishedAt(finishedAt)
+                .sellerId(1L)
+                .productName("Test Product")
+                .originPrice(10000)
+                .stock(999999)
+                .maximumPurchaseLimitCount(10)
+                .pricePolicy(new ConstantPricePolicy(1000))
+                .variationDuration(Duration.ofMinutes(1L))
+                .isShowStock(true)
+                .build();
+
+            // when
+            when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
+
+            // then
+            assertThatThrownBy(() -> auctionService.changeOption(updateAuctionCommand))
+                .isInstanceOf(NotFoundException.class)
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A012));
+        }
     }
 }

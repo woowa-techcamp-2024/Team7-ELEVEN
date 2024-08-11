@@ -2,7 +2,6 @@ package com.wootecam.luckyvickyauction.global.exception;
 
 public enum ErrorCode {
     // Auction
-    // TODO 어느 시점에 발생하는 에러d인지 명시
     A000("경매 재고는 인당 구매 수량보다 작을 수 없습니다."),
     A001("상품 이름은 비어있을 수 없습니다."),
     A002("상품 원가는 0과 같거나 작을 수 없습니다."),
@@ -14,6 +13,8 @@ public enum ErrorCode {
     A008("경매 지속시간은 10, 20, 30, 40, 50, 60분이어야 합니다."),
     A009("경매 가격 변동폭은 경매 가격보다 낮아야 합니다."),
     A010("할인율은 0 초과 100 미만이어야 합니다."),
+    A011("경매ID를 기준으로 경매를 찾으려고 했지만 찾을 수 없습니다."),
+    A012("이미 시작된 경매를 변경하려고 할 때, 예외가 발생합니다.")
     ;
 
     private final String description;
