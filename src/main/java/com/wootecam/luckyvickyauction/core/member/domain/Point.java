@@ -14,9 +14,13 @@ public class Point {
 
     public void minus(final long minusAmount) {
         if (amount < minusAmount) {
-            throw new BadRequestException("포인트가 부족합니다.", ErrorCode.P002);
+            throw new BadRequestException("포인트가 부족합니다.", ErrorCode.P001);
         }
         amount -= minusAmount;
+    }
+
+    public void plus(final long price) {
+        amount += price;
     }
 
     @Override

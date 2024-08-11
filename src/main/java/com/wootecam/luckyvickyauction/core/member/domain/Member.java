@@ -1,15 +1,17 @@
 package com.wootecam.luckyvickyauction.core.member.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public abstract class Member {
+public class Member {
 
     private Long id;
     private String signInId;
     private Role role;
     protected Point point;
 
+    @Builder
     public Member(final String signInId, final Role role, final Point point) {
         this.signInId = signInId;
         this.role = role;
@@ -18,10 +20,16 @@ public abstract class Member {
 
     public static Member createMemberWithRole(final String signInId, final String userRole) {
         Role role = Role.find(userRole);
-        if (role.equals(Role.BUYER)) {
-            return new Buyer(signInId, role, new Point(0L));
-        }
-        return new Seller(signInId, role, new Point(0L));
+
+        return new Member(signInId, role, new Point(0L));
+    }
+
+    public void usePoint(final long price) {
+        point.minus(price);
+    }
+
+    public void chargePoint(final long price) {
+        point.plus(price);
     }
 
     public boolean isBuyer() {
