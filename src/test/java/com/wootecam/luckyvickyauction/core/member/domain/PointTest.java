@@ -32,4 +32,16 @@ class PointTest {
                 .hasMessage("포인트가 부족합니다.")
                 .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.P001));
     }
+
+    @Test
+    void 포인트를_충전할_수_있다() {
+        // given
+        Point point = new Point(0);
+
+        // when
+        point.plus(100);
+
+        // then
+        assertThat(point.getAmount()).isEqualTo(100);
+    }
 }
