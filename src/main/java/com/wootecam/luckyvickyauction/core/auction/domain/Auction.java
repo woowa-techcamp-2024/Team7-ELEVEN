@@ -11,7 +11,7 @@ public class Auction {
     private final String productName;
     private long originPrice;
     private long currentPrice;
-    private int stock;
+    private long stock;
     private int maximumPurchaseLimitCount;
     private PricePolicy pricePolicy;
     private Duration variationDuration;
@@ -22,7 +22,7 @@ public class Auction {
     @Builder
     private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName,
                     final long originPrice,
-                    final int stock,
+                    final long stock,
                     final int maximumPurchaseLimitCount, final PricePolicy pricePolicy,
                     final Duration variationDuration,
                     final ZonedDateTime finishedAt,
