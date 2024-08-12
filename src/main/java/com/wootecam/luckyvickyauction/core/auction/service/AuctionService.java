@@ -98,7 +98,19 @@ public class AuctionService {
         auctionRepository.save(auction);
     }
 
+    /**
+     * 경매 상품에 대한 입찰(구매)을 진행한다.
+     *
+     * @param auctionId 경매 번호
+     * @param price     구매를 원하는 가격
+     * @param quantity  수량
+     */
     public void submitBid(long auctionId, long price, long quantity) {
+        // 검증
+        Auction auction = auctionRepository.findById(auctionId)
+            .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
+                ErrorCode.A011));
 
+        // TODO 구매(입찰) 로직
     }
 }

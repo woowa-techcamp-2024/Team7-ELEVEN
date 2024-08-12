@@ -206,4 +206,32 @@ class AuctionServiceTest {
                 .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A012));
         }
     }
+
+    @Nested
+    @DisplayName("경매 입찰(구매)을 진행할 때")
+    class submitBidTest {
+        @Test
+        @Disabled
+        @DisplayName("요청을 정상적으로 처리한다.")
+        void success_case() {
+            // TODO
+        }
+
+        @Test
+        @DisplayName("유효하지 않은 경매번호를 전달받은 경우 예외가 발생하고 에러 코드는 A011이다.")
+        void when_invalid_auction_id_should_throw_exception() {
+            // given
+            long auctionId = 1L;
+            long price = 10000L;
+            long quantity = 100L;
+
+            // when
+            when(auctionRepository.findById(auctionId)).thenReturn(Optional.empty());
+
+            // then
+            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
+                .isInstanceOf(NotFoundException.class)
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A011));
+        }
+    }
 }
