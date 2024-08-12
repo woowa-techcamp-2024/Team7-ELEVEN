@@ -31,4 +31,41 @@ class MemberServiceTest {
             }
         }
     }
+
+    @Nested
+    class signIn_메소드는 {
+
+        @Nested
+        class 만약_로그인_시_입력한_아이디에_해당되는_사용자를_찾을_수_없으면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                // when
+                // then
+            }
+        }
+
+        @Nested
+        class 만약_입력한_패스워드와_실제_패스워드가_일치하지_않는다면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                // when
+                // then
+            }
+        }
+
+        @Nested
+        class 만약_정상적인_로그인_요청이라면 {
+
+            @Test
+            void 로그인한_사용자의_id가_세션에_저장된다() {
+                // given
+                // when
+                // then
+            }
+        }
+    }
 }
