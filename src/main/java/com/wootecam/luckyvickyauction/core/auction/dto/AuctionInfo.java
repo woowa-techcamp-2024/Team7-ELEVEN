@@ -2,6 +2,7 @@ package com.wootecam.luckyvickyauction.core.auction.dto;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import lombok.Builder;
 
 /**
  * @param sellerId                  판매자의 ID
@@ -12,15 +13,9 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
  * @param maximumPurchaseLimitCount 최대 구매 가능한 개수
  * @param isShowStock               재고를 보여줄지 여부
  */
-public record AuctionInfo(
-        Long sellerId,
-        String productName,
-        long originPrice,
-        long currentPrice,
-        int stock,
-        int maximumPurchaseLimitCount,
-        boolean isShowStock
-) {
+@Builder
+public record AuctionInfo(Long sellerId, String productName, long originPrice, long currentPrice, int stock,
+                          int maximumPurchaseLimitCount, boolean isShowStock) {
 
     public static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
     public static final String ERROR_ORIGIN_PRICE = "상품 원가는 0보다 커야 합니다. 상품 원가: %d";
@@ -66,7 +61,8 @@ public record AuctionInfo(
 
     private void validateMaximumPurchaseLimitCount(int maximumPurchaseLimitCount) {
         if (maximumPurchaseLimitCount <= 0) {
-            throw new BadRequestException(String.format(ERROR_MAXIMUM_PURCHASE_LIMIT_COUNT, maximumPurchaseLimitCount), ErrorCode.A003);
+            throw new BadRequestException(String.format(ERROR_MAXIMUM_PURCHASE_LIMIT_COUNT, maximumPurchaseLimitCount),
+                    ErrorCode.A003);
         }
     }
 
