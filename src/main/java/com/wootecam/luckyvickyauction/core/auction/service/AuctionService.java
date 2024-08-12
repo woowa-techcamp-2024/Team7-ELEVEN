@@ -111,6 +111,12 @@ public class AuctionService {
             .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
                 ErrorCode.A011));
 
+        if (!auction.canPurchase(quantity)) {
+            throw new BadRequestException(
+                "해당 수량만큼 구매할 수 없습니다. 재고: " + auction.getStock() + ", "
+                    + "요청: " + quantity + ", 인당구매제한: " + auction.getMaximumPurchaseLimitCount(), ErrorCode.A014);
+        }
+
         // TODO 구매(입찰) 로직
     }
 }
