@@ -15,17 +15,18 @@ import org.junit.jupiter.params.provider.MethodSource;
 class AuctionInfoTest {
     static Stream<Arguments> auctionInfoDtoArguments() {
         return Stream.of(
-                Arguments.of("상품 이름은 비어있을 수 없습니다.", ErrorCode.A001, 1L, "", 10000, 10000, 10, 10),
-                Arguments.of("상품 원가는 0보다 커야 합니다. 상품 원가: 0", ErrorCode.A002, 1L, "상품이름", 0, 10000, 10, 10),
-                Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0", ErrorCode.A013, 1L, "상품이름", 10000, 0, 10, 10),
-                Arguments.of("재고는 0보다 작을 수 없습니다. 재고: -1", ErrorCode.A000, 1L, "상품이름", 10000, 10000, -1, 10),
-                Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0", ErrorCode.A003, 1L, "상품이름", 10000, 10000, 10, 0)
+                Arguments.of("상품 이름은 비어있을 수 없습니다.", ErrorCode.A001, 1L, 1L, "", 10000, 10000, 10, 10),
+                Arguments.of("상품 원가는 0보다 커야 합니다. 상품 원가: 0", ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10, 10),
+                Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0", ErrorCode.A013, 1L, 1L, "상품이름", 10000, 0, 10, 10),
+                Arguments.of("재고는 0보다 작을 수 없습니다. 재고: -1", ErrorCode.A000, 1L, 1L, "상품이름", 10000, 10000, -1, 10),
+                Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0", ErrorCode.A003, 1L, 1L, "상품이름", 10000, 10000, 10, 0)
         );
     }
 
     @Test
     void 경매_정보_생성_요청을_정상적으로_처리한다() {
         // given
+        Long auctionId = 1L;
         Long sellerId = 1L;
         String productName = "상품이름";
         long originPrice = 10000;
@@ -35,7 +36,7 @@ class AuctionInfoTest {
 
         // when
         AuctionInfo auctionInfo = new AuctionInfo(
-                sellerId, productName, originPrice, currentPrice, stock, maximumPurchaseLimitCount, true
+                auctionId, sellerId, productName, originPrice, currentPrice, stock, maximumPurchaseLimitCount, true
         );
 
         // then
@@ -55,6 +56,7 @@ class AuctionInfoTest {
     void 경매_정보_생성_요청이_잘못된_경우_예외가_발생한다(
             String expectedMessage,
             ErrorCode expectedErrorCode,
+            Long auctionId,
             Long sellerId,
             String productName,
             long originPrice,
@@ -64,7 +66,7 @@ class AuctionInfoTest {
     ) {
         // expect
         assertThatThrownBy(() -> new AuctionInfo(
-                sellerId, productName, originPrice, currentPrice, stock,
+                auctionId, sellerId, productName, originPrice, currentPrice, stock,
                 maximumPurchaseLimitCount, true))
                 .isInstanceOf(BadRequestException.class)
                 .satisfies(exception -> {

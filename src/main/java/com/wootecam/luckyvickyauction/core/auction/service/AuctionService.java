@@ -61,6 +61,7 @@ public class AuctionService {
 
         // AuctionInfo 에 정리해서 반환
         return AuctionInfo.builder()
+                .auctionId(auctionId)
                 .sellerId(auction.getSellerId())
                 .productName(auction.getProductName())
                 .originPrice(auction.getOriginPrice())
