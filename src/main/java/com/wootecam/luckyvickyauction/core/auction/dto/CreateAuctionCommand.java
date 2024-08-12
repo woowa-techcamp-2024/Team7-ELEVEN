@@ -1,5 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.dto;
 
+// 명령 단위 : 옥션 생성할때 쓰기 위한 파라미터 들
+
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -16,23 +18,14 @@ import java.util.Objects;
  * @param stock                     재고 수량
  * @param maximumPurchaseLimitCount 최대 구매 제한 수량 (인당 구매 가능 수량)
  * @param pricePolicy               경매 유형 {@link PricePolicy}
- * @param variationDuration        가격 변동 주기
+ * @param variationDuration         가격 변동 주기
  * @param startedAt                 경매 시작 시간
  * @param finishedAt                경매 종료 시간
  */
 
-public record CreateAuctionCommand(
-    Long sellerId,
-    String productName,
-    long originPrice,
-    int stock,
-    int maximumPurchaseLimitCount,
-    PricePolicy pricePolicy,
-    Duration variationDuration,
-    ZonedDateTime startedAt,
-    ZonedDateTime finishedAt,
-    boolean isShowStock
-) {
+public record CreateAuctionCommand(Long sellerId, String productName, long originPrice, int stock,
+                                   int maximumPurchaseLimitCount, PricePolicy pricePolicy, Duration variationDuration,
+                                   ZonedDateTime startedAt, ZonedDateTime finishedAt, boolean isShowStock) {
     private static final String ERROR_MAX_PURCHASE_LIMIT = "최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: %d";
     private static final String ERROR_VARIATION_DURATION = "변동 시간 단위는 0보다 커야 합니다. 변동 시간: %s";
     private static final String ERROR_AUCTION_TIME = "경매의 시작 시간은 종료 시간보다 이전이어야 합니다. 시작 시간: %s, 종료 시간: %s";
@@ -71,7 +64,8 @@ public record CreateAuctionCommand(
 
     private void validateMaximumPurchaseLimitCount(int maximumPurchaseLimitCount) {
         if (maximumPurchaseLimitCount <= 0) {
-            throw new BadRequestException(String.format(ERROR_MAX_PURCHASE_LIMIT, maximumPurchaseLimitCount), ErrorCode.A003);
+            throw new BadRequestException(String.format(ERROR_MAX_PURCHASE_LIMIT, maximumPurchaseLimitCount),
+                    ErrorCode.A003);
         }
     }
 

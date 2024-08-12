@@ -82,13 +82,13 @@ public class AuctionService {
     public void changeOption(UpdateAuctionCommand command) {
         // 검증
         Auction auction = auctionRepository.findById(command.auctionId())
-            .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + command.auctionId(),
-                ErrorCode.A011));
+                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + command.auctionId(),
+                        ErrorCode.A011));
 
         if (auction.getStatus() != AuctionStatus.WAITING) {
             throw new BadRequestException(
-                "시작 전인 경매만 변경할 수 있습니다. 변경요청시간: " + command.requestTime() + ", 경매시작시간: " + auction.getStartedAt(),
-                ErrorCode.A012);
+                    "시작 전인 경매만 변경할 수 있습니다. 변경요청시간: " + command.requestTime() + ", 경매시작시간: " + auction.getStartedAt(),
+                    ErrorCode.A012);
         }
 
         // 변경 TODO
