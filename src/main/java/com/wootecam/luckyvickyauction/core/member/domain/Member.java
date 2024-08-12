@@ -15,6 +15,7 @@ public class Member {
     @Builder
     public Member(String signInId, String password, Role role, Point point) {
         this.signInId = signInId;
+        this.password = password;
         this.role = role;
         this.point = point;
     }
