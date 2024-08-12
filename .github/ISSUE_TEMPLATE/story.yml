@@ -1,0 +1,25 @@
+name: "✨ Story"
+description: "어떤 스토리를 가진 기능인가요?"
+labels: "✨ Story"
+body:
+  - type: textarea
+    attributes:
+      label: 🤔 사전작업
+      description: 해당 기능을 처리하기 위해 필요한 사전 작업을 명시해주세요!
+      placeholder: 자세하고, 명료하게!
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: ✨ 현재 진행하려는 작업
+      description: 진행하려는 작업에 대해 설명해주세요!
+      placeholder: 자세히 적을수록 좋습니다!
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: ➡️ 사후작업
+      description: 진행하는 작업이 완료되고 다음으로 처리해야 할 작업이 있다면 명시해주세요!
+    validations:
+      required: true
