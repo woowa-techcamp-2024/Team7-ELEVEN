@@ -138,4 +138,56 @@ class AuctionTest {
             assertThat(auction.isShowStock()).isEqualTo(isShowStock);
         }
     }
+
+    @Test
+    @DisplayName("판매자는 경매의 가격 정책을 변경할 수 있다.")
+    public void updateAuctionPolicy() {
+        // given
+        long sellerId = 1L;
+        Auction auction = Auction.builder()
+                .sellerId(sellerId)
+                .productName("상품이름")
+                .originPrice(10000)
+                .stock(999999)
+                .pricePolicy(new ConstantPricePolicy(1000))
+                .maximumPurchaseLimitCount(10)
+                .variationDuration(Duration.ofMinutes(1L))
+                .startedAt(ZonedDateTime.now().minusHours(1L))
+                .finishedAt(ZonedDateTime.now())
+                .isShowStock(true)
+                .build();
+
+        PricePolicy newPricePolicy = PricePolicy.percentagePricePolicy(7);
+
+        // when
+        auction.updatePricePolicy(newPricePolicy, sellerId);
+
+        // then
+        assertThat(auction.getPricePolicy()).isEqualTo(newPricePolicy);
+    }
+
+    @Test
+    @DisplayName("가격 정책이 null인 경우 변경이 반영되지 않는다.")
+    public void updatePricePolicyWhenPricePolicyIsNull() {
+        // given
+        long sellerId = 1L;
+        Auction auction = Auction.builder()
+                .sellerId(sellerId)
+                .productName("상품이름")
+                .originPrice(10000)
+                .stock(999999)
+                .pricePolicy(new ConstantPricePolicy(1000))
+                .maximumPurchaseLimitCount(10)
+                .variationDuration(Duration.ofMinutes(1L))
+                .startedAt(ZonedDateTime.now().minusHours(1L))
+                .finishedAt(ZonedDateTime.now())
+                .isShowStock(true)
+                .build();
+
+        // when
+        auction.updatePricePolicy(null, sellerId);
+
+        // then
+        assertThat(auction.getPricePolicy()).isNotNull();
+    }
 }

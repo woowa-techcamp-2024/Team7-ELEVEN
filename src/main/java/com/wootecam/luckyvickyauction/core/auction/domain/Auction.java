@@ -68,4 +68,17 @@ public class Auction {
             throw new UnauthorizedException("동일한 판매자만 경매의 가격 노출 정책을 변경할 수 있습니다.", ErrorCode.A013);
         }
     }
+
+    public void updatePricePolicy(PricePolicy newPricePolicy, Long requestSellerId) {
+
+        if (newPricePolicy == null) {
+            return;
+        }
+
+        if (!this.sellerId.equals(requestSellerId)) {
+            throw new UnauthorizedException("동일한 판매자만 경매의 가격 정책을 변경할 수 있습니다.", ErrorCode.A013);
+        }
+
+        this.pricePolicy = newPricePolicy;
+    }
 }
