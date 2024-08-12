@@ -29,18 +29,11 @@ public class AuctionService {
                     ErrorCode.A008);
         }
 
-        Auction auction = Auction.builder()
-                .sellerId(command.sellerId())
-                .productName(command.productName())
-                .originPrice(command.originPrice())
-                .stock(command.stock())
-                .maximumPurchaseLimitCount(command.maximumPurchaseLimitCount())
-                .pricePolicy(command.pricePolicy())
-                .variationDuration(command.variationDuration())
-                .startedAt(command.startedAt())
-                .finishedAt(command.finishedAt())
-                .isShowStock(command.isShowStock())
-                .build();
+        Auction auction = Auction.builder().sellerId(command.sellerId()).productName(command.productName())
+                .originPrice(command.originPrice()).stock(command.stock())
+                .maximumPurchaseLimitCount(command.maximumPurchaseLimitCount()).pricePolicy(command.pricePolicy())
+                .variationDuration(command.variationDuration()).startedAt(command.startedAt())
+                .finishedAt(command.finishedAt()).isShowStock(command.isShowStock()).build();
         auctionRepository.save(auction);
     }
 
@@ -54,7 +47,15 @@ public class AuctionService {
      * 경매 단건 조회
      */
     public AuctionInfo getAuction(long auctionId) {
-        return null;
+        // auctionRepository 에서 auctionId로 조회
+        Auction auction = auctionRepository.findById(auctionId).orElseThrow(
+                () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A011));
+
+        // AuctionInfo 에 정리해서 반환
+        return AuctionInfo.builder().sellerId(auction.getSellerId()).productName(auction.getProductName())
+                .originPrice(auction.getOriginPrice()).currentPrice(auction.getCurrentPrice()).stock(auction.getStock())
+                .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount()).isShowStock(auction.isShowStock())
+                .build();
     }
 
     /**
@@ -81,14 +82,14 @@ public class AuctionService {
      */
     public void changeOption(UpdateAuctionCommand command) {
         // 검증
-        Auction auction = auctionRepository.findById(command.auctionId())
-            .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + command.auctionId(),
-                ErrorCode.A011));
+        Auction auction = auctionRepository.findById(command.auctionId()).orElseThrow(
+                () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + command.auctionId(),
+                        ErrorCode.A011));
 
         if (auction.getStatus() != AuctionStatus.WAITING) {
             throw new BadRequestException(
-                "시작 전인 경매만 변경할 수 있습니다. 변경요청시간: " + command.requestTime() + ", 경매시작시간: " + auction.getStartedAt(),
-                ErrorCode.A012);
+                    "시작 전인 경매만 변경할 수 있습니다. 변경요청시간: " + command.requestTime() + ", 경매시작시간: " + auction.getStartedAt(),
+                    ErrorCode.A012);
         }
 
         // 변경 TODO
