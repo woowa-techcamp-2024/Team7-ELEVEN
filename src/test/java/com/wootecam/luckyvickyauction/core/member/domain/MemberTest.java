@@ -150,7 +150,12 @@ class MemberTest {
     @Test
     void 동일한_사용자인지_확인할_수_있다() {
         // given
-        Member member = new Member("testId", "password", Role.BUYER, new Point(100));
+        Member member = Member.builder()
+                .signInId("testId")
+                .password("password")
+                .role(Role.BUYER)
+                .point(new Point(100))
+                .build();
 
         // when
         boolean isSameMember = member.isSameMember("testId");
