@@ -108,7 +108,7 @@ class AuctionTest {
             // when & then
             assertThatThrownBy(() -> auction.updateShowStock(false, requestSellerId))
                     .isInstanceOf(UnauthorizedException.class)
-                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A013);
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A015);
         }
 
         @ParameterizedTest
