@@ -1,5 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.domain;
 
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import lombok.Builder;
@@ -18,6 +20,7 @@ public class Auction {
     private ZonedDateTime startedAt;
     private ZonedDateTime finishedAt;
     private boolean isShowStock;
+    private AuctionStatus status;
 
     @Builder
     private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName,
@@ -39,6 +42,7 @@ public class Auction {
         this.variationDuration = variationDuration;
         this.finishedAt = finishedAt;
         this.isShowStock = isShowStock;
+        this.status = AuctionStatus.WAITING;
 
         pricePolicy.validate(originPrice);
     }
@@ -46,11 +50,6 @@ public class Auction {
     public Long getId() {
         // TODO id반환 구현
         return 0L;
-    }
-
-    public AuctionStatus getStatus() {
-        // TODO 경매 상태 반환 구현
-        return AuctionStatus.WAITING;
     }
 
     /**
@@ -73,5 +72,28 @@ public class Auction {
 
     public void update() {
         // TODO 경매 옵션을 변경하는 로직 (Update)
+    }
+
+    public void updateShowStock(Boolean isShowStock, Long requestSellerId) {
+        if (isShowStock != null) {
+            this.isShowStock = isShowStock;
+        }
+
+        if (!this.sellerId.equals(requestSellerId)) {
+            throw new UnauthorizedException("동일한 판매자만 경매의 가격 노출 정책을 변경할 수 있습니다.", ErrorCode.A015);
+        }
+    }
+
+    public void updatePricePolicy(PricePolicy newPricePolicy, Long requestSellerId) {
+
+        if (newPricePolicy == null) {
+            return;
+        }
+
+        if (!this.sellerId.equals(requestSellerId)) {
+            throw new UnauthorizedException("동일한 판매자만 경매의 가격 정책을 변경할 수 있습니다.", ErrorCode.A015);
+        }
+
+        this.pricePolicy = newPricePolicy;
     }
 }

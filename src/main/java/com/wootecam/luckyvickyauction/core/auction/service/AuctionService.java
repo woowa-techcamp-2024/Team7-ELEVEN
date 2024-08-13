@@ -1,6 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.service;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
+import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
@@ -9,6 +10,7 @@ import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.time.Duration;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -59,16 +61,7 @@ public class AuctionService {
                         ErrorCode.A011));
 
         // AuctionInfo 에 정리해서 반환
-        return AuctionInfo.builder()
-                .auctionId(auctionId)
-                .sellerId(auction.getSellerId())
-                .productName(auction.getProductName())
-                .originPrice(auction.getOriginPrice())
-                .currentPrice(auction.getCurrentPrice())
-                .stock(auction.getStock())
-                .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
-                .isShowStock(auction.isShowStock())
-                .build();
+        return Mapper.convertToAuctionInfo(auction);
     }
 
     /**
@@ -99,7 +92,7 @@ public class AuctionService {
                 .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + command.auctionId(),
                         ErrorCode.A011));
 
-        if (!auction.getStatus().isWaiting()) {
+        if (auction.getStatus() != AuctionStatus.WAITING) {
             throw new BadRequestException(
                     "시작 전인 경매만 변경할 수 있습니다. 변경요청시간: " + command.requestTime() + ", 경매시작시간: " + auction.getStartedAt(),
                     ErrorCode.A012);
@@ -130,12 +123,6 @@ public class AuctionService {
                     "해당 수량만큼 구매할 수 없습니다. 재고: " + auction.getStock() + ", "
                             + "요청: " + quantity + ", 인당구매제한: " + auction.getMaximumPurchaseLimitCount(),
                     ErrorCode.A014);
-        }
-
-        if (!auction.getStatus().isRunning()) {
-            throw new BadRequestException(
-                    "진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + auction.getStatus(),
-                    ErrorCode.A016);
         }
 
         // TODO 구매(입찰) 로직
