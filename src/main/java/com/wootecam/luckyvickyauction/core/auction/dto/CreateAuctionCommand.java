@@ -23,9 +23,18 @@ import java.util.Objects;
  * @param finishedAt                경매 종료 시간
  */
 
-public record CreateAuctionCommand(Long sellerId, String productName, long originPrice, int stock,
-                                   int maximumPurchaseLimitCount, PricePolicy pricePolicy, Duration variationDuration,
-                                   ZonedDateTime startedAt, ZonedDateTime finishedAt, boolean isShowStock) {
+public record CreateAuctionCommand(
+        Long sellerId,
+        String productName,
+        long originPrice,
+        int stock,
+        int maximumPurchaseLimitCount,
+        PricePolicy pricePolicy,
+        Duration variationDuration,
+        ZonedDateTime startedAt,
+        ZonedDateTime finishedAt,
+        boolean isShowStock
+) {
     private static final String ERROR_MAX_PURCHASE_LIMIT = "최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: %d";
     private static final String ERROR_VARIATION_DURATION = "변동 시간 단위는 0보다 커야 합니다. 변동 시간: %s";
     private static final String ERROR_AUCTION_TIME = "경매의 시작 시간은 종료 시간보다 이전이어야 합니다. 시작 시간: %s, 종료 시간: %s";
