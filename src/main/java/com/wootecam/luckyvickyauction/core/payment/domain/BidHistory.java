@@ -32,4 +32,19 @@ public class BidHistory {
     public boolean isRefundStatus() {
         return bidStatus.equals(BidStatus.REFUND);
     }
+
+    /**
+     * 회원이 해당 거래 내역에 구매자 또는 판매자가 맞는지 확인한다.
+     *
+     * @param member {@link Member}
+     * @return 해당 거래 내역에 거래자 또는 판매자인 경우 true
+     */
+    public boolean isOwnedBy(Member member) {
+        if (member == null || member.getSignInId() == null) {
+            return false;
+        }
+
+        String signInId = member.getSignInId();
+        return seller.isSameMember(signInId) || buyer.isSameMember(signInId);
+    }
 }
