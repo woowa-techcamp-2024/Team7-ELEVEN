@@ -35,11 +35,16 @@ public final class Mapper {
 
         return BuyerAuctionInfo.builder()
                 .auctionId(auction.getId())
+                .sellerId(auction.getSellerId())
                 .productName(auction.getProductName())
                 .originPrice(auction.getOriginPrice())
                 .currentPrice(auction.getCurrentPrice())
                 .stock(stock)
                 .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
+                .pricePolicy(auction.getPricePolicy())
+                .variationDuration(auction.getVariationDuration())
+                .startedAt(auction.getStartedAt())
+                .finishedAt(auction.getFinishedAt())
                 .isShowStock(auction.isShowStock())
                 .status(auction.getStatus())
                 .build();
@@ -54,11 +59,16 @@ public final class Mapper {
     public static SellerAuctionInfo convertToSellerAuctionInfo(Auction auction) {
         return SellerAuctionInfo.builder()
                 .auctionId(auction.getId())
+                .sellerId(auction.getSellerId())
                 .productName(auction.getProductName())
                 .originPrice(auction.getOriginPrice())
                 .currentPrice(auction.getCurrentPrice())
                 .stock(auction.getStock())
                 .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
+                .pricePolicy(auction.getPricePolicy())
+                .variationDuration(auction.getVariationDuration())
+                .startedAt(auction.getStartedAt())
+                .finishedAt(auction.getFinishedAt())
                 .isShowStock(auction.isShowStock())
                 .status(auction.getStatus())
                 .build();

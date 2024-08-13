@@ -9,6 +9,8 @@ import lombok.Getter;
 
 @Getter
 public class Auction {
+
+    private final Long id;
     private final Long sellerId;
     private final String productName;
     private long originPrice;
@@ -23,7 +25,7 @@ public class Auction {
     private AuctionStatus status;
 
     @Builder
-    private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName,
+    private Auction(final Long id, final ZonedDateTime startedAt, final Long sellerId, final String productName,
                     final long originPrice,
                     final long stock,
                     final int maximumPurchaseLimitCount, final PricePolicy pricePolicy,
@@ -31,6 +33,7 @@ public class Auction {
                     final ZonedDateTime finishedAt,
                     final boolean isShowStock
     ) {
+        this.id = id;
         this.startedAt = startedAt;
         this.sellerId = sellerId;
         this.productName = productName;
