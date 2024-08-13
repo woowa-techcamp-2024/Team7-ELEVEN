@@ -1,4 +1,4 @@
-package com.wootecam.luckyvickyauction.documentation.documentation.errorcode;
+package com.wootecam.luckyvickyauction.documentation.errorcode;
 
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.util.Arrays;
