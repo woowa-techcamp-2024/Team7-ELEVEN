@@ -115,6 +115,7 @@ public class SellerAuctionInfoTest {
                 .build()
         )
                 .isInstanceOf(BadRequestException.class)
+                .hasMessage(expectedMessage)
                 .satisfies(exception -> {
                     assertThat(exception).hasFieldOrPropertyWithValue("errorCode", expectedErrorCode);
                 });

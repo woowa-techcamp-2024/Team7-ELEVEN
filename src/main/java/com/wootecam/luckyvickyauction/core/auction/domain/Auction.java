@@ -28,27 +28,34 @@ public class Auction {
     private AuctionStatus status;
 
     @Builder
-    private Auction(final Long id, final ZonedDateTime startedAt, final Long sellerId, final String productName,
-                    final long originPrice,
-                    final long stock,
-                    final long maximumPurchaseLimitCount, final PricePolicy pricePolicy,
-                    final Duration variationDuration,
-                    final ZonedDateTime finishedAt,
-                    final boolean isShowStock
+    public Auction(
+            Long id,
+            Long sellerId,
+            String productName,
+            long originPrice,
+            long currentPrice,
+            long stock,
+            long maximumPurchaseLimitCount,
+            PricePolicy pricePolicy,
+            Duration variationDuration,
+            ZonedDateTime startedAt,
+            ZonedDateTime finishedAt,
+            boolean isShowStock,
+            AuctionStatus status
     ) {
         this.id = id;
-        this.startedAt = startedAt;
         this.sellerId = sellerId;
         this.productName = productName;
-        this.currentPrice = originPrice;
         this.originPrice = originPrice;
+        this.currentPrice = currentPrice;
         this.stock = stock;
         this.maximumPurchaseLimitCount = maximumPurchaseLimitCount;
         this.pricePolicy = pricePolicy;
         this.variationDuration = variationDuration;
+        this.startedAt = startedAt;
         this.finishedAt = finishedAt;
         this.isShowStock = isShowStock;
-        this.status = AuctionStatus.WAITING;
+        this.status = status;
 
         pricePolicy.validate(originPrice);
     }

@@ -93,9 +93,8 @@ class UpdateAuctionCommandTest {
                 auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, startedAt, finishedAt, true, requestedAt))
                 .isInstanceOf(BadRequestException.class)
-                .satisfies(exception -> {
-                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", expectedErrorCode);
-                });
+                .satisfies(
+                        exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", expectedErrorCode));
     }
 
     @Test
