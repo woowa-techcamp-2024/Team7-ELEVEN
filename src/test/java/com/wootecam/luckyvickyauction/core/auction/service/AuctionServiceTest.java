@@ -12,9 +12,12 @@ import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.repository.FakeAuctionRepository;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -26,6 +29,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class AuctionServiceTest {
+
     private AuctionRepository auctionRepository;
     private AuctionService auctionService;
 
@@ -352,7 +356,6 @@ class AuctionServiceTest {
         }
     }
 
-    // TODO: [선행 FakeAuctionRepository 머지되면 작성할 예정] [writeAt: 2024/08/13/17:27] [writeBy: HiiWee]
     @Nested
     class changeStock_메소드는 {
 
@@ -361,6 +364,16 @@ class AuctionServiceTest {
 
             @Test
             void 예외가_발생한다() {
+                // given
+                Auction auction = saveRunningAuction();
+
+                // expect
+                assertThatThrownBy(
+                        () -> auctionService.changeStock(new SignInInfo(10L, Role.BUYER), auction.getId(), 50L))
+                        .isInstanceOf(UnauthorizedException.class)
+                        .hasMessage("판매자만 재고를 수정할 수 있습니다.")
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.A017));
             }
         }
 
@@ -369,6 +382,17 @@ class AuctionServiceTest {
 
             @Test
             void 예외가_발생한다() {
+                // given
+                Auction auction = saveRunningAuction();
+
+                // expect
+                assertThatThrownBy(
+                        () -> auctionService.changeStock(new SignInInfo(auction.getSellerId() + 1L, Role.SELLER),
+                                auction.getId(), 50))
+                        .isInstanceOf(UnauthorizedException.class)
+                        .hasMessage("자신이 등록한 경매만 수정할 수 있습니다.")
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.A018));
             }
         }
 
@@ -377,8 +401,41 @@ class AuctionServiceTest {
 
             @Test
             void 재고를_변경한다() {
+                // given
+                Auction auction = saveRunningAuction();
 
+                // when
+                auctionService.changeStock(new SignInInfo(auction.getId(), Role.SELLER), auction.getId(), 50L);
+                Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
+
+                // then
+                assertThat(updatedAuction.getStock()).isEqualTo(50L);
             }
+
+        }
+
+        /**
+         * 현재 RUNNING 상태인 Auction을 생성 및 Repository에 저장하고 반환합니다.
+         *
+         * @return 저장된 Auction 반환
+         */
+        private Auction saveRunningAuction() {
+            Auction auction = Auction.builder()
+                    .sellerId(1L)
+                    .productName("productName")
+                    .originPrice(10000L)
+                    .currentPrice(10000L)
+                    .stock(100L)
+                    .maximumPurchaseLimitCount(10L)
+                    .pricePolicy(new ConstantPricePolicy(1000L))
+                    .variationDuration(Duration.ofMinutes(1L))
+                    .startedAt(ZonedDateTime.now().minusHours(1))
+                    .finishedAt(ZonedDateTime.now().plusHours(1))
+                    .isShowStock(true)
+                    .status(AuctionStatus.RUNNING)
+                    .build();
+
+            return auctionRepository.save(auction);
         }
     }
 }
