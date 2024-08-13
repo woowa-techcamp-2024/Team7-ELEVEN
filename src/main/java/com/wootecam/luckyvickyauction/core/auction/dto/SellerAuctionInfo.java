@@ -8,6 +8,10 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 
+/**
+ * 판매자가 조회할 수 있는 경매 정보
+ * - 판매량 등의 필드가 추가될 예정입니다
+ */
 @Builder
 public record SellerAuctionInfo(
         Long auctionId,

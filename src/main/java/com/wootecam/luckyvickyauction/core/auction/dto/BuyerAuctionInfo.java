@@ -8,6 +8,10 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 
+/**
+ * 구매자가 조회할 수 있는 경매 정보
+ * - isShowStock에 따라서 stock 노출 여부가 결정됩니다
+ */
 @Builder
 public record BuyerAuctionInfo(
         Long auctionId,
