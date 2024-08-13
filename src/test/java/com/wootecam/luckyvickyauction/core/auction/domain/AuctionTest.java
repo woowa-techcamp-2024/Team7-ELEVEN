@@ -33,7 +33,6 @@ class AuctionTest {
             PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
             // when & then
-            // TODO: [시작시간이 이미 지났는데 AuctionStatus.WAITING 으로 넣어도 예외가 발생하지 않음] [writeAt: 2024/08/13/20:55] [writeBy: HiiWee]
             assertThatThrownBy(() ->
                     Auction.builder()
                             .sellerId(1L)
