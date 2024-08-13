@@ -75,6 +75,10 @@ public class PaymentService {
         }
 
         BidHistory refundTargetBidHistory = findRefundTargetBidHistory(bidHistoryId);
+        if (refundTargetBidHistory.isRefundStatus()) {
+            throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.P003);
+        }
+
         Member refundTargetBuyer = refundTargetBidHistory.getBuyer();
         if (!buyer.isSameMember(refundTargetBuyer.getId())) {
             throw new BadRequestException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
