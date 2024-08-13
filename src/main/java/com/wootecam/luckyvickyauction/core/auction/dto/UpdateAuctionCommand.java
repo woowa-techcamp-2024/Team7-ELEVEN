@@ -6,11 +6,13 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import lombok.Builder;
 
 /**
  * 경매 생성을 위한 명령 객체
  *
  * @param auctionId                 경매 ID
+ * @param sellerId                  변경을 요청하는 판매자 ID
  * @param originPrice               상품 원가
  * @param stock                     재고 수량
  * @param maximumPurchaseLimitCount 최대 구매 제한 수량 (인당 구매 가능 수량)
@@ -20,8 +22,10 @@ import java.util.Objects;
  * @param finishedAt                경매 종료 시간
  * @param requestTime               사용자가 요청한 시간
  */
+@Builder
 public record UpdateAuctionCommand(
         Long auctionId,
+        Long sellerId,
         long originPrice,
         int stock,
         int maximumPurchaseLimitCount,
@@ -29,7 +33,7 @@ public record UpdateAuctionCommand(
         Duration variationDuration,
         ZonedDateTime startedAt,
         ZonedDateTime finishedAt,
-        boolean isShowStock,
+        Boolean isShowStock,
         // command meta info
         ZonedDateTime requestTime
 ) {
@@ -42,6 +46,7 @@ public record UpdateAuctionCommand(
 
     public UpdateAuctionCommand {
         validateNotNull(auctionId, "경매 ID");
+        validateNotNull(sellerId, "판매자 ID");
         validateNotNull(pricePolicy, "경매 유형");
         validateNotNull(variationDuration, "가격 변동 주기");
         validateNotNull(startedAt, "경매 시작 시간");

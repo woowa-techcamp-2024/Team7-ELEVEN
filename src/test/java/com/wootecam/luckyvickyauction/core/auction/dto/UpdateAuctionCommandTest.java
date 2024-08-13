@@ -22,60 +22,80 @@ class UpdateAuctionCommandTest {
     static Stream<Arguments> dtoArguments() {
         return Stream.of(
                 Arguments.of("경매 재고는 인당 구매수량보다 작을 수 없다.", ErrorCode.A000,
-                        1L, 10000, 1, 10,
+                        1L, 1L, 10000, 1, 10,
                         new ConstantPricePolicy(1000),
                         Duration.ofMinutes(1L),
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now(), ZonedDateTime.now()),
                 Arguments.of("최대 구매 수량 제한은 0보다 커야한다.", ErrorCode.A003,
-                        1L, 10000, 999999, 0,
+                        1L, 1L, 10000, 999999, 0,
                         new ConstantPricePolicy(1000),
                         Duration.ofMinutes(1L),
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now(), ZonedDateTime.now()),
                 Arguments.of("변동 시간 단위는 0보다 커야한다.", ErrorCode.A005,
-                        1L, 10000, 999999, 10,
+                        1L, 1L, 10000, 999999, 10,
                         new ConstantPricePolicy(1000),
                         Duration.ofMinutes(0L),
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now(), ZonedDateTime.now()),
                 Arguments.of("경매의 시작시간은 종료 시간보다 이전이어야한다.", ErrorCode.A006,
-                        1L, 10000, 999999, 10,
+                        1L, 1L, 10000, 999999, 10,
                         new ConstantPricePolicy(1000),
                         Duration.ofMinutes(1L),
                         ZonedDateTime.now(), ZonedDateTime.now().minusSeconds(1), ZonedDateTime.now()),
                 Arguments.of("상품 원가는 0보다 커야한다.", ErrorCode.A002,
-                        1L, 0, 999999, 10,
+                        1L, 1L, 0, 999999, 10,
                         new ConstantPricePolicy(1000),
                         Duration.ofMinutes(1L),
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now(), ZonedDateTime.now()),
                 Arguments.of("경매 유형은 Null일 수 없다.", ErrorCode.A007,
-                        1L, 10000, 999999, 10,
+                        1L, 1L, 10000, 999999, 10,
                         null, Duration.ofMinutes(1L),
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now(), ZonedDateTime.now()),
                 Arguments.of("sellerId는 Null일 수 없다.", ErrorCode.A007,
-                        null, 10000, 999999, 10,
+                        1L, null, 10000, 999999, 10,
                         new ConstantPricePolicy(1000),
                         Duration.ofMinutes(1L),
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now(), ZonedDateTime.now()),
                 Arguments.of("변동 주기(variationDuration)는 Null일 수 없다.", ErrorCode.A007,
-                        1L, 10000, 999999, 10,
+                        1L, 1L, 10000, 999999, 10,
                         new ConstantPricePolicy(1000),
                         null,
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now(), ZonedDateTime.now()),
                 Arguments.of("시작 시간(startedAt)은 Null일 수 없다.", ErrorCode.A007,
-                        1L, 10000, 999999, 10,
+                        1L, 1L, 10000, 999999, 10,
                         new ConstantPricePolicy(1000),
                         Duration.ofMinutes(1L),
                         null, ZonedDateTime.now(), ZonedDateTime.now()),
                 Arguments.of("종료 시간(finishedAt)은 Null일 수 없다.", ErrorCode.A007,
-                        1L, 10000, 999999, 10,
+                        1L, 1L, 10000, 999999, 10,
                         new ConstantPricePolicy(1000),
                         Duration.ofMinutes(1L),
                         ZonedDateTime.now().minusHours(1L), null, ZonedDateTime.now(), ZonedDateTime.now()),
                 Arguments.of("요청 시간(requestTime)은 Null일 수 없다.", ErrorCode.A007,
-                        1L, 10000, 999999, 10,
+                        1L, 1L, 10000, 999999, 10,
                         new ConstantPricePolicy(1000),
                         Duration.ofMinutes(1L),
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now(), null)
         );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("dtoArguments")
+    @DisplayName("경매 옵션 변경 요청이 잘못된 경우 예외가 발생한다.")
+    void validation_test(
+            String displayName, ErrorCode expectedErrorCode,
+            Long auctionId, Long sellerId,
+            int originPrice, int stock, int maximumPurchaseLimitCount,
+            PricePolicy pricePolicy, Duration varitationDuration,
+            ZonedDateTime startedAt, ZonedDateTime finishedAt, ZonedDateTime requestedAt
+    ) {
+        // expect
+        assertThatThrownBy(() -> new UpdateAuctionCommand(
+                auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                varitationDuration, startedAt, finishedAt, true, requestedAt))
+                .isInstanceOf(BadRequestException.class)
+                .satisfies(exception -> {
+                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", expectedErrorCode);
+                });
     }
 
     @Test
@@ -83,6 +103,7 @@ class UpdateAuctionCommandTest {
     void success_case() {
         // given
         Long auctionId = 1L;  // 판매자 정보
+        Long sellerId = 1L;  // 판매자 정보
         int originPrice = 10000;
         int stock = 999999;  // 재고
         int maximumPurchaseLimitCount = 10;
@@ -96,27 +117,9 @@ class UpdateAuctionCommandTest {
 
         // expect
         assertThatNoException().isThrownBy(() -> new UpdateAuctionCommand(
-                auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
         ));
     }
 
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("dtoArguments")
-    @DisplayName("경매 옵션 변경 요청이 잘못된 경우 예외가 발생한다.")
-    void validation_test(
-            String displayName, ErrorCode expectedErrorCode,
-            Long auctionId, int originPrice, int stock, int maximumPurchaseLimitCount,
-            PricePolicy pricePolicy, Duration varitationDuration,
-            ZonedDateTime startedAt, ZonedDateTime finishedAt, ZonedDateTime requestedAt
-    ) {
-        // expect
-        assertThatThrownBy(() -> new UpdateAuctionCommand(
-                auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true, requestedAt))
-                .isInstanceOf(BadRequestException.class)
-                .satisfies(exception -> {
-                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", expectedErrorCode);
-                });
-    }
 }
