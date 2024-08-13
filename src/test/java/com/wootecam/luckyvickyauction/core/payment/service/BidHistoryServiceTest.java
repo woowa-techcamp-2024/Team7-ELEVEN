@@ -44,7 +44,7 @@ class BidHistoryServiceTest {
             assertThatThrownBy(() -> bidHistoryService.getBidHistoryInfo(member, bidHistoryId))
                     .isInstanceOf(NotFoundException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.P002));
+                            ErrorCode.B000));
         }
 
         @Test
@@ -66,7 +66,7 @@ class BidHistoryServiceTest {
             assertThatThrownBy(() -> bidHistoryService.getBidHistoryInfo(nonOwner, 1L))
                     .isInstanceOf(UnauthorizedException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.P007));
+                            ErrorCode.B001));
         }
 
     }
