@@ -9,8 +9,7 @@ import java.time.ZonedDateTime;
 import lombok.Builder;
 
 /**
- * 판매자가 조회할 수 있는 경매 정보
- * - 판매량 등의 필드가 추가될 예정입니다
+ * 판매자가 조회할 수 있는 경매 정보 - 판매량 등의 필드가 추가될 예정입니다
  */
 @Builder
 public record SellerAuctionInfo(
@@ -20,7 +19,7 @@ public record SellerAuctionInfo(
         long originPrice,
         long currentPrice,
         long stock,
-        int maximumPurchaseLimitCount,
+        long maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,
         ZonedDateTime startedAt,
@@ -79,7 +78,7 @@ public record SellerAuctionInfo(
         }
     }
 
-    private void validateMaximumPurchaseLimitCount(int maximumPurchaseLimitCount) {
+    private void validateMaximumPurchaseLimitCount(long maximumPurchaseLimitCount) {
         if (maximumPurchaseLimitCount <= 0) {
             throw new BadRequestException(String.format(ERROR_MAXIMUM_PURCHASE_LIMIT_COUNT, maximumPurchaseLimitCount),
                     ErrorCode.A003);
