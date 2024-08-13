@@ -57,7 +57,8 @@ public class BuyerAuctionInfoTest {
         AuctionStatus status = AuctionStatus.WAITING;
 
         // when
-        BuyerAuctionInfo buyerAuctionInfo = new BuyerAuctionInfo(auctionId, sellerId, productName, originPrice, currentPrice, stock,
+        BuyerAuctionInfo buyerAuctionInfo = new BuyerAuctionInfo(auctionId, sellerId, productName, originPrice,
+                currentPrice, stock,
                 maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt, true, status);
 
         // then
