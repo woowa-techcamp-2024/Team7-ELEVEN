@@ -7,7 +7,6 @@ import com.wootecam.luckyvickyauction.core.member.dto.SignInRequestInfo;
 import com.wootecam.luckyvickyauction.core.member.dto.SignUpRequestInfo;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -38,9 +37,5 @@ public class MemberService {
         }
 
         return new SignInInfo(member.getId(), member.getRole());
-    }
-
-    public void signOut(HttpSession session) {
-        session.invalidate();
     }
 }
