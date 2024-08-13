@@ -46,6 +46,7 @@ public record UpdateAuctionCommand(
 
     public UpdateAuctionCommand {
         validateNotNull(auctionId, "경매 ID");
+        validateNotNull(sellerId, "판매자 ID");
         validateNotNull(pricePolicy, "경매 유형");
         validateNotNull(variationDuration, "가격 변동 주기");
         validateNotNull(startedAt, "경매 시작 시간");

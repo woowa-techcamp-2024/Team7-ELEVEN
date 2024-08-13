@@ -51,7 +51,7 @@ class UpdateAuctionCommandTest {
                         null, Duration.ofMinutes(1L),
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now(), ZonedDateTime.now()),
                 Arguments.of("sellerId는 Null일 수 없다.", ErrorCode.A007,
-                        null, 10000, 999999, 10,
+                        1L, null, 10000, 999999, 10,
                         new ConstantPricePolicy(1000),
                         Duration.ofMinutes(1L),
                         ZonedDateTime.now().minusHours(1L), ZonedDateTime.now(), ZonedDateTime.now()),
@@ -78,6 +78,26 @@ class UpdateAuctionCommandTest {
         );
     }
 
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("dtoArguments")
+    @DisplayName("경매 옵션 변경 요청이 잘못된 경우 예외가 발생한다.")
+    void validation_test(
+            String displayName, ErrorCode expectedErrorCode,
+            Long auctionId, Long sellerId,
+            int originPrice, int stock, int maximumPurchaseLimitCount,
+            PricePolicy pricePolicy, Duration varitationDuration,
+            ZonedDateTime startedAt, ZonedDateTime finishedAt, ZonedDateTime requestedAt
+    ) {
+        // expect
+        assertThatThrownBy(() -> new UpdateAuctionCommand(
+                auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                varitationDuration, startedAt, finishedAt, true, requestedAt))
+                .isInstanceOf(BadRequestException.class)
+                .satisfies(exception -> {
+                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", expectedErrorCode);
+                });
+    }
+
     @Test
     @DisplayName("경매 옵션 변경 요청을 정상 생성한다.")
     void success_case() {
@@ -102,23 +122,4 @@ class UpdateAuctionCommandTest {
         ));
     }
 
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("dtoArguments")
-    @DisplayName("경매 옵션 변경 요청이 잘못된 경우 예외가 발생한다.")
-    void validation_test(
-            String displayName, ErrorCode expectedErrorCode,
-            Long auctionId, Long sellerId,
-            int originPrice, int stock, int maximumPurchaseLimitCount,
-            PricePolicy pricePolicy, Duration varitationDuration,
-            ZonedDateTime startedAt, ZonedDateTime finishedAt, ZonedDateTime requestedAt
-    ) {
-        // expect
-        assertThatThrownBy(() -> new UpdateAuctionCommand(
-                auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true, requestedAt))
-                .isInstanceOf(BadRequestException.class)
-                .satisfies(exception -> {
-                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", expectedErrorCode);
-                });
-    }
 }
