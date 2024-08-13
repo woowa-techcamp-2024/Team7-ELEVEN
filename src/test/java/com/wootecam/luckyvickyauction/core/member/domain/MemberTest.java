@@ -61,4 +61,16 @@ class MemberTest {
         // then
         assertThat(seller.getPoint()).isEqualTo(new Point(100));
     }
+
+    @Test
+    void 동일한_사용자인지_확인할_수_있다() {
+        // given
+        Member member = new Member("testId", "password", Role.BUYER, new Point(100));
+
+        // when
+        boolean isSameMember = member.isSameMember("testId");
+
+        // then
+        assertThat(isSameMember).isTrue();
+    }
 }

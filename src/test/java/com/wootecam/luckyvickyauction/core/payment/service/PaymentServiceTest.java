@@ -102,7 +102,7 @@ class PaymentServiceTest {
         }
 
         @Nested
-        class 만약_환불할_입찰_내역의_구매자가_환불을_요청한_사용자가_아니라면 {
+        class 만약_입찰_내역의_구매자가_요청한_사용자가_아니라면 {
 
             @Test
             void 예외가_발생한다() {
