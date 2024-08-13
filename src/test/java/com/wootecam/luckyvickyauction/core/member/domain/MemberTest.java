@@ -84,6 +84,38 @@ class MemberTest {
     }
 
     @Nested
+    class confirmPassword_메소드는 {
+
+        @Test
+        void 비밀번호가_동일하면_true를_반환한다() {
+            // given
+            Member buyer = Member.builder()
+                    .signInId("testId")
+                    .password("password")
+                    .role(Role.BUYER)
+                    .point(new Point(100))
+                    .build();
+
+            // then
+            assertThat(buyer.confirmPassword("password")).isTrue();
+        }
+
+        @Test
+        void 비밀번호가_다르면_false를_반환한다() {
+            // given
+            Member buyer = Member.builder()
+                    .signInId("testId")
+                    .password("password")
+                    .role(Role.BUYER)
+                    .point(new Point(100))
+                    .build();
+
+            // then
+            assertThat(buyer.confirmPassword("password1")).isFalse();
+        }
+    }
+
+    @Nested
     class isBuyer_메소드는 {
 
         @Test
