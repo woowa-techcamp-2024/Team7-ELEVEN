@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.stream.Stream;
@@ -17,7 +19,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class AuctionInfoTest {
+public class BuyerAuctionInfoTest {
     static Stream<Arguments> auctionInfoDtoArguments() {
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.",
@@ -29,9 +31,6 @@ class AuctionInfoTest {
                 Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0",
                         ErrorCode.A013, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
                         ZonedDateTime.now(), true, AuctionStatus.WAITING),
-                Arguments.of("재고는 0보다 작을 수 없습니다. 재고: -1",
-                        ErrorCode.A000, 1L, 1L, "상품이름", 10000, 10000, -1, 10, Duration.ofMinutes(1L),
-                        ZonedDateTime.now(), ZonedDateTime.now(), true, AuctionStatus.WAITING),
                 Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0",
                         ErrorCode.A003, 1L, 1L, "상품이름", 10000, 10000, 10, 0, Duration.ofMinutes(1L),
                         ZonedDateTime.now(), ZonedDateTime.now(), true, AuctionStatus.WAITING)
@@ -58,24 +57,63 @@ class AuctionInfoTest {
         AuctionStatus status = AuctionStatus.WAITING;
 
         // when
-        AuctionInfo auctionInfo = new AuctionInfo(auctionId, sellerId, productName, originPrice, currentPrice, stock,
+        BuyerAuctionInfo buyerAuctionInfo = new BuyerAuctionInfo(auctionId, sellerId, productName, originPrice,
+                currentPrice, stock,
                 maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt, true, status);
 
         // then
         assertAll(
-                () -> assertThat(auctionInfo.sellerId()).isEqualTo(sellerId),
-                () -> assertThat(auctionInfo.productName()).isEqualTo(productName),
-                () -> assertThat(auctionInfo.originPrice()).isEqualTo(originPrice),
-                () -> assertThat(auctionInfo.currentPrice()).isEqualTo(currentPrice),
-                () -> assertThat(auctionInfo.stock()).isEqualTo(stock),
-                () -> assertThat(auctionInfo.maximumPurchaseLimitCount()).isEqualTo(maximumPurchaseLimitCount),
-                () -> assertThat(auctionInfo.pricePolicy()).isEqualTo(pricePolicy),
-                () -> assertThat(auctionInfo.variationDuration()).isEqualTo(varitationDuration),
-                () -> assertThat(auctionInfo.startedAt()).isEqualTo(startedAt),
-                () -> assertThat(auctionInfo.finishedAt()).isEqualTo(finishedAt),
-                () -> assertThat(auctionInfo.isShowStock()).isTrue(),
-                () -> assertThat(auctionInfo.status()).isEqualTo(status)
+                () -> assertThat(buyerAuctionInfo.sellerId()).isEqualTo(sellerId),
+                () -> assertThat(buyerAuctionInfo.productName()).isEqualTo(productName),
+                () -> assertThat(buyerAuctionInfo.originPrice()).isEqualTo(originPrice),
+                () -> assertThat(buyerAuctionInfo.currentPrice()).isEqualTo(currentPrice),
+                () -> assertThat(buyerAuctionInfo.stock()).isEqualTo(stock),
+                () -> assertThat(buyerAuctionInfo.maximumPurchaseLimitCount()).isEqualTo(maximumPurchaseLimitCount),
+                () -> assertThat(buyerAuctionInfo.pricePolicy()).isEqualTo(pricePolicy),
+                () -> assertThat(buyerAuctionInfo.variationDuration()).isEqualTo(varitationDuration),
+                () -> assertThat(buyerAuctionInfo.startedAt()).isEqualTo(startedAt),
+                () -> assertThat(buyerAuctionInfo.finishedAt()).isEqualTo(finishedAt),
+                () -> assertThat(buyerAuctionInfo.isShowStock()).isTrue(),
+                () -> assertThat(buyerAuctionInfo.status()).isEqualTo(status)
         );
+    }
+
+    @Test
+    void 재고_노출이_비활성화된_경매는_재고를_0으로_처리한다() {
+        // given
+        Long auctionId = 1L;
+        Long sellerId = 1L;
+        String productName = "상품이름";
+        long originPrice = 10000;
+        int stock = 10;
+        int maximumPurchaseLimitCount = 10;
+
+        int variationWidth = 1000;
+        Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+        PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+
+        ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1L);
+        ZonedDateTime finishedAt = ZonedDateTime.now();
+        AuctionStatus status = AuctionStatus.WAITING;
+        Auction auction = Auction.builder()
+                .id(auctionId)
+                .sellerId(sellerId)
+                .productName(productName)
+                .originPrice(originPrice)
+                .stock(stock)
+                .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
+                .pricePolicy(pricePolicy)
+                .variationDuration(varitationDuration)
+                .startedAt(startedAt)
+                .finishedAt(finishedAt)
+                .isShowStock(false)
+                .build();
+
+        // when
+        BuyerAuctionInfo buyerAuctionInfo = Mapper.convertToBuyerAuctionInfo(auction);
+
+        // then
+        assertThat(buyerAuctionInfo.stock()).isEqualTo(0);
     }
 
     @ParameterizedTest
@@ -97,7 +135,7 @@ class AuctionInfoTest {
             AuctionStatus status
     ) {
         // expect
-        assertThatThrownBy(() -> AuctionInfo.builder()
+        assertThatThrownBy(() -> BuyerAuctionInfo.builder()
                 .auctionId(auctionId)
                 .sellerId(sellerId)
                 .productName(productName)

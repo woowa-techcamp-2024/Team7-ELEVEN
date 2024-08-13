@@ -27,8 +27,8 @@ public record CreateAuctionCommand(
         Long sellerId,
         String productName,
         long originPrice,
-        int stock,
-        int maximumPurchaseLimitCount,
+        long stock,
+        long maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,
         ZonedDateTime startedAt,
@@ -71,7 +71,7 @@ public record CreateAuctionCommand(
         }
     }
 
-    private void validateMaximumPurchaseLimitCount(int maximumPurchaseLimitCount) {
+    private void validateMaximumPurchaseLimitCount(long maximumPurchaseLimitCount) {
         if (maximumPurchaseLimitCount <= 0) {
             throw new BadRequestException(String.format(ERROR_MAX_PURCHASE_LIMIT, maximumPurchaseLimitCount),
                     ErrorCode.A003);
@@ -90,7 +90,7 @@ public record CreateAuctionCommand(
         }
     }
 
-    private void validateStock(int stock, int maximumPurchaseLimitCount) {
+    private void validateStock(long stock, long maximumPurchaseLimitCount) {
         if (stock < maximumPurchaseLimitCount) {
             throw new BadRequestException(String.format(ERROR_STOCK, stock, maximumPurchaseLimitCount), ErrorCode.A000);
         }

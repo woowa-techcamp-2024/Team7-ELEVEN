@@ -3,41 +3,38 @@ package com.wootecam.luckyvickyauction.core.auction.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
+import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
+import com.wootecam.luckyvickyauction.core.auction.repository.FakeAuctionRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class AuctionServiceTest {
-    @Mock
     private AuctionRepository auctionRepository;
-
-    @InjectMocks
     private AuctionService auctionService;
+
+    @BeforeEach
+    void setUp() {
+        auctionRepository = new FakeAuctionRepository();
+        auctionService = new AuctionService(auctionRepository);
+    }
 
     @Test
     @DisplayName("경매가 성공적으로 생성된다.")
@@ -45,9 +42,9 @@ class AuctionServiceTest {
         // given
         Long sellerId = 1L;  // 판매자 정보
         String productName = "상품이름";
-        int originPrice = 10000;
-        int stock = 999999;  // 재고
-        int maximumPurchaseLimitCount = 10;
+        long originPrice = 10000;
+        long stock = 999999;  // 재고
+        long maximumPurchaseLimitCount = 10;
 
         int variationWidth = 1000;
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
@@ -63,9 +60,22 @@ class AuctionServiceTest {
 
         // when
         auctionService.createAuction(command);
+        Auction createdAuction = auctionRepository.findById(1L).get();
 
         // then
-        verify(auctionRepository).save(any(Auction.class));
+        assertThat(createdAuction)
+                .extracting(
+                        "sellerId", "productName", "originPrice", "currentPrice", "stock",
+                        "maximumPurchaseLimitCount", "pricePolicy", "variationDuration",
+                        "startedAt", "finishedAt", "isShowStock", "status"
+                )
+                .containsExactly(
+                        sellerId, productName, originPrice, originPrice, stock,
+                        maximumPurchaseLimitCount, pricePolicy, varitationDuration,
+                        startedAt, finishedAt, true, AuctionStatus.WAITING
+                );
+
+        assertThat(createdAuction.getId()).isNotNull();
     }
 
     @ParameterizedTest
@@ -152,10 +162,7 @@ class AuctionServiceTest {
                     varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
             );
 
-            // when
-            when(auctionRepository.findById(auctionId)).thenReturn(Optional.empty());
-
-            // then
+            // expect
             assertThatThrownBy(() -> auctionService.changeOption(updateAuctionCommand))
                     .isInstanceOf(NotFoundException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -199,11 +206,10 @@ class AuctionServiceTest {
                     .variationDuration(Duration.ofMinutes(1L))
                     .isShowStock(true)
                     .build();
+            auction.updateStatus();
+            auctionRepository.save(auction);
 
-            // when
-            when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
-
-            // then
+            // expect
             assertThatThrownBy(() -> auctionService.changeOption(updateAuctionCommand))
                     .isInstanceOf(NotFoundException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -216,7 +222,7 @@ class AuctionServiceTest {
     class submitBidTest {
         @Test
         @DisplayName("요청을 정상적으로 처리한다.")
-        void success_case() {
+        void success_case() throws Exception {
             // given
             long auctionId = 1L;
             long price = 10000L;
@@ -234,11 +240,10 @@ class AuctionServiceTest {
                     .variationDuration(Duration.ofMinutes(1L))
                     .isShowStock(true)
                     .build();
+            auction.updateStatus();
+            auctionRepository.save(auction);
 
-            // when
-            when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
-
-            // then
+            // expect
             assertThatNoException().isThrownBy(() -> auctionService.submitBid(auctionId, price, quantity));
         }
 
@@ -250,10 +255,7 @@ class AuctionServiceTest {
             long price = 10000L;
             long quantity = 100L;
 
-            // when
-            when(auctionRepository.findById(auctionId)).thenReturn(Optional.empty());
-
-            // then
+            // expect
             assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
                     .isInstanceOf(NotFoundException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -280,11 +282,10 @@ class AuctionServiceTest {
                     .variationDuration(Duration.ofMinutes(1L))
                     .isShowStock(true)
                     .build();
+            auction.updateStatus();
+            auctionRepository.save(auction);
 
-            // when
-            when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
-
-            // then
+            // expect
             assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
                     .isInstanceOf(BadRequestException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -311,15 +312,43 @@ class AuctionServiceTest {
                     .variationDuration(Duration.ofMinutes(1L))
                     .isShowStock(true)
                     .build();
+            auction.updateStatus();
+            auctionRepository.save(auction);
 
-            // when
-            when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
-
-            // then
+            // expect
             assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
                     .isInstanceOf(BadRequestException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.A014));
+        }
+
+        @Test
+        void 진행_중인_경매가_아닌_경우_예외가_발생한다() {
+            // given
+            long auctionId = 1L;
+            long price = 10000L;
+            long quantity = 10L;
+
+            Auction auction = Auction.builder()
+                    .startedAt(ZonedDateTime.now().minusMinutes(10))
+                    .finishedAt(ZonedDateTime.now().minusMinutes(5))
+                    .sellerId(1L)
+                    .productName("Test Product")
+                    .originPrice(10000)
+                    .stock(10000)
+                    .maximumPurchaseLimitCount(10)  // 인당 구매 수량 제한
+                    .pricePolicy(new ConstantPricePolicy(1000))
+                    .variationDuration(Duration.ofMinutes(1L))
+                    .isShowStock(true)
+                    .build();
+            auction.updateStatus();
+            auctionRepository.save(auction);
+
+            // expect
+            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
+                    .isInstanceOf(BadRequestException.class)
+                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                            ErrorCode.A016));
         }
     }
 

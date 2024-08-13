@@ -1,10 +1,11 @@
 package com.wootecam.luckyvickyauction.core.auction.service;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
+import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
@@ -61,8 +62,35 @@ public class AuctionService {
         // auctionRepository 에서 auctionId로 조회
         Auction auction = findAuctionObject(auctionId);
 
-        // AuctionInfo 에 정리해서 반환
         return Mapper.convertToAuctionInfo(auction);
+    }
+
+    /**
+     * 구매자용 경매 조회
+     *
+     * @param auctionId 경매 ID
+     * @return 구매자용 경매 정보
+     */
+    public BuyerAuctionInfo getBuyerAuction(long auctionId) {
+        Auction auction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
+                        ErrorCode.A011));
+
+        return Mapper.convertToBuyerAuctionInfo(auction);
+    }
+
+    /**
+     * 판매자용 경매 조회
+     *
+     * @param auctionId 경매 ID
+     * @return 판매자용 경매 정보
+     */
+    public SellerAuctionInfo getSellerAuction(long auctionId) {
+        Auction auction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
+                        ErrorCode.A011));
+
+        return Mapper.convertToSellerAuctionInfo(auction);
     }
 
     /**
@@ -94,7 +122,7 @@ public class AuctionService {
         // 검증
         Auction auction = findAuctionObject(command.auctionId());
 
-        if (auction.getStatus() != AuctionStatus.WAITING) {
+        if (!auction.getStatus().isWaiting()) {
             throw new BadRequestException(
                     "시작 전인 경매만 변경할 수 있습니다. 변경요청시간: " + command.requestTime() + ", 경매시작시간: " + auction.getStartedAt(),
                     ErrorCode.A012);
@@ -123,6 +151,12 @@ public class AuctionService {
                     "해당 수량만큼 구매할 수 없습니다. 재고: " + auction.getStock() + ", "
                             + "요청: " + quantity + ", 인당구매제한: " + auction.getMaximumPurchaseLimitCount(),
                     ErrorCode.A014);
+        }
+
+        if (!auction.getStatus().isRunning()) {
+            throw new BadRequestException(
+                    "진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + auction.getStatus(),
+                    ErrorCode.A016);
         }
 
         // TODO 구매(입찰) 로직
