@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.member.domain;
 
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -40,5 +41,22 @@ public class Member {
 
     public boolean confirmPassword(String password) {
         return this.password.equals(password);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Member member = (Member) o;
+        return Objects.equals(id, member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
