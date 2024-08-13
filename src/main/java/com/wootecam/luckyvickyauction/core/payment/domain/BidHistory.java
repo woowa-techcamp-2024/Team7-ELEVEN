@@ -2,7 +2,9 @@ package com.wootecam.luckyvickyauction.core.payment.domain;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class BidHistory {
 
     private Long id;
