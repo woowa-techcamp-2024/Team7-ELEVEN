@@ -1,5 +1,5 @@
 package com.wootecam.luckyvickyauction.core.auction.domain;
 
 public enum AuctionStatus {
-    WAITING, RUNNING, FINISHED;
+    WAITING, RUNNING, SOLD_OUT, FINISHED;
 }

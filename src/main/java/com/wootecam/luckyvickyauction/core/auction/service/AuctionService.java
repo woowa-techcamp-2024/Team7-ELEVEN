@@ -10,6 +10,7 @@ import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.time.Duration;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -60,16 +61,7 @@ public class AuctionService {
                         ErrorCode.A011));
 
         // AuctionInfo 에 정리해서 반환
-        return AuctionInfo.builder()
-                .auctionId(auctionId)
-                .sellerId(auction.getSellerId())
-                .productName(auction.getProductName())
-                .originPrice(auction.getOriginPrice())
-                .currentPrice(auction.getCurrentPrice())
-                .stock(auction.getStock())
-                .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
-                .isShowStock(auction.isShowStock())
-                .build();
+        return Mapper.convertToAuctionInfo(auction);
     }
 
     /**
@@ -123,13 +115,14 @@ public class AuctionService {
     public void submitBid(long auctionId, long price, long quantity) {
         // 검증
         Auction auction = auctionRepository.findById(auctionId)
-            .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
-                ErrorCode.A011));
+                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
+                        ErrorCode.A011));
 
         if (!auction.canPurchase(quantity)) {
             throw new BadRequestException(
-                "해당 수량만큼 구매할 수 없습니다. 재고: " + auction.getStock() + ", "
-                    + "요청: " + quantity + ", 인당구매제한: " + auction.getMaximumPurchaseLimitCount(), ErrorCode.A014);
+                    "해당 수량만큼 구매할 수 없습니다. 재고: " + auction.getStock() + ", "
+                            + "요청: " + quantity + ", 인당구매제한: " + auction.getMaximumPurchaseLimitCount(),
+                    ErrorCode.A014);
         }
 
         // TODO 구매(입찰) 로직

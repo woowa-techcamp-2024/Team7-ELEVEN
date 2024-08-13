@@ -13,7 +13,8 @@ public class Member {
     protected Point point;
 
     @Builder
-    public Member(String signInId, String password, Role role, Point point) {
+    public Member(Long id, String signInId, String password, Role role, Point point) {
+        this.id = id;
         this.signInId = signInId;
         this.password = password;
         this.role = role;
@@ -23,7 +24,12 @@ public class Member {
     public static Member createMemberWithRole(String signInId, String password, String userRole) {
         Role role = Role.find(userRole);
 
-        return new Member(signInId, password, role, new Point(0L));
+        return Member.builder()
+                .signInId(signInId)
+                .password(password)
+                .role(role)
+                .point(new Point(0))
+                .build();
     }
 
     public void usePoint(long price) {
