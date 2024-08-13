@@ -4,6 +4,7 @@ import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class FakeMemberRepository implements MemberRepository {
@@ -20,19 +21,36 @@ public class FakeMemberRepository implements MemberRepository {
 
     @Override
     public Member save(Member member) {
-        long currentId = id;
-        Member savedMember = Member.builder()
-                .id(currentId)
+        if (Objects.isNull(member.getId())) {
+            Member newMember = createNewMember(member);
+            members.put(newMember.getId(), newMember);
+
+            return newMember;
+        }
+        Member existsMember = createExistsMember(member);
+        members.put(existsMember.getId(), existsMember);
+
+        return existsMember;
+    }
+
+    private Member createNewMember(Member member) {
+        return Member.builder()
+                .id(id++)
                 .signInId(member.getSignInId())
                 .password(member.getPassword())
                 .role(member.getRole())
                 .point(member.getPoint())
                 .build();
+    }
 
-        members.put(currentId, savedMember);
-        id++;
-
-        return savedMember;
+    private Member createExistsMember(Member member) {
+        return Member.builder()
+                .id(member.getId())
+                .signInId(member.getSignInId())
+                .password(member.getPassword())
+                .role(member.getRole())
+                .point(member.getPoint())
+                .build();
     }
 
     @Override
