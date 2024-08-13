@@ -8,9 +8,12 @@ import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.time.Duration;
 import java.util.List;
@@ -56,9 +59,8 @@ public class AuctionService {
      * 경매 단건 조회
      */
     public AuctionInfo getAuction(long auctionId) {
-        Auction auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
-                        ErrorCode.A011));
+        // auctionRepository 에서 auctionId로 조회
+        Auction auction = findAuctionObject(auctionId);
 
         return Mapper.convertToAuctionInfo(auction);
     }
@@ -98,16 +100,19 @@ public class AuctionService {
         return null;
     }
 
-    /**
-     * 경매 재고 감소
-     */
-    public void decreaseStock(long actionId, int quantity) {
-    }
+    public void changeStock(SignInInfo signInInfo, long auctionId, long changeRequestStock) {
+        if (!signInInfo.isType(Role.SELLER)) {
+            throw new UnauthorizedException("판매자만 재고를 수정할 수 있습니다.", ErrorCode.A017);
+        }
+        Auction auction = findAuctionObject(auctionId);
 
-    /**
-     * 경매 재고 증가
-     */
-    public void increaseStock(long actionId, int quantity) {
+        if (!auction.isSeller(signInInfo.id())) {
+            throw new UnauthorizedException("자신이 등록한 경매만 수정할 수 있습니다.", ErrorCode.A018);
+        }
+
+        auction.changeStock(changeRequestStock);
+
+        auctionRepository.save(auction);
     }
 
     /**
@@ -115,9 +120,7 @@ public class AuctionService {
      */
     public void changeOption(UpdateAuctionCommand command) {
         // 검증
-        Auction auction = auctionRepository.findById(command.auctionId())
-                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + command.auctionId(),
-                        ErrorCode.A011));
+        Auction auction = findAuctionObject(command.auctionId());
 
         if (!auction.getStatus().isWaiting()) {
             throw new BadRequestException(
@@ -141,9 +144,7 @@ public class AuctionService {
      */
     public void submitBid(long auctionId, long price, long quantity) {
         // 검증
-        Auction auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
-                        ErrorCode.A011));
+        Auction auction = findAuctionObject(auctionId);
 
         if (!auction.canPurchase(quantity)) {
             throw new BadRequestException(
@@ -167,4 +168,9 @@ public class AuctionService {
     public void cancelBid(long auctionId, long quantity) {
     }
 
+    private Auction findAuctionObject(long auctionId) {
+        return auctionRepository.findById(auctionId)
+                .orElseThrow(
+                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A011));
+    }
 }

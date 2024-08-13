@@ -190,4 +190,55 @@ class AuctionTest {
         // then
         assertThat(auction.getPricePolicy()).isNotNull();
     }
+
+    @Nested
+    class changeStock_메소드는 {
+
+        @Test
+        void 변경할_재고가_1개_미만이면_예외가_발생한다() {
+            // given
+            Auction auction = Auction.builder()
+                    .sellerId(1L)
+                    .productName("상품이름")
+                    .originPrice(10000)
+                    .stock(999999)
+                    .pricePolicy(new ConstantPricePolicy(1000))
+                    .maximumPurchaseLimitCount(10)
+                    .variationDuration(Duration.ofMinutes(1L))
+                    .startedAt(ZonedDateTime.now().minusHours(1L))
+                    .finishedAt(ZonedDateTime.now())
+                    .isShowStock(true)
+                    .build();
+
+            // expect
+            assertThatThrownBy(() -> auction.changeStock(0))
+                    .isInstanceOf(BadRequestException.class)
+                    .hasMessage("변경 할 재고는 1개 이상이어야 합니다. inputStock=0")
+                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                            ErrorCode.A019));
+        }
+
+        @Test
+        void 변경할_재고가_1개_이상이라면_정상적으로_재고가_변경된다() {
+            // given
+            Auction auction = Auction.builder()
+                    .sellerId(1L)
+                    .productName("상품이름")
+                    .originPrice(10000)
+                    .stock(999999)
+                    .pricePolicy(new ConstantPricePolicy(1000))
+                    .maximumPurchaseLimitCount(10)
+                    .variationDuration(Duration.ofMinutes(1L))
+                    .startedAt(ZonedDateTime.now().minusHours(1L))
+                    .finishedAt(ZonedDateTime.now())
+                    .isShowStock(true)
+                    .build();
+
+            // when
+            auction.changeStock(1L);
+
+            // then
+            assertThat(auction.getStock()).isEqualTo(1L);
+        }
+    }
 }

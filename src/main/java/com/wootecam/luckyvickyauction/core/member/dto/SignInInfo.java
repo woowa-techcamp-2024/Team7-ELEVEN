@@ -21,4 +21,8 @@ public record SignInInfo(
             throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.G000);
         }
     }
+
+    public boolean isType(Role role) {
+        return this.role.equals(role);
+    }
 }
