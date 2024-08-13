@@ -9,12 +9,13 @@ import lombok.Getter;
 
 @Getter
 public class Auction {
+    private Long id;
     private final Long sellerId;
     private final String productName;
     private long originPrice;
     private long currentPrice;
     private long stock;
-    private int maximumPurchaseLimitCount;
+    private long maximumPurchaseLimitCount;
     private PricePolicy pricePolicy;
     private Duration variationDuration;
     private ZonedDateTime startedAt;
@@ -23,14 +24,15 @@ public class Auction {
     private AuctionStatus status;
 
     @Builder
-    private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName,
+    private Auction(final Long id, final ZonedDateTime startedAt, final Long sellerId, final String productName,
                     final long originPrice,
                     final long stock,
-                    final int maximumPurchaseLimitCount, final PricePolicy pricePolicy,
+                    final long maximumPurchaseLimitCount, final PricePolicy pricePolicy,
                     final Duration variationDuration,
                     final ZonedDateTime finishedAt,
                     final boolean isShowStock
     ) {
+        this.id = id;
         this.startedAt = startedAt;
         this.sellerId = sellerId;
         this.productName = productName;
@@ -47,9 +49,18 @@ public class Auction {
         pricePolicy.validate(originPrice);
     }
 
-    public Long getId() {
-        // TODO id반환 구현
-        return 0L;
+    public void updateStatus() {
+        // TODO 임시로직: 추후 스케줄러 등 믿을 수 있는 경매 관리자가 상태를 업데이트 하도록 수정
+        ZonedDateTime requestTime = ZonedDateTime.now();
+
+        if (requestTime.isBefore(startedAt)) {
+            status = AuctionStatus.WAITING;
+        }
+        if (requestTime.isAfter(finishedAt)) {
+            status = AuctionStatus.FINISHED;
+        } else {
+            status = (stock <= 0) ? AuctionStatus.SOLD_OUT : AuctionStatus.RUNNING;
+        }
     }
 
     /**
@@ -95,5 +106,9 @@ public class Auction {
         }
 
         this.pricePolicy = newPricePolicy;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

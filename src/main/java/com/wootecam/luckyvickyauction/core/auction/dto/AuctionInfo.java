@@ -22,7 +22,7 @@ public record AuctionInfo(
         long originPrice,
         long currentPrice,
         long stock,
-        int maximumPurchaseLimitCount,
+        long maximumPurchaseLimitCount,
         boolean isShowStock,
         AuctionStatus status
 ) {
@@ -71,7 +71,7 @@ public record AuctionInfo(
         }
     }
 
-    private void validateMaximumPurchaseLimitCount(int maximumPurchaseLimitCount) {
+    private void validateMaximumPurchaseLimitCount(long maximumPurchaseLimitCount) {
         if (maximumPurchaseLimitCount <= 0) {
             throw new BadRequestException(String.format(ERROR_MAXIMUM_PURCHASE_LIMIT_COUNT, maximumPurchaseLimitCount),
                     ErrorCode.A003);
