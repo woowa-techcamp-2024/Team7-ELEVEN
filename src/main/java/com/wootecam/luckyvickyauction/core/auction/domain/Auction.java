@@ -52,6 +52,20 @@ public class Auction {
         return 0L;
     }
 
+    public void updateStatus() {
+        // TODO 임시로직: 추후 스케줄러 등 믿을 수 있는 경매 관리자가 상태를 업데이트 하도록 수정
+        ZonedDateTime requestTime = ZonedDateTime.now();
+
+        if (requestTime.isBefore(startedAt)) {
+            status = AuctionStatus.WAITING;
+        }
+        if (requestTime.isAfter(finishedAt)) {
+            status = AuctionStatus.FINISHED;
+        } else {
+            status = (stock <= 0) ? AuctionStatus.SOLD_OUT : AuctionStatus.RUNNING;
+        }
+    }
+
     /**
      * 해당 수량만큼 구매가 가능한지 확인한다.
      *
