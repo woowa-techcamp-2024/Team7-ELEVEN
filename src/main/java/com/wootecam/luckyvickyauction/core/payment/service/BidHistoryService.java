@@ -7,6 +7,7 @@ import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import com.wootecam.luckyvickyauction.global.util.Mapper;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class BidHistoryService {
         }
 
         // 반환
-        return null;
+        return Mapper.convertToBidHistoryInfo(bidHistory);
     }
 
 }
