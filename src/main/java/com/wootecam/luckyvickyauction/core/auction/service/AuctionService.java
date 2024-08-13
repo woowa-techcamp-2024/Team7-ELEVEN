@@ -10,6 +10,7 @@ import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.time.Duration;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -60,16 +61,7 @@ public class AuctionService {
                         ErrorCode.A011));
 
         // AuctionInfo 에 정리해서 반환
-        return AuctionInfo.builder()
-                .auctionId(auctionId)
-                .sellerId(auction.getSellerId())
-                .productName(auction.getProductName())
-                .originPrice(auction.getOriginPrice())
-                .currentPrice(auction.getCurrentPrice())
-                .stock(auction.getStock())
-                .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
-                .isShowStock(auction.isShowStock())
-                .build();
+        return Mapper.convertToAuctionInfo(auction);
     }
 
     /**
