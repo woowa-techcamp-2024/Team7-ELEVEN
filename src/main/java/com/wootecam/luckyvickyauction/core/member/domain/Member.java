@@ -42,7 +42,7 @@ public class Member {
         return this.password.equals(password);
     }
 
-    public boolean isSameMember(Long id) {
-        return this.id.equals(id);
+    public boolean isSameMember(String signInId) {
+        return this.signInId.equals(signInId);
     }
 }

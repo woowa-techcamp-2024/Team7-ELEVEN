@@ -80,7 +80,7 @@ public class PaymentService {
         }
 
         Member refundTargetBuyer = refundTargetBidHistory.getBuyer();
-        if (!buyer.isSameMember(refundTargetBuyer.getId())) {
+        if (!buyer.isSameMember(refundTargetBuyer.getSignInId())) {
             throw new BadRequestException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
         }
 
