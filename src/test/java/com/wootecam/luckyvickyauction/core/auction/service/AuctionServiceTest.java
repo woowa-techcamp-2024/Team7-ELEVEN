@@ -147,8 +147,8 @@ class AuctionServiceTest {
             ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
             final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
-                auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
+                    auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                    varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
             );
 
             // when
@@ -156,8 +156,9 @@ class AuctionServiceTest {
 
             // then
             assertThatThrownBy(() -> auctionService.changeOption(updateAuctionCommand))
-                .isInstanceOf(NotFoundException.class)
-                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A011));
+                    .isInstanceOf(NotFoundException.class)
+                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                            ErrorCode.A011));
         }
 
         @Test
@@ -180,30 +181,31 @@ class AuctionServiceTest {
             ZonedDateTime requestTime = ZonedDateTime.of(2024, 8, 9, 2, 0, 0, 0, ZoneId.of("Asia/Seoul"));
 
             final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
-                auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true, requestTime
+                    auctionId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                    varitationDuration, startedAt, finishedAt, true, requestTime
             );
 
             Auction auction = Auction.builder()
-                .startedAt(startedAt)
-                .finishedAt(finishedAt)
-                .sellerId(1L)
-                .productName("Test Product")
-                .originPrice(10000)
-                .stock(999999)
-                .maximumPurchaseLimitCount(10)
-                .pricePolicy(new ConstantPricePolicy(1000))
-                .variationDuration(Duration.ofMinutes(1L))
-                .isShowStock(true)
-                .build();
+                    .startedAt(startedAt)
+                    .finishedAt(finishedAt)
+                    .sellerId(1L)
+                    .productName("Test Product")
+                    .originPrice(10000)
+                    .stock(999999)
+                    .maximumPurchaseLimitCount(10)
+                    .pricePolicy(new ConstantPricePolicy(1000))
+                    .variationDuration(Duration.ofMinutes(1L))
+                    .isShowStock(true)
+                    .build();
 
             // when
             when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
 
             // then
             assertThatThrownBy(() -> auctionService.changeOption(updateAuctionCommand))
-                .isInstanceOf(NotFoundException.class)
-                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A012));
+                    .isInstanceOf(NotFoundException.class)
+                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                            ErrorCode.A012));
         }
     }
 
