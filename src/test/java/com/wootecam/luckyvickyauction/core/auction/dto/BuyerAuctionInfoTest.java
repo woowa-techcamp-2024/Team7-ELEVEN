@@ -63,6 +63,7 @@ public class BuyerAuctionInfoTest {
 
         // then
         assertAll(
+                () -> assertThat(buyerAuctionInfo.auctionId()).isEqualTo(auctionId),
                 () -> assertThat(buyerAuctionInfo.sellerId()).isEqualTo(sellerId),
                 () -> assertThat(buyerAuctionInfo.productName()).isEqualTo(productName),
                 () -> assertThat(buyerAuctionInfo.originPrice()).isEqualTo(originPrice),
@@ -99,6 +100,7 @@ public class BuyerAuctionInfoTest {
                 .id(auctionId)
                 .sellerId(sellerId)
                 .productName(productName)
+                .currentPrice(originPrice)
                 .originPrice(originPrice)
                 .stock(stock)
                 .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
@@ -107,6 +109,7 @@ public class BuyerAuctionInfoTest {
                 .startedAt(startedAt)
                 .finishedAt(finishedAt)
                 .isShowStock(false)
+                .status(status)
                 .build();
 
         // when
@@ -152,8 +155,7 @@ public class BuyerAuctionInfoTest {
                 .build()
         )
                 .isInstanceOf(BadRequestException.class)
-                .satisfies(exception -> {
-                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", expectedErrorCode);
-                });
+                .hasMessage(expectedMessage)
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", expectedErrorCode));
     }
 }

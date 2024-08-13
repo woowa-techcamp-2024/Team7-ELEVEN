@@ -50,8 +50,8 @@ class AuctionServiceTest {
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-        ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
-        ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+        ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
+        ZonedDateTime finishedAt = ZonedDateTime.now().plusHours(2);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
                 sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
@@ -170,10 +170,8 @@ class AuctionServiceTest {
         }
 
         @Test
-        @Disabled
         @DisplayName("이미 시작한 경매를 변경하려는 경우 예외가 발생하고 에러 코드는 A012이다.")
         void when_change_auction_that_is_started() {
-
             // given
             Long auctionId = 1L;  // 경매 정보
             Long sellerId = 1L;
@@ -185,9 +183,9 @@ class AuctionServiceTest {
             Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
             PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-            ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
-            ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
-            ZonedDateTime requestTime = ZonedDateTime.of(2024, 8, 9, 2, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+            ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1);
+            ZonedDateTime finishedAt = ZonedDateTime.now().plusHours(1);
+            ZonedDateTime requestTime = ZonedDateTime.now().plusMinutes(30);
 
             final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
                     auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
@@ -199,19 +197,21 @@ class AuctionServiceTest {
                     .finishedAt(finishedAt)
                     .sellerId(1L)
                     .productName("Test Product")
+                    .currentPrice(10000)
                     .originPrice(10000)
                     .stock(999999)
                     .maximumPurchaseLimitCount(10)
                     .pricePolicy(new ConstantPricePolicy(1000))
                     .variationDuration(Duration.ofMinutes(1L))
                     .isShowStock(true)
+                    .status(AuctionStatus.RUNNING)
                     .build();
             auction.updateStatus();
             auctionRepository.save(auction);
 
             // expect
             assertThatThrownBy(() -> auctionService.changeOption(updateAuctionCommand))
-                    .isInstanceOf(NotFoundException.class)
+                    .isInstanceOf(BadRequestException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.A012));
         }
@@ -334,6 +334,7 @@ class AuctionServiceTest {
                     .finishedAt(ZonedDateTime.now().minusMinutes(5))
                     .sellerId(1L)
                     .productName("Test Product")
+                    .currentPrice(10000)
                     .originPrice(10000)
                     .stock(10000)
                     .maximumPurchaseLimitCount(10)  // 인당 구매 수량 제한
