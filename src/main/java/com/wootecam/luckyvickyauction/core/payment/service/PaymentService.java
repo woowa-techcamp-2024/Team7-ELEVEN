@@ -34,8 +34,14 @@ public class PaymentService {
         if (submitBid(price, auctionId, quantity, buyer, seller)) {
             Member savedBuyer = memberRepository.save(buyer);
             Member savedSeller = memberRepository.save(seller);
-            BidHistory bidHistory = BidHistory.builder().productName(auctionInfo.productName()).price(price)
-                    .quantity(quantity).bidStatus(BidStatus.BID).seller(savedSeller).buyer(savedBuyer).build();
+            BidHistory bidHistory = BidHistory.builder()
+                    .productName(auctionInfo.productName())
+                    .price(price)
+                    .quantity(quantity)
+                    .bidStatus(BidStatus.BID)
+                    .seller(savedSeller)
+                    .buyer(savedBuyer)
+                    .build();
             bidHistoryRepository.save(bidHistory);
         }
     }
@@ -70,8 +76,8 @@ public class PaymentService {
 
         BidHistory refundTargetBidHistory = findRefundTargetBidHistory(bidHistoryId);
         Member refundTargetBuyer = refundTargetBidHistory.getBuyer();
-        if (buyer.equals(refundTargetBuyer)) {
-            throw new BadRequestException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P003);
+        if (!buyer.isSameMember(refundTargetBuyer.getId())) {
+            throw new BadRequestException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
         }
 
         long price = refundTargetBidHistory.getPrice();
@@ -81,10 +87,20 @@ public class PaymentService {
         buyer.chargePoint(price * quantity);
         seller.usePoint(price * quantity);
 
+        // 경매 서비스에 환불 요청
+        auctionService.cancelBid(refundTargetBidHistory.getAuctionId(), quantity);
+
+        // 환불 요청에 대한 정보 저장
         Member savedBuyer = memberRepository.save(buyer);
         Member savedSeller = memberRepository.save(seller);
-        // TODO 경매 서비스에 환불 요청
-        // TODO 환불 요청에 대한 BidHistory 저장
+        bidHistoryRepository.save(BidHistory.builder()
+                .productName(refundTargetBidHistory.getProductName())
+                .price(price)
+                .quantity(quantity)
+                .bidStatus(BidStatus.REFUND)
+                .seller(savedSeller)
+                .buyer(savedBuyer)
+                .build());
     }
 
     private BidHistory findRefundTargetBidHistory(long bidHistoryId) {

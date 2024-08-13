@@ -134,4 +134,11 @@ public class AuctionService {
 
         // TODO 구매(입찰) 로직
     }
+
+    /**
+     * 경매 상품에 대한 입찰 취소를 진행한다.
+     */
+    public void cancelBid(long auctionId, long quantity) {
+    }
+
 }
