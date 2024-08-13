@@ -24,18 +24,18 @@ import lombok.Builder;
  */
 @Builder
 public record UpdateAuctionCommand(
-    Long auctionId,
-    Long sellerId,
-    long originPrice,
-    int stock,
-    int maximumPurchaseLimitCount,
-    PricePolicy pricePolicy,
-    Duration variationDuration,
-    ZonedDateTime startedAt,
-    ZonedDateTime finishedAt,
-    Boolean isShowStock,
-    // command meta info
-    ZonedDateTime requestTime
+        Long auctionId,
+        Long sellerId,
+        long originPrice,
+        int stock,
+        int maximumPurchaseLimitCount,
+        PricePolicy pricePolicy,
+        Duration variationDuration,
+        ZonedDateTime startedAt,
+        ZonedDateTime finishedAt,
+        Boolean isShowStock,
+        // command meta info
+        ZonedDateTime requestTime
 ) {
     private static final String ERROR_MAX_PURCHASE_LIMIT = "최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: %d";
     private static final String ERROR_VARIATION_DURATION = "변동 시간 단위는 0보다 커야 합니다. 변동 시간: %s";
@@ -69,7 +69,7 @@ public record UpdateAuctionCommand(
     private void validateMaximumPurchaseLimitCount(int maximumPurchaseLimitCount) {
         if (maximumPurchaseLimitCount <= 0) {
             throw new BadRequestException(String.format(ERROR_MAX_PURCHASE_LIMIT, maximumPurchaseLimitCount),
-                ErrorCode.A003);
+                    ErrorCode.A003);
         }
     }
 

@@ -32,7 +32,7 @@ class PaymentServiceTest {
         }
 
         @Nested
-        class 만약_요청한_물건의_수량이_남아있는_재고보다_많다면 {
+        class 만약_판매자를_찾을_수_없다면 {
 
             @Test
             void 예외가_발생한다() {
