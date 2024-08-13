@@ -17,8 +17,15 @@ public class BidHistory {
     private Member buyer;
 
     @Builder
-    public BidHistory(final Long id, final String productName, final long price, final long quantity,
-                      BidStatus bidStatus, final long auctionId, final Member seller, final Member buyer) {
+    public BidHistory(
+            final Long id,
+            final String productName,
+            final long price,
+            final long quantity,
+            BidStatus bidStatus,
+            final long auctionId,
+            final Member seller,
+            final Member buyer) {
         this.id = id;
         this.productName = productName;
         this.price = price;
