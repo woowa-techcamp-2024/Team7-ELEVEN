@@ -14,7 +14,8 @@ import lombok.Builder;
  * @param isShowStock               재고를 보여줄지 여부
  */
 @Builder
-public record AuctionInfo(Long auctionId, Long sellerId, String productName, long originPrice, long currentPrice, int stock,
+public record AuctionInfo(Long auctionId, Long sellerId, String productName, long originPrice, long currentPrice,
+                          long stock,
                           int maximumPurchaseLimitCount, boolean isShowStock) {
 
     public static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
@@ -54,7 +55,7 @@ public record AuctionInfo(Long auctionId, Long sellerId, String productName, lon
         }
     }
 
-    private void validateStock(int stock) {
+    private void validateStock(long stock) {
         if (stock < 0) {
             throw new BadRequestException(String.format(ERROR_STOCK, stock), ErrorCode.A000);
         }

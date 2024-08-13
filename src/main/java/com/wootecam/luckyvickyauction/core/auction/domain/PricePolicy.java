@@ -4,11 +4,11 @@ public interface PricePolicy {
 
     void validate(long price);
 
-    static PricePolicy percentagePricePolicy(int discountRate) {
+    static PricePolicy createPercentagePricePolicy(int discountRate) {
         return new PercentagePricePolicy(discountRate);
     }
 
-    static PricePolicy constantPricePolicy(int variationWidth) {
+    static PricePolicy createConstantPricePolicy(int variationWidth) {
         return new ConstantPricePolicy(variationWidth);
     }
 }

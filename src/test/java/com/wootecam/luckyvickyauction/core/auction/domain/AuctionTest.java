@@ -157,7 +157,7 @@ class AuctionTest {
                 .isShowStock(true)
                 .build();
 
-        PricePolicy newPricePolicy = PricePolicy.percentagePricePolicy(7);
+        PricePolicy newPricePolicy = PricePolicy.createPercentagePricePolicy(7);
 
         // when
         auction.updatePricePolicy(newPricePolicy, sellerId);
