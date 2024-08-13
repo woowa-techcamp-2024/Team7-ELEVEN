@@ -149,7 +149,7 @@ class AuctionServiceTest {
 
             final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
                     auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
+                    varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
             );
 
             // when
@@ -184,7 +184,7 @@ class AuctionServiceTest {
 
             final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
                     auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true, requestTime
+                    varitationDuration, startedAt, finishedAt, true, requestTime
             );
 
             Auction auction = Auction.builder()
