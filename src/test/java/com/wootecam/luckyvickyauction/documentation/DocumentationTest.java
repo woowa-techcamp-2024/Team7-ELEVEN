@@ -1,9 +1,9 @@
-package com.wootecam.luckyvickyauction.documentation.documentation;
+package com.wootecam.luckyvickyauction.documentation;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
-import com.wootecam.luckyvickyauction.documentation.documentation.errorcode.FakeErrorCodeController;
+import com.wootecam.luckyvickyauction.documentation.errorcode.FakeErrorCodeController;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 import org.junit.jupiter.api.BeforeEach;

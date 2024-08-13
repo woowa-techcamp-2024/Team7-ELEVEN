@@ -1,4 +1,4 @@
-package com.wootecam.luckyvickyauction.documentation.documentation.errorcode;
+package com.wootecam.luckyvickyauction.documentation.errorcode;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

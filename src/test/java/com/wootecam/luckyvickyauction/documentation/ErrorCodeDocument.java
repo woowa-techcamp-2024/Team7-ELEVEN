@@ -1,8 +1,8 @@
-package com.wootecam.luckyvickyauction.documentation.documentation;
+package com.wootecam.luckyvickyauction.documentation;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
-import com.wootecam.luckyvickyauction.documentation.documentation.errorcode.ErrorCodeFieldsSnippet;
+import com.wootecam.luckyvickyauction.documentation.errorcode.ErrorCodeFieldsSnippet;
 import org.junit.jupiter.api.Test;
 
 public class ErrorCodeDocument extends DocumentationTest {
