@@ -352,9 +352,7 @@ class AuctionServiceTest {
                 // then
                 assertThat(updatedAuction.getStock()).isEqualTo(50L);
             }
-
         }
-
     }
 
     /**
