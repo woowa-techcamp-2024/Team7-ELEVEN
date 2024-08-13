@@ -1,5 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.domain;
 
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import lombok.Builder;
@@ -73,5 +75,28 @@ public class Auction {
 
     public void update() {
         // TODO 경매 옵션을 변경하는 로직 (Update)
+    }
+
+    public void updateShowStock(Boolean isShowStock, Long requestSellerId) {
+        if (isShowStock != null) {
+            this.isShowStock = isShowStock;
+        }
+
+        if (!this.sellerId.equals(requestSellerId)) {
+            throw new UnauthorizedException("동일한 판매자만 경매의 가격 노출 정책을 변경할 수 있습니다.", ErrorCode.A015);
+        }
+    }
+
+    public void updatePricePolicy(PricePolicy newPricePolicy, Long requestSellerId) {
+
+        if (newPricePolicy == null) {
+            return;
+        }
+
+        if (!this.sellerId.equals(requestSellerId)) {
+            throw new UnauthorizedException("동일한 판매자만 경매의 가격 정책을 변경할 수 있습니다.", ErrorCode.A015);
+        }
+
+        this.pricePolicy = newPricePolicy;
     }
 }
