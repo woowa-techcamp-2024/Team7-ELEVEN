@@ -28,7 +28,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void signIn(SignInRequestInfo signInRequestInfo, HttpSession session) {
+    public SignInInfo signIn(SignInRequestInfo signInRequestInfo) {
         Member member = memberRepository.findBySignInId(signInRequestInfo.signInId()).orElseThrow(
                 () -> new BadRequestException("아이디에 해당되는 사용자를 찾을 수 없습니다. signInId=" + signInRequestInfo.signInId(),
                         ErrorCode.M002));
@@ -37,8 +37,7 @@ public class MemberService {
             throw new BadRequestException("패스워드가 일치하지 않습니다.", ErrorCode.M003);
         }
 
-        SignInInfo signInInfo = new SignInInfo(member.getId(), member.getRole());
-        session.setAttribute("signInInfo", signInInfo);
+        return new SignInInfo(member.getId(), member.getRole());
     }
 
     public void signOut(HttpSession session) {
