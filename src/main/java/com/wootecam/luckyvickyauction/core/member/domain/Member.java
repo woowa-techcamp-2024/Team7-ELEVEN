@@ -44,6 +44,10 @@ public class Member {
         return this.password.equals(password);
     }
 
+    public boolean isSameMember(String signInId) {
+        return this.signInId.equals(signInId);
+    }
+  
     public boolean isBuyer() {
         return role.equals(Role.BUYER);
     }
