@@ -11,7 +11,7 @@ public class Auction {
     private final String productName;
     private long originPrice;
     private long currentPrice;
-    private int stock;
+    private long stock;
     private int maximumPurchaseLimitCount;
     private PricePolicy pricePolicy;
     private Duration variationDuration;
@@ -22,7 +22,7 @@ public class Auction {
     @Builder
     private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName,
                     final long originPrice,
-                    final int stock,
+                    final long stock,
                     final int maximumPurchaseLimitCount, final PricePolicy pricePolicy,
                     final Duration variationDuration,
                     final ZonedDateTime finishedAt,
@@ -51,6 +51,24 @@ public class Auction {
     public AuctionStatus getStatus() {
         // TODO 경매 상태 반환 구현
         return AuctionStatus.WAITING;
+    }
+
+    /**
+     * 해당 수량만큼 구매가 가능한지 확인한다.
+     *
+     * @param quantity 구매를 원하는 수량
+     * @return 구매가 가능한 경우 True, 구매가 불가능한 경우 False를 반환한다.
+     */
+    public boolean canPurchase(long quantity) {
+        if (quantity <= 0) {  // 구매 요청은 0이거나 더 작을 수 없다.
+            return false;
+        }
+
+        if (quantity > maximumPurchaseLimitCount) {  // 인당 구매 수량 제한을 넘기지 않는지 확인한다.
+            return false;
+        }
+
+        return stock >= quantity;  // 구매 요청 수량보다 재고가 많은지 확인한다.
     }
 
     public void update() {
