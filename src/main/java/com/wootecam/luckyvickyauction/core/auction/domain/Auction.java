@@ -20,6 +20,7 @@ public class Auction {
     private ZonedDateTime startedAt;
     private ZonedDateTime finishedAt;
     private boolean isShowStock;
+    private AuctionStatus status;
 
     @Builder
     private Auction(final ZonedDateTime startedAt, final Long sellerId, final String productName,
@@ -41,6 +42,7 @@ public class Auction {
         this.variationDuration = variationDuration;
         this.finishedAt = finishedAt;
         this.isShowStock = isShowStock;
+        this.status = AuctionStatus.WAITING;
 
         pricePolicy.validate(originPrice);
     }
@@ -48,11 +50,6 @@ public class Auction {
     public Long getId() {
         // TODO id반환 구현
         return 0L;
-    }
-
-    public AuctionStatus getStatus() {
-        // TODO 경매 상태 반환 구현
-        return AuctionStatus.WAITING;
     }
 
     /**

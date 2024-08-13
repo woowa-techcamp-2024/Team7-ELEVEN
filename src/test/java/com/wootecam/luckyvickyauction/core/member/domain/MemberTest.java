@@ -13,7 +13,12 @@ class MemberTest {
     @Test
     void 회원을_생성할_수_있다() {
         // when
-        Member member = new Member("testId", "password", Role.BUYER, new Point(100));
+        Member member = Member.builder()
+                .signInId("testId")
+                .password("password")
+                .role(Role.BUYER)
+                .point(new Point(100))
+                .build();
 
         // then
         assertAll(
@@ -27,7 +32,12 @@ class MemberTest {
     @Test
     void 포인트를_사용할_수_있다() {
         // given
-        Member buyer = new Member("testId", "password", Role.BUYER, new Point(100));
+        Member buyer = Member.builder()
+                .signInId("testId")
+                .password("password")
+                .role(Role.BUYER)
+                .point(new Point(100))
+                .build();
         long price = 10L;
         long quantity = 10L;
 
@@ -41,7 +51,12 @@ class MemberTest {
     @Test
     void 보유한_포인트보다_많은_포인트를_사용하려하면_예외가_발생한다() {
         // given
-        Member buyer = new Member("testId", "password", Role.BUYER, new Point(100));
+        Member buyer = Member.builder()
+                .signInId("testId")
+                .password("password")
+                .role(Role.BUYER)
+                .point(new Point(100))
+                .build();
 
         // expect
         assertThatThrownBy(() -> buyer.usePoint(10 * 11))
@@ -53,13 +68,18 @@ class MemberTest {
     @Test
     void 포인트를_충전할_수_있다() {
         // given
-        Member seller = new Member("testID", "password", Role.SELLER, new Point(0));
+        Member seller = Member.builder()
+                .signInId("testId")
+                .password("password")
+                .role(Role.BUYER)
+                .point(new Point(100))
+                .build();
 
         // when
         seller.chargePoint(100);
 
         // then
-        assertThat(seller.getPoint()).isEqualTo(new Point(100));
+        assertThat(seller.getPoint()).isEqualTo(new Point(200));
     }
 
     @Test
