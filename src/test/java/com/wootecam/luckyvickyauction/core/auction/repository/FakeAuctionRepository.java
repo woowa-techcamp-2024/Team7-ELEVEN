@@ -4,6 +4,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class FakeAuctionRepository implements AuctionRepository {
@@ -13,18 +14,52 @@ public class FakeAuctionRepository implements AuctionRepository {
 
     @Override
     public Auction save(Auction auction) {
-        if (auction.getId() == null || auction.getId() == 0L) {
-            // 새로운 Auction 객체인 경우
-            Long newId = id++;
+        if (Objects.isNull(auction.getId())) {
+            Auction newAuction = createNewAuction(auction);
+            auctions.put(newAuction.getId(), newAuction);
 
-            auction.setId(newId);
-            auctions.put(newId, auction);
-            return auction;
-        } else {
-            // 기존 Auction 객체를 업데이트하는 경우
-            auctions.put(auction.getId(), auction);
-            return auction;
+            return newAuction;
         }
+        Auction existsAuction = createExistsAuction(auction);
+        auctions.put(existsAuction.getId(), existsAuction);
+
+        return auction;
+    }
+
+    private Auction createExistsAuction(Auction auction) {
+        return Auction.builder()
+                .id(auction.getId())
+                .sellerId(auction.getSellerId())
+                .productName(auction.getProductName())
+                .originPrice(auction.getOriginPrice())
+                .currentPrice(auction.getCurrentPrice())
+                .stock(auction.getStock())
+                .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
+                .pricePolicy(auction.getPricePolicy())
+                .variationDuration(auction.getVariationDuration())
+                .startedAt(auction.getStartedAt())
+                .finishedAt(auction.getFinishedAt())
+                .isShowStock(auction.isShowStock())
+                .status(auction.getStatus())
+                .build();
+    }
+
+    private Auction createNewAuction(Auction auction) {
+        return Auction.builder()
+                .id(id++)
+                .sellerId(auction.getSellerId())
+                .productName(auction.getProductName())
+                .originPrice(auction.getOriginPrice())
+                .currentPrice(auction.getCurrentPrice())
+                .stock(auction.getStock())
+                .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
+                .pricePolicy(auction.getPricePolicy())
+                .variationDuration(auction.getVariationDuration())
+                .startedAt(auction.getStartedAt())
+                .finishedAt(auction.getFinishedAt())
+                .isShowStock(auction.isShowStock())
+                .status(auction.getStatus())
+                .build();
     }
 
     @Override
