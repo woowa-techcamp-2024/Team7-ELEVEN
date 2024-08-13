@@ -1,6 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.service;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
+import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
@@ -21,11 +22,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class AuctionService {
+
     private final AuctionRepository auctionRepository;
 
-    /**
-     * 경매 생성
-     */
     public void createAuction(CreateAuctionCommand command) {
         // 경매 지속 시간 검증
         Duration diff = Duration.between(command.startedAt(), command.finishedAt());
@@ -37,6 +36,7 @@ public class AuctionService {
         Auction auction = Auction.builder()
                 .sellerId(command.sellerId())
                 .productName(command.productName())
+                .currentPrice(command.originPrice())
                 .originPrice(command.originPrice())
                 .stock(command.stock())
                 .maximumPurchaseLimitCount(command.maximumPurchaseLimitCount())
@@ -45,6 +45,7 @@ public class AuctionService {
                 .startedAt(command.startedAt())
                 .finishedAt(command.finishedAt())
                 .isShowStock(command.isShowStock())
+                .status(AuctionStatus.WAITING)
                 .build();
         auctionRepository.save(auction);
     }

@@ -33,20 +33,23 @@ class AuctionTest {
             PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
             // when & then
-            assertThatThrownBy(() -> {
-                Auction.builder()
-                        .sellerId(1L)
-                        .productName("상품이름")
-                        .originPrice(originPrice)
-                        .stock(stock)
-                        .pricePolicy(pricePolicy)
-                        .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
-                        .variationDuration(varitationDuration)
-                        .startedAt(ZonedDateTime.now().minusHours(1L))
-                        .finishedAt(ZonedDateTime.now())
-                        .isShowStock(true)
-                        .build();
-            }).isInstanceOf(BadRequestException.class)
+            // TODO: [시작시간이 이미 지났는데 AuctionStatus.WAITING 으로 넣어도 예외가 발생하지 않음] [writeAt: 2024/08/13/20:55] [writeBy: HiiWee]
+            assertThatThrownBy(() ->
+                    Auction.builder()
+                            .sellerId(1L)
+                            .productName("상품이름")
+                            .currentPrice(originPrice)
+                            .originPrice(originPrice)
+                            .stock(stock)
+                            .pricePolicy(pricePolicy)
+                            .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
+                            .variationDuration(varitationDuration)
+                            .startedAt(ZonedDateTime.now().minusHours(1L))
+                            .finishedAt(ZonedDateTime.now())
+                            .isShowStock(true)
+                            .status(AuctionStatus.WAITING)
+                            .build()
+            ).isInstanceOf(BadRequestException.class)
                     .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A009);
         }
     }
@@ -67,6 +70,7 @@ class AuctionTest {
             Auction auction = Auction.builder()
                     .sellerId(1L)
                     .productName("상품이름")
+                    .currentPrice(10000)
                     .originPrice(10000)
                     .stock(999999)
                     .pricePolicy(new ConstantPricePolicy(1000))
@@ -75,6 +79,7 @@ class AuctionTest {
                     .startedAt(ZonedDateTime.now().minusHours(1L))
                     .finishedAt(ZonedDateTime.now())
                     .isShowStock(true)
+                    .status(AuctionStatus.WAITING)
                     .build();
 
             Long requestSellerId = 1L;
@@ -93,6 +98,7 @@ class AuctionTest {
             Auction auction = Auction.builder()
                     .sellerId(1L)
                     .productName("상품이름")
+                    .currentPrice(10000)
                     .originPrice(10000)
                     .stock(999999)
                     .pricePolicy(new ConstantPricePolicy(1000))
@@ -101,6 +107,7 @@ class AuctionTest {
                     .startedAt(ZonedDateTime.now().minusHours(1L))
                     .finishedAt(ZonedDateTime.now())
                     .isShowStock(true)
+                    .status(AuctionStatus.WAITING)
                     .build();
 
             Long requestSellerId = 2L;
@@ -147,6 +154,7 @@ class AuctionTest {
         Auction auction = Auction.builder()
                 .sellerId(sellerId)
                 .productName("상품이름")
+                .currentPrice(10000)
                 .originPrice(10000)
                 .stock(999999)
                 .pricePolicy(new ConstantPricePolicy(1000))
@@ -182,6 +190,7 @@ class AuctionTest {
                 .startedAt(ZonedDateTime.now().minusHours(1L))
                 .finishedAt(ZonedDateTime.now())
                 .isShowStock(true)
+                .status(AuctionStatus.WAITING)
                 .build();
 
         // when
@@ -200,6 +209,7 @@ class AuctionTest {
             Auction auction = Auction.builder()
                     .sellerId(1L)
                     .productName("상품이름")
+                    .currentPrice(10000)
                     .originPrice(10000)
                     .stock(999999)
                     .pricePolicy(new ConstantPricePolicy(1000))
@@ -208,6 +218,7 @@ class AuctionTest {
                     .startedAt(ZonedDateTime.now().minusHours(1L))
                     .finishedAt(ZonedDateTime.now())
                     .isShowStock(true)
+                    .status(AuctionStatus.WAITING)
                     .build();
 
             // expect
@@ -224,6 +235,7 @@ class AuctionTest {
             Auction auction = Auction.builder()
                     .sellerId(1L)
                     .productName("상품이름")
+                    .currentPrice(10000)
                     .originPrice(10000)
                     .stock(999999)
                     .pricePolicy(new ConstantPricePolicy(1000))
@@ -232,6 +244,7 @@ class AuctionTest {
                     .startedAt(ZonedDateTime.now().minusHours(1L))
                     .finishedAt(ZonedDateTime.now())
                     .isShowStock(true)
+                    .status(AuctionStatus.WAITING)
                     .build();
 
             // when
