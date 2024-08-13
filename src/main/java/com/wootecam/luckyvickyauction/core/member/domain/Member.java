@@ -40,11 +40,11 @@ public class Member {
         point.plus(price);
     }
 
-    public boolean isBuyer() {
-        return role.equals(Role.BUYER);
-    }
-
     public boolean confirmPassword(String password) {
         return this.password.equals(password);
+    }
+
+    public boolean isBuyer() {
+        return role.equals(Role.BUYER);
     }
 }
