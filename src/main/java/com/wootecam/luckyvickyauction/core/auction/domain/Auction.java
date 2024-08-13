@@ -123,6 +123,7 @@ public class Auction {
 
     public boolean isSeller(Long sellerId) {
         return this.sellerId.equals(sellerId);
+    }
 
     public void setId(Long id) {
         this.id = id;

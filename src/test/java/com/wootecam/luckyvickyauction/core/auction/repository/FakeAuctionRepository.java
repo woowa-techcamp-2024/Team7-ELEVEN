@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class FakeAuctionRepository implements AuctionRepository {
+
     private Map<Long, Auction> auctions = new HashMap<>();
     private long id = 1L;
 

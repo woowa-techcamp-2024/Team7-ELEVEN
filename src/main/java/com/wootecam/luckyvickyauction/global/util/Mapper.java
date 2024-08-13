@@ -25,8 +25,9 @@ public final class Mapper {
     }
 
     /**
-     * Auction을 BuyerAuctionInfo로 변환 - stock 노출 여부를 확인하여 노출 여부에 따라 stock을 노출하거나 노출하지 않습니다
-     * - 만약 isShowStock이 false라면 stock을 0으로 지정해 구매자에게 보이지 않게 합니다
+     * Auction을 BuyerAuctionInfo로 변환 - stock 노출 여부를 확인하여 노출 여부에 따라 stock을 노출하거나 노출하지 않습니다 - 만약 isShowStock이 false라면
+     * stock을 0으로 지정해 구매자에게 보이지 않게 합니다
+     *
      * @param auction
      * @return
      */
