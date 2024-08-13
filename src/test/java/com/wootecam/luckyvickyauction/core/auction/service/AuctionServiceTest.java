@@ -149,7 +149,7 @@ class AuctionServiceTest {
 
             final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
                     auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
+                    varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
             );
 
             // when
@@ -184,7 +184,7 @@ class AuctionServiceTest {
 
             final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
                     auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true, requestTime
+                    varitationDuration, startedAt, finishedAt, true, requestTime
             );
 
             Auction auction = Auction.builder()
@@ -215,7 +215,6 @@ class AuctionServiceTest {
     @DisplayName("경매 입찰(구매)을 진행할 때")
     class submitBidTest {
         @Test
-        @Disabled
         @DisplayName("요청을 정상적으로 처리한다.")
         void success_case() {
             // given
@@ -235,6 +234,7 @@ class AuctionServiceTest {
                     .variationDuration(Duration.ofMinutes(1L))
                     .isShowStock(true)
                     .build();
+            auction.updateStatus();
 
             // when
             when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
@@ -281,6 +281,7 @@ class AuctionServiceTest {
                     .variationDuration(Duration.ofMinutes(1L))
                     .isShowStock(true)
                     .build();
+            auction.updateStatus();
 
             // when
             when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
@@ -312,6 +313,7 @@ class AuctionServiceTest {
                     .variationDuration(Duration.ofMinutes(1L))
                     .isShowStock(true)
                     .build();
+            auction.updateStatus();
 
             // when
             when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
@@ -321,6 +323,37 @@ class AuctionServiceTest {
                     .isInstanceOf(BadRequestException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.A014));
+        }
+
+        @Test
+        void 진행_중인_경매가_아닌_경우_예외가_발생한다() {
+            // given
+            long auctionId = 1L;
+            long price = 10000L;
+            long quantity = 10L;
+
+            Auction auction = Auction.builder()
+                    .startedAt(ZonedDateTime.now().minusMinutes(10))
+                    .finishedAt(ZonedDateTime.now().minusMinutes(5))
+                    .sellerId(1L)
+                    .productName("Test Product")
+                    .originPrice(10000)
+                    .stock(10000)
+                    .maximumPurchaseLimitCount(10)  // 인당 구매 수량 제한
+                    .pricePolicy(new ConstantPricePolicy(1000))
+                    .variationDuration(Duration.ofMinutes(1L))
+                    .isShowStock(true)
+                    .build();
+            auction.updateStatus();
+
+            // when
+            when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
+
+            // then
+            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
+                    .isInstanceOf(BadRequestException.class)
+                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                            ErrorCode.A016));
         }
     }
 }
