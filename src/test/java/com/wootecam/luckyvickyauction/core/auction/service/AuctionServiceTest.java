@@ -244,7 +244,6 @@ class AuctionServiceTest {
             auctionRepository.save(auction);
 
             // expect
-            System.out.println(auction);
             assertThatNoException().isThrownBy(() -> auctionService.submitBid(auctionId, price, quantity));
         }
 
