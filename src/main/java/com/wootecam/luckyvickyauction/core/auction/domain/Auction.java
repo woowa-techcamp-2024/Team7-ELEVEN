@@ -15,7 +15,7 @@ public class Auction {
     private long originPrice;
     private long currentPrice;
     private long stock;
-    private int maximumPurchaseLimitCount;
+    private long maximumPurchaseLimitCount;
     private PricePolicy pricePolicy;
     private Duration variationDuration;
     private ZonedDateTime startedAt;
@@ -27,7 +27,7 @@ public class Auction {
     private Auction(final Long id, final ZonedDateTime startedAt, final Long sellerId, final String productName,
                     final long originPrice,
                     final long stock,
-                    final int maximumPurchaseLimitCount, final PricePolicy pricePolicy,
+                    final long maximumPurchaseLimitCount, final PricePolicy pricePolicy,
                     final Duration variationDuration,
                     final ZonedDateTime finishedAt,
                     final boolean isShowStock
