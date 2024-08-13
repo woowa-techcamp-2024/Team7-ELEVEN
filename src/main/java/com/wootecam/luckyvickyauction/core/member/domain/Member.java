@@ -47,7 +47,7 @@ public class Member {
     public boolean isSameMember(String signInId) {
         return this.signInId.equals(signInId);
     }
-  
+
     public boolean isBuyer() {
         return role.equals(Role.BUYER);
     }

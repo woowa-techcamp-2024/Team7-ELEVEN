@@ -9,6 +9,7 @@ import lombok.Getter;
 
 @Getter
 public class Auction {
+
     private Long id;
     private final Long sellerId;
     private final String productName;

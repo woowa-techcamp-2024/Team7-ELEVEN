@@ -9,29 +9,18 @@ import java.time.ZonedDateTime;
 import lombok.Builder;
 
 /**
- * @param auctionId                 경매 ID
- * @param sellerId                  판매자 ID
- * @param productName               상품 이름
- * @param originPrice               판매상품의 원래 가격
- * @param currentPrice              현재 경매에 설정된 가격
- * @param stock                     현재 경매에 남은 재고 개수
- * @param maximumPurchaseLimitCount 최대 구매 가능한 개수
- * @param pricePolicy               경매 유형
- * @param variationDuration         가격 변동 주기
- * @param startedAt                 경매 시작 시간
- * @param finishedAt                경매 종료 시간
- * @param isShowStock               재고를 보여줄지 여부
- * @param status                    현재 경매 상태
+ * 판매자가 조회할 수 있는 경매 정보
+ * - 판매량 등의 필드가 추가될 예정입니다
  */
 @Builder
-public record AuctionInfo(
+public record SellerAuctionInfo(
         Long auctionId,
         Long sellerId,
         String productName,
         long originPrice,
         long currentPrice,
         long stock,
-        long maximumPurchaseLimitCount,
+        int maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,
         ZonedDateTime startedAt,
@@ -48,7 +37,7 @@ public record AuctionInfo(
     public static final String ERROR_VARIATION_DURATION = "변동 시간 단위는 0보다 커야 합니다. 변동 시간: %s";
     public static final String ERROR_NULL_VALUE = "%s는 Null일 수 없습니다.";
 
-    public AuctionInfo {
+    public SellerAuctionInfo {
         validateNotNull(auctionId, "경매 ID");
         validateNotNull(sellerId, "판매자 ID");
         validateNotNull(productName, "상품 이름");
@@ -90,7 +79,7 @@ public record AuctionInfo(
         }
     }
 
-    private void validateMaximumPurchaseLimitCount(long maximumPurchaseLimitCount) {
+    private void validateMaximumPurchaseLimitCount(int maximumPurchaseLimitCount) {
         if (maximumPurchaseLimitCount <= 0) {
             throw new BadRequestException(String.format(ERROR_MAXIMUM_PURCHASE_LIMIT_COUNT, maximumPurchaseLimitCount),
                     ErrorCode.A003);

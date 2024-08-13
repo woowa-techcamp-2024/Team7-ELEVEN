@@ -17,7 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class AuctionInfoTest {
+public class SellerAuctionInfoTest {
     static Stream<Arguments> auctionInfoDtoArguments() {
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.",
@@ -58,23 +58,24 @@ class AuctionInfoTest {
         AuctionStatus status = AuctionStatus.WAITING;
 
         // when
-        AuctionInfo auctionInfo = new AuctionInfo(auctionId, sellerId, productName, originPrice, currentPrice, stock,
+        SellerAuctionInfo sellerAuctionInfo = new SellerAuctionInfo(auctionId, sellerId, productName, originPrice,
+                currentPrice, stock,
                 maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt, true, status);
 
         // then
         assertAll(
-                () -> assertThat(auctionInfo.sellerId()).isEqualTo(sellerId),
-                () -> assertThat(auctionInfo.productName()).isEqualTo(productName),
-                () -> assertThat(auctionInfo.originPrice()).isEqualTo(originPrice),
-                () -> assertThat(auctionInfo.currentPrice()).isEqualTo(currentPrice),
-                () -> assertThat(auctionInfo.stock()).isEqualTo(stock),
-                () -> assertThat(auctionInfo.maximumPurchaseLimitCount()).isEqualTo(maximumPurchaseLimitCount),
-                () -> assertThat(auctionInfo.pricePolicy()).isEqualTo(pricePolicy),
-                () -> assertThat(auctionInfo.variationDuration()).isEqualTo(varitationDuration),
-                () -> assertThat(auctionInfo.startedAt()).isEqualTo(startedAt),
-                () -> assertThat(auctionInfo.finishedAt()).isEqualTo(finishedAt),
-                () -> assertThat(auctionInfo.isShowStock()).isTrue(),
-                () -> assertThat(auctionInfo.status()).isEqualTo(status)
+                () -> assertThat(sellerAuctionInfo.sellerId()).isEqualTo(sellerId),
+                () -> assertThat(sellerAuctionInfo.productName()).isEqualTo(productName),
+                () -> assertThat(sellerAuctionInfo.originPrice()).isEqualTo(originPrice),
+                () -> assertThat(sellerAuctionInfo.currentPrice()).isEqualTo(currentPrice),
+                () -> assertThat(sellerAuctionInfo.stock()).isEqualTo(stock),
+                () -> assertThat(sellerAuctionInfo.maximumPurchaseLimitCount()).isEqualTo(maximumPurchaseLimitCount),
+                () -> assertThat(sellerAuctionInfo.pricePolicy()).isEqualTo(pricePolicy),
+                () -> assertThat(sellerAuctionInfo.variationDuration()).isEqualTo(varitationDuration),
+                () -> assertThat(sellerAuctionInfo.startedAt()).isEqualTo(startedAt),
+                () -> assertThat(sellerAuctionInfo.finishedAt()).isEqualTo(finishedAt),
+                () -> assertThat(sellerAuctionInfo.isShowStock()).isTrue(),
+                () -> assertThat(sellerAuctionInfo.status()).isEqualTo(status)
         );
     }
 
@@ -97,7 +98,7 @@ class AuctionInfoTest {
             AuctionStatus status
     ) {
         // expect
-        assertThatThrownBy(() -> AuctionInfo.builder()
+        assertThatThrownBy(() -> SellerAuctionInfo.builder()
                 .auctionId(auctionId)
                 .sellerId(sellerId)
                 .productName(productName)
