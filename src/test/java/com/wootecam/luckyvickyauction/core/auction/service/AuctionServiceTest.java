@@ -322,4 +322,34 @@ class AuctionServiceTest {
                             ErrorCode.A014));
         }
     }
+
+    // TODO: [선행 FakeAuctionRepository 머지되면 작성할 예정] [writeAt: 2024/08/13/17:27] [writeBy: HiiWee]
+    @Nested
+    class changeStock_메소드는 {
+
+        @Nested
+        class 만약_요청한_사용자가_판매자가_아니라면 {
+
+            @Test
+            void 예외가_발생한다() {
+            }
+        }
+
+        @Nested
+        class 만약_요청_판매자와_경매를_만든_판매자가_다르다면 {
+
+            @Test
+            void 예외가_발생한다() {
+            }
+        }
+
+        @Nested
+        class 정상적인_재고_변경_요청이_오면 {
+
+            @Test
+            void 재고를_변경한다() {
+
+            }
+        }
+    }
 }

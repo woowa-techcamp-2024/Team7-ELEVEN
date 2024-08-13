@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.domain;
 
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
@@ -9,6 +10,9 @@ import lombok.Getter;
 
 @Getter
 public class Auction {
+
+    private static final int MINIMUM_STOCK_COUNT = 1;
+
     private final Long sellerId;
     private final String productName;
     private long originPrice;
@@ -95,5 +99,18 @@ public class Auction {
         }
 
         this.pricePolicy = newPricePolicy;
+    }
+
+    public void changeStock(long changeRequestStock) {
+        if (changeRequestStock < MINIMUM_STOCK_COUNT) {
+            String message = String.format("변경 할 재고는 %d개 이상이어야 합니다. inputStock=%d", MINIMUM_STOCK_COUNT,
+                    changeRequestStock);
+            throw new BadRequestException(message, ErrorCode.A019);
+        }
+        stock = changeRequestStock;
+    }
+
+    public boolean isSeller(Long sellerId) {
+        return this.sellerId.equals(sellerId);
     }
 }
