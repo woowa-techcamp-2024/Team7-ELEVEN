@@ -15,22 +15,10 @@ public class FakeAuctionRepository implements AuctionRepository {
         if (auction.getId() == null || auction.getId() == 0L) {
             // 새로운 Auction 객체인 경우
             Long newId = id++;
-            Auction newAuction = Auction.builder()
-                    .id(newId)
-                    .startedAt(auction.getStartedAt())
-                    .sellerId(auction.getSellerId())
-                    .productName(auction.getProductName())
-                    .originPrice(auction.getOriginPrice())
-                    .stock(auction.getStock())
-                    .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
-                    .pricePolicy(auction.getPricePolicy())
-                    .variationDuration(auction.getVariationDuration())
-                    .finishedAt(auction.getFinishedAt())
-                    .isShowStock(auction.isShowStock())
-                    .auctionStatus(auction.getStatus())
-                    .build();
-            auctions.put(newId, newAuction);
-            return newAuction;
+
+            auction.setId(newId);
+            auctions.put(newId, auction);
+            return auction;
         } else {
             // 기존 Auction 객체를 업데이트하는 경우
             auctions.put(auction.getId(), auction);

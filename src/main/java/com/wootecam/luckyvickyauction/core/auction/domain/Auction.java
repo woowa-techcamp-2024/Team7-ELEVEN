@@ -30,8 +30,7 @@ public class Auction {
                     final long maximumPurchaseLimitCount, final PricePolicy pricePolicy,
                     final Duration variationDuration,
                     final ZonedDateTime finishedAt,
-                    final boolean isShowStock,
-                    final AuctionStatus auctionStatus
+                    final boolean isShowStock
     ) {
         this.id = id;
         this.startedAt = startedAt;
@@ -45,12 +44,7 @@ public class Auction {
         this.variationDuration = variationDuration;
         this.finishedAt = finishedAt;
         this.isShowStock = isShowStock;
-
-        if (auctionStatus == null) {
-            this.status = AuctionStatus.WAITING;
-        } else {
-            this.status = auctionStatus;
-        }
+        this.status = AuctionStatus.WAITING;
 
         pricePolicy.validate(originPrice);
     }
@@ -112,5 +106,9 @@ public class Auction {
         }
 
         this.pricePolicy = newPricePolicy;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
