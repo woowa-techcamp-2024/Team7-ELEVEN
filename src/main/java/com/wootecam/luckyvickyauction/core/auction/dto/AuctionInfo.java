@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.dto;
 
+import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import lombok.Builder;
@@ -22,7 +23,8 @@ public record AuctionInfo(
         long currentPrice,
         long stock,
         int maximumPurchaseLimitCount,
-        boolean isShowStock
+        boolean isShowStock,
+        AuctionStatus status
 ) {
 
     public static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
@@ -36,6 +38,7 @@ public record AuctionInfo(
         validateNotNull(auctionId, "경매 ID");
         validateNotNull(sellerId, "판매자 ID");
         validateNotNull(productName, "상품 이름");
+        validateNotNull(status, "경매 상태");
 
         validateProductName(productName);
         validateOriginPrice(originPrice);
@@ -77,7 +80,7 @@ public record AuctionInfo(
 
     private void validateNotNull(Object value, String fieldName) {
         if (value == null) {
-            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.A007);
+            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.G000);
         }
     }
 }
