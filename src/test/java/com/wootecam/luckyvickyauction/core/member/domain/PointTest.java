@@ -44,4 +44,16 @@ class PointTest {
         // then
         assertThat(point.getAmount()).isEqualTo(100);
     }
+
+    @Test
+    void 포인트가_최대치_이상_충전되면_예외가_발생한다() {
+        // given
+        Point point = new Point(Long.MAX_VALUE);
+
+        // expect
+        assertThatThrownBy(() -> point.plus(1))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("포인트가 최대치를 초과하였습니다.")
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.P006));
+    }
 }

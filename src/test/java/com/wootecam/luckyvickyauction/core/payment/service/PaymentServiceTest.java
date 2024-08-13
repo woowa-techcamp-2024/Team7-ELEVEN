@@ -112,4 +112,31 @@ class PaymentServiceTest {
             }
         }
     }
+
+    @Nested
+    class chargePoint_메소드는 {
+
+        @Nested
+        class 정상적인_요청_흐름이면 {
+
+            @Test
+            void 포인트가_충전된다() {
+                // given
+                // when
+                // then
+            }
+        }
+
+        @Nested
+        class 만약_충전할_포인트가_음수라면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                // when
+                // then
+            }
+
+        }
+    }
 }
