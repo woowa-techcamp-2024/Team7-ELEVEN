@@ -4,7 +4,9 @@ import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
+import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
@@ -55,13 +57,39 @@ public class AuctionService {
      * 경매 단건 조회
      */
     public AuctionInfo getAuction(long auctionId) {
-        // auctionRepository 에서 auctionId로 조회
         Auction auction = auctionRepository.findById(auctionId)
                 .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
                         ErrorCode.A011));
 
-        // AuctionInfo 에 정리해서 반환
         return Mapper.convertToAuctionInfo(auction);
+    }
+
+    /**
+     * 구매자용 경매 조회
+     *
+     * @param auctionId 경매 ID
+     * @return 구매자용 경매 정보
+     */
+    public BuyerAuctionInfo getBuyerAuction(long auctionId) {
+        Auction auction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
+                        ErrorCode.A011));
+
+        return Mapper.convertToBuyerAuctionInfo(auction);
+    }
+
+    /**
+     * 판매자용 경매 조회
+     *
+     * @param auctionId 경매 ID
+     * @return 판매자용 경매 정보
+     */
+    public SellerAuctionInfo getSellerAuction(long auctionId) {
+        Auction auction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
+                        ErrorCode.A011));
+
+        return Mapper.convertToSellerAuctionInfo(auction);
     }
 
     /**
