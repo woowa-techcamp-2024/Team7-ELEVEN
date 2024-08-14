@@ -422,11 +422,6 @@ class AuctionServiceTest {
         }
     }
 
-    private Auction saveWaitingAuction() {
-        Auction auction = AuctionFixture.createWaitingAuction();
-
-        return auctionRepository.save(auction);
-    }
 
     /**
      * 현재 RUNNING 상태인 Auction을 생성 및 Repository에 저장하고 반환합니다.
@@ -435,6 +430,11 @@ class AuctionServiceTest {
      */
     private Auction saveRunningAuction() {
         Auction auction = AuctionFixture.createRunningAuction();
+        return auctionRepository.save(auction);
+    }
+
+    private Auction saveWaitingAuction() {
+        Auction auction = AuctionFixture.createWaitingAuction();
         return auctionRepository.save(auction);
     }
 
