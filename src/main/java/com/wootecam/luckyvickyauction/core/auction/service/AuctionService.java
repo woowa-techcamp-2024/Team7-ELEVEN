@@ -53,9 +53,14 @@ public class AuctionService {
     }
 
     /**
-     * 경매 종료 경매 시작 전에는 경매를 종료할 수 있다.
+     * 경매 시작 전에는 경매를 취소할 수 있다.
      */
-    public void closeAuction(long auctionId) {
+    public void cancelAuction(SignInInfo signInInfo, long auctionId) {
+        // 회원 권한이 판매자인지 확인한다.
+        // 경매 정보를 불러온다.
+        // 경매의 소유주가 해당 판매자인지 확인한다.
+        // 삭제하려는 경매의 상태가 '경매 시작 전'인지 확인한다.
+        // 경매 삭제를 진행한다.
     }
 
     /**
