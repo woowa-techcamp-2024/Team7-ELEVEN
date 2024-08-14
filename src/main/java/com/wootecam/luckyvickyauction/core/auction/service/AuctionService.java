@@ -80,7 +80,8 @@ public class AuctionService {
             throw new BadRequestException(message, ErrorCode.A026);
         }
 
-        // 취소 삭제를 진행한다.
+        // 취소를 진행한다.
+        auctionRepository.deleteById(command.auctionId());
     }
 
     /**

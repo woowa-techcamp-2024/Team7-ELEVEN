@@ -14,6 +14,7 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -36,7 +37,19 @@ abstract class CancelAuctionTest {
 
     @Test
     @Disabled
-    void 정상_처리한다() {
+    void 정상적으로_취소되어_경매가_삭제된다() {
+        // given
+        SignInInfo signInInfo = new SignInInfo(1L, Role.SELLER);
+        CancelAuctionCommand command = new CancelAuctionCommand(ZonedDateTime.now(), 1L);
+        Auction auction = AuctionFixture.createWaitingAuction();
+        auctionRepository.save(auction);
+
+        // when
+        auctionService.cancelAuction(signInInfo, command);
+        Optional<Auction> foundAuction = auctionRepository.findById(1L);
+
+        // then
+        assertThat(foundAuction).isNotPresent();
     }
 
     static Stream<Arguments> generateInvalidAuction() {
