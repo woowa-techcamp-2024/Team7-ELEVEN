@@ -18,7 +18,8 @@ public class Auction {
     private final String productName;
     private long originPrice;
     private long currentPrice;
-    private long stock;
+    private long originStock;
+    private long currentStock;
     private long maximumPurchaseLimitCount;
     private PricePolicy pricePolicy;
     private Duration variationDuration;
@@ -34,7 +35,8 @@ public class Auction {
             String productName,
             long originPrice,
             long currentPrice,
-            long stock,
+            long originStock,
+            long currentStock,
             long maximumPurchaseLimitCount,
             PricePolicy pricePolicy,
             Duration variationDuration,
@@ -48,7 +50,8 @@ public class Auction {
         this.productName = productName;
         this.originPrice = originPrice;
         this.currentPrice = currentPrice;
-        this.stock = stock;
+        this.originStock = originStock;
+        this.currentStock = currentStock;
         this.maximumPurchaseLimitCount = maximumPurchaseLimitCount;
         this.pricePolicy = pricePolicy;
         this.variationDuration = variationDuration;
@@ -75,7 +78,7 @@ public class Auction {
             return false;
         }
 
-        return stock >= quantity;  // 구매 요청 수량보다 재고가 많은지 확인한다.
+        return currentStock >= quantity;  // 구매 요청 수량보다 재고가 많은지 확인한다.
     }
 
     public void update() {
@@ -111,7 +114,8 @@ public class Auction {
                     changeRequestStock);
             throw new BadRequestException(message, ErrorCode.A019);
         }
-        stock = changeRequestStock;
+        originStock = changeRequestStock;
+        currentStock = changeRequestStock;
     }
 
     public boolean isSeller(Long sellerId) {
