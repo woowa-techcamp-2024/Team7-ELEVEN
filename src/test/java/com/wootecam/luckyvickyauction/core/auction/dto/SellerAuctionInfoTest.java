@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
@@ -22,19 +21,19 @@ public class SellerAuctionInfoTest {
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.",
                         ErrorCode.A001, 1L, 1L, "", 10000, 10000, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true, AuctionStatus.WAITING),
+                        ZonedDateTime.now(), true),
                 Arguments.of("상품 원가는 0보다 커야 합니다. 상품 원가: 0",
                         ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true, AuctionStatus.WAITING),
+                        ZonedDateTime.now(), true),
                 Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0",
                         ErrorCode.A013, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true, AuctionStatus.WAITING),
+                        ZonedDateTime.now(), true),
                 Arguments.of("재고는 0보다 작을 수 없습니다. 재고: -1",
                         ErrorCode.A000, 1L, 1L, "상품이름", 10000, 10000, -1, 10, Duration.ofMinutes(1L),
-                        ZonedDateTime.now(), ZonedDateTime.now(), true, AuctionStatus.WAITING),
+                        ZonedDateTime.now(), ZonedDateTime.now(), true),
                 Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0",
                         ErrorCode.A003, 1L, 1L, "상품이름", 10000, 10000, 10, 0, Duration.ofMinutes(1L),
-                        ZonedDateTime.now(), ZonedDateTime.now(), true, AuctionStatus.WAITING)
+                        ZonedDateTime.now(), ZonedDateTime.now(), true)
         );
     }
 
@@ -55,12 +54,11 @@ public class SellerAuctionInfoTest {
 
         ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1L);
         ZonedDateTime finishedAt = ZonedDateTime.now();
-        AuctionStatus status = AuctionStatus.WAITING;
 
         // when
         SellerAuctionInfo sellerAuctionInfo = new SellerAuctionInfo(auctionId, sellerId, productName, originPrice,
                 currentPrice, stock,
-                maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt, true, status);
+                maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt, true);
 
         // then
         assertAll(
@@ -74,8 +72,7 @@ public class SellerAuctionInfoTest {
                 () -> assertThat(sellerAuctionInfo.variationDuration()).isEqualTo(varitationDuration),
                 () -> assertThat(sellerAuctionInfo.startedAt()).isEqualTo(startedAt),
                 () -> assertThat(sellerAuctionInfo.finishedAt()).isEqualTo(finishedAt),
-                () -> assertThat(sellerAuctionInfo.isShowStock()).isTrue(),
-                () -> assertThat(sellerAuctionInfo.status()).isEqualTo(status)
+                () -> assertThat(sellerAuctionInfo.isShowStock()).isTrue()
         );
     }
 
@@ -94,8 +91,7 @@ public class SellerAuctionInfoTest {
             Duration variationDuration,
             ZonedDateTime startedAt,
             ZonedDateTime finishedAt,
-            boolean isShowStock,
-            AuctionStatus status
+            boolean isShowStock
     ) {
         // expect
         assertThatThrownBy(() -> SellerAuctionInfo.builder()
@@ -111,7 +107,6 @@ public class SellerAuctionInfoTest {
                 .startedAt(startedAt)
                 .finishedAt(finishedAt)
                 .isShowStock(isShowStock)
-                .status(status)
                 .build()
         )
                 .isInstanceOf(BadRequestException.class)

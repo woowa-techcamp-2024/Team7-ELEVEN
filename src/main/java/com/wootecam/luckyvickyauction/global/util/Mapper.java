@@ -31,7 +31,6 @@ public final class Mapper {
                 .stock(auction.getCurrentStock())
                 .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
                 .isShowStock(auction.isShowStock())
-                .status(auction.getStatus())
                 .build();
     }
 
@@ -71,7 +70,6 @@ public final class Mapper {
                 .startedAt(auction.getStartedAt())
                 .finishedAt(auction.getFinishedAt())
                 .isShowStock(auction.isShowStock())
-                .status(auction.getStatus())
                 .build();
     }
 
@@ -95,7 +93,6 @@ public final class Mapper {
                 .startedAt(auction.getStartedAt())
                 .finishedAt(auction.getFinishedAt())
                 .isShowStock(auction.isShowStock())
-                .status(auction.getStatus())
                 .build();
     }
 }

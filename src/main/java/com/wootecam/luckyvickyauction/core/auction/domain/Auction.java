@@ -26,7 +26,6 @@ public class Auction {
     private ZonedDateTime startedAt;
     private ZonedDateTime finishedAt;
     private boolean isShowStock;
-    private AuctionStatus status;
 
     @Builder
     public Auction(
@@ -42,8 +41,7 @@ public class Auction {
             Duration variationDuration,
             ZonedDateTime startedAt,
             ZonedDateTime finishedAt,
-            boolean isShowStock,
-            AuctionStatus status
+            boolean isShowStock
     ) {
         this.id = id;
         this.sellerId = sellerId;
@@ -58,7 +56,6 @@ public class Auction {
         this.startedAt = startedAt;
         this.finishedAt = finishedAt;
         this.isShowStock = isShowStock;
-        this.status = status;
 
         pricePolicy.validate(originPrice);
     }
