@@ -180,7 +180,7 @@ public class AuctionService {
      */
     public void cancelBid(long auctionId, long quantity) {
         Auction auction = findAuctionObject(auctionId);
-        auction.increaseCurrentStock(quantity);
+        auction.refundStock(quantity);
         auctionRepository.save(auction);
     }
 
