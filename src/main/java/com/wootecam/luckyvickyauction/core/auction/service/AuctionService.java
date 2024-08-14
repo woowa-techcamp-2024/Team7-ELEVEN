@@ -38,7 +38,8 @@ public class AuctionService {
                 .productName(command.productName())
                 .currentPrice(command.originPrice())
                 .originPrice(command.originPrice())
-                .stock(command.stock())
+                .currentStock(command.stock())
+                .originStock(command.stock())
                 .maximumPurchaseLimitCount(command.maximumPurchaseLimitCount())
                 .pricePolicy(command.pricePolicy())
                 .variationDuration(command.variationDuration())
@@ -149,7 +150,7 @@ public class AuctionService {
 
         if (!auction.canPurchase(quantity)) {
             throw new BadRequestException(
-                    "해당 수량만큼 구매할 수 없습니다. 재고: " + auction.getStock() + ", "
+                    "해당 수량만큼 구매할 수 없습니다. 재고: " + auction.getCurrentStock() + ", "
                             + "요청: " + quantity + ", 인당구매제한: " + auction.getMaximumPurchaseLimitCount(),
                     ErrorCode.A014);
         }
