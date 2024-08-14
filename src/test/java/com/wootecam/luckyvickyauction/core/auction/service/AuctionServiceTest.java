@@ -408,7 +408,6 @@ class AuctionServiceTest {
                         .startedAt(ZonedDateTime.now().minusHours(1))
                         .finishedAt(ZonedDateTime.now().plusHours(1))
                         .isShowStock(true)
-                        .status(AuctionStatus.RUNNING)
                         .build();
                 auction = auctionRepository.save(auction);
 
