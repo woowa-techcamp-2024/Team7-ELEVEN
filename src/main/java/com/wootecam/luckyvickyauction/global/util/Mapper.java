@@ -4,6 +4,8 @@ import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
+import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +23,19 @@ public final class Mapper {
                 .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
                 .isShowStock(auction.isShowStock())
                 .status(auction.getStatus())
+                .build();
+    }
+
+    public static BidHistoryInfo convertToBidHistoryInfo(BidHistory bidHistory) {
+        return BidHistoryInfo.builder()
+                .bidHistoryId(bidHistory.getId())
+                .productName(bidHistory.getProductName())
+                .price(bidHistory.getPrice())
+                .quantity(bidHistory.getQuantity())
+                .bidStatus(bidHistory.getBidStatus())
+                .auctionId(bidHistory.getAuctionId())
+                .seller(bidHistory.getSeller())
+                .buyer(bidHistory.getBuyer())
                 .build();
     }
 
