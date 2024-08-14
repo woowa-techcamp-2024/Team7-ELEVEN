@@ -258,7 +258,7 @@ class AuctionTest {
     }
 
     @Nested
-    class updateCurrentStock_메소드는 {
+    class refundStock_메소드는 {
 
         @Nested
         class 정상적인_요청이_오면 {

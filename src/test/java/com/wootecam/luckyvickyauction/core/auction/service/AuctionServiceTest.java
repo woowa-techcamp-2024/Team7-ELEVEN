@@ -390,7 +390,7 @@ class AuctionServiceTest {
     class cancelBid_메소드는 {
 
         @Nested
-        class 정상적인_재고_변경_요청이_오면 {
+        class 정상적인_입찰_취소_요청이_오면 {
 
             @Test
             void 입찰을_취소한다() {
