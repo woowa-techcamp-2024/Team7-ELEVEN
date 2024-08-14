@@ -19,6 +19,7 @@ import java.util.Objects;
  * @param maximumPurchaseLimitCount 최대 구매 제한 수량 (인당 구매 가능 수량)
  * @param pricePolicy               경매 유형 {@link PricePolicy}
  * @param variationDuration         가격 변동 주기
+ * @param requestTime               요청 시간
  * @param startedAt                 경매 시작 시간
  * @param finishedAt                경매 종료 시간
  */
@@ -31,16 +32,18 @@ public record CreateAuctionCommand(
         long maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,
+        ZonedDateTime requestTime,
         ZonedDateTime startedAt,
         ZonedDateTime finishedAt,
         boolean isShowStock
 ) {
+    private static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
+    private static final String ERROR_ORIGIN_PRICE = "상품 원가는 0보다 커야 합니다. 상품 원가: %d";
     private static final String ERROR_MAX_PURCHASE_LIMIT = "최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: %d";
     private static final String ERROR_VARIATION_DURATION = "변동 시간 단위는 0보다 커야 합니다. 변동 시간: %s";
     private static final String ERROR_AUCTION_TIME = "경매의 시작 시간은 종료 시간보다 이전이어야 합니다. 시작 시간: %s, 종료 시간: %s";
+    private static final String ERROR_STARTED_AT = "경매의 시작시간은 반드시 요청 시간보다 늦어야 합니다. 요청 시간: %s, 시작 시간: %s";
     private static final String ERROR_STOCK = "재고는 인당 구매 수량보다 작을 수 없습니다. 재고: %d, 인당 구매 수량: %d";
-    private static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
-    private static final String ERROR_ORIGIN_PRICE = "상품 원가는 0보다 커야 합니다. 상품 원가: %d";
     private static final String ERROR_NULL_VALUE = "%s는 Null일 수 없습니다.";
 
     public CreateAuctionCommand {
@@ -48,6 +51,7 @@ public record CreateAuctionCommand(
         validateNotNull(productName, "상품 이름");
         validateNotNull(pricePolicy, "경매 유형");
         validateNotNull(variationDuration, "가격 변동 주기");
+        validateNotNull(requestTime, "요청 시간");
         validateNotNull(startedAt, "경매 시작 시간");
         validateNotNull(finishedAt, "경매 종료 시간");
 
@@ -56,6 +60,7 @@ public record CreateAuctionCommand(
         validateMaximumPurchaseLimitCount(maximumPurchaseLimitCount);
         validateVariationDuration(variationDuration);
         validateAuctionTime(startedAt, finishedAt);
+        validateStartedAt(requestTime, startedAt);
         validateStock(stock, maximumPurchaseLimitCount);
     }
 
@@ -87,6 +92,13 @@ public record CreateAuctionCommand(
     private void validateAuctionTime(ZonedDateTime startedAt, ZonedDateTime finishedAt) {
         if (!startedAt.isBefore(finishedAt)) {
             throw new BadRequestException(String.format(ERROR_AUCTION_TIME, startedAt, finishedAt), ErrorCode.A006);
+        }
+    }
+
+    private void validateStartedAt(ZonedDateTime nowAt, ZonedDateTime startedAt) {
+        if (startedAt.isBefore(nowAt)) {
+            String message = String.format(ERROR_STARTED_AT, nowAt, startedAt);
+            throw new BadRequestException(message, ErrorCode.A020);
         }
     }
 

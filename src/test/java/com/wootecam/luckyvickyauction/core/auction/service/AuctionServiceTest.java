@@ -19,7 +19,6 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,7 +57,7 @@ class AuctionServiceTest {
 
         CreateAuctionCommand command = new CreateAuctionCommand(
                 sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true
+                varitationDuration, ZonedDateTime.now(), startedAt, finishedAt, true
         );
 
         // when
@@ -96,12 +95,12 @@ class AuctionServiceTest {
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-        ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+        ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
                 sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true
+                varitationDuration, ZonedDateTime.now(), startedAt, finishedAt, true
         );
 
         // expect
@@ -123,12 +122,12 @@ class AuctionServiceTest {
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-        ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+        ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
                 sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, startedAt, finishedAt, true
+                varitationDuration, ZonedDateTime.now(), startedAt, finishedAt, true
         );
 
         // expect
@@ -157,8 +156,8 @@ class AuctionServiceTest {
             Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
             PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-            ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 9, 0, 0, 0, 0, ZoneId.of("Asia/Seoul"));
-            ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 9, 1, 0, 0, 0, ZoneId.of("Asia/Seoul"));
+            ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1L);
+            ZonedDateTime finishedAt = startedAt.plusHours(1L);
 
             final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
                     auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
@@ -176,41 +175,20 @@ class AuctionServiceTest {
         @DisplayName("이미 시작한 경매를 변경하려는 경우 예외가 발생하고 에러 코드는 A012이다.")
         void when_change_auction_that_is_started() {
             // given
-            Long auctionId = 1L;  // 경매 정보
-            Long sellerId = 1L;
-            int originPrice = 10000;
-            int stock = 999999;  // 재고
-            int maximumPurchaseLimitCount = 10;
-
-            int variationWidth = 1000;
-            Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
-            PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
-
-            ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1);
-            ZonedDateTime finishedAt = ZonedDateTime.now().plusHours(1);
-            ZonedDateTime requestTime = ZonedDateTime.now().plusMinutes(30);
-
-            final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
-                    auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                    varitationDuration, startedAt, finishedAt, true, requestTime
+            Auction runningAuction = saveRunningAuction();
+            UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
+                    runningAuction.getId(),
+                    runningAuction.getSellerId(),
+                    runningAuction.getOriginPrice(),
+                    80L,
+                    runningAuction.getMaximumPurchaseLimitCount(),
+                    runningAuction.getPricePolicy(),
+                    runningAuction.getVariationDuration(),
+                    ZonedDateTime.now().plusHours(1L),
+                    ZonedDateTime.now().plusHours(2L),
+                    true,
+                    ZonedDateTime.now()
             );
-
-            Auction auction = Auction.builder()
-                    .startedAt(startedAt)
-                    .finishedAt(finishedAt)
-                    .sellerId(1L)
-                    .productName("Test Product")
-                    .currentPrice(10000)
-                    .originPrice(10000)
-                    .stock(999999)
-                    .maximumPurchaseLimitCount(10)
-                    .pricePolicy(new ConstantPricePolicy(1000))
-                    .variationDuration(Duration.ofMinutes(1L))
-                    .isShowStock(true)
-                    .status(AuctionStatus.RUNNING)
-                    .build();
-            auction.updateStatus();
-            auctionRepository.save(auction);
 
             // expect
             assertThatThrownBy(() -> auctionService.changeOption(updateAuctionCommand))
@@ -223,28 +201,16 @@ class AuctionServiceTest {
     @Nested
     @DisplayName("경매 입찰(구매)을 진행할 때")
     class submitBidTest {
+
         @Test
         @DisplayName("요청을 정상적으로 처리한다.")
-        void success_case() throws Exception {
+        void success_case() {
             // given
             long auctionId = 1L;
             long price = 10000L;
             long quantity = 100L;
 
-            Auction auction = Auction.builder()
-                    .startedAt(ZonedDateTime.now())
-                    .finishedAt(ZonedDateTime.now().plusMinutes(10))
-                    .sellerId(1L)
-                    .productName("Test Product")
-                    .originPrice(10000)
-                    .stock(100)
-                    .maximumPurchaseLimitCount(100)
-                    .pricePolicy(new ConstantPricePolicy(1000))
-                    .variationDuration(Duration.ofMinutes(1L))
-                    .isShowStock(true)
-                    .build();
-            auction.updateStatus();
-            auctionRepository.save(auction);
+            saveRunningAuction();
 
             // expect
             assertThatNoException().isThrownBy(() -> auctionService.submitBid(auctionId, price, quantity));
@@ -273,20 +239,7 @@ class AuctionServiceTest {
             long price = 10000L;
             long quantity = 100L;
 
-            Auction auction = Auction.builder()
-                    .startedAt(ZonedDateTime.now())
-                    .finishedAt(ZonedDateTime.now().plusMinutes(10))
-                    .sellerId(1L)
-                    .productName("Test Product")
-                    .originPrice(10000)
-                    .stock(50)  // 경매 재고
-                    .maximumPurchaseLimitCount(50)
-                    .pricePolicy(new ConstantPricePolicy(1000))
-                    .variationDuration(Duration.ofMinutes(1L))
-                    .isShowStock(true)
-                    .build();
-            auction.updateStatus();
-            auctionRepository.save(auction);
+            saveRunningAuction();
 
             // expect
             assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
@@ -303,20 +256,7 @@ class AuctionServiceTest {
             long price = 10000L;
             long quantity = 100L;
 
-            Auction auction = Auction.builder()
-                    .startedAt(ZonedDateTime.now())
-                    .finishedAt(ZonedDateTime.now().plusMinutes(10))
-                    .sellerId(1L)
-                    .productName("Test Product")
-                    .originPrice(10000)
-                    .stock(10000)
-                    .maximumPurchaseLimitCount(10)  // 인당 구매 수량 제한
-                    .pricePolicy(new ConstantPricePolicy(1000))
-                    .variationDuration(Duration.ofMinutes(1L))
-                    .isShowStock(true)
-                    .build();
-            auction.updateStatus();
-            auctionRepository.save(auction);
+            saveRunningAuction();
 
             // expect
             assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
@@ -332,20 +272,21 @@ class AuctionServiceTest {
             long price = 10000L;
             long quantity = 10L;
 
+            ZonedDateTime now = ZonedDateTime.now();
             Auction auction = Auction.builder()
-                    .startedAt(ZonedDateTime.now().minusMinutes(10))
-                    .finishedAt(ZonedDateTime.now().minusMinutes(5))
+                    .startedAt(now.plusHours(1L))
+                    .finishedAt(now.plusHours(2L))
                     .sellerId(1L)
                     .productName("Test Product")
                     .currentPrice(10000)
                     .originPrice(10000)
-                    .stock(10000)
-                    .maximumPurchaseLimitCount(10)  // 인당 구매 수량 제한
+                    .stock(100)
+                    .maximumPurchaseLimitCount(100)
                     .pricePolicy(new ConstantPricePolicy(1000))
                     .variationDuration(Duration.ofMinutes(1L))
                     .isShowStock(true)
+                    .status(AuctionStatus.WAITING)
                     .build();
-            auction.updateStatus();
             auctionRepository.save(auction);
 
             // expect
@@ -411,31 +352,30 @@ class AuctionServiceTest {
                 // then
                 assertThat(updatedAuction.getStock()).isEqualTo(50L);
             }
-
         }
+    }
 
-        /**
-         * 현재 RUNNING 상태인 Auction을 생성 및 Repository에 저장하고 반환합니다.
-         *
-         * @return 저장된 Auction 반환
-         */
-        private Auction saveRunningAuction() {
-            Auction auction = Auction.builder()
-                    .sellerId(1L)
-                    .productName("productName")
-                    .originPrice(10000L)
-                    .currentPrice(10000L)
-                    .stock(100L)
-                    .maximumPurchaseLimitCount(10L)
-                    .pricePolicy(new ConstantPricePolicy(1000L))
-                    .variationDuration(Duration.ofMinutes(1L))
-                    .startedAt(ZonedDateTime.now().minusHours(1))
-                    .finishedAt(ZonedDateTime.now().plusHours(1))
-                    .isShowStock(true)
-                    .status(AuctionStatus.RUNNING)
-                    .build();
+    /**
+     * 현재 RUNNING 상태인 Auction을 생성 및 Repository에 저장하고 반환합니다.
+     *
+     * @return 저장된 Auction 반환
+     */
+    private Auction saveRunningAuction() {
+        Auction auction = Auction.builder()
+                .sellerId(1L)
+                .productName("productName")
+                .originPrice(10000L)
+                .currentPrice(10000L)
+                .stock(100L)
+                .maximumPurchaseLimitCount(10L)
+                .pricePolicy(new ConstantPricePolicy(1000L))
+                .variationDuration(Duration.ofMinutes(1L))
+                .startedAt(ZonedDateTime.now().minusHours(1))
+                .finishedAt(ZonedDateTime.now().plusHours(1))
+                .isShowStock(true)
+                .status(AuctionStatus.RUNNING)
+                .build();
 
-            return auctionRepository.save(auction);
-        }
+        return auctionRepository.save(auction);
     }
 }

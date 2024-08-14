@@ -27,8 +27,8 @@ public record UpdateAuctionCommand(
         Long auctionId,
         Long sellerId,
         long originPrice,
-        int stock,
-        int maximumPurchaseLimitCount,
+        long stock,
+        long maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,
         ZonedDateTime startedAt,
@@ -37,11 +37,12 @@ public record UpdateAuctionCommand(
         // command meta info
         ZonedDateTime requestTime
 ) {
+    private static final String ERROR_ORIGIN_PRICE = "상품 원가는 0보다 커야 합니다. 상품 원가: %d";
     private static final String ERROR_MAX_PURCHASE_LIMIT = "최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: %d";
     private static final String ERROR_VARIATION_DURATION = "변동 시간 단위는 0보다 커야 합니다. 변동 시간: %s";
+    private static final String ERROR_REQUEST_TIME = "경매의 시작시간은 반드시 현재 시간보다 늦어야 합니다. 현재 시간: %s, 시작 시간: %s";
     private static final String ERROR_AUCTION_TIME = "경매의 시작 시간은 종료 시간보다 이전이어야 합니다. 시작 시간: %s, 종료 시간: %s";
     private static final String ERROR_STOCK = "재고는 인당 구매 수량보다 작을 수 없습니다. 재고: %d, 인당 구매 수량: %d";
-    private static final String ERROR_ORIGIN_PRICE = "상품 원가는 0보다 커야 합니다. 상품 원가: %d";
     private static final String ERROR_NULL_VALUE = "%s는 Null일 수 없습니다.";
 
     public UpdateAuctionCommand {
@@ -56,6 +57,7 @@ public record UpdateAuctionCommand(
         validateOriginPrice(originPrice);
         validateMaximumPurchaseLimitCount(maximumPurchaseLimitCount);
         validateVariationDuration(variationDuration);
+        validateRequestTimeAfterStartTime(requestTime, startedAt);
         validateAuctionTime(startedAt, finishedAt);
         validateStock(stock, maximumPurchaseLimitCount);
     }
@@ -66,7 +68,7 @@ public record UpdateAuctionCommand(
         }
     }
 
-    private void validateMaximumPurchaseLimitCount(int maximumPurchaseLimitCount) {
+    private void validateMaximumPurchaseLimitCount(long maximumPurchaseLimitCount) {
         if (maximumPurchaseLimitCount <= 0) {
             throw new BadRequestException(String.format(ERROR_MAX_PURCHASE_LIMIT, maximumPurchaseLimitCount),
                     ErrorCode.A003);
@@ -79,13 +81,20 @@ public record UpdateAuctionCommand(
         }
     }
 
+    private void validateRequestTimeAfterStartTime(ZonedDateTime requestTime, ZonedDateTime startedAt) {
+        if (startedAt.isBefore(requestTime)) {
+            String message = String.format(ERROR_REQUEST_TIME, requestTime, startedAt);
+            throw new BadRequestException(message, ErrorCode.A020);
+        }
+    }
+
     private void validateAuctionTime(ZonedDateTime startedAt, ZonedDateTime finishedAt) {
-        if (!startedAt.isBefore(finishedAt)) {
+        if (finishedAt.isBefore(startedAt) || finishedAt.isEqual(startedAt)) {
             throw new BadRequestException(String.format(ERROR_AUCTION_TIME, startedAt, finishedAt), ErrorCode.A006);
         }
     }
 
-    private void validateStock(int stock, int maximumPurchaseLimitCount) {
+    private void validateStock(long stock, long maximumPurchaseLimitCount) {
         if (stock < maximumPurchaseLimitCount) {
             throw new BadRequestException(String.format(ERROR_STOCK, stock, maximumPurchaseLimitCount), ErrorCode.A000);
         }
