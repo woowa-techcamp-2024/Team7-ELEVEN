@@ -54,9 +54,16 @@ public class AuctionService {
 
     /**
      * 경매 시작 전에는 경매를 취소할 수 있다.
+     *
+     * @param signInInfo 경매를 취소하려는 사용자 정보
+     * @param auctionId 경매 ID
      */
     public void cancelAuction(SignInInfo signInInfo, long auctionId) {
         // 회원 권한이 판매자인지 확인한다.
+        if (!signInInfo.isType(Role.SELLER)) {
+            throw new UnauthorizedException("판매자만 경매를 취소할 수 있습니다.", ErrorCode.A024);
+        }
+
         // 경매 정보를 불러온다.
         // 경매의 소유주가 해당 판매자인지 확인한다.
         // 삭제하려는 경매의 상태가 '경매 시작 전'인지 확인한다.

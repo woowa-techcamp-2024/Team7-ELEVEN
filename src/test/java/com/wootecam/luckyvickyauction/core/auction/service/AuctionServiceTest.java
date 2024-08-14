@@ -463,4 +463,13 @@ class AuctionServiceTest {
 
         return auctionRepository.save(auction);
     }
+
+    @Nested
+    class cancelAuction_메소드는 extends CancelAuctionTest {
+        @BeforeEach
+        void setUp() {
+            super.auctionRepository = AuctionServiceTest.this.auctionRepository;
+            super.auctionService = AuctionServiceTest.this.auctionService;
+        }
+    }
 }
