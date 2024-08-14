@@ -4,12 +4,23 @@ import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
+import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * 현재 재고는 currentStock을 담아 놓았습니다
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Mapper {
 
+    /**
+     * Auction을 AuctionInfo로 변환 - 재고의 경우에는 currentStock을 담아 놓았습니다
+     *
+     * @param auction
+     * @return
+     */
     public static AuctionInfo convertToAuctionInfo(Auction auction) {
         return AuctionInfo.builder()
                 .auctionId(auction.getId())
@@ -17,10 +28,23 @@ public final class Mapper {
                 .productName(auction.getProductName())
                 .originPrice(auction.getOriginPrice())
                 .currentPrice(auction.getCurrentPrice())
-                .stock(auction.getStock())
+                .stock(auction.getCurrentStock())
                 .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
                 .isShowStock(auction.isShowStock())
                 .status(auction.getStatus())
+                .build();
+    }
+
+    public static BidHistoryInfo convertToBidHistoryInfo(BidHistory bidHistory) {
+        return BidHistoryInfo.builder()
+                .bidHistoryId(bidHistory.getId())
+                .productName(bidHistory.getProductName())
+                .price(bidHistory.getPrice())
+                .quantity(bidHistory.getQuantity())
+                .bidStatus(bidHistory.getBidStatus())
+                .auctionId(bidHistory.getAuctionId())
+                .seller(bidHistory.getSeller())
+                .buyer(bidHistory.getBuyer())
                 .build();
     }
 
@@ -32,7 +56,7 @@ public final class Mapper {
      * @return
      */
     public static BuyerAuctionInfo convertToBuyerAuctionInfo(Auction auction) {
-        long stock = auction.isShowStock() ? auction.getStock() : 0;
+        long stock = auction.isShowStock() ? auction.getCurrentStock() : 0;
 
         return BuyerAuctionInfo.builder()
                 .auctionId(auction.getId())
@@ -64,7 +88,7 @@ public final class Mapper {
                 .productName(auction.getProductName())
                 .originPrice(auction.getOriginPrice())
                 .currentPrice(auction.getCurrentPrice())
-                .stock(auction.getStock())
+                .stock(auction.getCurrentStock())
                 .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
                 .pricePolicy(auction.getPricePolicy())
                 .variationDuration(auction.getVariationDuration())

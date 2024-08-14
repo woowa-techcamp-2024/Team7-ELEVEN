@@ -68,12 +68,12 @@ class AuctionServiceTest {
         // then
         assertThat(createdAuction)
                 .extracting(
-                        "sellerId", "productName", "originPrice", "currentPrice", "stock",
+                        "sellerId", "productName", "originPrice", "currentPrice", "originStock", "currentStock",
                         "maximumPurchaseLimitCount", "pricePolicy", "variationDuration",
                         "startedAt", "finishedAt", "isShowStock", "status"
                 )
                 .containsExactly(
-                        sellerId, productName, originPrice, originPrice, stock,
+                        sellerId, productName, originPrice, originPrice, stock, stock,
                         maximumPurchaseLimitCount, pricePolicy, varitationDuration,
                         startedAt, finishedAt, true, AuctionStatus.WAITING
                 );
@@ -209,7 +209,7 @@ class AuctionServiceTest {
             // given
             long auctionId = 1L;
             long price = 10000L;
-            long quantity = 100L;
+            long quantity = 10L;
 
             saveRunningAuction();
 
@@ -279,9 +279,10 @@ class AuctionServiceTest {
                     .finishedAt(now.plusHours(2L))
                     .sellerId(1L)
                     .productName("Test Product")
-                    .currentPrice(10000)
                     .originPrice(10000)
-                    .stock(100)
+                    .currentPrice(10000)
+                    .originStock(100)
+                    .currentStock(100)
                     .maximumPurchaseLimitCount(100)
                     .pricePolicy(new ConstantPricePolicy(1000))
                     .variationDuration(Duration.ofMinutes(1L))
@@ -378,7 +379,7 @@ class AuctionServiceTest {
                 Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
 
                 // then
-                assertThat(updatedAuction.getStock()).isEqualTo(50L);
+                assertThat(updatedAuction.getCurrentStock()).isEqualTo(50L);
             }
         }
     }
@@ -394,7 +395,8 @@ class AuctionServiceTest {
                 .productName("productName")
                 .originPrice(10000L)
                 .currentPrice(10000L)
-                .stock(100L)
+                .originStock(100L)
+                .currentStock(100L)
                 .maximumPurchaseLimitCount(10L)
                 .pricePolicy(new ConstantPricePolicy(1000L))
                 .variationDuration(Duration.ofMinutes(1L))
