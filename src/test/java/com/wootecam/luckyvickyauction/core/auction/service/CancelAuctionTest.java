@@ -3,18 +3,34 @@ package com.wootecam.luckyvickyauction.core.auction.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
+import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
+import com.wootecam.luckyvickyauction.core.auction.repository.FakeAuctionRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 // AuctionService.cancelAuction: 경매 취소 테스트
-class CancelAuctionTest {
+abstract class CancelAuctionTest {
 
-    protected AuctionRepository auctionRepository;
-    protected AuctionService auctionService;
+    private AuctionRepository auctionRepository;
+    private AuctionService auctionService;
+
+    @BeforeEach
+    void setUp() {
+        auctionRepository = new FakeAuctionRepository();
+        auctionService = new AuctionService(auctionRepository);
+    }
+
+    @Test
+    @Disabled
+    void 정상_처리한다() {
+    }
 
     @Test
     void 판매자가_권한이_없는_사용자_접근시_예외가_발생한다() {
@@ -22,11 +38,27 @@ class CancelAuctionTest {
         SignInInfo signInInfo = new SignInInfo(1L, Role.BUYER);
 
         // expect
-        assertThatThrownBy(() -> auctionService.cancelAuction(signInInfo, 1L))
+        assertThatThrownBy(
+                () -> auctionService.cancelAuction(signInInfo, 1L))
                 .isInstanceOf(UnauthorizedException.class)
                 .hasMessage("판매자만 경매를 취소할 수 있습니다.")
                 .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                         ErrorCode.A024));
     }
 
+    @Test
+    void 경매를_등록한_판매자와_경매를_수정하려는_판매자가_다른_경우_예외가_발생한다() {
+        // given
+        SignInInfo signInInfo = new SignInInfo(2L, Role.SELLER);
+        Auction auction = AuctionFixture.createWaitingAuction();
+        auctionRepository.save(auction);
+
+        // expect
+        assertThatThrownBy(
+                () -> auctionService.cancelAuction(signInInfo, 1L))
+                .isInstanceOf(UnauthorizedException.class)
+                .hasMessage("자신이 등록한 경매만 취소할 수 있습니다.")
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                        ErrorCode.A025));
+    }
 }

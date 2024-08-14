@@ -65,7 +65,13 @@ public class AuctionService {
         }
 
         // 경매 정보를 불러온다.
+        Auction auction = findAuctionObject(auctionId);
+
         // 경매의 소유주가 해당 판매자인지 확인한다.
+        if (!auction.isSeller(signInInfo.id())) {
+            throw new UnauthorizedException("자신이 등록한 경매만 취소할 수 있습니다.", ErrorCode.A025);
+        }
+
         // 삭제하려는 경매의 상태가 '경매 시작 전'인지 확인한다.
         // 경매 삭제를 진행한다.
     }
