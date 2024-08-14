@@ -264,7 +264,7 @@ class AuctionTest {
         class 정상적인_요청이_오면 {
 
             @Test
-            void 재고_변경이_완료된다() {
+            void 환불이_완료된다() {
                 // given
                 long originStock = 999999L;
                 long currentStock = 1L;
@@ -293,7 +293,7 @@ class AuctionTest {
         }
 
         @Nested
-        class 만약_변경할_재고량이_음수라면 {
+        class 만약_환불할_재고량이_0_이하라면 {
 
             @Test
             void 예외가_발생한다() {
@@ -319,14 +319,14 @@ class AuctionTest {
                 // expect
                 assertThatThrownBy(() -> auction.refundStock(-1L))
                         .isInstanceOf(BadRequestException.class)
-                        .hasMessage("변경할 재고는 0보다 작을 수 없습니다. inputStock=-1")
+                        .hasMessage("변경할 재고는 1보다 작을 수 없습니다. inputStock=-1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.A022));
             }
         }
 
         @Nested
-        class 만약_변경_후_재고가_원래_재고보다_많다면 {
+        class 만약_환불_후_재고가_원래_재고보다_많다면 {
 
             @Test
             void 예외가_발생한다() {
