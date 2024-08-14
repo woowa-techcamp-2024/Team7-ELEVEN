@@ -21,6 +21,9 @@ public class Point {
     }
 
     public void plus(final long price) {
+        if (price > 0 && amount > Long.MAX_VALUE - price) {
+            throw new BadRequestException("포인트가 최대치를 초과하였습니다.", ErrorCode.P006);
+        }
         amount += price;
     }
 

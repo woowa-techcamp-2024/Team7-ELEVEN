@@ -1,10 +1,30 @@
 package com.wootecam.luckyvickyauction.core.payment.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
+import com.wootecam.luckyvickyauction.core.member.domain.Point;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.repository.FakeMemberRepository;
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 // TODO: AuctionService 세부 사항 결정되면 테스트
 class PaymentServiceTest {
+
+    private MemberRepository memberRepository;
+    private PaymentService paymentService;
+
+    @BeforeEach
+    void setUp() {
+        memberRepository = new FakeMemberRepository();
+        paymentService = new PaymentService(null, memberRepository, null);
+    }
 
     @Nested
     class process_메소드는 {
@@ -110,6 +130,46 @@ class PaymentServiceTest {
                 // when
                 // then
             }
+        }
+    }
+
+    @Nested
+    class chargePoint_메소드는 {
+
+        @Nested
+        class 정상적인_요청_흐름이면 {
+
+            @Test
+            void 포인트가_충전된다() {
+                // given
+                Member member = new Member(1L, "test", "test", Role.BUYER, new Point(0));
+
+                // when
+                paymentService.chargePoint(member, 1000L);
+
+                // then
+                Member savedMember = memberRepository.findById(1L).get();
+                Point savedMemberPoint = savedMember.getPoint();
+                assertThat(savedMemberPoint.getAmount()).isEqualTo(1000L);
+            }
+        }
+
+        @Nested
+        class 만약_충전할_포인트가_음수라면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                Member member = new Member(1L, "test", "test", Role.BUYER, new Point(0));
+
+                // expect
+                assertThatThrownBy(() -> paymentService.chargePoint(member, -1L))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("포인트는 음수가 될 수 없습니다. 충전 포인트=-1")
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.P005));
+            }
+
         }
     }
 }

@@ -111,4 +111,19 @@ public class PaymentService {
         return bidHistoryRepository.findById(bidHistoryId).orElseThrow(
                 () -> new NotFoundException("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=" + bidHistoryId, ErrorCode.P002));
     }
+
+    /**
+     * 사용자의 포인트를 충전한다
+     * - 포인트가 음수이면 예외가 발생한다
+     * @param member        포인트를 충전할 사용자
+     * @param chargePoint   충전할 포인트
+     */
+    public void chargePoint(Member member, long chargePoint) {
+        if (chargePoint < 0) {
+            throw new BadRequestException("포인트는 음수가 될 수 없습니다. 충전 포인트=" + chargePoint, ErrorCode.P005);
+        }
+
+        member.chargePoint(chargePoint);
+        memberRepository.save(member);
+    }
 }
