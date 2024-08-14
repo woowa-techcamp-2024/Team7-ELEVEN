@@ -57,7 +57,7 @@ public class AuctionService {
      * 경매 시작 전에는 경매를 취소할 수 있다.
      *
      * @param signInInfo 경매를 취소하려는 사용자 정보
-     * @param command 취소할 경매 정보
+     * @param command    취소할 경매 정보
      */
     public void cancelAuction(SignInInfo signInInfo, CancelAuctionCommand command) {
         // 회원 권한이 판매자인지 확인한다.
