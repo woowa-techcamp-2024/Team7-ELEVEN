@@ -17,7 +17,6 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -36,7 +35,6 @@ abstract class CancelAuctionTest {
     }
 
     @Test
-    @Disabled
     void 정상적으로_취소되어_경매가_삭제된다() {
         // given
         SignInInfo signInInfo = new SignInInfo(1L, Role.SELLER);
