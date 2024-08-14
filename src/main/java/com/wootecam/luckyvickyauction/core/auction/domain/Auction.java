@@ -125,6 +125,26 @@ public class Auction {
         return this.sellerId.equals(sellerId);
     }
 
+    /**
+     * 현재 재고량을 변경합니다. <br> 1. 현재 재고 + 변경 재고량이 0보다 작은 경우 예외를 발생시킵니다 <br> 2. 현재 재고 + 변경 재고량이 원래 재고보다 많은 경우 예외를 발생시킵니다 <br> 3. 현재 재고를
+     * 변경합니다
+     *
+     * @param updateStockAmount 변경할 재고량
+     */
+    public void updateCurrentStock(long updateStockAmount) {
+        long newCurrentStock = this.currentStock + updateStockAmount;
+
+        if (newCurrentStock < 0) {
+            throw new BadRequestException("변경할 재고는 0보다 작을 수 없습니다. inputStock=" + updateStockAmount, ErrorCode.A022);
+        }
+
+        if (newCurrentStock > this.originStock) {
+            throw new BadRequestException("변경할 재고는 원래 재고보다 많을 수 없습니다. inputStock=" + updateStockAmount, ErrorCode.A023);
+        }
+
+        this.currentStock = newCurrentStock;
+    }
+
     // TODO: [SOLD_OUT의 상태관리는 어떻게 해야할것인가?!] [writeAt: 2024/08/14/11:12] [writeBy: HiiWee]
     public AuctionStatus currentStatus(ZonedDateTime requestTime) {
         if (requestTime.isBefore(startedAt)) {
