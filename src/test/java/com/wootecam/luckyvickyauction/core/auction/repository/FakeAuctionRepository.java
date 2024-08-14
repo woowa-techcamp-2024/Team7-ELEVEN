@@ -41,7 +41,6 @@ public class FakeAuctionRepository implements AuctionRepository {
                 .startedAt(auction.getStartedAt())
                 .finishedAt(auction.getFinishedAt())
                 .isShowStock(auction.isShowStock())
-                .status(auction.getStatus())
                 .build();
     }
 
@@ -60,7 +59,6 @@ public class FakeAuctionRepository implements AuctionRepository {
                 .startedAt(auction.getStartedAt())
                 .finishedAt(auction.getFinishedAt())
                 .isShowStock(auction.isShowStock())
-                .status(auction.getStatus())
                 .build();
     }
 

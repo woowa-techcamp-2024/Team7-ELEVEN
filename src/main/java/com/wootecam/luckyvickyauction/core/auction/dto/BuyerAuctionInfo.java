@@ -1,6 +1,5 @@
 package com.wootecam.luckyvickyauction.core.auction.dto;
 
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -24,8 +23,7 @@ public record BuyerAuctionInfo(
         Duration variationDuration,
         ZonedDateTime startedAt,
         ZonedDateTime finishedAt,
-        boolean isShowStock,
-        AuctionStatus status
+        boolean isShowStock
 ) {
 
     public static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
@@ -44,7 +42,6 @@ public record BuyerAuctionInfo(
         validateNotNull(variationDuration, "가격 변동 주기");
         validateNotNull(startedAt, "경매 시작 시간");
         validateNotNull(finishedAt, "경매 종료 시간");
-        validateNotNull(status, "경매 상태");
 
         validateProductName(productName);
         validateOriginPrice(originPrice);

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
@@ -24,16 +23,16 @@ public class BuyerAuctionInfoTest {
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.",
                         ErrorCode.A001, 1L, 1L, "", 10000, 10000, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true, AuctionStatus.WAITING),
+                        ZonedDateTime.now(), true),
                 Arguments.of("상품 원가는 0보다 커야 합니다. 상품 원가: 0",
                         ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true, AuctionStatus.WAITING),
+                        ZonedDateTime.now(), true),
                 Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0",
                         ErrorCode.A013, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true, AuctionStatus.WAITING),
+                        ZonedDateTime.now(), true),
                 Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0",
                         ErrorCode.A003, 1L, 1L, "상품이름", 10000, 10000, 10, 0, Duration.ofMinutes(1L),
-                        ZonedDateTime.now(), ZonedDateTime.now(), true, AuctionStatus.WAITING)
+                        ZonedDateTime.now(), ZonedDateTime.now(), true)
         );
     }
 
@@ -54,12 +53,11 @@ public class BuyerAuctionInfoTest {
 
         ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1L);
         ZonedDateTime finishedAt = ZonedDateTime.now();
-        AuctionStatus status = AuctionStatus.WAITING;
 
         // when
         BuyerAuctionInfo buyerAuctionInfo = new BuyerAuctionInfo(auctionId, sellerId, productName, originPrice,
                 currentPrice, stock,
-                maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt, true, status);
+                maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt, true);
 
         // then
         assertAll(
@@ -74,8 +72,7 @@ public class BuyerAuctionInfoTest {
                 () -> assertThat(buyerAuctionInfo.variationDuration()).isEqualTo(varitationDuration),
                 () -> assertThat(buyerAuctionInfo.startedAt()).isEqualTo(startedAt),
                 () -> assertThat(buyerAuctionInfo.finishedAt()).isEqualTo(finishedAt),
-                () -> assertThat(buyerAuctionInfo.isShowStock()).isTrue(),
-                () -> assertThat(buyerAuctionInfo.status()).isEqualTo(status)
+                () -> assertThat(buyerAuctionInfo.isShowStock()).isTrue()
         );
     }
 
@@ -95,7 +92,6 @@ public class BuyerAuctionInfoTest {
 
         ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1L);
         ZonedDateTime finishedAt = ZonedDateTime.now();
-        AuctionStatus status = AuctionStatus.WAITING;
         Auction auction = Auction.builder()
                 .id(auctionId)
                 .sellerId(sellerId)
@@ -110,7 +106,6 @@ public class BuyerAuctionInfoTest {
                 .startedAt(startedAt)
                 .finishedAt(finishedAt)
                 .isShowStock(false)
-                .status(status)
                 .build();
 
         // when
@@ -135,8 +130,7 @@ public class BuyerAuctionInfoTest {
             Duration variationDuration,
             ZonedDateTime startedAt,
             ZonedDateTime finishedAt,
-            boolean isShowStock,
-            AuctionStatus status
+            boolean isShowStock
     ) {
         // expect
         assertThatThrownBy(() -> BuyerAuctionInfo.builder()
@@ -152,7 +146,6 @@ public class BuyerAuctionInfoTest {
                 .startedAt(startedAt)
                 .finishedAt(finishedAt)
                 .isShowStock(isShowStock)
-                .status(status)
                 .build()
         )
                 .isInstanceOf(BadRequestException.class)

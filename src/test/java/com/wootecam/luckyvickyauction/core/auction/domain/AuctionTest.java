@@ -47,7 +47,6 @@ class AuctionTest {
                             .startedAt(ZonedDateTime.now().minusHours(1L))
                             .finishedAt(ZonedDateTime.now())
                             .isShowStock(true)
-                            .status(AuctionStatus.WAITING)
                             .build()
             ).isInstanceOf(BadRequestException.class)
                     .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A009);
@@ -80,7 +79,6 @@ class AuctionTest {
                     .startedAt(ZonedDateTime.now().minusHours(1L))
                     .finishedAt(ZonedDateTime.now())
                     .isShowStock(true)
-                    .status(AuctionStatus.WAITING)
                     .build();
 
             Long requestSellerId = 1L;
@@ -109,7 +107,6 @@ class AuctionTest {
                     .startedAt(ZonedDateTime.now().minusHours(1L))
                     .finishedAt(ZonedDateTime.now())
                     .isShowStock(true)
-                    .status(AuctionStatus.WAITING)
                     .build();
 
             Long requestSellerId = 2L;
@@ -196,7 +193,6 @@ class AuctionTest {
                 .startedAt(ZonedDateTime.now().minusHours(1L))
                 .finishedAt(ZonedDateTime.now())
                 .isShowStock(true)
-                .status(AuctionStatus.WAITING)
                 .build();
 
         // when
@@ -225,7 +221,6 @@ class AuctionTest {
                     .startedAt(ZonedDateTime.now().minusHours(1L))
                     .finishedAt(ZonedDateTime.now())
                     .isShowStock(true)
-                    .status(AuctionStatus.WAITING)
                     .build();
 
             // expect
@@ -252,7 +247,6 @@ class AuctionTest {
                     .startedAt(ZonedDateTime.now().minusHours(1L))
                     .finishedAt(ZonedDateTime.now())
                     .isShowStock(true)
-                    .status(AuctionStatus.WAITING)
                     .build();
 
             // when
