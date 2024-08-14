@@ -208,7 +208,7 @@ class AuctionServiceTest {
             // given
             long auctionId = 1L;
             long price = 10000L;
-            long quantity = 100L;
+            long quantity = 10L;
 
             saveRunningAuction();
 
