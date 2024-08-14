@@ -8,6 +8,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
+import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionStockCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
@@ -101,17 +102,22 @@ public class AuctionService {
         return null;
     }
 
-    public void changeStock(SignInInfo signInInfo, long auctionId, long changeRequestStock) {
+    public void changeStock(SignInInfo signInInfo, UpdateAuctionStockCommand command) {
         if (!signInInfo.isType(Role.SELLER)) {
             throw new UnauthorizedException("판매자만 재고를 수정할 수 있습니다.", ErrorCode.A017);
         }
-        Auction auction = findAuctionObject(auctionId);
+        Auction auction = findAuctionObject(command.auctionId());
 
+        if (!auction.currentStatus(command.requestTime()).isWaiting()) {
+            String message = String.format("시작 전인 경매의 재고만 수정할 수 있습니다. 시작시간=%s, 요청시간=%s", auction.getStartedAt(),
+                    command.requestTime());
+            throw new BadRequestException(message, ErrorCode.A021);
+        }
         if (!auction.isSeller(signInInfo.id())) {
             throw new UnauthorizedException("자신이 등록한 경매만 수정할 수 있습니다.", ErrorCode.A018);
         }
 
-        auction.changeStock(changeRequestStock);
+        auction.changeStock(command.changeRequestStock());
 
         auctionRepository.save(auction);
     }
