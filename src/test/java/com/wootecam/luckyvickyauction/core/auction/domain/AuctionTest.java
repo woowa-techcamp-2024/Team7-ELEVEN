@@ -285,7 +285,7 @@ class AuctionTest {
                         .build();
 
                 // when
-                auction.updateCurrentStock(1L);
+                auction.increaseCurrentStock(1L);
 
                 // then
                 assertThat(auction.getCurrentStock()).isEqualTo(2L);
@@ -293,7 +293,7 @@ class AuctionTest {
         }
 
         @Nested
-        class 만약_변경_후_재고가_음수라면 {
+        class 만약_변경할_재고량이_음수라면 {
 
             @Test
             void 예외가_발생한다() {
@@ -317,7 +317,7 @@ class AuctionTest {
                         .build();
 
                 // expect
-                assertThatThrownBy(() -> auction.updateCurrentStock(-1L))
+                assertThatThrownBy(() -> auction.increaseCurrentStock(-1L))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("변경할 재고는 0보다 작을 수 없습니다. inputStock=-1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -350,12 +350,11 @@ class AuctionTest {
                         .build();
 
                 // expect
-                assertThatThrownBy(() -> auction.updateCurrentStock(1L))
+                assertThatThrownBy(() -> auction.increaseCurrentStock(1L))
                         .isInstanceOf(BadRequestException.class)
-                        .hasMessage("변경할 재고는 원래 재고보다 많을 수 없습니다. inputStock=1")
+                        .hasMessage("변경 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.A023));
-                auction.updateCurrentStock(-1L);
             }
         }
     }
