@@ -42,4 +42,21 @@ public class AuctionFixture {
                 .isShowStock(true)
                 .build();
     }
+
+    public static Auction createFinishedAuction() {
+        return Auction.builder()
+                .sellerId(1L)
+                .productName("productName")
+                .originPrice(10000L)
+                .currentPrice(10000L)
+                .originStock(100L)
+                .currentStock(100L)
+                .maximumPurchaseLimitCount(10L)
+                .pricePolicy(new ConstantPricePolicy(1000L))
+                .variationDuration(Duration.ofMinutes(1L))
+                .startedAt(ZonedDateTime.now().minusHours(2))
+                .finishedAt(ZonedDateTime.now().minusHours(1))
+                .isShowStock(true)
+                .build();
+    }
 }
