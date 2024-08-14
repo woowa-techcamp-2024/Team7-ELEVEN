@@ -386,6 +386,42 @@ class AuctionServiceTest {
         }
     }
 
+    @Nested
+    class cancelBid_메소드는 {
+
+        @Nested
+        class 정상적인_입찰_취소_요청이_오면 {
+
+            @Test
+            void 입찰을_취소한다() {
+                // given
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(50L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(1L))
+                        .startedAt(ZonedDateTime.now().minusHours(1))
+                        .finishedAt(ZonedDateTime.now().plusHours(1))
+                        .isShowStock(true)
+                        .status(AuctionStatus.RUNNING)
+                        .build();
+                auction = auctionRepository.save(auction);
+
+                // when
+                auctionService.cancelBid(auction.getId(), 50L);
+                Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
+
+                // then
+                assertThat(updatedAuction.getCurrentStock()).isEqualTo(100L);
+            }
+        }
+    }
+
     /**
      * 현재 RUNNING 상태인 Auction을 생성 및 Repository에 저장하고 반환합니다.
      *

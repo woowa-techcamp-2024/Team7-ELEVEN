@@ -256,4 +256,106 @@ class AuctionTest {
             assertThat(auction.getCurrentStock()).isEqualTo(1L);
         }
     }
+
+    @Nested
+    class refundStock_메소드는 {
+
+        @Nested
+        class 정상적인_요청이_오면 {
+
+            @Test
+            void 환불이_완료된다() {
+                // given
+                long originStock = 999999L;
+                long currentStock = 1L;
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("상품이름")
+                        .originPrice(10000)
+                        .currentPrice(10000)
+                        .originStock(originStock)
+                        .currentStock(currentStock)
+                        .pricePolicy(new ConstantPricePolicy(1000))
+                        .maximumPurchaseLimitCount(10)
+                        .variationDuration(Duration.ofMinutes(1L))
+                        .startedAt(ZonedDateTime.now().minusHours(1L))
+                        .finishedAt(ZonedDateTime.now())
+                        .isShowStock(true)
+                        .status(AuctionStatus.WAITING)
+                        .build();
+
+                // when
+                auction.refundStock(1L);
+
+                // then
+                assertThat(auction.getCurrentStock()).isEqualTo(2L);
+            }
+        }
+
+        @Nested
+        class 만약_환불할_재고량이_0_이하라면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                long originStock = 999999L;
+                long currentStock = 0L;
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("상품이름")
+                        .originPrice(10000)
+                        .currentPrice(10000)
+                        .originStock(originStock)
+                        .currentStock(currentStock)
+                        .pricePolicy(new ConstantPricePolicy(1000))
+                        .maximumPurchaseLimitCount(10)
+                        .variationDuration(Duration.ofMinutes(1L))
+                        .startedAt(ZonedDateTime.now().minusHours(1L))
+                        .finishedAt(ZonedDateTime.now())
+                        .isShowStock(true)
+                        .status(AuctionStatus.WAITING)
+                        .build();
+
+                // expect
+                assertThatThrownBy(() -> auction.refundStock(-1L))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("변경할 재고는 1보다 작을 수 없습니다. inputStock=-1")
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.A022));
+            }
+        }
+
+        @Nested
+        class 만약_환불_후_재고가_원래_재고보다_많다면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                long originStock = 999999L;
+                long currentStock = 999999L;
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("상품이름")
+                        .originPrice(10000)
+                        .currentPrice(10000)
+                        .originStock(originStock)
+                        .currentStock(currentStock)
+                        .pricePolicy(new ConstantPricePolicy(1000))
+                        .maximumPurchaseLimitCount(10)
+                        .variationDuration(Duration.ofMinutes(1L))
+                        .startedAt(ZonedDateTime.now().minusHours(1L))
+                        .finishedAt(ZonedDateTime.now())
+                        .isShowStock(true)
+                        .status(AuctionStatus.WAITING)
+                        .build();
+
+                // expect
+                assertThatThrownBy(() -> auction.refundStock(1L))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("변경 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=1")
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.A023));
+            }
+        }
+    }
 }

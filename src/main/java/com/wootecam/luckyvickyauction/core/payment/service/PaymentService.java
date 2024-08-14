@@ -93,20 +93,28 @@ public class PaymentService {
         buyer.chargePoint(price * quantity);
         seller.usePoint(price * quantity);
 
-        // 경매 서비스에 환불 요청
-        auctionService.cancelBid(refundTargetBidHistory.getAuctionId(), quantity);
-
         // 환불 요청에 대한 정보 저장
-        Member savedBuyer = memberRepository.save(buyer);
-        Member savedSeller = memberRepository.save(seller);
-        bidHistoryRepository.save(BidHistory.builder()
-                .productName(refundTargetBidHistory.getProductName())
-                .price(price)
-                .quantity(quantity)
-                .bidStatus(BidStatus.REFUND)
-                .seller(savedSeller)
-                .buyer(savedBuyer)
-                .build());
+        if (cancelBid(refundTargetBidHistory.getAuctionId(), quantity)) {
+            Member savedBuyer = memberRepository.save(buyer);
+            Member savedSeller = memberRepository.save(seller);
+            bidHistoryRepository.save(BidHistory.builder()
+                    .productName(refundTargetBidHistory.getProductName())
+                    .price(price)
+                    .quantity(quantity)
+                    .bidStatus(BidStatus.REFUND)
+                    .seller(savedSeller)
+                    .buyer(savedBuyer)
+                    .build());
+        }
+    }
+
+    private boolean cancelBid(long auctionId, long quantity) {
+        try {
+            auctionService.cancelBid(auctionId, quantity);
+            return true;
+        } catch (BadRequestException e) {
+            return false;
+        }
     }
 
     private BidHistory findRefundTargetBidHistory(long bidHistoryId) {

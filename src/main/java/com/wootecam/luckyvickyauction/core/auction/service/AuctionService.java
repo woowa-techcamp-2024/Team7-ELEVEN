@@ -173,9 +173,15 @@ public class AuctionService {
     }
 
     /**
-     * 경매 상품에 대한 입찰 취소를 진행한다.
+     * 경매 상품에 대한 입찰 취소를 진행한다. - 경매 도메인 내에서 이를 quantity에 대한 검증 로직을 넣었습니다.
+     *
+     * @param auctionId 경매 아이디
+     * @param quantity  환불할 수량
      */
     public void cancelBid(long auctionId, long quantity) {
+        Auction auction = findAuctionObject(auctionId);
+        auction.refundStock(quantity);
+        auctionRepository.save(auction);
     }
 
     private Auction findAuctionObject(long auctionId) {
