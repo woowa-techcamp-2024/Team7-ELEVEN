@@ -97,7 +97,6 @@ public class Auction {
     }
 
     public void updatePricePolicy(PricePolicy newPricePolicy, Long requestSellerId) {
-
         if (newPricePolicy == null) {
             return;
         }
@@ -124,5 +123,18 @@ public class Auction {
 
     public boolean isSeller(Long sellerId) {
         return this.sellerId.equals(sellerId);
+    }
+
+    // TODO: [SOLD_OUT의 상태관리는 어떻게 해야할것인가?!] [writeAt: 2024/08/14/11:12] [writeBy: HiiWee]
+    public AuctionStatus currentStatus(ZonedDateTime requestTime) {
+        if (requestTime.isBefore(startedAt)) {
+            return AuctionStatus.WAITING;
+        }
+
+        if (requestTime.isBefore(finishedAt)) {
+            return AuctionStatus.RUNNING;
+        }
+
+        return AuctionStatus.FINISHED;
     }
 }

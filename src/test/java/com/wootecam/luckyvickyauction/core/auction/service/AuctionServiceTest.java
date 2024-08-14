@@ -10,6 +10,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
+import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionStockCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.repository.FakeAuctionRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
@@ -307,15 +308,39 @@ class AuctionServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                Auction auction = saveRunningAuction();
+                Auction auction = saveWaitingAuction();
+                ZonedDateTime now = ZonedDateTime.now();
 
                 // expect
                 assertThatThrownBy(
-                        () -> auctionService.changeStock(new SignInInfo(10L, Role.BUYER), auction.getId(), 50L))
+                        () -> auctionService.changeStock(new SignInInfo(10L, Role.BUYER),
+                                new UpdateAuctionStockCommand(now, auction.getId(), 50L)))
                         .isInstanceOf(UnauthorizedException.class)
                         .hasMessage("판매자만 재고를 수정할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.A017));
+            }
+        }
+
+        @Nested
+        class 만약_요청한_경매의_상태가_시작전이_아니라면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                Auction auction = saveRunningAuction();
+                ZonedDateTime now = ZonedDateTime.now();
+
+                // expect
+                String message = String.format("시작 전인 경매의 재고만 수정할 수 있습니다. 시작시간=%s, 요청시간=%s", auction.getStartedAt(),
+                        now);
+                assertThatThrownBy(
+                        () -> auctionService.changeStock(new SignInInfo(auction.getSellerId(), Role.SELLER),
+                                new UpdateAuctionStockCommand(now, auction.getId(), 50L)))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage(message)
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.A021));
             }
         }
 
@@ -325,12 +350,13 @@ class AuctionServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                Auction auction = saveRunningAuction();
+                Auction auction = saveWaitingAuction();
+                ZonedDateTime now = ZonedDateTime.now();
 
                 // expect
                 assertThatThrownBy(
                         () -> auctionService.changeStock(new SignInInfo(auction.getSellerId() + 1L, Role.SELLER),
-                                auction.getId(), 50))
+                                new UpdateAuctionStockCommand(now, auction.getId(), 50)))
                         .isInstanceOf(UnauthorizedException.class)
                         .hasMessage("자신이 등록한 경매만 수정할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -344,10 +370,12 @@ class AuctionServiceTest {
             @Test
             void 재고를_변경한다() {
                 // given
-                Auction auction = saveRunningAuction();
+                Auction auction = saveWaitingAuction();
+                ZonedDateTime now = ZonedDateTime.now();
 
                 // when
-                auctionService.changeStock(new SignInInfo(auction.getId(), Role.SELLER), auction.getId(), 50L);
+                auctionService.changeStock(new SignInInfo(auction.getId(), Role.SELLER),
+                        new UpdateAuctionStockCommand(now, auction.getId(), 50L));
                 Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
 
                 // then
@@ -374,6 +402,25 @@ class AuctionServiceTest {
                 .variationDuration(Duration.ofMinutes(1L))
                 .startedAt(ZonedDateTime.now().minusHours(1))
                 .finishedAt(ZonedDateTime.now().plusHours(1))
+                .isShowStock(true)
+                .status(AuctionStatus.RUNNING)
+                .build();
+
+        return auctionRepository.save(auction);
+    }
+
+    private Auction saveWaitingAuction() {
+        Auction auction = Auction.builder()
+                .sellerId(1L)
+                .productName("productName")
+                .originPrice(10000L)
+                .currentPrice(10000L)
+                .stock(100L)
+                .maximumPurchaseLimitCount(10L)
+                .pricePolicy(new ConstantPricePolicy(1000L))
+                .variationDuration(Duration.ofMinutes(1L))
+                .startedAt(ZonedDateTime.now().plusHours(1))
+                .finishedAt(ZonedDateTime.now().plusHours(2))
                 .isShowStock(true)
                 .status(AuctionStatus.RUNNING)
                 .build();

@@ -113,10 +113,10 @@ public class PaymentService {
     }
 
     /**
-     * 사용자의 포인트를 충전한다
-     * - 포인트가 음수이면 예외가 발생한다
-     * @param member        포인트를 충전할 사용자
-     * @param chargePoint   충전할 포인트
+     * 사용자의 포인트를 충전한다 - 포인트가 음수이면 예외가 발생한다
+     *
+     * @param member      포인트를 충전할 사용자
+     * @param chargePoint 충전할 포인트
      */
     public void chargePoint(Member member, long chargePoint) {
         if (chargePoint < 0) {
