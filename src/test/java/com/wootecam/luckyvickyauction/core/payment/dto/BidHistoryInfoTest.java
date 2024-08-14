@@ -83,7 +83,7 @@ class BidHistoryInfoTest {
         );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "예외: {0}")
     @MethodSource("bidHistoryInfoArguments")
     void 입찰_내역_생성_요청이_잘못된_경우_예외가_발생한다(
             String expectedMessage,
