@@ -18,7 +18,8 @@ public class Auction {
     private final String productName;
     private long originPrice;
     private long currentPrice;
-    private long stock;
+    private long originStock;
+    private long currentStock;
     private long maximumPurchaseLimitCount;
     private PricePolicy pricePolicy;
     private Duration variationDuration;
@@ -34,7 +35,8 @@ public class Auction {
             String productName,
             long originPrice,
             long currentPrice,
-            long stock,
+            long originStock,
+            long currentStock,
             long maximumPurchaseLimitCount,
             PricePolicy pricePolicy,
             Duration variationDuration,
@@ -48,7 +50,8 @@ public class Auction {
         this.productName = productName;
         this.originPrice = originPrice;
         this.currentPrice = currentPrice;
-        this.stock = stock;
+        this.originStock = originStock;
+        this.currentStock = currentStock;
         this.maximumPurchaseLimitCount = maximumPurchaseLimitCount;
         this.pricePolicy = pricePolicy;
         this.variationDuration = variationDuration;
@@ -61,7 +64,8 @@ public class Auction {
     }
 
     /**
-     * 해당 수량만큼 구매가 가능한지 확인한다.
+     * 해당 수량만큼 구매가 가능한지 확인한다. <br> 1. 구매 요청이 0보다 작은지 확인합니다. <br> 2. 인당 구매 수량 제한을 넘기지 않는지 확인합니다. <br> 3. 구매 요청 수량보다 햔재
+     * 재고가 많은지 확인합니다.
      *
      * @param quantity 구매를 원하는 수량
      * @return 구매가 가능한 경우 True, 구매가 불가능한 경우 False를 반환한다.
@@ -75,7 +79,7 @@ public class Auction {
             return false;
         }
 
-        return stock >= quantity;  // 구매 요청 수량보다 재고가 많은지 확인한다.
+        return currentStock >= quantity;  // 구매 요청 수량보다 재고가 많은지 확인한다.
     }
 
     public void update() {
@@ -105,13 +109,17 @@ public class Auction {
         this.pricePolicy = newPricePolicy;
     }
 
+    /**
+     * 경매 재고량을 변경합니다 - 변경은 경매 시작 전에만 가능하므로 원래 재고와 현재 재고를 같은 값으로 변경합니다
+     */
     public void changeStock(long changeRequestStock) {
         if (changeRequestStock < MINIMUM_STOCK_COUNT) {
             String message = String.format("변경 할 재고는 %d개 이상이어야 합니다. inputStock=%d", MINIMUM_STOCK_COUNT,
                     changeRequestStock);
             throw new BadRequestException(message, ErrorCode.A019);
         }
-        stock = changeRequestStock;
+        originStock = changeRequestStock;
+        currentStock = changeRequestStock;
     }
 
     public boolean isSeller(Long sellerId) {
