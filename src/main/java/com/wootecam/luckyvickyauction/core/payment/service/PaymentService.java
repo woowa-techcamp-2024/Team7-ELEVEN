@@ -10,6 +10,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class PaymentService {
      * 1. 구매자 확인 <br> 2. 구매자 포인트를 감소 <br> 3. 판매자에게 포인트 지급 <br> 4. 구매 요청 <br> - 실패하면 -> 예외 발생 및 구매자와 판매자 포인트 롤백 <br> -
      * 성공하면 -> BidHistory 저장 및 구매자, 판매자 업데이트 적용
      */
-    public void process(Member buyer, long price, long auctionId, long quantity) {
+    public void process(Member buyer, long price, long auctionId, long quantity, ZonedDateTime requestTime) {
         if (!buyer.isBuyer()) {
             throw new BadRequestException("구매자만 입찰을 할 수 있습니다.", ErrorCode.P000);
         }
@@ -31,7 +32,7 @@ public class PaymentService {
         buyer.usePoint(price * quantity);
         seller.chargePoint(price * quantity);
 
-        if (submitBid(price, auctionId, quantity, buyer, seller)) {
+        if (submitBid(price, auctionId, quantity, buyer, seller, requestTime)) {
             Member savedBuyer = memberRepository.save(buyer);
             Member savedSeller = memberRepository.save(seller);
             BidHistory bidHistory = BidHistory.builder()
@@ -51,9 +52,10 @@ public class PaymentService {
                 .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다.", ErrorCode.M002));
     }
 
-    private boolean submitBid(long price, long auctionId, long quantity, Member buyer, Member seller) {
+    private boolean submitBid(long price, long auctionId, long quantity, Member buyer, Member seller,
+                              ZonedDateTime requestTime) {
         try {
-            auctionService.submitBid(auctionId, price, quantity);
+            auctionService.submitBid(auctionId, price, quantity, requestTime);
             return true;
         } catch (BadRequestException e) {
             buyer.chargePoint(price * quantity);

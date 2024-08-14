@@ -18,6 +18,7 @@ import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
@@ -47,7 +48,6 @@ public class AuctionService {
                 .startedAt(command.startedAt())
                 .finishedAt(command.finishedAt())
                 .isShowStock(command.isShowStock())
-                .status(AuctionStatus.WAITING)
                 .build();
         auctionRepository.save(auction);
     }
@@ -130,7 +130,7 @@ public class AuctionService {
         // 검증
         Auction auction = findAuctionObject(command.auctionId());
 
-        if (!auction.getStatus().isWaiting()) {
+        if (!auction.currentStatus(command.requestTime()).isWaiting()) {
             throw new BadRequestException(
                     "시작 전인 경매만 변경할 수 있습니다. 변경요청시간: " + command.requestTime() + ", 경매시작시간: " + auction.getStartedAt(),
                     ErrorCode.A012);
@@ -146,11 +146,12 @@ public class AuctionService {
     /**
      * 경매 상품에 대한 입찰(구매)을 진행한다.
      *
-     * @param auctionId 경매 번호
-     * @param price     구매를 원하는 가격
-     * @param quantity  수량
+     * @param auctionId   경매 번호
+     * @param price       구매를 원하는 가격
+     * @param quantity    수량
+     * @param requestTime
      */
-    public void submitBid(long auctionId, long price, long quantity) {
+    public void submitBid(long auctionId, long price, long quantity, ZonedDateTime requestTime) {
         // 검증
         Auction auction = findAuctionObject(auctionId);
 
@@ -161,9 +162,10 @@ public class AuctionService {
                     ErrorCode.A014);
         }
 
-        if (!auction.getStatus().isRunning()) {
+        AuctionStatus currentStatus = auction.currentStatus(requestTime);
+        if (!currentStatus.isRunning()) {
             throw new BadRequestException(
-                    "진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + auction.getStatus(),
+                    "진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + currentStatus,
                     ErrorCode.A016);
         }
 

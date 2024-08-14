@@ -3,9 +3,9 @@ package com.wootecam.luckyvickyauction.core.auction.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
@@ -66,19 +66,21 @@ class AuctionServiceTest {
         Auction createdAuction = auctionRepository.findById(1L).get();
 
         // then
-        assertThat(createdAuction)
-                .extracting(
-                        "sellerId", "productName", "originPrice", "currentPrice", "originStock", "currentStock",
-                        "maximumPurchaseLimitCount", "pricePolicy", "variationDuration",
-                        "startedAt", "finishedAt", "isShowStock", "status"
-                )
-                .containsExactly(
-                        sellerId, productName, originPrice, originPrice, stock, stock,
-                        maximumPurchaseLimitCount, pricePolicy, varitationDuration,
-                        startedAt, finishedAt, true, AuctionStatus.WAITING
-                );
-
-        assertThat(createdAuction.getId()).isNotNull();
+        assertAll(
+                () -> assertThat(createdAuction.getSellerId()).isEqualTo(sellerId),
+                () -> assertThat(createdAuction.getProductName()).isEqualTo(productName),
+                () -> assertThat(createdAuction.getOriginPrice()).isEqualTo(originPrice),
+                () -> assertThat(createdAuction.getCurrentPrice()).isEqualTo(originPrice),
+                () -> assertThat(createdAuction.getOriginStock()).isEqualTo(stock),
+                () -> assertThat(createdAuction.getCurrentStock()).isEqualTo(stock),
+                () -> assertThat(createdAuction.getMaximumPurchaseLimitCount()).isEqualTo(maximumPurchaseLimitCount),
+                () -> assertThat(createdAuction.getPricePolicy()).isEqualTo(pricePolicy),
+                () -> assertThat(createdAuction.getVariationDuration()).isEqualTo(varitationDuration),
+                () -> assertThat(createdAuction.getStartedAt()).isEqualTo(startedAt),
+                () -> assertThat(createdAuction.getFinishedAt()).isEqualTo(finishedAt),
+                () -> assertThat(createdAuction.isShowStock()).isTrue(),
+                () -> assertThat(createdAuction.getId()).isNotNull()
+        );
     }
 
     @ParameterizedTest
@@ -214,7 +216,8 @@ class AuctionServiceTest {
             saveRunningAuction();
 
             // expect
-            assertThatNoException().isThrownBy(() -> auctionService.submitBid(auctionId, price, quantity));
+            assertThatNoException().isThrownBy(
+                    () -> auctionService.submitBid(auctionId, price, quantity, ZonedDateTime.now()));
         }
 
         @Test
@@ -226,7 +229,7 @@ class AuctionServiceTest {
             long quantity = 100L;
 
             // expect
-            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
+            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity, ZonedDateTime.now()))
                     .isInstanceOf(NotFoundException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.A011));
@@ -243,7 +246,7 @@ class AuctionServiceTest {
             saveRunningAuction();
 
             // expect
-            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
+            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity, ZonedDateTime.now()))
                     .isInstanceOf(BadRequestException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.A014));
@@ -260,7 +263,7 @@ class AuctionServiceTest {
             saveRunningAuction();
 
             // expect
-            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
+            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity, ZonedDateTime.now()))
                     .isInstanceOf(BadRequestException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.A014));
@@ -287,12 +290,11 @@ class AuctionServiceTest {
                     .pricePolicy(new ConstantPricePolicy(1000))
                     .variationDuration(Duration.ofMinutes(1L))
                     .isShowStock(true)
-                    .status(AuctionStatus.WAITING)
                     .build();
             auctionRepository.save(auction);
 
             // expect
-            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity))
+            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity, ZonedDateTime.now()))
                     .isInstanceOf(BadRequestException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.A016));
@@ -439,7 +441,6 @@ class AuctionServiceTest {
                 .startedAt(ZonedDateTime.now().minusHours(1))
                 .finishedAt(ZonedDateTime.now().plusHours(1))
                 .isShowStock(true)
-                .status(AuctionStatus.RUNNING)
                 .build();
 
         return auctionRepository.save(auction);
@@ -459,7 +460,6 @@ class AuctionServiceTest {
                 .startedAt(ZonedDateTime.now().plusHours(1))
                 .finishedAt(ZonedDateTime.now().plusHours(2))
                 .isShowStock(true)
-                .status(AuctionStatus.RUNNING)
                 .build();
 
         return auctionRepository.save(auction);

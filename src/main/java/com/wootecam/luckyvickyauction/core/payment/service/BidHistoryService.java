@@ -18,12 +18,12 @@ public class BidHistoryService {
     public BidHistoryInfo getBidHistoryInfo(Member member, long bidHistoryId) {
         // 검증
         BidHistory bidHistory = bidHistoryRepository.findById(bidHistoryId)
-            .orElseThrow(() -> new NotFoundException("입찰 내역을 찾을 수 없습니다. 내역 id=" + bidHistoryId, ErrorCode.B000));
+                .orElseThrow(() -> new NotFoundException("입찰 내역을 찾을 수 없습니다. 내역 id=" + bidHistoryId, ErrorCode.B000));
 
         if (!bidHistory.isOwnedBy(member)) {
             throw new UnauthorizedException(
-                "해당 거래 내역에 접근 권한이 없는 사용자입니다. 회원ID: " + (member == null ? "없음" : member.getSignInId()),
-                ErrorCode.B001);
+                    "해당 거래 내역에 접근 권한이 없는 사용자입니다. 회원ID: " + (member == null ? "없음" : member.getSignInId()),
+                    ErrorCode.B001);
         }
 
         // 반환
