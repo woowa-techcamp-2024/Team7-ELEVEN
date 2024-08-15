@@ -75,7 +75,7 @@ public class FakeAuctionRepository implements AuctionRepository {
     }
 
 
-    // TODO: [AuctionSearchCondition 조건 이후 변경 사항] [writeAt: 2024/08/15/16:30] [writeBy: yudonggeun]
+    // TODO: [AuctionSearchCondition 조건 이후 변경 사항 : FakeRepository의 구현이 condition이 변경되면 수정되어야 합니다.] [writeAt: 2024/08/15/16:30] [writeBy: yudonggeun]
     @Override
     public List<Auction> findAllBy(AuctionSearchCondition condition) {
         return auctions.values().stream()
