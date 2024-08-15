@@ -3,6 +3,7 @@ package com.wootecam.luckyvickyauction.global.util;
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
@@ -104,6 +105,16 @@ public final class Mapper {
                 history.getAuctionId(),
                 history.getQuantity(),
                 history.getPrice()
+        );
+    }
+
+    public static BuyerAuctionSimpleInfo convertToBuyerAuctionSimpleInfo(Auction auction) {
+        return new BuyerAuctionSimpleInfo(
+                auction.getId(),
+                auction.getProductName(),
+                auction.getCurrentPrice(),
+                auction.getStartedAt(),
+                auction.getFinishedAt()
         );
     }
 }
