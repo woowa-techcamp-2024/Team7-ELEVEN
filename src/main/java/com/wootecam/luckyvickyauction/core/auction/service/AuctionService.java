@@ -136,6 +136,12 @@ public class AuctionService {
                 .toList();
     }
 
+    /**
+     * 판매자용 경매 목록 조회
+     *
+     * @param condition
+     * @return 판매자용 경매 목록
+     */
     public List<SellerAuctionSimpleInfo> getSellerAuctionSimpleInfos(SellerAuctionSearchCondition condition) {
         return auctionRepository.findAllBy(condition).stream()
                 .map(Mapper::convertToSellerAuctionSimpleInfo)
