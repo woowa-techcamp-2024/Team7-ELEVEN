@@ -12,14 +12,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class SignUpRequestInfoTest {
 
-    static Stream<Arguments> generateSignUpRequestInfo() {
-        return Stream.of(
-                Arguments.of(null, "password1234", "BUYER"),
-                Arguments.of("userid1234", null, "BUYER"),
-                Arguments.of(null, "password1234", null)
-        );
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {"", " ", "    "})
     void 회원가입요청에서_아이디가_빈칸이면_예외가_발생한다(String userId) {
@@ -27,6 +19,14 @@ class SignUpRequestInfoTest {
                 new SignUpRequestInfo(userId, "password1234", "SELLER"))
                 .isInstanceOf(BadRequestException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.M004);
+    }
+
+    static Stream<Arguments> generateSignUpRequestInfo() {
+        return Stream.of(
+                Arguments.of(null, "password1234", "BUYER"),
+                Arguments.of("userid1234", null, "BUYER"),
+                Arguments.of("userid1234", "password1234", null)
+        );
     }
 
     @ParameterizedTest
