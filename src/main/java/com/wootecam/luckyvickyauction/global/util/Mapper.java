@@ -45,6 +45,8 @@ public final class Mapper {
                 .auctionId(bidHistory.getAuctionId())
                 .seller(bidHistory.getSeller())
                 .buyer(bidHistory.getBuyer())
+                .createdAt(bidHistory.getCreatedAt())
+                .updatedAt(bidHistory.getUpdatedAt())
                 .build();
     }
 

@@ -1,6 +1,9 @@
 package com.wootecam.luckyvickyauction.core.payment.domain;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,6 +18,10 @@ public class BidHistory {
     private long auctionId;
     private Member seller;
     private Member buyer;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
+
+    public static final String ERROR_VARIATION_UPDATE_AT = "생성 시간보다 수정 시간이 더 작을 수 없습니다. 생성시간: %s, 수정시간: %s";
 
     @Builder
     public BidHistory(
@@ -22,10 +29,12 @@ public class BidHistory {
             final String productName,
             final long price,
             final long quantity,
-            BidStatus bidStatus,
+            final BidStatus bidStatus,
             final long auctionId,
             final Member seller,
-            final Member buyer) {
+            final Member buyer,
+            final ZonedDateTime createdAt,
+            final ZonedDateTime updatedAt) {
         this.id = id;
         this.productName = productName;
         this.price = price;
@@ -34,10 +43,18 @@ public class BidHistory {
         this.auctionId = auctionId;
         this.seller = seller;
         this.buyer = buyer;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    public boolean isRefundStatus() {
-        return bidStatus.equals(BidStatus.REFUND);
+    /**
+     * 해당 거래 내역을 환불 상태로 전환합니다.
+     */
+    public void markAsRefund() {
+        if (bidStatus.equals(BidStatus.REFUND)) {
+            throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.B005);
+        }
+        bidStatus = BidStatus.REFUND;
     }
 
     /**
@@ -54,4 +71,5 @@ public class BidHistory {
         String signInId = member.getSignInId();
         return seller.isSameMember(signInId) || buyer.isSameMember(signInId);
     }
+
 }

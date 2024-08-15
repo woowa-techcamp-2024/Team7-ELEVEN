@@ -20,7 +20,6 @@ import lombok.Builder;
  * @param startedAt                 경매 시작 시간
  * @param finishedAt                경매 종료 시간
  * @param isShowStock               재고를 보여줄지 여부
- * @param status                    현재 경매 상태
  */
 @Builder
 public record AuctionInfo(
