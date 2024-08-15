@@ -4,8 +4,8 @@ import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
-import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptSelectCondition;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
@@ -33,11 +33,7 @@ public class BidHistoryService {
         return Mapper.convertToBidHistoryInfo(bidHistory);
     }
 
-    public List<BuyerReceiptSimpleInfo> getBuyerReceiptSimpleInfos(Member member) {
-
-        ReceiptSelectCondition condition = ReceiptSelectCondition.builder()
-                .build();
-
+    public List<BuyerReceiptSimpleInfo> getBuyerReceiptSimpleInfos(BuyerReceiptSearchCondition condition) {
         List<BidHistory> bidHistories = bidHistoryRepository.findAllBy(condition);
         return bidHistories.stream()
                 .map(Mapper::convertToBuyerReceiptSimpleInfo)
