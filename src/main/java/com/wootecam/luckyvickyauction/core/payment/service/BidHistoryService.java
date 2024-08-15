@@ -4,10 +4,13 @@ import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.TxHistorySelectCondition;
+import com.wootecam.luckyvickyauction.core.payment.dto.TxHistorySimpleInfo;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -30,4 +33,14 @@ public class BidHistoryService {
         return Mapper.convertToBidHistoryInfo(bidHistory);
     }
 
+    public List<TxHistorySimpleInfo> getTxHistorySimpleInfoList(Member member) {
+
+        TxHistorySelectCondition condition = TxHistorySelectCondition.builder()
+                .build();
+
+        List<BidHistory> bidHistories = bidHistoryRepository.findAllBy(condition);
+        return bidHistories.stream()
+                .map(Mapper::convertToTxHistorySimpleInfo)
+                .toList();
+    }
 }
