@@ -10,6 +10,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 
@@ -73,7 +74,7 @@ public class PaymentService {
      */
     public void refund(Member buyer, long bidHistoryId) {
         if (!buyer.isBuyer()) {
-            throw new BadRequestException("구매자만 환불을 할 수 있습니다.", ErrorCode.P000);
+            throw new UnauthorizedException("구매자만 환불을 할 수 있습니다.", ErrorCode.P000);
         }
 
         BidHistory refundTargetBidHistory = findRefundTargetBidHistory(bidHistoryId);
@@ -83,7 +84,7 @@ public class PaymentService {
 
         Member refundTargetBuyer = refundTargetBidHistory.getBuyer();
         if (!buyer.isSameMember(refundTargetBuyer.getSignInId())) {
-            throw new BadRequestException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
+            throw new UnauthorizedException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
         }
 
         long price = refundTargetBidHistory.getPrice();
@@ -98,6 +99,8 @@ public class PaymentService {
             Member savedBuyer = memberRepository.save(buyer);
             Member savedSeller = memberRepository.save(seller);
             bidHistoryRepository.save(BidHistory.builder()
+                    .id(refundTargetBidHistory.getId())
+                    .auctionId(refundTargetBidHistory.getAuctionId())
                     .productName(refundTargetBidHistory.getProductName())
                     .price(price)
                     .quantity(quantity)

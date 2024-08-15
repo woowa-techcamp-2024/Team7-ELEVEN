@@ -2,14 +2,27 @@ package com.wootecam.luckyvickyauction.core.payment.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
+import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
+import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
+import com.wootecam.luckyvickyauction.core.auction.repository.FakeAuctionRepository;
+import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.member.repository.FakeMemberRepository;
+import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
+import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
+import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
+import com.wootecam.luckyvickyauction.core.payment.repository.FakeBidHistoryRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,13 +30,19 @@ import org.junit.jupiter.api.Test;
 // TODO: AuctionService 세부 사항 결정되면 테스트
 class PaymentServiceTest {
 
+    private AuctionRepository auctionRepository;
+    private AuctionService auctionService;
     private MemberRepository memberRepository;
+    private BidHistoryRepository bidHistoryRepository;
     private PaymentService paymentService;
 
     @BeforeEach
     void setUp() {
+        auctionRepository = new FakeAuctionRepository();
+        auctionService = new AuctionService(auctionRepository);
         memberRepository = new FakeMemberRepository();
-        paymentService = new PaymentService(null, memberRepository, null);
+        bidHistoryRepository = new FakeBidHistoryRepository();
+        paymentService = new PaymentService(auctionService, memberRepository, bidHistoryRepository);
     }
 
     @Nested
@@ -83,8 +102,41 @@ class PaymentServiceTest {
             @Test
             void 환불이_진행된다() {
                 // given
+                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
+                memberRepository.save(buyer);
+
+                Member seller = MemberFixture.createSellerWithDefaultPoint();
+                memberRepository.save(seller);
+
+                Auction auction = AuctionFixture.createSoldOutAuction();
+                auctionRepository.save(auction);
+
+                BidHistory bidHistory = BidHistory.builder()
+                        .id(1L)
+                        .auctionId(1L)
+                        .productName("test")
+                        .price(100L)
+                        .quantity(1L)
+                        .bidStatus(BidStatus.BID)
+                        .seller(seller)
+                        .buyer(buyer)
+                        .build();
+                bidHistoryRepository.save(bidHistory);
+
                 // when
+                paymentService.refund(buyer, 1L);
+
                 // then
+                BidHistory savedBidHistory = bidHistoryRepository.findById(1L).get();
+                Member savedBuyer = savedBidHistory.getBuyer();
+                Member savedSeller = savedBidHistory.getSeller();
+                Auction savedAuction = auctionRepository.findById(savedBidHistory.getAuctionId()).get();
+                assertAll(
+                        () -> assertThat(savedBidHistory.getBidStatus()).isEqualTo(BidStatus.REFUND),
+                        () -> assertThat(savedBuyer.getPoint().getAmount()).isEqualTo(1100L),
+                        () -> assertThat(savedSeller.getPoint().getAmount()).isEqualTo(900L),
+                        () -> assertThat(savedAuction.getCurrentStock()).isEqualTo(1L)
+                );
             }
         }
 
@@ -94,8 +146,33 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                // when
-                // then
+                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
+                memberRepository.save(buyer);
+
+                Member seller = MemberFixture.createSellerWithDefaultPoint();
+                memberRepository.save(seller);
+
+                Auction auction = AuctionFixture.createSoldOutAuction();
+                auctionRepository.save(auction);
+
+                BidHistory bidHistory = BidHistory.builder()
+                        .id(1L)
+                        .auctionId(1L)
+                        .productName("test")
+                        .price(100L)
+                        .quantity(1L)
+                        .bidStatus(BidStatus.BID)
+                        .seller(seller)
+                        .buyer(buyer)
+                        .build();
+                bidHistoryRepository.save(bidHistory);
+
+                // expect
+                assertThatThrownBy(() -> paymentService.refund(seller, 1L))
+                        .isInstanceOf(UnauthorizedException.class)
+                        .hasMessage("구매자만 환불을 할 수 있습니다.")
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.P000));
             }
         }
 
@@ -105,8 +182,21 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                // when
-                // then
+                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
+                memberRepository.save(buyer);
+
+                Member seller = MemberFixture.createSellerWithDefaultPoint();
+                memberRepository.save(seller);
+
+                Auction auction = AuctionFixture.createSoldOutAuction();
+                auctionRepository.save(auction);
+
+                // expect
+                assertThatThrownBy(() -> paymentService.refund(buyer, 1L))
+                        .isInstanceOf(NotFoundException.class)
+                        .hasMessage("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=1")
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.P002));
             }
         }
 
@@ -116,8 +206,33 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                // when
-                // then
+                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
+                memberRepository.save(buyer);
+
+                Member seller = MemberFixture.createSellerWithDefaultPoint();
+                memberRepository.save(seller);
+
+                Auction auction = AuctionFixture.createSoldOutAuction();
+                auctionRepository.save(auction);
+
+                BidHistory bidHistory = BidHistory.builder()
+                        .id(1L)
+                        .auctionId(1L)
+                        .productName("test")
+                        .price(100L)
+                        .quantity(1L)
+                        .bidStatus(BidStatus.REFUND)
+                        .seller(seller)
+                        .buyer(buyer)
+                        .build();
+                bidHistoryRepository.save(bidHistory);
+
+                // expect
+                assertThatThrownBy(() -> paymentService.refund(buyer, 1L))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("이미 환불된 입찰 내역입니다.")
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.P003));
             }
         }
 
@@ -127,8 +242,41 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                // when
-                // then
+                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
+                memberRepository.save(buyer);
+
+                Member seller = MemberFixture.createSellerWithDefaultPoint();
+                memberRepository.save(seller);
+
+                Auction auction = AuctionFixture.createSoldOutAuction();
+                auctionRepository.save(auction);
+
+                BidHistory bidHistory = BidHistory.builder()
+                        .id(1L)
+                        .auctionId(1L)
+                        .productName("test")
+                        .price(100L)
+                        .quantity(1L)
+                        .bidStatus(BidStatus.BID)
+                        .seller(seller)
+                        .buyer(buyer)
+                        .build();
+                bidHistoryRepository.save(bidHistory);
+
+                // expect
+                Member unbidBuyer = Member.builder()
+                        .id(3L)
+                        .signInId("unbidBuyer")
+                        .password("test")
+                        .role(Role.BUYER)
+                        .point(new Point(1000L))
+                        .build();
+
+                assertThatThrownBy(() -> paymentService.refund(unbidBuyer, 1L))
+                        .isInstanceOf(UnauthorizedException.class)
+                        .hasMessage("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.")
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.P004));
             }
         }
     }
@@ -152,6 +300,7 @@ class PaymentServiceTest {
                 Point savedMemberPoint = savedMember.getPoint();
                 assertThat(savedMemberPoint.getAmount()).isEqualTo(1000L);
             }
+
         }
 
         @Nested
@@ -169,6 +318,7 @@ class PaymentServiceTest {
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.P005));
             }
+
 
         }
     }
