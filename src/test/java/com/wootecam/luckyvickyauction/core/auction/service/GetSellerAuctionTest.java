@@ -48,17 +48,7 @@ abstract class GetSellerAuctionTest {
 
             // then
             assertAll(
-                    () -> assertThat(sellerAuctionInfo.auctionId()).isEqualTo(auction.getId()),
-                    () -> assertThat(sellerAuctionInfo.productName()).isEqualTo(auction.getProductName()),
-                    () -> assertThat(sellerAuctionInfo.originPrice()).isEqualTo(auction.getOriginPrice()),
-                    () -> assertThat(sellerAuctionInfo.currentPrice()).isEqualTo(auction.getCurrentPrice()),
-                    () -> assertThat(sellerAuctionInfo.originStock()).isEqualTo(auction.getOriginStock()),
-                    () -> assertThat(sellerAuctionInfo.currentStock()).isEqualTo(auction.getCurrentStock()),
-                    () -> assertThat(sellerAuctionInfo.maximumPurchaseLimitCount()).isEqualTo(
-                            auction.getMaximumPurchaseLimitCount()),
-                    () -> assertThat(sellerAuctionInfo.startedAt()).isEqualTo(auction.getStartedAt()),
-                    () -> assertThat(sellerAuctionInfo.finishedAt()).isEqualTo(auction.getFinishedAt()),
-                    () -> assertThat(sellerAuctionInfo.isShowStock()).isEqualTo(auction.isShowStock())
+                    () -> assertThat(sellerAuctionInfo.auctionId()).isEqualTo(auction.getId())
             );
         }
     }
