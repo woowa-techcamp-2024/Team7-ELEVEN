@@ -41,14 +41,14 @@ class MemberServiceTest {
                 // given
                 Member member = Member.builder()
                         .signInId("testId")
-                        .password("password")
+                        .password("password00")
                         .role(Role.BUYER)
                         .point(new Point(0))
                         .build();
                 memberRepository.save(member);
 
                 // expect
-                assertThatThrownBy(() -> memberService.signUp(new SignUpRequestInfo("testId", "password", "BUYER")))
+                assertThatThrownBy(() -> memberService.signUp(new SignUpRequestInfo("testId", "password00", "BUYER")))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("이미 존재하는 아이디입니다. input=testId")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -62,7 +62,7 @@ class MemberServiceTest {
             @Test
             void 회원가입이_완료된다() {
                 // given
-                SignUpRequestInfo signUpRequestInfo = new SignUpRequestInfo("testId", "password", "BUYER");
+                SignUpRequestInfo signUpRequestInfo = new SignUpRequestInfo("testId", "password00", "BUYER");
 
                 // when
                 memberService.signUp(signUpRequestInfo);
@@ -71,7 +71,7 @@ class MemberServiceTest {
                 // then
                 assertAll(
                         () -> assertThat(member.getSignInId()).isEqualTo("testId"),
-                        () -> assertThat(member.getPassword()).isEqualTo("password"),
+                        () -> assertThat(member.getPassword()).isEqualTo("password00"),
                         () -> assertThat(member.getRole()).isEqualTo(Role.BUYER)
                 );
             }
@@ -103,7 +103,7 @@ class MemberServiceTest {
                 // given
                 Member member = Member.builder()
                         .signInId("testId")
-                        .password("password")
+                        .password("password00")
                         .role(Role.BUYER)
                         .point(new Point(0))
                         .build();
@@ -126,14 +126,14 @@ class MemberServiceTest {
                 // given
                 Member member = Member.builder()
                         .signInId("testId")
-                        .password("password")
+                        .password("password00")
                         .role(Role.BUYER)
                         .point(new Point(0))
                         .build();
                 memberRepository.save(member);
 
                 // when
-                SignInInfo signInInfo = memberService.signIn(new SignInRequestInfo("testId", "password"));
+                SignInInfo signInInfo = memberService.signIn(new SignInRequestInfo("testId", "password00"));
 
                 // then
                 assertAll(

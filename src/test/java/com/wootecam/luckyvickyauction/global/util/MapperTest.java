@@ -8,6 +8,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import org.junit.jupiter.api.Test;
@@ -17,15 +18,8 @@ class MapperTest {
     @Test
     public void 거래내역_entity를_BuyerReceiptSimpleInfo으로_변환하면_도메인의_정보가_동일하게_전달된다() {
         // given
-        Member buyer = Member.builder()
-                .id(1L)
-                .signInId("buyer")
-                .build();
-
-        Member seller = Member.builder()
-                .id(2L)
-                .signInId("seller")
-                .build();
+        Member buyer = MemberFixture.createBuyerWithDefaultPoint();
+        Member seller = MemberFixture.createSellerWithDefaultPoint();
 
         BidHistory history = BidHistory.builder()
                 .id(1L)
