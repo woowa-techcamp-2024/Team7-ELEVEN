@@ -2,7 +2,7 @@ package com.wootecam.luckyvickyauction.core.payment.repository;
 
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
-import com.wootecam.luckyvickyauction.core.payment.dto.TxHistorySelectCondition;
+import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptSelectCondition;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class FakeBidHistoryRepository implements BidHistoryRepository {
     }
 
     @Override
-    public List<BidHistory> findAllBy(TxHistorySelectCondition condition) {
+    public List<BidHistory> findAllBy(ReceiptSelectCondition condition) {
         return bidHistories.values().stream()
                 .filter(history -> true)
                 .toList();

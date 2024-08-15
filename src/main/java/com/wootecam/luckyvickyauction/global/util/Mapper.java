@@ -6,7 +6,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
-import com.wootecam.luckyvickyauction.core.payment.dto.TxHistorySimpleInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -97,8 +97,8 @@ public final class Mapper {
                 .build();
     }
 
-    public static TxHistorySimpleInfo convertToTxHistorySimpleInfo(BidHistory history) {
-        return new TxHistorySimpleInfo(
+    public static BuyerReceiptSimpleInfo convertToBuyerReceiptSimpleInfo(BidHistory history) {
+        return new BuyerReceiptSimpleInfo(
                 history.getId(),
                 history.getBidStatus(),
                 history.getAuctionId(),

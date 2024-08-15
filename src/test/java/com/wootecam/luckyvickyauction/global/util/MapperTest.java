@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
-import com.wootecam.luckyvickyauction.core.payment.dto.TxHistorySimpleInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import org.junit.jupiter.api.Test;
 
 class MapperTest {
@@ -34,7 +34,7 @@ class MapperTest {
                 .build();
 
         // when
-        TxHistorySimpleInfo dto = Mapper.convertToTxHistorySimpleInfo(history);
+        BuyerReceiptSimpleInfo dto = Mapper.convertToBuyerReceiptSimpleInfo(history);
 
         // then
         assertAll(

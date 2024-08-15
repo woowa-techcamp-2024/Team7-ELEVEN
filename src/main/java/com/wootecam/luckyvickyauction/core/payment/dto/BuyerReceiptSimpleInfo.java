@@ -11,7 +11,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
  * @param quantity  구매 수량
  * @param price     구매 가격
  */
-public record TxHistorySimpleInfo(
+public record BuyerReceiptSimpleInfo(
         long id,
         BidStatus type,
         long auctionId,
