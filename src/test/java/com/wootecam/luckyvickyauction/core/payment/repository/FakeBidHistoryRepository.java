@@ -35,6 +35,7 @@ public class FakeBidHistoryRepository implements BidHistoryRepository {
         return Optional.ofNullable(bidHistories.get(bidHistoryId));
     }
 
+    // TODO: [ReceiptSelectCondition 조건 이후 변경 사항] [writeAt: 2024/08/15/16:03] [writeBy: yudonggeun]
     @Override
     public List<BidHistory> findAllBy(ReceiptSelectCondition condition) {
         return bidHistories.values().stream()

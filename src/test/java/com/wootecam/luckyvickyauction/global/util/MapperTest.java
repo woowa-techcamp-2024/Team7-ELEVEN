@@ -26,6 +26,7 @@ class MapperTest {
 
         BidHistory history = BidHistory.builder()
                 .id(1L)
+                .auctionId(232L)
                 .productName("상품 이름")
                 .price(1000L)
                 .quantity(1L)
