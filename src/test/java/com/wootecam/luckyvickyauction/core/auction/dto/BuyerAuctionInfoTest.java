@@ -91,7 +91,8 @@ public class BuyerAuctionInfoTest {
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1L);
-        ZonedDateTime finishedAt = ZonedDateTime.now();
+        ZonedDateTime finishedAt = startedAt.plusHours(1L);
+
         Auction auction = Auction.builder()
                 .id(auctionId)
                 .sellerId(sellerId)

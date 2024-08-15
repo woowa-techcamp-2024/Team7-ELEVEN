@@ -55,7 +55,7 @@ class AuctionServiceTest {
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
-        ZonedDateTime finishedAt = ZonedDateTime.now().plusHours(2);
+        ZonedDateTime finishedAt = startedAt.plusHours(1);
 
         CreateAuctionCommand command = new CreateAuctionCommand(
                 sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
@@ -396,6 +396,7 @@ class AuctionServiceTest {
             @Test
             void 입찰을_취소한다() {
                 // given
+                ZonedDateTime now = ZonedDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -406,8 +407,8 @@ class AuctionServiceTest {
                         .maximumPurchaseLimitCount(10L)
                         .pricePolicy(new ConstantPricePolicy(1000L))
                         .variationDuration(Duration.ofMinutes(1L))
-                        .startedAt(ZonedDateTime.now().minusHours(1))
-                        .finishedAt(ZonedDateTime.now().plusHours(1))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
                         .isShowStock(true)
                         .build();
                 auction = auctionRepository.save(auction);
@@ -421,7 +422,6 @@ class AuctionServiceTest {
             }
         }
     }
-
 
     /**
      * 현재 RUNNING 상태인 Auction을 생성 및 Repository에 저장하고 반환합니다.
@@ -441,5 +441,4 @@ class AuctionServiceTest {
     @Nested
     class cancelAuction_메소드는 extends CancelAuctionTest {
     }
-
 }

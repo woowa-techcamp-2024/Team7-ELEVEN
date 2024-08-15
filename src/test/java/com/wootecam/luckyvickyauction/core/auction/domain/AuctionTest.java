@@ -3,6 +3,7 @@ package com.wootecam.luckyvickyauction.core.auction.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
@@ -21,8 +22,7 @@ class AuctionTest {
     public class ConstantsPricePolicyTest {
 
         @Test
-        @DisplayName("경매 생성시 경매의 가격은 가격 변동폭보다 작거나 같으면 예외가 발생한다.")
-        public void createAuctionPriceShouldBeGreaterThanVariationWidth() {
+        public void 경매_생성시_경매의_가격은_가격_변동폭보다_작거나_같으면_예외가_발생한다() {
             // given
             int originPrice = 10000;
             int stock = 999999;
@@ -31,6 +31,7 @@ class AuctionTest {
             int variationWidth = 10000;
             Duration varitationDuration = Duration.ofMinutes(1L);
             PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+            ZonedDateTime now = ZonedDateTime.now();
 
             // when & then
             assertThatThrownBy(() ->
@@ -44,8 +45,8 @@ class AuctionTest {
                             .pricePolicy(pricePolicy)
                             .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
                             .variationDuration(varitationDuration)
-                            .startedAt(ZonedDateTime.now().minusHours(1L))
-                            .finishedAt(ZonedDateTime.now())
+                            .startedAt(now.minusHours(1L))
+                            .finishedAt(now)
                             .isShowStock(true)
                             .build()
             ).isInstanceOf(BadRequestException.class)
@@ -59,56 +60,24 @@ class AuctionTest {
     }
 
     @Nested
-    @DisplayName("경매 정책 변경 기능")
-    public class UpdateAuctionTest {
+    public class updateShowStock_메소드는 {
 
         @Test
-        @DisplayName("동일한 판매자는 현재 경매의 가격 노출 정책을 변경할 수 있다.")
-        public void updateAuctionShowStock() {
+        public void 동일한_판매자는_현재_경매의_가격_노출_정책을_변경할_수_있다() {
             // given
-            Auction auction = Auction.builder()
-                    .sellerId(1L)
-                    .productName("상품이름")
-                    .originPrice(10000)
-                    .currentPrice(10000)
-                    .originStock(999999)
-                    .currentStock(999999)
-                    .pricePolicy(new ConstantPricePolicy(1000))
-                    .maximumPurchaseLimitCount(10)
-                    .variationDuration(Duration.ofMinutes(1L))
-                    .startedAt(ZonedDateTime.now().minusHours(1L))
-                    .finishedAt(ZonedDateTime.now())
-                    .isShowStock(true)
-                    .build();
-
-            Long requestSellerId = 1L;
+            Auction auction = AuctionFixture.createWaitingAuction();
 
             // when
-            auction.updateShowStock(false, requestSellerId);
+            auction.updateShowStock(false, auction.getSellerId());
 
             // then
             assertThat(auction.isShowStock()).isFalse();
         }
 
         @Test
-        @DisplayName("동일한 판매자가 아닌 경우 가격 노출 정책을 변경할 수 없다.")
-        public void dd() {
+        public void 동일한_판매자가_아닌_경우_가격_노출_정책을_변경할_수_없다() {
             // given
-            Auction auction = Auction.builder()
-                    .sellerId(1L)
-                    .productName("상품이름")
-                    .originPrice(10000)
-                    .currentPrice(10000)
-                    .originStock(999999)
-                    .currentStock(999999)
-                    .pricePolicy(new ConstantPricePolicy(1000))
-                    .maximumPurchaseLimitCount(10)
-                    .variationDuration(Duration.ofMinutes(1L))
-                    .startedAt(ZonedDateTime.now().minusHours(1L))
-                    .finishedAt(ZonedDateTime.now())
-                    .isShowStock(true)
-                    .build();
-
+            Auction auction = AuctionFixture.createWaitingAuction();
             Long requestSellerId = 2L;
 
             // when & then
@@ -122,6 +91,7 @@ class AuctionTest {
         @DisplayName("가격 노출 정책이 null인 경우 변경이 반영되지 않는다.")
         public void updateShowStockWhenShowStockIsNull(boolean isShowStock) {
             // given
+            ZonedDateTime now = ZonedDateTime.now();
             Auction auction = Auction.builder()
                     .sellerId(1L)
                     .productName("상품이름")
@@ -132,8 +102,8 @@ class AuctionTest {
                     .pricePolicy(new ConstantPricePolicy(1000))
                     .maximumPurchaseLimitCount(10)
                     .variationDuration(Duration.ofMinutes(1L))
-                    .startedAt(ZonedDateTime.now().minusHours(1L))
-                    .finishedAt(ZonedDateTime.now())
+                    .startedAt(now.plusHours(1L))
+                    .finishedAt(now.plusHours(2L))
                     .isShowStock(isShowStock)
                     .build();
 
@@ -152,6 +122,7 @@ class AuctionTest {
     public void updateAuctionPolicy() {
         // given
         long sellerId = 1L;
+        ZonedDateTime now = ZonedDateTime.now();
         Auction auction = Auction.builder()
                 .sellerId(sellerId)
                 .productName("상품이름")
@@ -162,8 +133,8 @@ class AuctionTest {
                 .pricePolicy(new ConstantPricePolicy(1000))
                 .maximumPurchaseLimitCount(10)
                 .variationDuration(Duration.ofMinutes(1L))
-                .startedAt(ZonedDateTime.now().minusHours(1L))
-                .finishedAt(ZonedDateTime.now())
+                .startedAt(now.minusHours(1L))
+                .finishedAt(now)
                 .isShowStock(true)
                 .build();
 
@@ -181,6 +152,7 @@ class AuctionTest {
     public void updatePricePolicyWhenPricePolicyIsNull() {
         // given
         long sellerId = 1L;
+        ZonedDateTime now = ZonedDateTime.now();
         Auction auction = Auction.builder()
                 .sellerId(sellerId)
                 .productName("상품이름")
@@ -190,8 +162,8 @@ class AuctionTest {
                 .pricePolicy(new ConstantPricePolicy(1000))
                 .maximumPurchaseLimitCount(10)
                 .variationDuration(Duration.ofMinutes(1L))
-                .startedAt(ZonedDateTime.now().minusHours(1L))
-                .finishedAt(ZonedDateTime.now())
+                .startedAt(now.minusHours(1L))
+                .finishedAt(now)
                 .isShowStock(true)
                 .build();
 
@@ -208,20 +180,7 @@ class AuctionTest {
         @Test
         void 변경할_재고가_1개_미만이면_예외가_발생한다() {
             // given
-            Auction auction = Auction.builder()
-                    .sellerId(1L)
-                    .productName("상품이름")
-                    .originPrice(10000)
-                    .currentPrice(10000)
-                    .originStock(999999)
-                    .currentStock(999999)
-                    .pricePolicy(new ConstantPricePolicy(1000))
-                    .maximumPurchaseLimitCount(10)
-                    .variationDuration(Duration.ofMinutes(1L))
-                    .startedAt(ZonedDateTime.now().minusHours(1L))
-                    .finishedAt(ZonedDateTime.now())
-                    .isShowStock(true)
-                    .build();
+            Auction auction = AuctionFixture.createWaitingAuction();
 
             // expect
             assertThatThrownBy(() -> auction.changeStock(0))
@@ -234,20 +193,7 @@ class AuctionTest {
         @Test
         void 변경할_재고가_1개_이상이라면_정상적으로_재고가_변경된다() {
             // given
-            Auction auction = Auction.builder()
-                    .sellerId(1L)
-                    .productName("상품이름")
-                    .originPrice(10000)
-                    .currentPrice(10000)
-                    .originStock(999999)
-                    .currentStock(999999)
-                    .pricePolicy(new ConstantPricePolicy(1000))
-                    .maximumPurchaseLimitCount(10)
-                    .variationDuration(Duration.ofMinutes(1L))
-                    .startedAt(ZonedDateTime.now().minusHours(1L))
-                    .finishedAt(ZonedDateTime.now())
-                    .isShowStock(true)
-                    .build();
+            Auction auction = AuctionFixture.createWaitingAuction();
 
             // when
             auction.changeStock(1L);
@@ -267,7 +213,8 @@ class AuctionTest {
             void 환불이_완료된다() {
                 // given
                 long originStock = 999999L;
-                long currentStock = 1L;
+                long currentStock = 999998L;
+                ZonedDateTime now = ZonedDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("상품이름")
@@ -278,8 +225,8 @@ class AuctionTest {
                         .pricePolicy(new ConstantPricePolicy(1000))
                         .maximumPurchaseLimitCount(10)
                         .variationDuration(Duration.ofMinutes(1L))
-                        .startedAt(ZonedDateTime.now().minusHours(1L))
-                        .finishedAt(ZonedDateTime.now())
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
                         .isShowStock(true)
                         .build();
 
@@ -287,7 +234,7 @@ class AuctionTest {
                 auction.refundStock(1L);
 
                 // then
-                assertThat(auction.getCurrentStock()).isEqualTo(2L);
+                assertThat(auction.getCurrentStock()).isEqualTo(999999L);
             }
         }
 
@@ -299,6 +246,7 @@ class AuctionTest {
                 // given
                 long originStock = 999999L;
                 long currentStock = 0L;
+                ZonedDateTime now = ZonedDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("상품이름")
@@ -309,8 +257,8 @@ class AuctionTest {
                         .pricePolicy(new ConstantPricePolicy(1000))
                         .maximumPurchaseLimitCount(10)
                         .variationDuration(Duration.ofMinutes(1L))
-                        .startedAt(ZonedDateTime.now().minusHours(1L))
-                        .finishedAt(ZonedDateTime.now())
+                        .startedAt(now.minusMinutes(30L))
+                        .finishedAt(now.plusMinutes(30L))
                         .isShowStock(true)
                         .build();
 
@@ -331,6 +279,7 @@ class AuctionTest {
                 // given
                 long originStock = 999999L;
                 long currentStock = 999999L;
+                ZonedDateTime now = ZonedDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("상품이름")
@@ -341,8 +290,8 @@ class AuctionTest {
                         .pricePolicy(new ConstantPricePolicy(1000))
                         .maximumPurchaseLimitCount(10)
                         .variationDuration(Duration.ofMinutes(1L))
-                        .startedAt(ZonedDateTime.now().minusHours(1L))
-                        .finishedAt(ZonedDateTime.now())
+                        .startedAt(now.minusMinutes(30L))
+                        .finishedAt(now.plusMinutes(30L))
                         .isShowStock(true)
                         .build();
 
