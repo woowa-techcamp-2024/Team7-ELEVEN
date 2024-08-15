@@ -1,4 +1,4 @@
-package com.wootecam.luckyvickyauction.global;
+package com.wootecam.luckyvickyauction.global.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

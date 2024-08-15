@@ -1,7 +1,7 @@
 package com.wootecam.luckyvickyauction.core.payment.domain;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.global.BaseTimeEntity;
+import com.wootecam.luckyvickyauction.global.entity.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 
