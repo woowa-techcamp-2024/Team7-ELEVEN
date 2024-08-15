@@ -7,7 +7,7 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class ReceiptSelectConditionTest {
+class BuyerReceiptSelectConditionTest {
 
     /**
      * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/158">[FEATURE] 구매자는 거래 목록을 최대 100개까지 한번에
