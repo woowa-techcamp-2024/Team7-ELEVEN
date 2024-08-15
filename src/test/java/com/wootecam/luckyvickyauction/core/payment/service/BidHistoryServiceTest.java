@@ -87,7 +87,7 @@ class BidHistoryServiceTest {
         @Test
         void 존재하지않는_거래내역을_조회할때_예외가_발생한다() {
             // given
-            Member member = Member.builder().build();
+            Member member = Member.builder().signInId("member123").build();
             long bidHistoryId = 1L;
 
             // expect
