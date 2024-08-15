@@ -56,7 +56,8 @@ public enum ErrorCode {
     P006("포인트 충전 시, 충전 후 포인트가 Long 최대값을 초과할 경우 예외가 발생합니다."),
 
     // Global 예외
-    G000("DTO 생성 시, 필드의 값이 NULL인 경우 예외가 발생합니다.");
+    G000("DTO 생성 시, 필드의 값이 NULL인 경우 예외가 발생합니다."),
+    G001("목록 조회시, 과도한 데이터를 조회할 수 없습니다.");
 
     private final String description;
 
