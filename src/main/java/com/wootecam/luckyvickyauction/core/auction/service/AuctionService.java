@@ -5,6 +5,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.CancelAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
@@ -53,9 +54,34 @@ public class AuctionService {
     }
 
     /**
-     * 경매 종료 경매 시작 전에는 경매를 종료할 수 있다.
+     * 경매 시작 전에는 경매를 취소할 수 있다.
+     *
+     * @param signInInfo 경매를 취소하려는 사용자 정보
+     * @param command    취소할 경매 정보
      */
-    public void closeAuction(long auctionId) {
+    public void cancelAuction(SignInInfo signInInfo, CancelAuctionCommand command) {
+        // 회원 권한이 판매자인지 확인한다.
+        if (!signInInfo.isType(Role.SELLER)) {
+            throw new UnauthorizedException("판매자만 경매를 취소할 수 있습니다.", ErrorCode.A024);
+        }
+
+        // 경매 정보를 불러온다.
+        Auction auction = findAuctionObject(command.auctionId());
+
+        // 경매의 소유주가 해당 판매자인지 확인한다.
+        if (!auction.isSeller(signInInfo.id())) {
+            throw new UnauthorizedException("자신이 등록한 경매만 취소할 수 있습니다.", ErrorCode.A025);
+        }
+
+        // 취소하려는 경매의 상태가 '경매 시작 전'인지 확인한다.
+        if (!auction.currentStatus(command.requestTime()).isWaiting()) {
+            String message = String.format("시작 전인 경매만 취소할 수 있습니다. 시작시간=%s, 요청시간=%s", auction.getStartedAt(),
+                    command.requestTime());
+            throw new BadRequestException(message, ErrorCode.A026);
+        }
+
+        // 취소를 진행한다.
+        auctionRepository.deleteById(command.auctionId());
     }
 
     /**

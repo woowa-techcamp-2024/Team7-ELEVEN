@@ -281,7 +281,6 @@ class AuctionTest {
                         .startedAt(ZonedDateTime.now().minusHours(1L))
                         .finishedAt(ZonedDateTime.now())
                         .isShowStock(true)
-                        .status(AuctionStatus.WAITING)
                         .build();
 
                 // when
@@ -313,7 +312,6 @@ class AuctionTest {
                         .startedAt(ZonedDateTime.now().minusHours(1L))
                         .finishedAt(ZonedDateTime.now())
                         .isShowStock(true)
-                        .status(AuctionStatus.WAITING)
                         .build();
 
                 // expect
@@ -346,7 +344,6 @@ class AuctionTest {
                         .startedAt(ZonedDateTime.now().minusHours(1L))
                         .finishedAt(ZonedDateTime.now())
                         .isShowStock(true)
-                        .status(AuctionStatus.WAITING)
                         .build();
 
                 // expect

@@ -66,4 +66,9 @@ public class FakeAuctionRepository implements AuctionRepository {
     public Optional<Auction> findById(Long id) {
         return Optional.ofNullable(auctions.get(id));
     }
+
+    @Override
+    public void deleteById(long id) {
+        auctions.remove(id);
+    }
 }

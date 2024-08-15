@@ -11,6 +11,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionStockCommand;
+import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.repository.FakeAuctionRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
@@ -408,7 +409,6 @@ class AuctionServiceTest {
                         .startedAt(ZonedDateTime.now().minusHours(1))
                         .finishedAt(ZonedDateTime.now().plusHours(1))
                         .isShowStock(true)
-                        .status(AuctionStatus.RUNNING)
                         .build();
                 auction = auctionRepository.save(auction);
 
@@ -422,46 +422,24 @@ class AuctionServiceTest {
         }
     }
 
+
     /**
      * 현재 RUNNING 상태인 Auction을 생성 및 Repository에 저장하고 반환합니다.
      *
      * @return 저장된 Auction 반환
      */
     private Auction saveRunningAuction() {
-        Auction auction = Auction.builder()
-                .sellerId(1L)
-                .productName("productName")
-                .originPrice(10000L)
-                .currentPrice(10000L)
-                .originStock(100L)
-                .currentStock(100L)
-                .maximumPurchaseLimitCount(10L)
-                .pricePolicy(new ConstantPricePolicy(1000L))
-                .variationDuration(Duration.ofMinutes(1L))
-                .startedAt(ZonedDateTime.now().minusHours(1))
-                .finishedAt(ZonedDateTime.now().plusHours(1))
-                .isShowStock(true)
-                .build();
-
+        Auction auction = AuctionFixture.createRunningAuction();
         return auctionRepository.save(auction);
     }
 
     private Auction saveWaitingAuction() {
-        Auction auction = Auction.builder()
-                .sellerId(1L)
-                .productName("productName")
-                .originPrice(10000L)
-                .currentPrice(10000L)
-                .originStock(100L)
-                .currentStock(100L)
-                .maximumPurchaseLimitCount(10L)
-                .pricePolicy(new ConstantPricePolicy(1000L))
-                .variationDuration(Duration.ofMinutes(1L))
-                .startedAt(ZonedDateTime.now().plusHours(1))
-                .finishedAt(ZonedDateTime.now().plusHours(2))
-                .isShowStock(true)
-                .build();
-
+        Auction auction = AuctionFixture.createWaitingAuction();
         return auctionRepository.save(auction);
     }
+
+    @Nested
+    class cancelAuction_메소드는 extends CancelAuctionTest {
+    }
+
 }
