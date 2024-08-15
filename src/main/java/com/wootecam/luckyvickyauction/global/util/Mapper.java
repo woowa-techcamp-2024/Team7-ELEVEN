@@ -45,6 +45,7 @@ public final class Mapper {
                 .seller(bidHistory.getSeller())
                 .buyer(bidHistory.getBuyer())
                 .createdAt(bidHistory.getCreatedAt())
+                .updatedAt(bidHistory.getUpdatedAt())
                 .build();
     }
 

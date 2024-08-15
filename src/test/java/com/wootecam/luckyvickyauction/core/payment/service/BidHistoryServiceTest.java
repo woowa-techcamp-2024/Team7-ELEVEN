@@ -14,6 +14,7 @@ import com.wootecam.luckyvickyauction.core.payment.repository.FakeBidHistoryRepo
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import java.time.ZonedDateTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -49,6 +50,7 @@ class BidHistoryServiceTest {
         @MethodSource("provideMembersForSuccess")
         void 소유자가_거래내역_조회시_성공한다(Member member, String description) {
             // given
+            ZonedDateTime now = ZonedDateTime.now();
             Member seller = Member.builder().id(1L).signInId("판매자").role(Role.SELLER).build();  // 소유자
             Member buyer = Member.builder().id(2L).signInId("구매자").role(Role.BUYER).build();  // 소유자
 
@@ -61,6 +63,8 @@ class BidHistoryServiceTest {
                     .auctionId(1L)
                     .seller(seller)
                     .buyer(buyer)
+                    .createdAt(now)
+                    .updatedAt(now)
                     .build();
             bidHistoryRepository.save(bidHistory);
 
@@ -118,6 +122,7 @@ class BidHistoryServiceTest {
         @Test
         void 다른_판매자의_구매이력_조회시_예외가_발생한다() {
             // given
+            ZonedDateTime now = ZonedDateTime.now();
             Member seller1 = Member.builder().id(1L).signInId("판매자").role(Role.SELLER).build();  // 판매자
             Member seller2 = Member.builder().id(2L).signInId("옆집 사장님").role(Role.SELLER).build();  // 판매자
             Member buyer = Member.builder().id(3L).signInId("구매자").role(Role.BUYER).build();  // 구매자
@@ -131,6 +136,8 @@ class BidHistoryServiceTest {
                     .auctionId(1L)
                     .seller(seller1)
                     .buyer(buyer)
+                    .createdAt(now)
+                    .updatedAt(now)
                     .build();
             bidHistoryRepository.save(bidHistory);
 

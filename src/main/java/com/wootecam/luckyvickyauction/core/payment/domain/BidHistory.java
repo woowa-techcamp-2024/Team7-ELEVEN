@@ -1,12 +1,12 @@
 package com.wootecam.luckyvickyauction.core.payment.domain;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.global.entity.BaseTimeEntity;
+import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class BidHistory extends BaseTimeEntity {
+public class BidHistory {
 
     private Long id;
     private String productName;
@@ -16,6 +16,8 @@ public class BidHistory extends BaseTimeEntity {
     private long auctionId;
     private Member seller;
     private Member buyer;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
 
     @Builder
     public BidHistory(
@@ -23,10 +25,12 @@ public class BidHistory extends BaseTimeEntity {
             final String productName,
             final long price,
             final long quantity,
-            BidStatus bidStatus,
+            final BidStatus bidStatus,
             final long auctionId,
             final Member seller,
-            final Member buyer) {
+            final Member buyer,
+            final ZonedDateTime createdAt,
+            final ZonedDateTime updatedAt) {
         this.id = id;
         this.productName = productName;
         this.price = price;
@@ -35,8 +39,8 @@ public class BidHistory extends BaseTimeEntity {
         this.auctionId = auctionId;
         this.seller = seller;
         this.buyer = buyer;
-
-        super.prePersist();
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public boolean isRefundStatus() {

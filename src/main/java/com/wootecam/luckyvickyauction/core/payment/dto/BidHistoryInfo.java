@@ -17,7 +17,8 @@ public record BidHistoryInfo(
         long auctionId,
         Member seller,
         Member buyer,
-        ZonedDateTime createdAt
+        ZonedDateTime createdAt,
+        ZonedDateTime updatedAt
 ) {
 
     public static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
@@ -31,6 +32,7 @@ public record BidHistoryInfo(
         validateNotNull(seller, "판매자 정보");
         validateNotNull(buyer, "구매자 정보");
         validateNotNull(createdAt, "거래 일자");
+        validateNotNull(updatedAt, "변경 일자");
 
         validateProductName(productName);
         validatePrice(price);
