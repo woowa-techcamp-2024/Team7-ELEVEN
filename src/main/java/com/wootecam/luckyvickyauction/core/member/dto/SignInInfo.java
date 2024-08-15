@@ -5,10 +5,7 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.util.Objects;
 
-public record SignInInfo(
-        Long id,
-        Role role
-) {
+public record SignInInfo(Long id, Role role) {
     private static final String ERROR_NULL_VALUE = "%s는 Null일 수 없습니다.";
 
     public SignInInfo {
@@ -20,6 +17,10 @@ public record SignInInfo(
         if (Objects.isNull(value)) {
             throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.G000);
         }
+    }
+
+    public boolean isSameId(Long id) {
+        return this.id.equals(id);
     }
 
     public boolean isType(Role role) {
