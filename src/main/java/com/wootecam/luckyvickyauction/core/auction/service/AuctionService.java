@@ -9,6 +9,8 @@ import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.CancelAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionStockCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
@@ -131,6 +133,18 @@ public class AuctionService {
     public List<BuyerAuctionSimpleInfo> getBuyerAuctionSimpleInfos(AuctionSearchCondition condition) {
         return auctionRepository.findAllBy(condition).stream()
                 .map(Mapper::convertToBuyerAuctionSimpleInfo)
+                .toList();
+    }
+
+    /**
+     * 판매자용 경매 목록 조회
+     *
+     * @param condition
+     * @return 판매자용 경매 목록
+     */
+    public List<SellerAuctionSimpleInfo> getSellerAuctionSimpleInfos(SellerAuctionSearchCondition condition) {
+        return auctionRepository.findAllBy(condition).stream()
+                .map(Mapper::convertToSellerAuctionSimpleInfo)
                 .toList();
     }
 
