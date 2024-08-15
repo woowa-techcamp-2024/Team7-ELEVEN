@@ -1,22 +1,40 @@
 package com.wootecam.luckyvickyauction.core.payment.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import org.junit.jupiter.api.Test;
 
-public class BidHistoryTest {
+class BidHistoryTest {
 
     @Test
-    void 거래_내역이_환불_상태인지_확인할_수_있다() {
+    void 성공적으로_환불_표시를_한다() {
+        // given
+        BidHistory refundBidHistory = BidHistory.builder()
+                .bidStatus(BidStatus.BID)
+                .build();
+
+        // when
+        refundBidHistory.markAsRefund();
+
+        // then
+        assertThat(refundBidHistory.getBidStatus()).isEqualTo(BidStatus.REFUND);
+    }
+
+    @Test
+    void 이미_환불된_경매에_환불_표시를_하면_예외가_발생한다() {
         // given
         BidHistory refundBidHistory = BidHistory.builder()
                 .bidStatus(BidStatus.REFUND)
                 .build();
 
-        // when
-        boolean isRefundStatus = refundBidHistory.isRefundStatus();
+        // expect
+        assertThatThrownBy(() -> refundBidHistory.markAsRefund())
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("이미 환불된 입찰 내역입니다.")
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.P003));
 
-        // then
-        assertThat(isRefundStatus).isTrue();
     }
 }

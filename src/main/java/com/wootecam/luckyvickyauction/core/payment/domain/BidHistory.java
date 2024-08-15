@@ -1,6 +1,8 @@
 package com.wootecam.luckyvickyauction.core.payment.domain;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,8 +45,14 @@ public class BidHistory {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isRefundStatus() {
-        return bidStatus.equals(BidStatus.REFUND);
+    /**
+     * 해당 거래 내역을 환불 상태로 전환합니다.
+     */
+    public void markAsRefund() {
+        if (bidStatus.equals(BidStatus.REFUND)) {
+            throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.P003);
+        }
+        bidStatus = BidStatus.REFUND;
     }
 
     /**

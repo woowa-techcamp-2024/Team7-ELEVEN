@@ -78,15 +78,14 @@ public class PaymentService {
         }
 
         BidHistory refundTargetBidHistory = findRefundTargetBidHistory(bidHistoryId);
-        if (refundTargetBidHistory.isRefundStatus()) {
-            throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.P003);
-        }
+        refundTargetBidHistory.markAsRefund();
 
         Member refundTargetBuyer = refundTargetBidHistory.getBuyer();
         if (!buyer.isSameMember(refundTargetBuyer.getSignInId())) {
             throw new UnauthorizedException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
         }
 
+        // 사용자 포인트 변경
         long price = refundTargetBidHistory.getPrice();
         long quantity = refundTargetBidHistory.getQuantity();
 
@@ -96,18 +95,7 @@ public class PaymentService {
 
         // 환불 요청에 대한 정보 저장
         if (cancelBid(refundTargetBidHistory.getAuctionId(), quantity)) {
-            Member savedBuyer = memberRepository.save(buyer);
-            Member savedSeller = memberRepository.save(seller);
-            bidHistoryRepository.save(BidHistory.builder()
-                    .id(refundTargetBidHistory.getId())
-                    .auctionId(refundTargetBidHistory.getAuctionId())
-                    .productName(refundTargetBidHistory.getProductName())
-                    .price(price)
-                    .quantity(quantity)
-                    .bidStatus(BidStatus.REFUND)
-                    .seller(savedSeller)
-                    .buyer(savedBuyer)
-                    .build());
+            bidHistoryRepository.save(refundTargetBidHistory);  // 정상적으로 환불 처리된 경우 해당 이력을 '환불' 상태로 변경
         }
     }
 
