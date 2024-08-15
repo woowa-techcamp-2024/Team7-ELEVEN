@@ -2,7 +2,9 @@ package com.wootecam.luckyvickyauction.core.payment.repository;
 
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
+import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptSelectCondition;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,6 +35,14 @@ public class FakeBidHistoryRepository implements BidHistoryRepository {
         return Optional.ofNullable(bidHistories.get(bidHistoryId));
     }
 
+    // TODO: [ReceiptSelectCondition 조건 이후 변경 사항] [writeAt: 2024/08/15/16:03] [writeBy: yudonggeun]
+    @Override
+    public List<BidHistory> findAllBy(ReceiptSelectCondition condition) {
+        return bidHistories.values().stream()
+                .filter(history -> true)
+                .toList();
+    }
+
     // BidHistory 객체를 생성하는 메서드
     private BidHistory createBidHistory(Long id, BidHistory bidHistory) {
         return BidHistory.builder()
@@ -44,6 +54,8 @@ public class FakeBidHistoryRepository implements BidHistoryRepository {
                 .auctionId(bidHistory.getAuctionId())
                 .seller(bidHistory.getSeller())
                 .buyer(bidHistory.getBuyer())
+                .createdAt(bidHistory.getCreatedAt())
+                .updatedAt(bidHistory.getUpdatedAt())
                 .build();
     }
 

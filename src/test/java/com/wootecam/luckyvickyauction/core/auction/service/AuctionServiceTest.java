@@ -439,6 +439,10 @@ class AuctionServiceTest {
     }
 
     @Nested
+    class getSellerAuction_메소드는 extends GetSellerAuctionTest {
+    }
+
+    @Nested
     class cancelAuction_메소드는 extends CancelAuctionTest {
     }
 }

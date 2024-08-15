@@ -4,6 +4,7 @@ import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import java.time.ZonedDateTime;
 import lombok.Builder;
 
 @Builder
@@ -15,7 +16,9 @@ public record BidHistoryInfo(
         BidStatus bidStatus,
         long auctionId,
         Member seller,
-        Member buyer
+        Member buyer,
+        ZonedDateTime createdAt,
+        ZonedDateTime updatedAt
 ) {
 
     public static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
@@ -28,6 +31,8 @@ public record BidHistoryInfo(
         validateNotNull(bidStatus, "입찰 상태");
         validateNotNull(seller, "판매자 정보");
         validateNotNull(buyer, "구매자 정보");
+        validateNotNull(createdAt, "거래 일자");
+        validateNotNull(updatedAt, "변경 일자");
 
         validateProductName(productName);
         validatePrice(price);

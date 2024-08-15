@@ -3,9 +3,12 @@ package com.wootecam.luckyvickyauction.global.util;
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -44,6 +47,8 @@ public final class Mapper {
                 .auctionId(bidHistory.getAuctionId())
                 .seller(bidHistory.getSeller())
                 .buyer(bidHistory.getBuyer())
+                .createdAt(bidHistory.getCreatedAt())
+                .updatedAt(bidHistory.getUpdatedAt())
                 .build();
     }
 
@@ -94,5 +99,38 @@ public final class Mapper {
                 .finishedAt(auction.getFinishedAt())
                 .isShowStock(auction.isShowStock())
                 .build();
+    }
+
+    public static BuyerReceiptSimpleInfo convertToBuyerReceiptSimpleInfo(BidHistory history) {
+        return new BuyerReceiptSimpleInfo(
+                history.getId(),
+                history.getBidStatus(),
+                history.getAuctionId(),
+                history.getQuantity(),
+                history.getPrice()
+        );
+    }
+
+    public static BuyerAuctionSimpleInfo convertToBuyerAuctionSimpleInfo(Auction auction) {
+        return new BuyerAuctionSimpleInfo(
+                auction.getId(),
+                auction.getProductName(),
+                auction.getCurrentPrice(),
+                auction.getStartedAt(),
+                auction.getFinishedAt()
+        );
+    }
+
+    public static SellerAuctionSimpleInfo convertToSellerAuctionSimpleInfo(Auction auction) {
+        return new SellerAuctionSimpleInfo(
+                auction.getId(),
+                auction.getProductName(),
+                auction.getOriginPrice(),
+                auction.getCurrentPrice(),
+                auction.getOriginStock(),
+                auction.getCurrentStock(),
+                auction.getStartedAt(),
+                auction.getFinishedAt()
+        );
     }
 }

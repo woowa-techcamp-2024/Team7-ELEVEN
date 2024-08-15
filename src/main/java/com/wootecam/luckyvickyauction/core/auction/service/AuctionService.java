@@ -5,9 +5,12 @@ import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.CancelAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionStockCommand;
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
@@ -94,9 +97,7 @@ public class AuctionService {
      * @return 구매자용 경매 정보
      */
     public BuyerAuctionInfo getBuyerAuction(long auctionId) {
-        Auction auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
-                        ErrorCode.A011));
+        Auction auction = findAuctionObject(auctionId);
 
         return Mapper.convertToBuyerAuctionInfo(auction);
     }
@@ -107,19 +108,37 @@ public class AuctionService {
      * @param auctionId 경매 ID
      * @return 판매자용 경매 정보
      */
-    public SellerAuctionInfo getSellerAuction(long auctionId) {
-        Auction auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId,
-                        ErrorCode.A011));
+    public SellerAuctionInfo getSellerAuction(SignInInfo signInInfo, long auctionId) {
+        Auction auction = findAuctionObject(auctionId);
+
+        if (!signInInfo.isSameId(auction.getSellerId())) {
+            throw new UnauthorizedException("판매자는 자신이 등록한 경매만 조회할 수 있습니다.", ErrorCode.A027);
+        }
 
         return Mapper.convertToSellerAuctionInfo(auction);
     }
 
     /**
-     * 경매 목록 조회
+     * 구매자용 경매 목록 조회
+     * @param condition
+     * @return 구매자용 경매 목록
      */
-    public List<AuctionInfo> getAuctions(AuctionSearchCondition condition) {
-        return null;
+    public List<BuyerAuctionSimpleInfo> getBuyerAuctionSimpleInfos(AuctionSearchCondition condition) {
+        return auctionRepository.findAllBy(condition).stream()
+                .map(Mapper::convertToBuyerAuctionSimpleInfo)
+                .toList();
+    }
+
+    /**
+     * 판매자용 경매 목록 조회
+     *
+     * @param condition
+     * @return 판매자용 경매 목록
+     */
+    public List<SellerAuctionSimpleInfo> getSellerAuctionSimpleInfos(SellerAuctionSearchCondition condition) {
+        return auctionRepository.findAllBy(condition).stream()
+                .map(Mapper::convertToSellerAuctionSimpleInfo)
+                .toList();
     }
 
     public void changeStock(SignInInfo signInInfo, UpdateAuctionStockCommand command) {
