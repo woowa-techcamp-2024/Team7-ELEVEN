@@ -23,6 +23,7 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import java.time.ZonedDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -155,6 +156,7 @@ class PaymentServiceTest {
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
+                ZonedDateTime now = ZonedDateTime.now();
                 BidHistory bidHistory = BidHistory.builder()
                         .id(1L)
                         .auctionId(1L)
@@ -164,6 +166,8 @@ class PaymentServiceTest {
                         .bidStatus(BidStatus.BID)
                         .seller(seller)
                         .buyer(buyer)
+                        .createdAt(now)
+                        .updatedAt(now)
                         .build();
                 bidHistoryRepository.save(bidHistory);
 
@@ -215,6 +219,7 @@ class PaymentServiceTest {
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
+                ZonedDateTime now = ZonedDateTime.now();
                 BidHistory bidHistory = BidHistory.builder()
                         .id(1L)
                         .auctionId(1L)
@@ -224,6 +229,8 @@ class PaymentServiceTest {
                         .bidStatus(BidStatus.REFUND)
                         .seller(seller)
                         .buyer(buyer)
+                        .createdAt(now)
+                        .updatedAt(now)
                         .build();
                 bidHistoryRepository.save(bidHistory);
 
@@ -251,6 +258,7 @@ class PaymentServiceTest {
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
+                ZonedDateTime now = ZonedDateTime.now();
                 BidHistory bidHistory = BidHistory.builder()
                         .id(1L)
                         .auctionId(1L)
@@ -260,6 +268,8 @@ class PaymentServiceTest {
                         .bidStatus(BidStatus.BID)
                         .seller(seller)
                         .buyer(buyer)
+                        .createdAt(now)
+                        .updatedAt(now)
                         .build();
                 bidHistoryRepository.save(bidHistory);
 
