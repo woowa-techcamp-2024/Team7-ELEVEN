@@ -50,12 +50,11 @@ public class BidHistory {
     /**
      * 해당 거래 내역을 환불 상태로 전환합니다.
      */
-    public void markAsRefund(ZonedDateTime updatedAt) {
+    public void markAsRefund() {
         if (bidStatus.equals(BidStatus.REFUND)) {
             throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.B005);
         }
         bidStatus = BidStatus.REFUND;
-        setUpdatedAt(updatedAt);
     }
 
     /**
@@ -73,11 +72,4 @@ public class BidHistory {
         return seller.isSameMember(signInId) || buyer.isSameMember(signInId);
     }
 
-    private void setUpdatedAt(ZonedDateTime updatedAt) {
-        if (updatedAt.isBefore(createdAt)) {
-            throw new BadRequestException(String.format(ERROR_VARIATION_UPDATE_AT, createdAt, updatedAt),
-                    ErrorCode.B006);
-        }
-        this.updatedAt = updatedAt;
-    }
 }
