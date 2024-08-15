@@ -96,6 +96,8 @@ public class PaymentService {
 
         // 환불 요청에 대한 정보 저장
         if (cancelBid(refundTargetBidHistory.getAuctionId(), quantity)) {
+            memberRepository.save(buyer);
+            memberRepository.save(seller);
             bidHistoryRepository.save(refundTargetBidHistory);  // 정상적으로 환불 처리된 경우 해당 이력을 '환불' 상태로 변경
         }
     }
