@@ -84,11 +84,11 @@ public final class Mapper {
     public static SellerAuctionInfo convertToSellerAuctionInfo(Auction auction) {
         return SellerAuctionInfo.builder()
                 .auctionId(auction.getId())
-                .sellerId(auction.getSellerId())
                 .productName(auction.getProductName())
                 .originPrice(auction.getOriginPrice())
                 .currentPrice(auction.getCurrentPrice())
-                .stock(auction.getCurrentStock())
+                .originStock(auction.getOriginStock())
+                .currentStock(auction.getCurrentStock())
                 .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
                 .pricePolicy(auction.getPricePolicy())
                 .variationDuration(auction.getVariationDuration())
