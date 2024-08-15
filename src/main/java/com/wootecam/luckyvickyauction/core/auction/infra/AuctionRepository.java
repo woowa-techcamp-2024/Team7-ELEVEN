@@ -1,6 +1,8 @@
 package com.wootecam.luckyvickyauction.core.auction.infra;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
+import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
+import java.util.List;
 import java.util.Optional;
 
 public interface AuctionRepository {
@@ -9,4 +11,6 @@ public interface AuctionRepository {
     Optional<Auction> findById(Long id);
 
     void deleteById(long id);
+
+    List<Auction> findAllBy(AuctionSearchCondition condition);
 }
