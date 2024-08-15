@@ -1,11 +1,12 @@
 package com.wootecam.luckyvickyauction.core.payment.domain;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.global.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class BidHistory {
+public class BidHistory extends BaseTimeEntity {
 
     private Long id;
     private String productName;
@@ -34,6 +35,8 @@ public class BidHistory {
         this.auctionId = auctionId;
         this.seller = seller;
         this.buyer = buyer;
+
+        super.prePersist();
     }
 
     public boolean isRefundStatus() {
