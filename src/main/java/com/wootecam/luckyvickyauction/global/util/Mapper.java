@@ -6,6 +6,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.TxHistorySimpleInfo;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -94,5 +95,15 @@ public final class Mapper {
                 .finishedAt(auction.getFinishedAt())
                 .isShowStock(auction.isShowStock())
                 .build();
+    }
+
+    public static TxHistorySimpleInfo convertToTxHistorySimpleInfo(BidHistory history) {
+        return new TxHistorySimpleInfo(
+                history.getId(),
+                history.getBidStatus(),
+                history.getAuctionId(),
+                history.getQuantity(),
+                history.getPrice()
+        );
     }
 }
