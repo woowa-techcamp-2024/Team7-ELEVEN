@@ -19,17 +19,12 @@ public record SignUpRequestInfo(
         validateNotNull(userRole, "사용자 역할");
 
         validateSignUpId(signUpId);
-        validatePassword(password);
     }
 
     private void validateSignUpId(String signUpId) {
         if (signUpId.isBlank()) {
             throw new BadRequestException(ERROR_ID_IS_BLANK, ErrorCode.M004);
         }
-    }
-
-    // TODO: [패스워드 제약사항 이슈 작업 시 추가] [writeAt: 2024/08/15/19:09] [writeBy: chhs2131]
-    private void validatePassword(String password) {
     }
 
     private void validateNotNull(Object value, String fieldName) {
