@@ -87,7 +87,7 @@ public class BuyerAuctionInfoTest {
         int maximumPurchaseLimitCount = 10;
 
         int variationWidth = 1000;
-        Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+        Duration varitationDuration = Duration.ofMinutes(10L);  // 변동 시간 단위
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1L);

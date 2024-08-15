@@ -44,7 +44,7 @@ public class Auction {
             boolean isShowStock
     ) {
         validateDurationTime(startedAt, finishedAt);
-        pricePolicy.validate(originPrice);
+        pricePolicy.validate(startedAt, finishedAt, variationDuration, originPrice);
 
         this.id = id;
         this.sellerId = sellerId;

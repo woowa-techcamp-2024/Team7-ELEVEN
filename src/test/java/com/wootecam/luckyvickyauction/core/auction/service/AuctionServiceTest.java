@@ -51,7 +51,7 @@ class AuctionServiceTest {
         long maximumPurchaseLimitCount = 10;
 
         int variationWidth = 1000;
-        Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+        Duration varitationDuration = Duration.ofMinutes(10L);  // 변동 시간 단위
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
@@ -96,7 +96,7 @@ class AuctionServiceTest {
         int maximumPurchaseLimitCount = 10;
 
         int variationWidth = 1000;
-        Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
+        Duration varitationDuration = Duration.ofMinutes(10L);  // 변동 시간 단위
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
         ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
@@ -289,7 +289,7 @@ class AuctionServiceTest {
                     .currentStock(100)
                     .maximumPurchaseLimitCount(100)
                     .pricePolicy(new ConstantPricePolicy(1000))
-                    .variationDuration(Duration.ofMinutes(1L))
+                    .variationDuration(Duration.ofMinutes(10L))
                     .isShowStock(true)
                     .build();
             auctionRepository.save(auction);
@@ -406,7 +406,7 @@ class AuctionServiceTest {
                         .currentStock(50L)
                         .maximumPurchaseLimitCount(10L)
                         .pricePolicy(new ConstantPricePolicy(1000L))
-                        .variationDuration(Duration.ofMinutes(1L))
+                        .variationDuration(Duration.ofMinutes(10L))
                         .startedAt(now.minusMinutes(30))
                         .finishedAt(now.plusMinutes(30))
                         .isShowStock(true)
