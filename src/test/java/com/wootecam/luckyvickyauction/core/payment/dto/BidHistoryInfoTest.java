@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.global.exception.BusinessException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -24,53 +25,53 @@ class BidHistoryInfoTest {
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.", ErrorCode.B002,
                         1L, "", 10000, 1, BidStatus.BID, 1L,
-                        new Member(1L, "seller", "password", Role.SELLER, null),
-                        new Member(2L, "buyer", "password", Role.BUYER, null),
+                        new Member(1L, "seller", "password00", Role.SELLER, null),
+                        new Member(2L, "buyer", "password00", Role.BUYER, null),
                         now, now),
                 Arguments.of("상품 이름은 빈 칸일 수 없습니다.", ErrorCode.B002,
                         1L, "   ", 10000, 1, BidStatus.BID, 1L,
-                        new Member(1L, "seller", "password", Role.SELLER, null),
-                        new Member(2L, "buyer", "password", Role.BUYER, null),
+                        new Member(1L, "seller", "password00", Role.SELLER, null),
+                        new Member(2L, "buyer", "password00", Role.BUYER, null),
                         now, now),
                 Arguments.of("입찰 가격은 0보다 커야 합니다. 입찰 가격: 0", ErrorCode.B003,
                         1L, "상품이름", 0, 1, BidStatus.BID, 1L,
-                        new Member(1L, "seller", "password", Role.SELLER, null),
-                        new Member(2L, "buyer", "password", Role.BUYER, null),
+                        new Member(1L, "seller", "password00", Role.SELLER, null),
+                        new Member(2L, "buyer", "password00", Role.BUYER, null),
                         now, now),
                 Arguments.of("수량은 0보다 커야 합니다. 수량: 0", ErrorCode.B004,
                         1L, "상품이름", 10000, 0, BidStatus.BID, 1L,
-                        new Member(1L, "seller", "password", Role.SELLER, null),
-                        new Member(2L, "buyer", "password", Role.BUYER, null),
+                        new Member(1L, "seller", "password00", Role.SELLER, null),
+                        new Member(2L, "buyer", "password00", Role.BUYER, null),
                         now, now),
                 Arguments.of("상품 이름은 Null일 수 없습니다.", ErrorCode.G000,
                         1L, null, 10000, 1, BidStatus.REFUND, 1L,
-                        new Member(1L, "seller", "password", Role.SELLER, null),
-                        new Member(2L, "buyer", "password", Role.BUYER, null),
+                        new Member(1L, "seller", "password00", Role.SELLER, null),
+                        new Member(2L, "buyer", "password00", Role.BUYER, null),
                         now, now),
                 Arguments.of("입찰 상태는 Null일 수 없습니다.", ErrorCode.G000,
                         1L, "상품이름", 10000, 1, null, 1L,
-                        new Member(1L, "seller", "password", Role.SELLER, null),
-                        new Member(2L, "buyer", "password", Role.BUYER, null),
+                        new Member(1L, "seller", "password00", Role.SELLER, null),
+                        new Member(2L, "buyer", "password00", Role.BUYER, null),
                         now, now),
                 Arguments.of("판매자 정보는 Null일 수 없습니다.", ErrorCode.G000,
                         1L, "상품이름", 10000, 1, BidStatus.BID, 1L,
                         null,
-                        new Member(2L, "buyer", "password", Role.BUYER, null),
+                        new Member(2L, "buyer", "password00", Role.BUYER, null),
                         now, now),
                 Arguments.of("구매자 정보는 Null일 수 없습니다.", ErrorCode.G000,
                         1L, "상품이름", 10000, 1, BidStatus.BID, 1L,
-                        new Member(1L, "seller", "password", Role.SELLER, null),
+                        new Member(1L, "seller", "password00", Role.SELLER, null),
                         null,
                         now, now),
                 Arguments.of("거래 일자는 Null일 수 없습니다.", ErrorCode.G000,
                         1L, "상품이름", 10000, 1, BidStatus.BID, 1L,
-                        new Member(1L, "seller", "password", Role.SELLER, null),
-                        new Member(2L, "buyer", "password", Role.BUYER, null),
+                        new Member(1L, "seller", "password00", Role.SELLER, null),
+                        new Member(2L, "buyer", "password00", Role.BUYER, null),
                         null, now),
                 Arguments.of("변경 일자는 Null일 수 없습니다.", ErrorCode.G000,
                         1L, "상품이름", 10000, 1, BidStatus.BID, 1L,
-                        new Member(1L, "seller", "password", Role.SELLER, null),
-                        new Member(2L, "buyer", "password", Role.BUYER, null),
+                        new Member(1L, "seller", "password00", Role.SELLER, null),
+                        new Member(2L, "buyer", "password00", Role.BUYER, null),
                         now, null)
         );
     }
@@ -84,8 +85,8 @@ class BidHistoryInfoTest {
         long quantity = 1L;
         BidStatus bidStatus = BidStatus.BID;
         Long auctionId = 1L;
-        Member seller = new Member(1L, "seller", "password", Role.SELLER, null);
-        Member buyer = new Member(2L, "buyer", "password", Role.BUYER, null);
+        Member seller = MemberFixture.createSellerWithDefaultPoint();
+        Member buyer = MemberFixture.createBuyerWithDefaultPoint();
         ZonedDateTime createdAt = ZonedDateTime.now();
         ZonedDateTime updatedAt = ZonedDateTime.now();
 
