@@ -71,14 +71,15 @@ public class PaymentService {
      *
      * @param buyer        환불을 요청한 사용자
      * @param bidHistoryId 환불할 입찰 내역의 id
+     * @param requestTime  환불 요청을 한 시간
      */
-    public void refund(Member buyer, long bidHistoryId) {
+    public void refund(Member buyer, long bidHistoryId, ZonedDateTime requestTime) {
         if (!buyer.isBuyer()) {
             throw new UnauthorizedException("구매자만 환불을 할 수 있습니다.", ErrorCode.P000);
         }
 
         BidHistory refundTargetBidHistory = findRefundTargetBidHistory(bidHistoryId);
-        refundTargetBidHistory.markAsRefund();
+        refundTargetBidHistory.markAsRefund(requestTime);
 
         Member refundTargetBuyer = refundTargetBidHistory.getBuyer();
         if (!buyer.isSameMember(refundTargetBuyer.getSignInId())) {

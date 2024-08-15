@@ -21,6 +21,8 @@ public class BidHistory {
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
+    public static final String ERROR_VARIATION_UPDATE_AT = "생성 시간보다 수정 시간이 더 작을 수 없습니다. 생성시간: %s, 수정시간: %s";
+
     @Builder
     public BidHistory(
             final Long id,
@@ -48,11 +50,12 @@ public class BidHistory {
     /**
      * 해당 거래 내역을 환불 상태로 전환합니다.
      */
-    public void markAsRefund() {
+    public void markAsRefund(ZonedDateTime updatedAt) {
         if (bidStatus.equals(BidStatus.REFUND)) {
-            throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.P003);
+            throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.B005);
         }
         bidStatus = BidStatus.REFUND;
+        setUpdatedAt(updatedAt);
     }
 
     /**
@@ -68,5 +71,13 @@ public class BidHistory {
 
         String signInId = member.getSignInId();
         return seller.isSameMember(signInId) || buyer.isSameMember(signInId);
+    }
+
+    private void setUpdatedAt(ZonedDateTime updatedAt) {
+        if (updatedAt.isBefore(createdAt)) {
+            throw new BadRequestException(String.format(ERROR_VARIATION_UPDATE_AT, createdAt, updatedAt),
+                    ErrorCode.B006);
+        }
+        this.updatedAt = updatedAt;
     }
 }

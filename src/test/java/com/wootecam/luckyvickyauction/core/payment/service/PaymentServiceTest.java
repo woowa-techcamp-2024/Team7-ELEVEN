@@ -112,6 +112,7 @@ class PaymentServiceTest {
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
+                ZonedDateTime now = ZonedDateTime.now();
                 BidHistory bidHistory = BidHistory.builder()
                         .id(1L)
                         .auctionId(1L)
@@ -121,11 +122,13 @@ class PaymentServiceTest {
                         .bidStatus(BidStatus.BID)
                         .seller(seller)
                         .buyer(buyer)
+                        .createdAt(now)
+                        .updatedAt(now)
                         .build();
                 bidHistoryRepository.save(bidHistory);
 
                 // when
-                paymentService.refund(buyer, 1L);
+                paymentService.refund(buyer, 1L, now);
 
                 // then
                 BidHistory savedBidHistory = bidHistoryRepository.findById(1L).get();
@@ -172,7 +175,7 @@ class PaymentServiceTest {
                 bidHistoryRepository.save(bidHistory);
 
                 // expect
-                assertThatThrownBy(() -> paymentService.refund(seller, 1L))
+                assertThatThrownBy(() -> paymentService.refund(seller, 1L, now))
                         .isInstanceOf(UnauthorizedException.class)
                         .hasMessage("구매자만 환불을 할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -196,7 +199,7 @@ class PaymentServiceTest {
                 auctionRepository.save(auction);
 
                 // expect
-                assertThatThrownBy(() -> paymentService.refund(buyer, 1L))
+                assertThatThrownBy(() -> paymentService.refund(buyer, 1L, ZonedDateTime.now()))
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -235,11 +238,11 @@ class PaymentServiceTest {
                 bidHistoryRepository.save(bidHistory);
 
                 // expect
-                assertThatThrownBy(() -> paymentService.refund(buyer, 1L))
+                assertThatThrownBy(() -> paymentService.refund(buyer, 1L, now))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("이미 환불된 입찰 내역입니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.P003));
+                                ErrorCode.B005));
             }
         }
 
@@ -282,7 +285,7 @@ class PaymentServiceTest {
                         .point(new Point(1000L))
                         .build();
 
-                assertThatThrownBy(() -> paymentService.refund(unbidBuyer, 1L))
+                assertThatThrownBy(() -> paymentService.refund(unbidBuyer, 1L, now))
                         .isInstanceOf(UnauthorizedException.class)
                         .hasMessage("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
