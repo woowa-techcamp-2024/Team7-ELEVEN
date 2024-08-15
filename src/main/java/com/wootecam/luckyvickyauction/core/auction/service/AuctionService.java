@@ -5,6 +5,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.CancelAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
@@ -123,10 +124,14 @@ public class AuctionService {
     }
 
     /**
-     * 경매 목록 조회
+     * 구매자용 경매 목록 조회
+     * @param condition
+     * @return 구매자용 경매 목록
      */
-    public List<AuctionInfo> getAuctions(AuctionSearchCondition condition) {
-        return null;
+    public List<BuyerAuctionSimpleInfo> getBuyerAuctionSimpleInfos(AuctionSearchCondition condition) {
+        return auctionRepository.findAllBy(condition).stream()
+                .map(Mapper::convertToBuyerAuctionSimpleInfo)
+                .toList();
     }
 
     public void changeStock(SignInInfo signInInfo, UpdateAuctionStockCommand command) {
