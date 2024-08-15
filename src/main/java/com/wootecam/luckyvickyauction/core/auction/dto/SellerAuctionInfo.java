@@ -13,11 +13,11 @@ import lombok.Builder;
 @Builder
 public record SellerAuctionInfo(
         Long auctionId,
-        Long sellerId,
         String productName,
         long originPrice,
         long currentPrice,
-        long stock,
+        long originStock,
+        long currentStock,
         long maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,
@@ -29,14 +29,14 @@ public record SellerAuctionInfo(
     public static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
     public static final String ERROR_ORIGIN_PRICE = "상품 원가는 0보다 커야 합니다. 상품 원가: %d";
     public static final String ERROR_CURRENT_PRICE = "현재 가격은 0보다 커야 합니다. 현재 가격: %d";
-    public static final String ERROR_STOCK = "재고는 0보다 작을 수 없습니다. 재고: %d";
+    public static final String ERROR_ORIGIN_STOCK = "원래 재고는 0 이하일 수 없습니다. 재고: %d";
+    public static final String ERROR_CURRENT_STOCK = "현재 재고는 0보다 작을 수 없습니다. 재고: %d";
     public static final String ERROR_MAXIMUM_PURCHASE_LIMIT_COUNT = "최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: %d";
     public static final String ERROR_VARIATION_DURATION = "변동 시간 단위는 0보다 커야 합니다. 변동 시간: %s";
     public static final String ERROR_NULL_VALUE = "%s는 Null일 수 없습니다.";
 
     public SellerAuctionInfo {
         validateNotNull(auctionId, "경매 ID");
-        validateNotNull(sellerId, "판매자 ID");
         validateNotNull(productName, "상품 이름");
         validateNotNull(pricePolicy, "경매 유형");
         validateNotNull(variationDuration, "가격 변동 주기");
@@ -46,7 +46,8 @@ public record SellerAuctionInfo(
         validateProductName(productName);
         validateOriginPrice(originPrice);
         validateCurrentPrice(currentPrice);
-        validateStock(stock);
+        validateOriginStock(originStock);
+        validateCurrentStock(currentStock);
         validateMaximumPurchaseLimitCount(maximumPurchaseLimitCount);
         validateVariationDuration(variationDuration);
     }
@@ -69,9 +70,15 @@ public record SellerAuctionInfo(
         }
     }
 
-    private void validateStock(long stock) {
-        if (stock < 0) {
-            throw new BadRequestException(String.format(ERROR_STOCK, stock), ErrorCode.A000);
+    private void validateOriginStock(long originStock) {
+        if (originStock <= 0) {
+            throw new BadRequestException(String.format(ERROR_ORIGIN_STOCK, originStock), ErrorCode.A000);
+        }
+    }
+
+    private void validateCurrentStock(long currentStock) {
+        if (currentStock < 0) {
+            throw new BadRequestException(String.format(ERROR_CURRENT_STOCK, currentStock), ErrorCode.A000);
         }
     }
 
