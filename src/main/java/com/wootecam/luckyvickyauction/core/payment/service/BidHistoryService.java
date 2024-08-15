@@ -33,11 +33,7 @@ public class BidHistoryService {
         return Mapper.convertToBidHistoryInfo(bidHistory);
     }
 
-    public List<BuyerReceiptSimpleInfo> getBuyerReceiptSimpleInfos(Member member) {
-
-        ReceiptSelectCondition condition = ReceiptSelectCondition.builder()
-                .build();
-
+    public List<BuyerReceiptSimpleInfo> getBuyerReceiptSimpleInfos(ReceiptSelectCondition condition) {
         List<BidHistory> bidHistories = bidHistoryRepository.findAllBy(condition);
         return bidHistories.stream()
                 .map(Mapper::convertToBuyerReceiptSimpleInfo)
