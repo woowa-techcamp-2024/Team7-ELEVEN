@@ -20,19 +20,22 @@ public class SellerAuctionInfoTest {
     static Stream<Arguments> auctionInfoDtoArguments() {
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.",
-                        ErrorCode.A001, 1L, 1L, "", 10000, 10000, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
+                        ErrorCode.A001, 1L, "", 10000, 10000, 10, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
                         ZonedDateTime.now(), true),
                 Arguments.of("상품 원가는 0보다 커야 합니다. 상품 원가: 0",
-                        ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
+                        ErrorCode.A002, 1L, "상품이름", 0, 10000, 10, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
                         ZonedDateTime.now(), true),
                 Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0",
-                        ErrorCode.A013, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
+                        ErrorCode.A013, 1L, "상품이름", 10000, 0, 10, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
                         ZonedDateTime.now(), true),
-                Arguments.of("재고는 0보다 작을 수 없습니다. 재고: -1",
-                        ErrorCode.A000, 1L, 1L, "상품이름", 10000, 10000, -1, 10, Duration.ofMinutes(1L),
+                Arguments.of("원래 재고는 0 이하일 수 없습니다. 재고: 0",
+                        ErrorCode.A000, 1L, "상품이름", 10000, 10000, 0, 10, 10, Duration.ofMinutes(1L),
+                        ZonedDateTime.now(), ZonedDateTime.now(), true),
+                Arguments.of("현재 재고는 0보다 작을 수 없습니다. 재고: -1",
+                        ErrorCode.A000, 1L, "상품이름", 10000, 10000, 10, -1, 10, Duration.ofMinutes(1L),
                         ZonedDateTime.now(), ZonedDateTime.now(), true),
                 Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0",
-                        ErrorCode.A003, 1L, 1L, "상품이름", 10000, 10000, 10, 0, Duration.ofMinutes(1L),
+                        ErrorCode.A003, 1L, "상품이름", 10000, 10000, 10, 10, 0, Duration.ofMinutes(1L),
                         ZonedDateTime.now(), ZonedDateTime.now(), true)
         );
     }
@@ -56,17 +59,17 @@ public class SellerAuctionInfoTest {
         ZonedDateTime finishedAt = ZonedDateTime.now();
 
         // when
-        SellerAuctionInfo sellerAuctionInfo = new SellerAuctionInfo(auctionId, sellerId, productName, originPrice,
-                currentPrice, stock,
+        SellerAuctionInfo sellerAuctionInfo = new SellerAuctionInfo(auctionId, productName, originPrice,
+                currentPrice, stock, stock,
                 maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt, true);
 
         // then
         assertAll(
-                () -> assertThat(sellerAuctionInfo.sellerId()).isEqualTo(sellerId),
                 () -> assertThat(sellerAuctionInfo.productName()).isEqualTo(productName),
                 () -> assertThat(sellerAuctionInfo.originPrice()).isEqualTo(originPrice),
                 () -> assertThat(sellerAuctionInfo.currentPrice()).isEqualTo(currentPrice),
-                () -> assertThat(sellerAuctionInfo.stock()).isEqualTo(stock),
+                () -> assertThat(sellerAuctionInfo.originStock()).isEqualTo(stock),
+                () -> assertThat(sellerAuctionInfo.currentStock()).isEqualTo(stock),
                 () -> assertThat(sellerAuctionInfo.maximumPurchaseLimitCount()).isEqualTo(maximumPurchaseLimitCount),
                 () -> assertThat(sellerAuctionInfo.pricePolicy()).isEqualTo(pricePolicy),
                 () -> assertThat(sellerAuctionInfo.variationDuration()).isEqualTo(varitationDuration),
@@ -82,11 +85,11 @@ public class SellerAuctionInfoTest {
             String expectedMessage,
             ErrorCode expectedErrorCode,
             Long auctionId,
-            Long sellerId,
             String productName,
             long originPrice,
             long currentPrice,
-            long stock,
+            long originStock,
+            long currentStock,
             int maximumPurchaseLimitCount,
             Duration variationDuration,
             ZonedDateTime startedAt,
@@ -96,11 +99,11 @@ public class SellerAuctionInfoTest {
         // expect
         assertThatThrownBy(() -> SellerAuctionInfo.builder()
                 .auctionId(auctionId)
-                .sellerId(sellerId)
                 .productName(productName)
                 .originPrice(originPrice)
                 .currentPrice(currentPrice)
-                .stock(stock)
+                .originStock(originStock)
+                .currentStock(currentStock)
                 .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
                 .pricePolicy(PricePolicy.createConstantPricePolicy(1000))
                 .variationDuration(variationDuration)
