@@ -2,8 +2,6 @@ package com.wootecam.luckyvickyauction.core.auction.domain;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import java.time.Duration;
-import java.time.ZonedDateTime;
 import lombok.Getter;
 
 @Getter
@@ -29,20 +27,14 @@ public class PercentagePricePolicy implements PricePolicy {
     }
 
     @Override
-    public void validate(ZonedDateTime startedAt, ZonedDateTime finishedAt, Duration variationDuration, long price) {
-        Duration totalDuration = Duration.between(startedAt, finishedAt);
-        int numberOfVariations = (int) totalDuration.dividedBy(variationDuration);
-
+    public long applyWholeDiscount(long variationCount, long price) {
         long discountedPrice = price;
         double discountFactor = (100 - discountRate) / 100.0;
 
-        for (int i = 0; i < numberOfVariations - 1; i++) {
+        for (int i = 0; i < variationCount; i++) {
             discountedPrice = (long) Math.floor(discountedPrice * discountFactor);
-            if (discountedPrice <= 0) {
-                String message = String.format("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 할인율: %d%%", price,
-                        numberOfVariations - 1, (int) discountRate);
-                throw new BadRequestException(message, ErrorCode.A029);
-            }
         }
+
+        return discountedPrice;
     }
 }

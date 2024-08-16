@@ -44,7 +44,7 @@ public class Auction {
             boolean isShowStock
     ) {
         validateDurationTime(startedAt, finishedAt);
-        pricePolicy.validate(startedAt, finishedAt, variationDuration, originPrice);
+        validateMinimumPrice(startedAt, finishedAt, variationDuration, originPrice, pricePolicy);
 
         this.id = id;
         this.sellerId = sellerId;
@@ -70,6 +70,20 @@ public class Auction {
             String message = String.format("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: %.9f분",
                     diffNanos / (60.0 * 1_000_000_000));
             throw new BadRequestException(message, ErrorCode.A008);
+        }
+    }
+
+    private void validateMinimumPrice(ZonedDateTime startedAt, ZonedDateTime finishedAt, Duration variationDuration,
+                                      long originPrice, PricePolicy pricePolicy) {
+        Duration totalDuration = Duration.between(startedAt, finishedAt);
+        long variationCount = totalDuration.dividedBy(variationDuration) - 1;
+
+        // 현재는 0원이 minimumPrice 추후 필드로 추가될 수 있음
+        long discountedPrice = pricePolicy.applyWholeDiscount(variationCount, originPrice);
+        if (discountedPrice <= 0) {
+            String message = String.format("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 모든 할인 적용 후 가격: %d",
+                    originPrice, variationCount, discountedPrice);
+            throw new BadRequestException(message, ErrorCode.A028);
         }
     }
 

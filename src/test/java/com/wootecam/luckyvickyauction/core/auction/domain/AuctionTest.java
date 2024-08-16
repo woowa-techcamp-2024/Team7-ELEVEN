@@ -2,6 +2,7 @@ package com.wootecam.luckyvickyauction.core.auction.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 
 import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
@@ -13,50 +14,229 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class AuctionTest {
 
     @Nested
-    @DisplayName("절대값 가격 정책 적용시")
-    public class ConstantsPricePolicyTest {
+    class Auction을_생성할_때 {
 
-        @Test
-        public void 경매_생성시_경매의_가격은_가격_변동폭보다_작거나_같으면_예외가_발생한다() {
-            // given
-            int originPrice = 10000;
-            int stock = 999999;
-            int maximumPurchaseLimitCount = 10;
+        @Nested
+        class 고정_가격_변동_정책을_이용하는_경우 {
 
-            int variationWidth = 10000;
-            Duration varitationDuration = Duration.ofMinutes(1L);
-            PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
-            ZonedDateTime now = ZonedDateTime.now();
+            @Test
+            void 하락하는_가격의_최소값이_0원_이하가_되지_않는_경우_경매가_정상_생성된다() {
+                // given
+                ConstantPricePolicy pricePolicy = new ConstantPricePolicy(100);
+                ZonedDateTime startedAt = ZonedDateTime.now();
+                ZonedDateTime finishedAt = startedAt.plusMinutes(30);
+                Duration variationDuration = Duration.ofMinutes(10);
+                long initialPrice = 1000L;
 
-            // when & then
-            assertThatThrownBy(() ->
-                    Auction.builder()
-                            .sellerId(1L)
-                            .productName("상품이름")
-                            .originPrice(originPrice)
-                            .currentPrice(originPrice)
-                            .originStock(stock)
-                            .currentStock(stock)
-                            .pricePolicy(pricePolicy)
-                            .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
-                            .variationDuration(varitationDuration)
-                            .startedAt(now.minusHours(1L))
-                            .finishedAt(now)
-                            .isShowStock(true)
-                            .build()
-            ).isInstanceOf(BadRequestException.class)
-                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A009);
+                // expect
+                assertThatNoException().isThrownBy(
+                        () -> Auction.builder()
+                                .sellerId(1L)
+                                .productName("productName")
+                                .originPrice(initialPrice)
+                                .currentPrice(initialPrice)
+                                .originStock(100L)
+                                .currentStock(100L)
+                                .maximumPurchaseLimitCount(10L)
+                                .pricePolicy(pricePolicy)
+                                .variationDuration(variationDuration)
+                                .startedAt(startedAt)
+                                .finishedAt(finishedAt)
+                                .isShowStock(true)
+                                .build());
+            }
+
+            @Test
+            public void 경매의_가격은_가격_변동폭보다_작거나_같으면_예외가_발생한다() {
+                // given
+                int originPrice = 10000;
+                int stock = 999999;
+                int maximumPurchaseLimitCount = 10;
+
+                int variationWidth = 10000;
+                Duration varitationDuration = Duration.ofMinutes(1L);
+                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+                ZonedDateTime now = ZonedDateTime.now();
+
+                // when & then
+                assertThatThrownBy(() ->
+                        Auction.builder()
+                                .sellerId(1L)
+                                .productName("상품이름")
+                                .originPrice(originPrice)
+                                .currentPrice(originPrice)
+                                .originStock(stock)
+                                .currentStock(stock)
+                                .pricePolicy(pricePolicy)
+                                .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
+                                .variationDuration(varitationDuration)
+                                .startedAt(now.minusHours(1L))
+                                .finishedAt(now)
+                                .isShowStock(true)
+                                .build())
+                        .isInstanceOf(BadRequestException.class)
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A009);
+            }
+
+            @Test
+            void 경매_진행_중_가격이_0원_이하가_되는_경우_예외가_발생한다() {
+                // given
+                ConstantPricePolicy pricePolicy = new ConstantPricePolicy(100);
+                ZonedDateTime startedAt = ZonedDateTime.now();
+                ZonedDateTime finishedAt = startedAt.plusMinutes(60);
+                Duration variationDuration = Duration.ofMinutes(10);
+                long initialPrice = 500;
+
+                // expect
+                assertThatThrownBy(() ->
+                        Auction.builder()
+                                .sellerId(1L)
+                                .productName("productName")
+                                .originPrice(initialPrice)
+                                .currentPrice(initialPrice)
+                                .originStock(100L)
+                                .currentStock(100L)
+                                .maximumPurchaseLimitCount(10L)
+                                .pricePolicy(pricePolicy)
+                                .variationDuration(variationDuration)
+                                .startedAt(startedAt)
+                                .finishedAt(finishedAt)
+                                .isShowStock(true)
+                                .build())
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: 500, 할인횟수: 5, 모든 할인 적용 후 가격: 0")
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+            }
+
+            @ParameterizedTest
+            @CsvSource({
+                    "1000, 60, 10, true",
+                    "500, 60, 10, false",
+                    "1000, 30, 10, true",
+                    "300, 30, 5, false",
+            })
+            void 다양한_시나리오에서_가격_검증이_올바르게_동작해야_한다(
+                    long initialPrice, long durationMinutes, long variationMinutes, boolean shouldPass) {
+                // given
+                ConstantPricePolicy pricePolicy = new ConstantPricePolicy(100);
+                ZonedDateTime startedAt = ZonedDateTime.now();
+                ZonedDateTime finishedAt = startedAt.plusMinutes(durationMinutes);
+                Duration variationDuration = Duration.ofMinutes(variationMinutes);
+
+                // expect
+                if (shouldPass) {
+                    assertThatNoException().isThrownBy(
+                            () -> Auction.builder()
+                                    .sellerId(1L)
+                                    .productName("productName")
+                                    .originPrice(initialPrice)
+                                    .currentPrice(initialPrice)
+                                    .originStock(100L)
+                                    .currentStock(100L)
+                                    .maximumPurchaseLimitCount(10L)
+                                    .pricePolicy(pricePolicy)
+                                    .variationDuration(variationDuration)
+                                    .startedAt(startedAt)
+                                    .finishedAt(finishedAt)
+                                    .isShowStock(true)
+                                    .build());
+                    return;
+                }
+                assertThatThrownBy(() ->
+                        Auction.builder()
+                                .sellerId(1L)
+                                .productName("productName")
+                                .originPrice(initialPrice)
+                                .currentPrice(initialPrice)
+                                .originStock(100L)
+                                .currentStock(100L)
+                                .maximumPurchaseLimitCount(10L)
+                                .pricePolicy(pricePolicy)
+                                .variationDuration(variationDuration)
+                                .startedAt(startedAt)
+                                .finishedAt(finishedAt)
+                                .isShowStock(true)
+                                .build())
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage(String.format(
+                                "경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 모든 할인 적용 후 가격: %d",
+                                initialPrice,
+                                durationMinutes / variationMinutes - 1,
+                                initialPrice - (durationMinutes / variationMinutes - 1) * 100))
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+            }
         }
-    }
 
-    @Nested
-    @DisplayName("퍼센트 가격 정책 적용시")
-    public class PercentagePricePolicyTest {
+        @Nested
+        class 퍼센트_가격_변동_정책을_이용하는_경우 {
+
+            @Test
+            void 하락하는_가격의_최소값이_0원_이하가_되지_않는_경우_경매가_정상_생성된다() {
+                // given
+                PercentagePricePolicy pricePolicy = new PercentagePricePolicy(50.0);
+                ZonedDateTime startedAt = ZonedDateTime.now();
+                ZonedDateTime finishedAt = startedAt.plusMinutes(10);
+                Duration variationDuration = Duration.ofMinutes(1);
+                long initialPrice = 512;
+
+                // expect
+                assertThatNoException().isThrownBy(
+                        () -> Auction.builder()
+                                .sellerId(1L)
+                                .productName("productName")
+                                .originPrice(initialPrice)
+                                .currentPrice(initialPrice)
+                                .originStock(100L)
+                                .currentStock(100L)
+                                .maximumPurchaseLimitCount(10L)
+                                .pricePolicy(pricePolicy)
+                                .variationDuration(variationDuration)
+                                .startedAt(startedAt)
+                                .finishedAt(finishedAt)
+                                .isShowStock(true)
+                                .build());
+            }
+
+            @Test
+            void validate메소드는_경매_진행_중_가격이_0원_이하가_되는_경우_예외가_발생한다() {
+                // given
+                PercentagePricePolicy pricePolicy = new PercentagePricePolicy(50.0);
+                ZonedDateTime startedAt = ZonedDateTime.now();
+                ZonedDateTime finishedAt = startedAt.plusMinutes(10);
+                Duration variationDuration = Duration.ofMinutes(1);
+                long initialPrice = 256;
+
+                // expect
+                assertThatThrownBy(() ->
+                        Auction.builder()
+                                .sellerId(1L)
+                                .productName("productName")
+                                .originPrice(initialPrice)
+                                .currentPrice(initialPrice)
+                                .originStock(100L)
+                                .currentStock(100L)
+                                .maximumPurchaseLimitCount(10L)
+                                .pricePolicy(pricePolicy)
+                                .variationDuration(variationDuration)
+                                .startedAt(startedAt)
+                                .finishedAt(finishedAt)
+                                .isShowStock(true)
+                                .build())
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage(String.format(
+                                "경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 모든 할인 적용 후 가격: %d",
+                                initialPrice,
+                                9,
+                                0))
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+            }
+        }
     }
 
     @Nested

@@ -120,6 +120,7 @@ public class AuctionService {
 
     /**
      * 구매자용 경매 목록 조회
+     *
      * @param condition
      * @return 구매자용 경매 목록
      */

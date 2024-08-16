@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
-import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
+import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
 
 class MapperTest {
@@ -54,16 +56,21 @@ class MapperTest {
     @Test
     public void 경매_entity를_BuyerAuctionSimpleInfo로_변환하면_도메인의_정보가_동일하게_전달된다() {
         // given
+        ZonedDateTime now = ZonedDateTime.now();
         Auction auction = Auction.builder()
                 .id(1L)
                 .sellerId(1L)
-                .productName("상품 이름")
-                .originPrice(1000L)
-                .currentPrice(1000L)
-                .currentStock(10L)
-                .maximumPurchaseLimitCount(1L)
+                .productName("productName")
+                .originPrice(10000L)
+                .currentPrice(10000L)
+                .originStock(100L)
+                .currentStock(100L)
+                .maximumPurchaseLimitCount(10L)
+                .pricePolicy(new ConstantPricePolicy(1000L))
+                .variationDuration(Duration.ofMinutes(10L))
+                .startedAt(now.minusMinutes(30))
+                .finishedAt(now.plusMinutes(30))
                 .isShowStock(true)
-                .pricePolicy(PricePolicy.createConstantPricePolicy(100))
                 .build();
 
         // when
@@ -82,18 +89,22 @@ class MapperTest {
     @Test
     public void 경매_entity를_SellerAuctionSimpleInfo로_변환하면_도메인의_정보가_동일하게_전달된다() {
         // given
+        ZonedDateTime now = ZonedDateTime.now();
         Auction auction = Auction.builder()
                 .id(1L)
                 .sellerId(1L)
-                .productName("상품 이름")
-                .originPrice(1000L)
-                .currentPrice(1000L)
-                .currentStock(10L)
-                .maximumPurchaseLimitCount(1L)
+                .productName("productName")
+                .originPrice(10000L)
+                .currentPrice(10000L)
+                .originStock(100L)
+                .currentStock(100L)
+                .maximumPurchaseLimitCount(10L)
+                .pricePolicy(new ConstantPricePolicy(1000L))
+                .variationDuration(Duration.ofMinutes(10L))
+                .startedAt(now.minusMinutes(30))
+                .finishedAt(now.plusMinutes(30))
                 .isShowStock(true)
-                .pricePolicy(PricePolicy.createConstantPricePolicy(100))
                 .build();
-
         // when
         SellerAuctionSimpleInfo dto = Mapper.convertToSellerAuctionSimpleInfo(auction);
 

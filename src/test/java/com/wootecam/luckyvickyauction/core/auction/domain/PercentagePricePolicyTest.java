@@ -5,9 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import java.time.Duration;
-import java.time.ZonedDateTime;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -40,37 +37,4 @@ class PercentagePricePolicyTest {
                 .hasMessage(message)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A010);
     }
-
-    @Test
-    void validate_메소드는_유효한_할인율과_가격이라면_최종가격_검증을_통과한다() {
-        // given
-        PercentagePricePolicy policy = new PercentagePricePolicy(50.0);
-        ZonedDateTime startedAt = ZonedDateTime.now();
-        ZonedDateTime finishedAt = startedAt.plusMinutes(3);
-        Duration variationDuration = Duration.ofMinutes(1);
-        long initialPrice = 4;
-
-        // expect
-        assertThatNoException().isThrownBy(
-                () -> policy.validate(startedAt, finishedAt, variationDuration, initialPrice));
-    }
-
-    @Test
-    void validate메소드는_경매_진행_중_가격이_0원_이하가_되는_경우_예외가_발생한다() {
-        // given
-        PercentagePricePolicy policy = new PercentagePricePolicy(50.0);
-        ZonedDateTime startedAt = ZonedDateTime.now();
-        ZonedDateTime finishedAt = startedAt.plusMinutes(3);
-        Duration variationDuration = Duration.ofMinutes(1);
-        long initialPrice = 3;
-
-        // expect
-        String message = String.format("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 할인율: %d%%", 3, 2, 50);
-        assertThatThrownBy(() -> policy.validate(startedAt, finishedAt, variationDuration, initialPrice))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage(message)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A029);
-    }
 }
-
-
