@@ -87,24 +87,6 @@ public class Auction {
         }
     }
 
-    /**
-     * 해당 수량만큼 구매가 가능한지 확인한다. <br> 1. 구매 요청이 0보다 작은지 확인합니다. <br> 2. 인당 구매 수량 제한을 넘기지 않는지 확인합니다. <br> 3. 구매 요청 수량보다 햔재
-     * 재고가 많은지 확인합니다.
-     *
-     * @param quantity 구매를 원하는 수량
-     * @return 구매가 가능한 경우 True, 구매가 불가능한 경우 False를 반환한다.
-     */
-    public boolean canPurchase(long quantity) {
-        if (quantity <= 0) {
-            return false;
-        }
-        if (quantity > maximumPurchaseLimitCount) {
-            return false;
-        }
-
-        return currentStock >= quantity;
-    }
-
     public void update() {
         // TODO 경매 옵션을 변경하는 로직 (Update)
     }
@@ -134,7 +116,14 @@ public class Auction {
     /**
      * 경매 재고량을 변경합니다 - 변경은 경매 시작 전에만 가능하므로 원래 재고와 현재 재고를 같은 값으로 변경합니다
      */
-    public void changeStock(long changeRequestStock) {
+    public void changeStock(long changeRequestStock, ZonedDateTime requestTime, Long ownerId) {
+        if (!currentStatus(requestTime).isWaiting()) {
+            String message = String.format("시작 전인 경매의 재고만 수정할 수 있습니다. 시작시간=%s, 요청시간=%s", startedAt, requestTime);
+            throw new BadRequestException(message, ErrorCode.A021);
+        }
+        if (!isSeller(ownerId)) {
+            throw new UnauthorizedException("자신이 등록한 경매만 수정할 수 있습니다.", ErrorCode.A018);
+        }
         if (changeRequestStock < MINIMUM_STOCK_COUNT) {
             String message = String.format("변경 할 재고는 %d개 이상이어야 합니다. inputStock=%d", MINIMUM_STOCK_COUNT,
                     changeRequestStock);
@@ -211,7 +200,7 @@ public class Auction {
     }
 
     private void verifyCurrentStock(long quantity) {
-        if (canPurchase(quantity)) {
+        if (!canPurchase(quantity)) {
             String message = String.format(
                     "해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d", currentStock, quantity,
                     maximumPurchaseLimitCount);

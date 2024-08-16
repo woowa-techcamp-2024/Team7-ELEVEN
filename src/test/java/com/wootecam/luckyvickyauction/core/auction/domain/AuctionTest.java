@@ -358,28 +358,54 @@ class AuctionTest {
     class changeStock_메소드는 {
 
         @Test
-        void 변경할_재고가_1개_미만이면_예외가_발생한다() {
-            // given
-            Auction auction = AuctionFixture.createWaitingAuction();
-
-            // expect
-            assertThatThrownBy(() -> auction.changeStock(0))
-                    .isInstanceOf(BadRequestException.class)
-                    .hasMessage("변경 할 재고는 1개 이상이어야 합니다. inputStock=0")
-                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.A019));
-        }
-
-        @Test
         void 변경할_재고가_1개_이상이라면_정상적으로_재고가_변경된다() {
             // given
             Auction auction = AuctionFixture.createWaitingAuction();
 
             // when
-            auction.changeStock(1L);
+            auction.changeStock(1L, ZonedDateTime.now(), auction.getSellerId());
 
             // then
             assertThat(auction.getCurrentStock()).isEqualTo(1L);
+        }
+
+        @Test
+        void 변경할_경매가_준비상태가_아니라면_예외가_발생한다() {
+            // given
+            Auction auction = AuctionFixture.createRunningAuction();
+            ZonedDateTime now = ZonedDateTime.now();
+
+            // expect
+            assertThatThrownBy(() -> auction.changeStock(20, now, auction.getSellerId()))
+                    .isInstanceOf(BadRequestException.class)
+                    .hasMessage(
+                            String.format("시작 전인 경매의 재고만 수정할 수 있습니다. 시작시간=%s, 요청시간=%s", auction.getStartedAt(), now))
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A021);
+        }
+
+        @Test
+        void 자신이_등록한_경매가_아니라면_예외가_발생한다() {
+            // given
+            Auction auction = AuctionFixture.createWaitingAuction();
+            ZonedDateTime now = ZonedDateTime.now();
+
+            // expect
+            assertThatThrownBy(() -> auction.changeStock(0, now, auction.getSellerId() + 1L))
+                    .isInstanceOf(UnauthorizedException.class)
+                    .hasMessage("자신이 등록한 경매만 수정할 수 있습니다.")
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A018);
+        }
+
+        @Test
+        void 변경할_재고가_1개_미만이면_예외가_발생한다() {
+            // given
+            Auction auction = AuctionFixture.createWaitingAuction();
+
+            // expect
+            assertThatThrownBy(() -> auction.changeStock(0, ZonedDateTime.now(), auction.getSellerId()))
+                    .isInstanceOf(BadRequestException.class)
+                    .hasMessage("변경 할 재고는 1개 이상이어야 합니다. inputStock=0")
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A019);
         }
     }
 
