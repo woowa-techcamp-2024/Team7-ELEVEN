@@ -79,7 +79,7 @@ public class Auction {
         long variationCount = totalDuration.dividedBy(variationDuration) - 1;
 
         // 현재는 0원이 minimumPrice 추후 필드로 추가될 수 있음
-        long discountedPrice = pricePolicy.applyWholeDiscount(variationCount, originPrice);
+        long discountedPrice = pricePolicy.calculatePriceAtVariation(originPrice, variationCount);
         if (discountedPrice <= 0) {
             String message = String.format("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 모든 할인 적용 후 가격: %d",
                     originPrice, variationCount, discountedPrice);
