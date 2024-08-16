@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
+import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
-import com.wootecam.luckyvickyauction.core.auction.infra.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.infra.FakeAuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
