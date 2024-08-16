@@ -280,7 +280,7 @@ class PaymentServiceTest {
                 Member unbidBuyer = Member.builder()
                         .id(3L)
                         .signInId("unbidBuyer")
-                        .password("test")
+                        .password("password00")
                         .role(Role.BUYER)
                         .point(new Point(1000L))
                         .build();
@@ -303,7 +303,7 @@ class PaymentServiceTest {
             @Test
             void 포인트가_충전된다() {
                 // given
-                Member member = new Member(1L, "test", "test", Role.BUYER, new Point(0));
+                Member member = new Member(1L, "testSignInId", "password00", Role.BUYER, new Point(0));
 
                 // when
                 paymentService.chargePoint(member, 1000L);
@@ -322,7 +322,7 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                Member member = new Member(1L, "test", "test", Role.BUYER, new Point(0));
+                Member member = Member.createMemberWithRole("testSignInId", "password00", "BUYER");
 
                 // expect
                 assertThatThrownBy(() -> paymentService.chargePoint(member, -1L))

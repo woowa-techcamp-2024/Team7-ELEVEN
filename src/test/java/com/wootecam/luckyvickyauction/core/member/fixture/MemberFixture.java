@@ -12,7 +12,7 @@ public class MemberFixture {
         return Member.builder()
                 .id(1L)
                 .signInId("buyer")
-                .password("password")
+                .password("password00")
                 .role(Role.BUYER)
                 .point(new Point(1000L))
                 .build();
@@ -22,7 +22,7 @@ public class MemberFixture {
         return Member.builder()
                 .id(1L)
                 .signInId("seller")
-                .password("password")
+                .password("password00")
                 .role(Role.SELLER)
                 .point(new Point(1000L))
                 .build();

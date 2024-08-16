@@ -8,6 +8,8 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class MemberTest {
 
@@ -16,7 +18,7 @@ class MemberTest {
         // when
         Member member = Member.builder()
                 .signInId("testId")
-                .password("password")
+                .password("password00")
                 .role(Role.BUYER)
                 .point(new Point(100))
                 .build();
@@ -24,10 +26,14 @@ class MemberTest {
         // then
         assertAll(
                 () -> assertThat(member.getSignInId()).isEqualTo("testId"),
-                () -> assertThat(member.getPassword()).isEqualTo("password"),
+                () -> assertThat(member.getPassword()).isEqualTo("password00"),
                 () -> assertThat(member.getRole()).isEqualTo(Role.BUYER),
                 () -> assertThat(member.getPoint()).isEqualTo(new Point(100))
         );
+    }
+
+    @Nested
+    class validatePassword_메소드는 extends ValidatePasswordTest {
     }
 
     @Test
@@ -35,7 +41,7 @@ class MemberTest {
         // given
         Member buyer = Member.builder()
                 .signInId("testId")
-                .password("password")
+                .password("password00")
                 .role(Role.BUYER)
                 .point(new Point(100))
                 .build();
@@ -54,7 +60,7 @@ class MemberTest {
         // given
         Member buyer = Member.builder()
                 .signInId("testId")
-                .password("password")
+                .password("password00")
                 .role(Role.BUYER)
                 .point(new Point(100))
                 .build();
@@ -71,7 +77,7 @@ class MemberTest {
         // given
         Member buyer = Member.builder()
                 .signInId("testId")
-                .password("password")
+                .password("password00")
                 .role(Role.BUYER)
                 .point(new Point(100))
                 .build();
@@ -91,13 +97,13 @@ class MemberTest {
             // given
             Member buyer = Member.builder()
                     .signInId("testId")
-                    .password("password")
+                    .password("password00")
                     .role(Role.BUYER)
                     .point(new Point(100))
                     .build();
 
             // then
-            assertThat(buyer.confirmPassword("password")).isTrue();
+            assertThat(buyer.confirmPassword("password00")).isTrue();
         }
 
         @Test
@@ -105,7 +111,7 @@ class MemberTest {
             // given
             Member buyer = Member.builder()
                     .signInId("testId")
-                    .password("password")
+                    .password("password00")
                     .role(Role.BUYER)
                     .point(new Point(100))
                     .build();
@@ -123,7 +129,7 @@ class MemberTest {
             // given
             Member buyer = Member.builder()
                     .signInId("testId")
-                    .password("password")
+                    .password("password00")
                     .role(Role.BUYER)
                     .point(new Point(100))
                     .build();
@@ -137,7 +143,7 @@ class MemberTest {
             // given
             Member seller = Member.builder()
                     .signInId("testId")
-                    .password("password")
+                    .password("password00")
                     .role(Role.SELLER)
                     .point(new Point(100))
                     .build();
@@ -152,7 +158,7 @@ class MemberTest {
         // given
         Member member = Member.builder()
                 .signInId("testId")
-                .password("password")
+                .password("password00")
                 .role(Role.BUYER)
                 .point(new Point(100))
                 .build();
@@ -162,5 +168,35 @@ class MemberTest {
 
         // then
         assertThat(isSameMember).isTrue();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " ", "    "})
+    void 아이디가_빈칸인_경우_예외가_발생한다(String userId) {
+        // expect
+        assertThatThrownBy(() ->
+                Member.builder()
+                        .signInId(userId)
+                        .password("password1234")
+                        .role(Role.BUYER)
+                        .point(new Point(100))
+                        .build())
+                .isInstanceOf(BadRequestException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.M004);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"a", "b", "21ccccc21212121212121"})
+    void 아이디_길이가_정책과_맞지않으면_예외가_발생한다(String userId) {
+        // expect
+        assertThatThrownBy(() ->
+                Member.builder()
+                        .signInId(userId)
+                        .password("password1234")
+                        .role(Role.BUYER)
+                        .point(new Point(100))
+                        .build())
+                .isInstanceOf(BadRequestException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.M005);
     }
 }
