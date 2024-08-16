@@ -29,7 +29,7 @@ public class ReceiptCoreRepository implements BidHistoryRepository {
     public List<BidHistory> findAllBy(BuyerReceiptSearchCondition condition) {
         return List.of();
     }
-
+  
     @Override
     public List<BidHistory> findAllBy(SellerReceiptSearchCondition condition) { return List.of(); }
 }
