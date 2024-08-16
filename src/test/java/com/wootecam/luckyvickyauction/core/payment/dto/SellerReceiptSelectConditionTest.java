@@ -11,32 +11,32 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/158">[FEATURE] 구매자는 거래 목록을 최대 100개까지 한번에
- * 조회할 수 있다.</a>
+ * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/161">#161</a>
  */
-class BuyerReceiptSelectConditionTest {
+public class SellerReceiptSelectConditionTest {
 
     @Test
     void 정상적인_조건이면_생성아_완료된다() {
         // given
-        Long buyerId = 1L;
+        Long sellerId = 1L;
         int size = 10;
 
         // when
-        BuyerReceiptSearchCondition buyerReceiptSearchCondition = new BuyerReceiptSearchCondition(buyerId, size);
+        SellerReceiptSearchCondition sellerReceiptSearchCondition = new SellerReceiptSearchCondition(sellerId, size);
 
         // then
         assertAll(
-                () -> assertThat(buyerReceiptSearchCondition.buyerId()).isEqualTo(buyerId),
-                () -> assertThat(buyerReceiptSearchCondition.size()).isEqualTo(size)
+                () -> assertThat(sellerReceiptSearchCondition.sellerId()).isEqualTo(sellerId),
+                () -> assertThat(sellerReceiptSearchCondition.size()).isEqualTo(size)
         );
     }
+
 
     @ParameterizedTest
     @ValueSource(ints = {0, 101})
     public void size가_1미만이거나_100초과인_경우_예외가_발생한다(int size) {
 
-        assertThatThrownBy(() -> new BuyerReceiptSearchCondition(1L, size))
+        assertThatThrownBy(() -> new SellerReceiptSearchCondition(1L, size))
                 .isInstanceOf(BadRequestException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.G001);
     }
