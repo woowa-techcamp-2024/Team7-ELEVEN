@@ -6,6 +6,8 @@ import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
+import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
@@ -13,6 +15,7 @@ import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+// TODO [추후 Controller로 책임 변경] [writeAt: 2024/08/16/16:31] [writeBy: minseok-oh]
 @RequiredArgsConstructor
 public class BidHistoryService {
 
@@ -37,6 +40,13 @@ public class BidHistoryService {
         List<BidHistory> bidHistories = bidHistoryRepository.findAllBy(condition);
         return bidHistories.stream()
                 .map(Mapper::convertToBuyerReceiptSimpleInfo)
+                .toList();
+    }
+
+    public List<SellerReceiptSimpleInfo> getSellerReceiptSimpleInfos(SellerReceiptSearchCondition condition) {
+        List<BidHistory> bidHistories = bidHistoryRepository.findAllBy(condition);
+        return bidHistories.stream()
+                .map(Mapper::convertToSellerReceiptSimpleInfo)
                 .toList();
     }
 }
