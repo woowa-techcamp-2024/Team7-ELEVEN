@@ -1,4 +1,4 @@
-package com.wootecam.luckyvickyauction.core.member.repository;
+package com.wootecam.luckyvickyauction.core.member.infra;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;

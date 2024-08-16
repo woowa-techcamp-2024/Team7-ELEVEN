@@ -11,7 +11,7 @@ import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInRequestInfo;
 import com.wootecam.luckyvickyauction.core.member.dto.SignUpRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.repository.FakeMemberRepository;
+import com.wootecam.luckyvickyauction.core.member.infra.FakeMemberRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
