@@ -1,4 +1,4 @@
-package com.wootecam.luckyvickyauction.core.payment.repository;
+package com.wootecam.luckyvickyauction.core.payment.infra;
 
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
