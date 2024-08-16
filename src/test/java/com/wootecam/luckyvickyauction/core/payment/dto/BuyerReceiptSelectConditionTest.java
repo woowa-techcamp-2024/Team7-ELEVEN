@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 class BuyerReceiptSelectConditionTest {
 
     @Test
-    void 정상적인_조건이면_생성아_완료된다() {
+    void 정상적인_조건이면_생성이_완료된다() {
         // given
         Long buyerId = 1L;
         int size = 10;
