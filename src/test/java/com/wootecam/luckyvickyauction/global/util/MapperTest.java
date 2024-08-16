@@ -30,8 +30,8 @@ class MapperTest {
                 .productName("상품 이름")
                 .price(1000L)
                 .quantity(1L)
-                .buyer(buyer)
-                .seller(seller)
+                .sellerId(seller.getId())
+                .buyerId(buyer.getId())
                 .build();
 
         // when

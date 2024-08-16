@@ -16,8 +16,8 @@ public class BidHistory {
     private long quantity;
     private BidStatus bidStatus;
     private long auctionId;
-    private Member seller;
-    private Member buyer;
+    private long sellerId;
+    private long buyerId;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
@@ -31,8 +31,8 @@ public class BidHistory {
             final long quantity,
             final BidStatus bidStatus,
             final long auctionId,
-            final Member seller,
-            final Member buyer,
+            final long sellerId,
+            final long buyerId,
             final ZonedDateTime createdAt,
             final ZonedDateTime updatedAt) {
         this.id = id;
@@ -41,8 +41,8 @@ public class BidHistory {
         this.quantity = quantity;
         this.bidStatus = bidStatus;
         this.auctionId = auctionId;
-        this.seller = seller;
-        this.buyer = buyer;
+        this.sellerId = sellerId;
+        this.buyerId = buyerId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -68,8 +68,9 @@ public class BidHistory {
             return false;
         }
 
-        String signInId = member.getSignInId();
-        return seller.isSameMember(signInId) || buyer.isSameMember(signInId);
+        Long requestUserId = member.getId();
+
+        return sellerId == requestUserId || buyerId == requestUserId;
     }
 
 }
