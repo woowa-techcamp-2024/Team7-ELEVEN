@@ -11,7 +11,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
-import com.wootecam.luckyvickyauction.core.payment.repository.FakeBidHistoryRepository;
+import com.wootecam.luckyvickyauction.core.payment.infra.FakeBidHistoryRepository;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
