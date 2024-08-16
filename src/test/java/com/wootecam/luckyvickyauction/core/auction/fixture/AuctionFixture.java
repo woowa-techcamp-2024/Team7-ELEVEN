@@ -10,6 +10,8 @@ public class AuctionFixture {
     }
 
     public static Auction createRunningAuction() {
+        ZonedDateTime now = ZonedDateTime.now();
+
         return Auction.builder()
                 .sellerId(1L)
                 .productName("productName")
@@ -19,14 +21,16 @@ public class AuctionFixture {
                 .currentStock(100L)
                 .maximumPurchaseLimitCount(10L)
                 .pricePolicy(new ConstantPricePolicy(1000L))
-                .variationDuration(Duration.ofMinutes(1L))
-                .startedAt(ZonedDateTime.now().minusHours(1))
-                .finishedAt(ZonedDateTime.now().plusHours(1))
+                .variationDuration(Duration.ofMinutes(10L))
+                .startedAt(now.minusMinutes(30))
+                .finishedAt(now.plusMinutes(30))
                 .isShowStock(true)
                 .build();
     }
 
     public static Auction createWaitingAuction() {
+        ZonedDateTime now = ZonedDateTime.now();
+
         return Auction.builder()
                 .sellerId(1L)
                 .productName("productName")
@@ -36,14 +40,16 @@ public class AuctionFixture {
                 .currentStock(100L)
                 .maximumPurchaseLimitCount(10L)
                 .pricePolicy(new ConstantPricePolicy(1000L))
-                .variationDuration(Duration.ofMinutes(1L))
-                .startedAt(ZonedDateTime.now().plusHours(1))
-                .finishedAt(ZonedDateTime.now().plusHours(2))
+                .variationDuration(Duration.ofMinutes(10L))
+                .startedAt(now.plusHours(1))
+                .finishedAt(now.plusHours(2))
                 .isShowStock(true)
                 .build();
     }
 
     public static Auction createFinishedAuction() {
+        ZonedDateTime now = ZonedDateTime.now();
+
         return Auction.builder()
                 .sellerId(1L)
                 .productName("productName")
@@ -53,14 +59,16 @@ public class AuctionFixture {
                 .currentStock(100L)
                 .maximumPurchaseLimitCount(10L)
                 .pricePolicy(new ConstantPricePolicy(1000L))
-                .variationDuration(Duration.ofMinutes(1L))
-                .startedAt(ZonedDateTime.now().minusHours(2))
-                .finishedAt(ZonedDateTime.now().minusHours(1))
+                .variationDuration(Duration.ofMinutes(10L))
+                .startedAt(now.minusHours(2))
+                .finishedAt(now.minusHours(1))
                 .isShowStock(true)
                 .build();
     }
 
     public static Auction createSoldOutAuction() {
+        ZonedDateTime now = ZonedDateTime.now();
+
         return Auction.builder()
                 .sellerId(1L)
                 .productName("productName")
@@ -70,9 +78,9 @@ public class AuctionFixture {
                 .currentStock(0L)
                 .maximumPurchaseLimitCount(10L)
                 .pricePolicy(new ConstantPricePolicy(1000L))
-                .variationDuration(Duration.ofMinutes(1L))
-                .startedAt(ZonedDateTime.now().minusHours(1))
-                .finishedAt(ZonedDateTime.now().plusHours(1))
+                .variationDuration(Duration.ofMinutes(10L))
+                .startedAt(now.minusMinutes(30))
+                .finishedAt(now.plusMinutes(30))
                 .isShowStock(true)
                 .build();
     }

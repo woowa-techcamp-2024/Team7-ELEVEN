@@ -21,7 +21,7 @@ class BidHistoryInfoTest {
 
     static Stream<Arguments> bidHistoryInfoArguments() {
         ZonedDateTime now = ZonedDateTime.now();
-        
+
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.", ErrorCode.B002,
                         1L, "", 10000, 1, BidStatus.BID, 1L,

@@ -19,7 +19,15 @@ public class ConstantPricePolicy implements PricePolicy {
     }
 
     @Override
-    public void validate(long price) {
+    public long applyWholeDiscount(long variationCount, long price) {
+        validateVariationWidthOverPrice(price);
+
+        long totalPriceDecrease = variationCount * variationWidth;
+
+        return price - totalPriceDecrease;
+    }
+
+    private void validateVariationWidthOverPrice(long price) {
         if (price <= variationWidth) {
             throw new BadRequestException(
                     String.format("상품 원가는 가격 변동폭보다 커야 합니다. 상품 원가: %d, 가격 변동폭: %d", price, variationWidth),

@@ -43,6 +43,9 @@ public class Auction {
             ZonedDateTime finishedAt,
             boolean isShowStock
     ) {
+        validateDurationTime(startedAt, finishedAt);
+        validateMinimumPrice(startedAt, finishedAt, variationDuration, originPrice, pricePolicy);
+
         this.id = id;
         this.sellerId = sellerId;
         this.productName = productName;
@@ -56,8 +59,32 @@ public class Auction {
         this.startedAt = startedAt;
         this.finishedAt = finishedAt;
         this.isShowStock = isShowStock;
+    }
 
-        pricePolicy.validate(originPrice);
+    private void validateDurationTime(ZonedDateTime startedAt, ZonedDateTime finishedAt) {
+        Duration diff = Duration.between(startedAt, finishedAt);
+        long diffNanos = diff.toNanos();
+        long tenMinutesInNanos = 10L * 60 * 1_000_000_000; // 10분을 나노초로 변환
+
+        if (!(diffNanos % tenMinutesInNanos == 0 && diffNanos / tenMinutesInNanos <= 6)) {
+            String message = String.format("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: %.9f분",
+                    diffNanos / (60.0 * 1_000_000_000));
+            throw new BadRequestException(message, ErrorCode.A008);
+        }
+    }
+
+    private void validateMinimumPrice(ZonedDateTime startedAt, ZonedDateTime finishedAt, Duration variationDuration,
+                                      long originPrice, PricePolicy pricePolicy) {
+        Duration totalDuration = Duration.between(startedAt, finishedAt);
+        long variationCount = totalDuration.dividedBy(variationDuration) - 1;
+
+        // 현재는 0원이 minimumPrice 추후 필드로 추가될 수 있음
+        long discountedPrice = pricePolicy.applyWholeDiscount(variationCount, originPrice);
+        if (discountedPrice <= 0) {
+            String message = String.format("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 모든 할인 적용 후 가격: %d",
+                    originPrice, variationCount, discountedPrice);
+            throw new BadRequestException(message, ErrorCode.A028);
+        }
     }
 
     /**
@@ -68,15 +95,14 @@ public class Auction {
      * @return 구매가 가능한 경우 True, 구매가 불가능한 경우 False를 반환한다.
      */
     public boolean canPurchase(long quantity) {
-        if (quantity <= 0) {  // 구매 요청은 0이거나 더 작을 수 없다.
+        if (quantity <= 0) {
+            return false;
+        }
+        if (quantity > maximumPurchaseLimitCount) {
             return false;
         }
 
-        if (quantity > maximumPurchaseLimitCount) {  // 인당 구매 수량 제한을 넘기지 않는지 확인한다.
-            return false;
-        }
-
-        return currentStock >= quantity;  // 구매 요청 수량보다 재고가 많은지 확인한다.
+        return currentStock >= quantity;
     }
 
     public void update() {
@@ -123,8 +149,8 @@ public class Auction {
     }
 
     /**
-     * 현재 재고량을 변경합니다. <br> 1. 변경 재고량이 0보다 작은 경우 예외를 발생시킵니다 <br> 2. 현재 재고 + 변경 재고량이 원래 재고보다 많은 경우 예외를 발생시킵니다 <br> 3. 현재 재고를
-     * 변경합니다
+     * 현재 재고량을 변경합니다. <br> 1. 변경 재고량이 0보다 작은 경우 예외를 발생시킵니다 <br> 2. 현재 재고 + 변경 재고량이 원래 재고보다 많은 경우 예외를 발생시킵니다 <br> 3. 현재
+     * 재고를 변경합니다
      *
      * @param refundStockAmount 변경할 재고량
      */
@@ -132,11 +158,14 @@ public class Auction {
         long newCurrentStock = this.currentStock + refundStockAmount;
 
         if (refundStockAmount < MINIMUM_STOCK_COUNT) {
-            throw new BadRequestException(String.format("변경할 재고는 %d보다 작을 수 없습니다. inputStock=%s", MINIMUM_STOCK_COUNT, refundStockAmount), ErrorCode.A022);
+            throw new BadRequestException(
+                    String.format("변경할 재고는 %d보다 작을 수 없습니다. inputStock=%s", MINIMUM_STOCK_COUNT, refundStockAmount),
+                    ErrorCode.A022);
         }
 
         if (newCurrentStock > this.originStock) {
-            throw new BadRequestException("변경 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=" + refundStockAmount, ErrorCode.A023);
+            throw new BadRequestException("변경 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=" + refundStockAmount,
+                    ErrorCode.A023);
         }
 
         this.currentStock = newCurrentStock;

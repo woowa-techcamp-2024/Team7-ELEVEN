@@ -7,6 +7,9 @@ import lombok.Getter;
 @Getter
 public class PercentagePricePolicy implements PricePolicy {
 
+    private static final double MINIMUM_RATE = 0.0;
+    private static final double MAXIMUM_RATE = 50.0;
+
     private final double discountRate;
 
     public PercentagePricePolicy(double discountRate) {
@@ -15,22 +18,23 @@ public class PercentagePricePolicy implements PricePolicy {
     }
 
     private void validateDiscountRate(double discountRate) {
-        if (discountRate <= 0 || discountRate >= 100) {
-            throw new BadRequestException(
-                    String.format("할인율은 0 초과 100 미만이어야 합니다. 할인율: %f", discountRate),
-                    ErrorCode.A010);
+        if (discountRate <= MINIMUM_RATE || discountRate > MAXIMUM_RATE) {
+            String message = String.format("할인율은 %d%% 초과 %d%% 이하여야 합니다. 할인율: %f%%", (int) MINIMUM_RATE,
+                    (int) MAXIMUM_RATE,
+                    discountRate);
+            throw new BadRequestException(message, ErrorCode.A010);
         }
     }
 
     @Override
-    public void validate(long price) {
-        // todo 데이터 손실 가능성
-        long nextPrice = (long) (price * (100 - discountRate)) / 100;
+    public long applyWholeDiscount(long variationCount, long price) {
+        long discountedPrice = price;
+        double discountFactor = (100 - discountRate) / 100.0;
 
-        if (nextPrice <= 0) {
-            throw new BadRequestException(
-                    String.format("상품 원가는 할인율을 적용한 가격보다 커야 합니다. 상품 원가: %d, 할인율: %f", price, discountRate),
-                    ErrorCode.A010);
+        for (int i = 0; i < variationCount; i++) {
+            discountedPrice = (long) Math.floor(discountedPrice * discountFactor);
         }
+
+        return discountedPrice;
     }
 }

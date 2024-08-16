@@ -21,24 +21,17 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
-import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+// TODO: [update, change 메소드에서 경매 상태 조건을 확인하는 부분을 서비스가 아니라 Auction이 갖게 하도록 변경하기] [writeAt: 2024/08/15/14:18] [writeBy: HiiWee]
 @RequiredArgsConstructor
 public class AuctionService {
 
     private final AuctionRepository auctionRepository;
 
     public void createAuction(CreateAuctionCommand command) {
-        // 경매 지속 시간 검증
-        Duration diff = Duration.between(command.startedAt(), command.finishedAt());
-        if (!(diff.getSeconds() % (60 * 10) == 0 && diff.getSeconds() / (60 * 10) <= 6)) {
-            throw new BadRequestException("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: " + diff.getSeconds() % (60 * 10),
-                    ErrorCode.A008);
-        }
-
         Auction auction = Auction.builder()
                 .sellerId(command.sellerId())
                 .productName(command.productName())
@@ -127,6 +120,7 @@ public class AuctionService {
 
     /**
      * 구매자용 경매 목록 조회
+     *
      * @param condition
      * @return 구매자용 경매 목록
      */
@@ -194,7 +188,7 @@ public class AuctionService {
      * @param auctionId   경매 번호
      * @param price       구매를 원하는 가격
      * @param quantity    수량
-     * @param requestTime
+     * @param requestTime 요청 시간
      */
     public void submitBid(long auctionId, long price, long quantity, ZonedDateTime requestTime) {
         // 검증
