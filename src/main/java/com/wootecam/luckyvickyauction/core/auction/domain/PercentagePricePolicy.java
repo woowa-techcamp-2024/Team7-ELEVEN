@@ -37,4 +37,16 @@ public class PercentagePricePolicy implements PricePolicy {
 
         return discountedPrice;
     }
+
+    @Override
+    public long calculatePriceAtVariation(long originPrice, long variationCount) {
+        long discountedPrice = originPrice;
+        double discountFactor = (100 - discountRate) / 100.0;
+
+        for (int i = 0; i < variationCount; i++) {
+            discountedPrice = (long) Math.floor(discountedPrice * discountFactor);
+        }
+
+        return discountedPrice;
+    }
 }

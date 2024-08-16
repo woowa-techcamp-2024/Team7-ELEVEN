@@ -27,6 +27,11 @@ public class ConstantPricePolicy implements PricePolicy {
         return price - totalPriceDecrease;
     }
 
+    @Override
+    public long calculatePriceAtVariation(long originPrice, long variationCount) {
+        return originPrice - variationCount * variationWidth;
+    }
+
     private void validateVariationWidthOverPrice(long price) {
         if (price <= variationWidth) {
             throw new BadRequestException(

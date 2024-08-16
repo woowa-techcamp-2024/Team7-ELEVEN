@@ -298,8 +298,7 @@ class AuctionTest {
     }
 
     @Test
-    @DisplayName("판매자는 경매의 가격 정책을 변경할 수 있다.")
-    public void updateAuctionPolicy() {
+    public void updatePricePolicy_메소드는_경매의_가격_정책을_변경한다() {
         // given
         long sellerId = 1L;
         ZonedDateTime now = ZonedDateTime.now();
@@ -328,8 +327,7 @@ class AuctionTest {
     }
 
     @Test
-    @DisplayName("가격 정책이 null인 경우 변경이 반영되지 않는다.")
-    public void updatePricePolicyWhenPricePolicyIsNull() {
+    public void updatePricePolicy_메소드는_가격정책이_null이라면_변경이_무시된다() {
         // given
         long sellerId = 1L;
         ZonedDateTime now = ZonedDateTime.now();
@@ -507,6 +505,120 @@ class AuctionTest {
                         .hasMessage("변경 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.A023));
+            }
+        }
+    }
+
+    @Nested
+    class submit_메소드는 {
+
+        @Nested
+        class 경매상태가_진행중이_아니라면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                Auction auction = AuctionFixture.createWaitingAuction();
+
+                // expect
+                assertThatThrownBy(() -> auction.submit(2000, 10, ZonedDateTime.now()))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + AuctionStatus.WAITING)
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A016);
+            }
+        }
+
+        @Nested
+        class 요청시간_기준_현재_가격과_사용자가_요청한_가격이_다르다면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                ZonedDateTime now = ZonedDateTime.now();
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(100L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+                ZonedDateTime requestTime = now.minusMinutes(30).plusMinutes(33);
+
+                // expect
+                assertThatThrownBy(() -> auction.submit(7001L, 10, requestTime))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage(String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d", 7000L, 7001L))
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A029);
+            }
+        }
+
+        @Nested
+        class 구매_불가능한_숫자만큼_요청이_오면 {
+
+            @ParameterizedTest
+            @ValueSource(longs = {0L, 31L, 101L})
+            void 예외가_발생한다(long requestQuantity) {
+                // given
+                ZonedDateTime now = ZonedDateTime.now();
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(100L)
+                        .maximumPurchaseLimitCount(30L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+
+                // expect
+                assertThatThrownBy(() -> auction.submit(7000L, requestQuantity, now))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage(String.format("해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d",
+                                auction.getCurrentStock(), requestQuantity, auction.getMaximumPurchaseLimitCount()))
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A014);
+            }
+        }
+
+        @Nested
+        class 정상적인_구매요청이_들어오면 {
+
+            @Test
+            void 상품의_현재_재고가_차감된다() {
+                // given
+                ZonedDateTime now = ZonedDateTime.now();
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(100L)
+                        .maximumPurchaseLimitCount(30L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+                ZonedDateTime requestTime = now.minusMinutes(30).plusMinutes(33);
+
+                // when
+                auction.submit(7000L, 10, requestTime);
+
+                // then
+                assertThat(auction.getCurrentStock()).isEqualTo(90L);
             }
         }
     }

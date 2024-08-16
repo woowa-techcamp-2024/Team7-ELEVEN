@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
+import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
@@ -203,102 +204,113 @@ class AuctionServiceTest {
     }
 
     @Nested
-    @DisplayName("경매 입찰(구매)을 진행할 때")
-    class submitBidTest {
+    class submitBid_메소드는 {
 
-        @Test
-        @DisplayName("요청을 정상적으로 처리한다.")
-        void success_case() {
-            // given
-            long auctionId = 1L;
-            long price = 10000L;
-            long quantity = 10L;
+        @Nested
+        class 정상적인_구매요청이_들어오면 {
 
-            saveRunningAuction();
+            @Test
+            void 구매를_완료한다() {
+                // given
+                ZonedDateTime now = ZonedDateTime.now();
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(100L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+                Auction savedAuction = auctionRepository.save(auction);
 
-            // expect
-            assertThatNoException().isThrownBy(
-                    () -> auctionService.submitBid(auctionId, price, quantity, ZonedDateTime.now()));
+                // when
+                auctionService.submitBid(savedAuction.getId(), 7000L, 10, now);
+
+                // then
+                Auction afterAuction = auctionRepository.findById(savedAuction.getId()).get();
+                assertThat(afterAuction.getCurrentStock()).isEqualTo(90L);
+            }
         }
 
-        @Test
-        @DisplayName("유효하지 않은 경매번호를 전달받은 경우 예외가 발생하고 에러 코드는 A011이다.")
-        void when_invalid_auction_id_should_throw_exception() {
-            // given
-            long auctionId = 1L;
-            long price = 10000L;
-            long quantity = 100L;
+        @Nested
+        class 존재하지_않는_경매의_id가_입력된_경우 {
 
-            // expect
-            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity, ZonedDateTime.now()))
-                    .isInstanceOf(NotFoundException.class)
-                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.A011));
+            @Test
+            void 예외가_발생한다() {
+                // expect
+                assertThatThrownBy(() -> auctionService.submitBid(1L, 1000L, 10L, ZonedDateTime.now()))
+                        .isInstanceOf(NotFoundException.class)
+                        .hasMessage("경매(Auction)를 찾을 수 없습니다. AuctionId: 1")
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A011);
+            }
         }
 
-        @Test
-        @DisplayName("경매 재고보다 많은 수량을 입찰(구매)하려는 경우 예외가 발생하고 에러 코드는 A014이다.")
-        void when_quantity_more_than_auction_stock_should_throw_exception() {
-            // given
-            long auctionId = 1L;
-            long price = 10000L;
-            long quantity = 100L;
+        @Nested
+        class 현재_경매_재고보다_많이_구매하려_하면 {
 
-            saveRunningAuction();
+            @Test
+            void 예외가_발생한다() {
+                // given
+                ZonedDateTime now = ZonedDateTime.now();
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(100L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+                Auction savedAuction = auctionRepository.save(auction);
 
-            // expect
-            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity, ZonedDateTime.now()))
-                    .isInstanceOf(BadRequestException.class)
-                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.A014));
+                // when
+                assertThatThrownBy(() -> auctionService.submitBid(savedAuction.getId(), 7000L, 101, now))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage(String.format("해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d", 100L, 101L, 10L));
+            }
         }
 
-        @Test
-        @DisplayName("인당 구매 제한 수량보다 많은 수량을 입찰(구매)하려는 경우 예외가 발생하고 에러 코드는 A014이다.")
-        void when_quantity_more_than_maximum_pruchase_limit_should_throw_exception() {
-            // given
-            long auctionId = 1L;
-            long price = 10000L;
-            long quantity = 100L;
+        @Nested
+        class 진행_중인_경매가_아닌_경우 {
 
-            saveRunningAuction();
+            @Test
+            void 예외가_발생한다() {
+                // given
+                ZonedDateTime now = ZonedDateTime.now();
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("Test Product")
+                        .originPrice(10000)
+                        .currentPrice(10000)
+                        .originStock(100)
+                        .currentStock(100)
+                        .maximumPurchaseLimitCount(100)
+                        .pricePolicy(new ConstantPricePolicy(1000))
+                        .startedAt(now.plusHours(1L))
+                        .finishedAt(now.plusHours(2L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .isShowStock(true)
+                        .build();
+                Auction savedAuction = auctionRepository.save(auction);
 
-            // expect
-            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity, ZonedDateTime.now()))
-                    .isInstanceOf(BadRequestException.class)
-                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.A014));
-        }
-
-        @Test
-        void 진행_중인_경매가_아닌_경우_예외가_발생한다() {
-            // given
-            long auctionId = 1L;
-            long price = 10000L;
-            long quantity = 10L;
-
-            ZonedDateTime now = ZonedDateTime.now();
-            Auction auction = Auction.builder()
-                    .startedAt(now.plusHours(1L))
-                    .finishedAt(now.plusHours(2L))
-                    .sellerId(1L)
-                    .productName("Test Product")
-                    .originPrice(10000)
-                    .currentPrice(10000)
-                    .originStock(100)
-                    .currentStock(100)
-                    .maximumPurchaseLimitCount(100)
-                    .pricePolicy(new ConstantPricePolicy(1000))
-                    .variationDuration(Duration.ofMinutes(10L))
-                    .isShowStock(true)
-                    .build();
-            auctionRepository.save(auction);
-
-            // expect
-            assertThatThrownBy(() -> auctionService.submitBid(auctionId, price, quantity, ZonedDateTime.now()))
-                    .isInstanceOf(BadRequestException.class)
-                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.A016));
+                // expect
+                assertThatThrownBy(
+                        () -> auctionService.submitBid(savedAuction.getId(), 7000L, 10L, ZonedDateTime.now()))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + AuctionStatus.WAITING)
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A016);
+            }
         }
     }
 
@@ -423,6 +435,16 @@ class AuctionServiceTest {
         }
     }
 
+    @Nested
+    class getSellerAuction_메소드는 extends GetSellerAuctionTest {
+
+    }
+
+    @Nested
+    class cancelAuction_메소드는 extends CancelAuctionTest {
+
+    }
+
     /**
      * 현재 RUNNING 상태인 Auction을 생성 및 Repository에 저장하고 반환합니다.
      *
@@ -436,13 +458,5 @@ class AuctionServiceTest {
     private Auction saveWaitingAuction() {
         Auction auction = AuctionFixture.createWaitingAuction();
         return auctionRepository.save(auction);
-    }
-
-    @Nested
-    class getSellerAuction_메소드는 extends GetSellerAuctionTest {
-    }
-
-    @Nested
-    class cancelAuction_메소드는 extends CancelAuctionTest {
     }
 }

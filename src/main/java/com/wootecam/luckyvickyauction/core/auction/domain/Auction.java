@@ -133,10 +133,6 @@ public class Auction {
         currentStock = changeRequestStock;
     }
 
-    public boolean isSeller(Long sellerId) {
-        return this.sellerId.equals(sellerId);
-    }
-
     /**
      * 현재 재고량을 변경합니다. <br> 1. 변경 재고량이 0보다 작은 경우 예외를 발생시킵니다 <br> 2. 현재 재고 + 변경 재고량이 원래 재고보다 많은 경우 예외를 발생시킵니다 <br> 3. 현재
      * 재고를 변경합니다
@@ -161,17 +157,6 @@ public class Auction {
     }
 
     // TODO: [SOLD_OUT의 상태관리는 어떻게 해야할것인가?!] [writeAt: 2024/08/14/11:12] [writeBy: HiiWee]
-    public AuctionStatus currentStatus(ZonedDateTime requestTime) {
-        if (requestTime.isBefore(startedAt)) {
-            return AuctionStatus.WAITING;
-        }
-
-        if (requestTime.isBefore(finishedAt)) {
-            return AuctionStatus.RUNNING;
-        }
-
-        return AuctionStatus.FINISHED;
-    }
 
     /**
      * 1. 현재 상태가 진행 중 인지 검증 <br> 2. 현재 가격으로 구매할 수 있는지 검증 <br> 3. 요청 수량만큼의 재고가 남아있는지 검증 <br> 이후 실제 요청을 처리합니다.
@@ -186,15 +171,32 @@ public class Auction {
             String message = String.format("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: %s", currentStatus);
             throw new BadRequestException(message, ErrorCode.A016);
         }
-        verifyCurrentPrice(price);
+        verifyCurrentPrice(price, requestTime);
         verifyCurrentStock(quantity);
 
         currentStock -= quantity;
     }
 
-    public void verifyCurrentPrice(long inputPrice) {
-        if (currentPrice != inputPrice) {
-            String message = String.format("입력한 가격으로 상품을 구매할 수 없습니다. 입력가격: %d", inputPrice);
+    public AuctionStatus currentStatus(ZonedDateTime requestTime) {
+        if (requestTime.isBefore(startedAt)) {
+            return AuctionStatus.WAITING;
+        }
+
+        if (requestTime.isBefore(finishedAt)) {
+            return AuctionStatus.RUNNING;
+        }
+
+        return AuctionStatus.FINISHED;
+    }
+
+    private void verifyCurrentPrice(long inputPrice, ZonedDateTime requestTime) {
+        Duration elapsedDuration = Duration.between(startedAt, requestTime);
+        long currentVariationCount = elapsedDuration.dividedBy(variationDuration);
+
+        long actualPrice = pricePolicy.calculatePriceAtVariation(originPrice, currentVariationCount);
+
+        if (actualPrice != inputPrice) {
+            String message = String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d", actualPrice, inputPrice);
             throw new BadRequestException(message, ErrorCode.A029);
         }
     }
@@ -224,5 +226,9 @@ public class Auction {
         }
 
         return currentStock >= quantity;
+    }
+
+    public boolean isSeller(Long sellerId) {
+        return this.sellerId.equals(sellerId);
     }
 }
