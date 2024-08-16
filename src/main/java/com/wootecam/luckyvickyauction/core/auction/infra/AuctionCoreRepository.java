@@ -6,8 +6,15 @@ import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
+@Repository
+@RequiredArgsConstructor
 public class AuctionCoreRepository implements AuctionRepository {
+
+    private final AuctionJpaRepository auctionJpaRepository;
+
     @Override
     public Auction save(Auction auction) {
         return null;
