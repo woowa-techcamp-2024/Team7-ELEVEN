@@ -191,24 +191,9 @@ public class AuctionService {
      * @param requestTime 요청 시간
      */
     public void submitBid(long auctionId, long price, long quantity, ZonedDateTime requestTime) {
-        // 검증
         Auction auction = findAuctionObject(auctionId);
-
-        if (!auction.canPurchase(quantity)) {
-            throw new BadRequestException(
-                    "해당 수량만큼 구매할 수 없습니다. 재고: " + auction.getCurrentStock() + ", "
-                            + "요청: " + quantity + ", 인당구매제한: " + auction.getMaximumPurchaseLimitCount(),
-                    ErrorCode.A014);
-        }
-
-        AuctionStatus currentStatus = auction.currentStatus(requestTime);
-        if (!currentStatus.isRunning()) {
-            throw new BadRequestException(
-                    "진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + currentStatus,
-                    ErrorCode.A016);
-        }
-
-        // TODO 구매(입찰) 로직
+        auction.submit(price, quantity, requestTime);
+        auctionRepository.save(auction);
     }
 
     /**

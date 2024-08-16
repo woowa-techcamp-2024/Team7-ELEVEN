@@ -183,4 +183,57 @@ public class Auction {
 
         return AuctionStatus.FINISHED;
     }
+
+    /**
+     * 1. 현재 상태가 진행 중 인지 검증 <br> 2. 현재 가격으로 구매할 수 있는지 검증 <br> 3. 요청 수량만큼의 재고가 남아있는지 검증 <br> 이후 실제 요청을 처리합니다.
+     *
+     * @param price       구매자가 구매 요청한 가격
+     * @param quantity    구매자가 구매할 상품 갯수
+     * @param requestTime 구매자가 요청한 시간
+     */
+    public void submit(long price, long quantity, ZonedDateTime requestTime) {
+        AuctionStatus currentStatus = currentStatus(requestTime);
+        if (!currentStatus.isRunning()) {
+            String message = String.format("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: %s", currentStatus);
+            throw new BadRequestException(message, ErrorCode.A016);
+        }
+        verifyCurrentPrice(price);
+        verifyCurrentStock(quantity);
+
+        currentStock -= quantity;
+    }
+
+    public void verifyCurrentPrice(long inputPrice) {
+        if (currentPrice != inputPrice) {
+            String message = String.format("입력한 가격으로 상품을 구매할 수 없습니다. 입력가격: %d", inputPrice);
+            throw new BadRequestException(message, ErrorCode.A029);
+        }
+    }
+
+    private void verifyCurrentStock(long quantity) {
+        if (canPurchase(quantity)) {
+            String message = String.format(
+                    "해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d", currentStock, quantity,
+                    maximumPurchaseLimitCount);
+            throw new BadRequestException(message, ErrorCode.A014);
+        }
+    }
+
+    /**
+     * 해당 수량만큼 구매가 가능한지 확인한다. <br> 1. 구매 요청이 0보다 작은지 확인합니다. <br> 2. 인당 구매 수량 제한을 넘기지 않는지 확인합니다. <br> 3. 구매 요청 수량보다 햔재
+     * 재고가 많은지 확인합니다.
+     *
+     * @param quantity 구매를 원하는 수량
+     * @return 구매가 가능한 경우 True, 구매가 불가능한 경우 False를 반환한다.
+     */
+    private boolean canPurchase(long quantity) {
+        if (quantity <= 0) {
+            return false;
+        }
+        if (quantity > maximumPurchaseLimitCount) {
+            return false;
+        }
+
+        return currentStock >= quantity;
+    }
 }
