@@ -184,6 +184,24 @@ public final class Mapper {
                 auctionEntity.isShowStock()
         );
     }
+
+    public static AuctionEntity convertToAuctionEntity(Auction auction) {
+        return AuctionEntity.builder()
+                .id(auction.getId())
+                .sellerId(auction.getSellerId())
+                .productName(auction.getProductName())
+                .originPrice(auction.getOriginPrice())
+                .currentPrice(auction.getCurrentPrice())
+                .originStock(auction.getOriginStock())
+                .currentStock(auction.getCurrentStock())
+                .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
+                .pricePolicy(auction.getPricePolicy())
+                .variationDuration(auction.getVariationDuration())
+                .startedAt(auction.getStartedAt())
+                .finishedAt(auction.getFinishedAt())
+                .isShowStock(auction.isShowStock())
+                .build();
+    }
   
     public static Member convertToMember(MemberEntity entity) {
         return Member.builder()
@@ -204,4 +222,5 @@ public final class Mapper {
                 .point(member.getPoint().getAmount())
                 .build();
     }
+
 }
