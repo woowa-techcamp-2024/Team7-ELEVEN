@@ -14,6 +14,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class MapperTest {
@@ -113,5 +114,9 @@ class MapperTest {
                 () -> assertEquals(auction.getStartedAt(), dto.startedAt()),
                 () -> assertEquals(auction.getFinishedAt(), dto.finishedAt())
         );
+    }
+
+    @Nested
+    class 회원정보_맵핑시에 extends MapperMemberTest {
     }
 }

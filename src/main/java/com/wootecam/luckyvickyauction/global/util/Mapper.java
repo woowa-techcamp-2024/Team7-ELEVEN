@@ -6,6 +6,10 @@ import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
+import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.member.domain.Point;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.entity.MemberEntity;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
@@ -144,5 +148,25 @@ public final class Mapper {
                 auction.getStartedAt(),
                 auction.getFinishedAt()
         );
+    }
+
+    public static Member convertToMember(MemberEntity entity) {
+        return Member.builder()
+                .id(entity.getId())
+                .signInId(entity.getSignInId())
+                .password(entity.getPassword())
+                .role(Role.find(entity.getRole()))
+                .point(new Point(entity.getPoint()))
+                .build();
+    }
+
+    public static MemberEntity convertToMemberEntity(Member member) {
+        return MemberEntity.builder()
+                .id(member.getId())
+                .signInId(member.getSignInId())
+                .password(member.getPassword())
+                .role(member.getRole().name())
+                .point(member.getPoint().getAmount())
+                .build();
     }
 }
