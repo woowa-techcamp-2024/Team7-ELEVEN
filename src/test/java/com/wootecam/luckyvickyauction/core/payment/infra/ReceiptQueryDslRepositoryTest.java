@@ -25,6 +25,35 @@ class ReceiptQueryDslRepositoryTest {
     class 구매자_거래_내역_동적_쿼리_실행시 {
 
         @Test
+        void 조회_개수만큼_거래_내역을_조회한다() {
+
+            // given
+            Long buyerId = 1L;
+            int size = 100;
+            var condition = new BuyerReceiptSearchCondition(buyerId, size);
+
+            for (int i = 0; i < 101; i++) {
+                repository.save(ReceiptEntity.builder()
+                        .productName("상품1")
+                        .price(1000)
+                        .quantity(1)
+                        .bidStatus(BidStatus.BID)
+                        .auctionId(4L)
+                        .buyerId(buyerId)
+                        .sellerId(2L)
+                        .createdAt(ZonedDateTime.now())
+                        .updatedAt(ZonedDateTime.now())
+                        .build());
+            }
+
+            // when
+            List<ReceiptEntity> receipts = repository.findAllBy(condition);
+
+            // then
+            assertThat(receipts).hasSize(size);
+        }
+
+        @Test
         void 조회한_구매자의_거내_내역만_조회된다() {
 
             // given
