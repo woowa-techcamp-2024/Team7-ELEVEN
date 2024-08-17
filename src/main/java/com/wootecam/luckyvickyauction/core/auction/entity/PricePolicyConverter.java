@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PercentagePricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
+import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicyType;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.InfraStructureException;
@@ -23,7 +24,7 @@ public class PricePolicyConverter implements AttributeConverter<PricePolicy, Str
             return null;
         }
         try {
-            return objectMapper.writeValueAsString(PricePolicy.class);
+            return objectMapper.writeValueAsString(pricePolicy);
         } catch (IOException e) {
             throw new InfraStructureException("해당 객체를 String으로 변환할 수 없습니다.", ErrorCode.A030);
         }
@@ -36,18 +37,18 @@ public class PricePolicyConverter implements AttributeConverter<PricePolicy, Str
         }
         try {
             JsonNode jsonNode = objectMapper.readTree(dbData);
-            String type = jsonNode.get("type").asText();
+            PricePolicyType type = PricePolicyType.valueOf(jsonNode.get("type").asText());
 
             switch (type) {
-                case "PERCENTAGE":
+                case PERCENTAGE:
                     return objectMapper.treeToValue(jsonNode, PercentagePricePolicy.class);
-                case "CONSTANT":
+                case CONSTANT:
                     return objectMapper.treeToValue(jsonNode, ConstantPricePolicy.class);
                 default:
                     throw new BadRequestException("해당 type으로 변환할 수 없습니다. 현재 type=" + type, ErrorCode.A031);
             }
         } catch (IOException e) {
-            throw new InfraStructureException("해당 JSON을 PricePolicy 객체로 변환하는 데 실패했습니다.", ErrorCode.A032);
+            throw new InfraStructureException("해당 JSON을 PricePolicy 객체로 변환하는 데 실패했습니다." + e, ErrorCode.A032);
         }
     }
 }
