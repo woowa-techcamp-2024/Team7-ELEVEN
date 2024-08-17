@@ -8,6 +8,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
+import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
@@ -120,6 +121,47 @@ class MapperTest {
 
     @Nested
     class 영속성_엔티티_변환_케이스 {
+
+        @Test
+        public void 경매_영속성_엔티티를_도메인_엔티티로_변환하면_정보가_동일하다() {
+            // given
+            ZonedDateTime now = ZonedDateTime.now();
+            AuctionEntity entity = AuctionEntity.builder()
+                    .id(1L)
+                    .sellerId(2L)
+                    .productName("상품 이름")
+                    .originPrice(1000L)
+                    .currentPrice(1000L)
+                    .originStock(100L)
+                    .currentStock(100L)
+                    .maximumPurchaseLimitCount(10L)
+                    .pricePolicy(new ConstantPricePolicy(10L))
+                    .variationDuration(Duration.ofMinutes(10L))
+                    .startedAt(now)
+                    .finishedAt(now.plusHours(1))
+                    .isShowStock(true)
+                    .build();
+
+            // when
+            Auction auction = Mapper.convertToAuction(entity);
+
+            // then
+            assertAll(
+                    () -> assertEquals(entity.getId(), auction.getId()),
+                    () -> assertEquals(entity.getSellerId(), auction.getSellerId()),
+                    () -> assertEquals(entity.getProductName(), auction.getProductName()),
+                    () -> assertEquals(entity.getOriginPrice(), auction.getOriginPrice()),
+                    () -> assertEquals(entity.getCurrentPrice(), auction.getCurrentPrice()),
+                    () -> assertEquals(entity.getOriginStock(), auction.getOriginStock()),
+                    () -> assertEquals(entity.getCurrentStock(), auction.getCurrentStock()),
+                    () -> assertEquals(entity.getMaximumPurchaseLimitCount(), auction.getMaximumPurchaseLimitCount()),
+                    () -> assertEquals(entity.getPricePolicy(), auction.getPricePolicy()),
+                    () -> assertEquals(entity.getVariationDuration(), auction.getVariationDuration()),
+                    () -> assertEquals(entity.getStartedAt(), auction.getStartedAt()),
+                    () -> assertEquals(entity.getFinishedAt(), auction.getFinishedAt()),
+                    () -> assertEquals(entity.isShowStock(), auction.isShowStock())
+            );
+        }
 
         @Test
         public void 거래내역_영속성_엔티티를_도메인_엔티티로_변환하면_정보가_동일하다() {

@@ -10,8 +10,11 @@ public class PercentagePricePolicy implements PricePolicy {
     private static final double MINIMUM_RATE = 0.0;
     private static final double MAXIMUM_RATE = 50.0;
 
-    private final double discountRate;
+    private final PricePolicyType type = PricePolicyType.PERCENTAGE;
+    private double discountRate;
 
+    public PercentagePricePolicy() {
+    }
     public PercentagePricePolicy(double discountRate) {
         validateDiscountRate(discountRate);
         this.discountRate = discountRate;
@@ -36,5 +39,10 @@ public class PercentagePricePolicy implements PricePolicy {
         }
 
         return discountedPrice;
+    }
+
+    @Override
+    public PricePolicyType getType() {
+        return type;
     }
 }

@@ -6,6 +6,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
+import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
@@ -166,6 +167,24 @@ public final class Mapper {
                 .build();
     }
 
+    public static Auction convertToAuction(AuctionEntity auctionEntity) {
+        return new Auction(
+                auctionEntity.getId(),
+                auctionEntity.getSellerId(),
+                auctionEntity.getProductName(),
+                auctionEntity.getOriginPrice(),
+                auctionEntity.getCurrentPrice(),
+                auctionEntity.getOriginStock(),
+                auctionEntity.getCurrentStock(),
+                auctionEntity.getMaximumPurchaseLimitCount(),
+                auctionEntity.getPricePolicy(),
+                auctionEntity.getVariationDuration(),
+                auctionEntity.getStartedAt(),
+                auctionEntity.getFinishedAt(),
+                auctionEntity.isShowStock()
+        );
+    }
+  
     public static Member convertToMember(MemberEntity entity) {
         return Member.builder()
                 .id(entity.getId())
