@@ -7,4 +7,5 @@
 :sectlinks:
 :docinfo: shared-head
 
+include::auth.adoc[]
 include::errorCode.adoc[]

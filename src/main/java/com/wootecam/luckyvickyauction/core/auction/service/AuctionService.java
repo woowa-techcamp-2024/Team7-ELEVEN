@@ -2,7 +2,6 @@ package com.wootecam.luckyvickyauction.core.auction.service;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
