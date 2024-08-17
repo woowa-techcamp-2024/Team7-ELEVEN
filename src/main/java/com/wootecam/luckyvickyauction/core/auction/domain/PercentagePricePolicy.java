@@ -2,6 +2,7 @@ package com.wootecam.luckyvickyauction.core.auction.domain;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import java.util.Objects;
 import lombok.Getter;
 
 @Getter
@@ -44,5 +45,22 @@ public class PercentagePricePolicy implements PricePolicy {
     @Override
     public PricePolicyType getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PercentagePricePolicy that = (PercentagePricePolicy) o;
+        return Double.compare(discountRate, that.discountRate) == 0 && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, discountRate);
     }
 }

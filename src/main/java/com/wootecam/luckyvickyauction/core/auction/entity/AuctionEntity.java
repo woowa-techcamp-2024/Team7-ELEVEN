@@ -38,7 +38,7 @@ public class AuctionEntity {
     private boolean isShowStock;
 
     @Builder
-    public AuctionEntity(Long id, Long sellerId, String productName, long originPrice, long currentPrice,
+    private AuctionEntity(Long id, Long sellerId, String productName, long originPrice, long currentPrice,
                          long originStock, long currentStock, long maximumPurchaseLimitCount, PricePolicy pricePolicy,
                          Duration variationDuration, ZonedDateTime startedAt, ZonedDateTime finishedAt,
                          boolean isShowStock) {
