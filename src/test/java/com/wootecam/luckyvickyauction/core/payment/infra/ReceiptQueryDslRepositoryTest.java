@@ -32,7 +32,7 @@ class ReceiptQueryDslRepositoryTest {
             int size = 100;
             var condition = new BuyerReceiptSearchCondition(buyerId, size);
 
-            for (int i = 0; i < 101; i++) {
+            for (int i = 0; i < size + 1; i++) {
                 repository.save(ReceiptEntity.builder()
                         .productName("상품1")
                         .price(1000)
@@ -57,7 +57,7 @@ class ReceiptQueryDslRepositoryTest {
          * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/157">거래 내역 조회 시 구매자의 거래 내역만 조회</a>
          */
         @Test
-        void 조회한_구매자의_거내_내역만_조회된다() {
+        void 조회한_구매자의_거래_내역만_조회된다() {
 
             // given
             Long buyerId = 1L;
