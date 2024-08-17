@@ -197,4 +197,8 @@ class MapperTest {
             );
         }
     }
+
+    @Nested
+    class 회원정보_맵핑시에 extends MapperMemberTest {
+    }
 }
