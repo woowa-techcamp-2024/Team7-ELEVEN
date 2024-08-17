@@ -4,6 +4,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
+import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -32,4 +33,7 @@ public class ReceiptCoreRepository implements BidHistoryRepository {
                 .map(Mapper::convertToReceipt)
                 .toList();
     }
+
+    @Override
+    public List<BidHistory> findAllBy(SellerReceiptSearchCondition condition) { return List.of(); }
 }
