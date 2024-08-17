@@ -14,6 +14,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
+import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -50,8 +51,8 @@ public final class Mapper {
                 .quantity(bidHistory.getQuantity())
                 .bidStatus(bidHistory.getBidStatus())
                 .auctionId(bidHistory.getAuctionId())
-                .seller(bidHistory.getSeller())
-                .buyer(bidHistory.getBuyer())
+                .sellerId(bidHistory.getSellerId())
+                .buyerId(bidHistory.getBuyerId())
                 .createdAt(bidHistory.getCreatedAt())
                 .updatedAt(bidHistory.getUpdatedAt())
                 .build();
@@ -148,6 +149,21 @@ public final class Mapper {
                 auction.getStartedAt(),
                 auction.getFinishedAt()
         );
+    }
+
+    public static BidHistory convertToReceipt(ReceiptEntity receiptEntity) {
+        return BidHistory.builder()
+                .id(receiptEntity.getId())
+                .productName(receiptEntity.getProductName())
+                .price(receiptEntity.getPrice())
+                .quantity(receiptEntity.getQuantity())
+                .bidStatus(receiptEntity.getBidStatus())
+                .auctionId(receiptEntity.getAuctionId())
+                .sellerId(receiptEntity.getSellerId())
+                .buyerId(receiptEntity.getBuyerId())
+                .createdAt(receiptEntity.getCreatedAt())
+                .updatedAt(receiptEntity.getUpdatedAt())
+                .build();
     }
 
     public static Member convertToMember(MemberEntity entity) {

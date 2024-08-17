@@ -3,6 +3,7 @@ package com.wootecam.luckyvickyauction.core.payment.infra;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
+import com.wootecam.luckyvickyauction.global.util.Mapper;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +28,12 @@ public class ReceiptCoreRepository implements BidHistoryRepository {
 
     @Override
     public List<BidHistory> findAllBy(BuyerReceiptSearchCondition condition) {
-        return List.of();
+
+        return receiptJpaRepository.findAllBy(condition).stream()
+                .map(Mapper::convertToReceipt)
+                .toList();
     }
-  
+
     @Override
     public List<BidHistory> findAllBy(SellerReceiptSearchCondition condition) { return List.of(); }
 }
