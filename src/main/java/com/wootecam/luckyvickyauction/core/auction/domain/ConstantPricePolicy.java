@@ -5,8 +5,11 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 
 public class ConstantPricePolicy implements PricePolicy {
 
-    private final long variationWidth;
+    private PricePolicyType type = PricePolicyType.CONSTANT;
+    private long variationWidth;
 
+    public ConstantPricePolicy() {
+    }
     public ConstantPricePolicy(long variationWidth) {
         validateVariationWidth(variationWidth);
         this.variationWidth = variationWidth;
@@ -31,5 +34,10 @@ public class ConstantPricePolicy implements PricePolicy {
                     String.format("상품 원가는 가격 변동폭보다 커야 합니다. 상품 원가: %d, 가격 변동폭: %d", price, variationWidth),
                     ErrorCode.A009);
         }
+    }
+
+    @Override
+    public PricePolicyType getType() {
+        return type;
     }
 }

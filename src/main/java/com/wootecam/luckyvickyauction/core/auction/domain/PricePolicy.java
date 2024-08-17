@@ -11,4 +11,6 @@ public interface PricePolicy {
     static PricePolicy createConstantPricePolicy(int variationWidth) {
         return new ConstantPricePolicy(variationWidth);
     }
+
+    PricePolicyType getType();
 }
