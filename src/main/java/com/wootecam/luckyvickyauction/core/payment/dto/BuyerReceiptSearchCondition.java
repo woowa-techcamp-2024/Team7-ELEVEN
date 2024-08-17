@@ -13,10 +13,10 @@ public record BuyerReceiptSearchCondition(
 ) {
 
     public BuyerReceiptSearchCondition {
-        pageSizeShouldBeBetweenOneAndHundred();
+        pageSizeShouldBeBetweenOneAndHundred(size);
     }
 
-    private void pageSizeShouldBeBetweenOneAndHundred() {
+    private void pageSizeShouldBeBetweenOneAndHundred(int size) {
         if (size < 1 || size > 100) {
             throw new BadRequestException("size는 1 이상 100 이하의 값이어야 합니다.", ErrorCode.G001);
         }
