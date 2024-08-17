@@ -1,6 +1,8 @@
 package com.wootecam.luckyvickyauction.global.exception;
 
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,14 +45,14 @@ public class GlobalAdvice {
                 .body(ErrorResponse.of(e.getMessage(), e.getErrorCode().name()));
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponse> handleInternalServerError(final Exception e) {
-//        StringWriter out = new StringWriter();
-//        PrintWriter printWriter = new PrintWriter(out);
-//        e.printStackTrace(printWriter);
-//
-//        log.error("Stack Trace : {}", out);
-//        return ResponseEntity.internalServerError()
-//                .body(ErrorResponse.of(e.getMessage(), ErrorCode.G.getErrorCode()));
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleInternalServerError(final Exception e) {
+        StringWriter out = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(out);
+        e.printStackTrace(printWriter);
+
+        log.error("Stack Trace : {}", out);
+        return ResponseEntity.internalServerError()
+                .body(ErrorResponse.of(e.getMessage(), ErrorCode.SERVER_ERROR.name()));
+    }
 }

@@ -1,8 +1,6 @@
 package com.wootecam.luckyvickyauction.core.payment.dto;
 
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
-import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 
 /**
  * 판매자가 자신의 경매와 관련있는 거래 내역 목록을 조회 시 사용하는 dto
