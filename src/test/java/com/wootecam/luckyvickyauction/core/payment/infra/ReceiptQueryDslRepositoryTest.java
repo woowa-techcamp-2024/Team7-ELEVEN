@@ -53,6 +53,9 @@ class ReceiptQueryDslRepositoryTest {
             assertThat(receipts).hasSize(size);
         }
 
+        /**
+         * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/157">거래 내역 조회 시 구매자의 거래 내역만 조회</a>
+         */
         @Test
         void 조회한_구매자의_거내_내역만_조회된다() {
 
