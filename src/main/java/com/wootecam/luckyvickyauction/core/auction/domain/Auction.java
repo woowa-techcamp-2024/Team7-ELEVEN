@@ -156,7 +156,6 @@ public class Auction {
         this.currentStock = newCurrentStock;
     }
 
-    // TODO: [SOLD_OUT의 상태관리는 어떻게 해야할것인가?!] [writeAt: 2024/08/14/11:12] [writeBy: HiiWee]
 
     /**
      * 1. 현재 상태가 진행 중 인지 검증 <br> 2. 현재 가격으로 구매할 수 있는지 검증 <br> 3. 요청 수량만큼의 재고가 남아있는지 검증 <br> 이후 실제 요청을 처리합니다.
@@ -172,11 +171,12 @@ public class Auction {
             throw new BadRequestException(message, ErrorCode.A016);
         }
         verifyCurrentPrice(price, requestTime);
-        verifyCurrentStock(quantity);
+        verifyPurchaseQuantity(quantity);
 
         currentStock -= quantity;
     }
 
+    // TODO: [SOLD_OUT의 상태관리는 어떻게 해야할것인가?!] [writeAt: 2024/08/14/11:12] [writeBy: HiiWee]
     public AuctionStatus currentStatus(ZonedDateTime requestTime) {
         if (requestTime.isBefore(startedAt)) {
             return AuctionStatus.WAITING;
@@ -201,7 +201,7 @@ public class Auction {
         }
     }
 
-    private void verifyCurrentStock(long quantity) {
+    private void verifyPurchaseQuantity(long quantity) {
         if (!canPurchase(quantity)) {
             String message = String.format(
                     "해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d", currentStock, quantity,
