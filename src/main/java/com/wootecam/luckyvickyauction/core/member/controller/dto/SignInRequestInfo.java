@@ -1,12 +1,24 @@
 package com.wootecam.luckyvickyauction.core.member.controller.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import java.util.Objects;
 
-public record SignInRequest(
-        @NotBlank(message = "아이디는 반드시 입력해야 합니다.")
+public record SignInRequestInfo(
         String signInId,
-
-        @NotBlank(message = "패스워드는 반드시 입력해야 합니다.")
         String password
 ) {
+
+    private static final String ERROR_NULL_VALUE = "%s는 Null일 수 없습니다.";
+
+    public SignInRequestInfo {
+        validateNotNull(signInId, "로그인 ID");
+        validateNotNull(password, "로그인 패스워드");
+    }
+
+    private void validateNotNull(Object value, String fieldName) {
+        if (Objects.isNull(value)) {
+            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.G000);
+        }
+    }
 }

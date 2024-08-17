@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 public class MemberCoreRepository implements MemberRepository {
 
     private final MemberJpaRepository memberJpaRepository;
+
     @Override
     public boolean isExist(String signInId) {
         return memberJpaRepository.existsBySignInId(signInId);
