@@ -79,30 +79,12 @@ public class Auction {
         long variationCount = totalDuration.dividedBy(variationDuration) - 1;
 
         // 현재는 0원이 minimumPrice 추후 필드로 추가될 수 있음
-        long discountedPrice = pricePolicy.applyWholeDiscount(variationCount, originPrice);
+        long discountedPrice = pricePolicy.calculatePriceAtVariation(originPrice, variationCount);
         if (discountedPrice <= 0) {
             String message = String.format("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 모든 할인 적용 후 가격: %d",
                     originPrice, variationCount, discountedPrice);
             throw new BadRequestException(message, ErrorCode.A028);
         }
-    }
-
-    /**
-     * 해당 수량만큼 구매가 가능한지 확인한다. <br> 1. 구매 요청이 0보다 작은지 확인합니다. <br> 2. 인당 구매 수량 제한을 넘기지 않는지 확인합니다. <br> 3. 구매 요청 수량보다 햔재
-     * 재고가 많은지 확인합니다.
-     *
-     * @param quantity 구매를 원하는 수량
-     * @return 구매가 가능한 경우 True, 구매가 불가능한 경우 False를 반환한다.
-     */
-    public boolean canPurchase(long quantity) {
-        if (quantity <= 0) {
-            return false;
-        }
-        if (quantity > maximumPurchaseLimitCount) {
-            return false;
-        }
-
-        return currentStock >= quantity;
     }
 
     public void update() {
@@ -134,7 +116,14 @@ public class Auction {
     /**
      * 경매 재고량을 변경합니다 - 변경은 경매 시작 전에만 가능하므로 원래 재고와 현재 재고를 같은 값으로 변경합니다
      */
-    public void changeStock(long changeRequestStock) {
+    public void changeStock(long changeRequestStock, ZonedDateTime requestTime, Long ownerId) {
+        if (!currentStatus(requestTime).isWaiting()) {
+            String message = String.format("시작 전인 경매의 재고만 수정할 수 있습니다. 시작시간=%s, 요청시간=%s", startedAt, requestTime);
+            throw new BadRequestException(message, ErrorCode.A021);
+        }
+        if (!isSeller(ownerId)) {
+            throw new UnauthorizedException("자신이 등록한 경매만 수정할 수 있습니다.", ErrorCode.A018);
+        }
         if (changeRequestStock < MINIMUM_STOCK_COUNT) {
             String message = String.format("변경 할 재고는 %d개 이상이어야 합니다. inputStock=%d", MINIMUM_STOCK_COUNT,
                     changeRequestStock);
@@ -142,10 +131,6 @@ public class Auction {
         }
         originStock = changeRequestStock;
         currentStock = changeRequestStock;
-    }
-
-    public boolean isSeller(Long sellerId) {
-        return this.sellerId.equals(sellerId);
     }
 
     /**
@@ -171,6 +156,26 @@ public class Auction {
         this.currentStock = newCurrentStock;
     }
 
+
+    /**
+     * 1. 현재 상태가 진행 중 인지 검증 <br> 2. 현재 가격으로 구매할 수 있는지 검증 <br> 3. 요청 수량만큼의 재고가 남아있는지 검증 <br> 이후 실제 요청을 처리합니다.
+     *
+     * @param price       구매자가 구매 요청한 가격
+     * @param quantity    구매자가 구매할 상품 갯수
+     * @param requestTime 구매자가 요청한 시간
+     */
+    public void submit(long price, long quantity, ZonedDateTime requestTime) {
+        AuctionStatus currentStatus = currentStatus(requestTime);
+        if (!currentStatus.isRunning()) {
+            String message = String.format("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: %s", currentStatus);
+            throw new BadRequestException(message, ErrorCode.A016);
+        }
+        verifyCurrentPrice(price, requestTime);
+        verifyPurchaseQuantity(quantity);
+
+        currentStock -= quantity;
+    }
+
     // TODO: [SOLD_OUT의 상태관리는 어떻게 해야할것인가?!] [writeAt: 2024/08/14/11:12] [writeBy: HiiWee]
     public AuctionStatus currentStatus(ZonedDateTime requestTime) {
         if (requestTime.isBefore(startedAt)) {
@@ -182,5 +187,48 @@ public class Auction {
         }
 
         return AuctionStatus.FINISHED;
+    }
+
+    private void verifyCurrentPrice(long inputPrice, ZonedDateTime requestTime) {
+        Duration elapsedDuration = Duration.between(startedAt, requestTime);
+        long currentVariationCount = elapsedDuration.dividedBy(variationDuration);
+
+        long actualPrice = pricePolicy.calculatePriceAtVariation(originPrice, currentVariationCount);
+
+        if (actualPrice != inputPrice) {
+            String message = String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d", actualPrice, inputPrice);
+            throw new BadRequestException(message, ErrorCode.A029);
+        }
+    }
+
+    private void verifyPurchaseQuantity(long quantity) {
+        if (!canPurchase(quantity)) {
+            String message = String.format(
+                    "해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d", currentStock, quantity,
+                    maximumPurchaseLimitCount);
+            throw new BadRequestException(message, ErrorCode.A014);
+        }
+    }
+
+    /**
+     * 해당 수량만큼 구매가 가능한지 확인한다. <br> 1. 구매 요청이 0보다 작은지 확인합니다. <br> 2. 인당 구매 수량 제한을 넘기지 않는지 확인합니다. <br> 3. 구매 요청 수량보다 햔재
+     * 재고가 많은지 확인합니다.
+     *
+     * @param quantity 구매를 원하는 수량
+     * @return 구매가 가능한 경우 True, 구매가 불가능한 경우 False를 반환한다.
+     */
+    private boolean canPurchase(long quantity) {
+        if (quantity <= 0) {
+            return false;
+        }
+        if (quantity > maximumPurchaseLimitCount) {
+            return false;
+        }
+
+        return currentStock >= quantity;
+    }
+
+    public boolean isSeller(Long sellerId) {
+        return this.sellerId.equals(sellerId);
     }
 }

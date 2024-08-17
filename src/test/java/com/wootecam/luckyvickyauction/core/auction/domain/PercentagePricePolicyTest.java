@@ -1,10 +1,12 @@
 package com.wootecam.luckyvickyauction.core.auction.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -36,5 +38,22 @@ class PercentagePricePolicyTest {
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(message)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A010);
+    }
+
+    @Test
+    void calculatePriceAtVariation_가격과_할인횟수가_주어지면_횟수만큼_할인이_적용된_가격을_계산한다() {
+        // given
+        PercentagePricePolicy percentagePricePolicy = new PercentagePricePolicy(10.0);
+        long expected = 10000L;
+        double discountFactor = (100 - 10.0) / 100.0;
+        for (int i = 0; i < 10L; i++) {
+            expected = (long) Math.floor(expected * discountFactor);
+        }
+
+        // when
+        long result = percentagePricePolicy.calculatePriceAtVariation(10000L, 10L);
+
+        // then
+        assertThat(result).isEqualTo(expected);
     }
 }

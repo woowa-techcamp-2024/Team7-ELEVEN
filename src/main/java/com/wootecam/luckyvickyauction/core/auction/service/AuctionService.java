@@ -80,11 +80,34 @@ public class AuctionService {
         auctionRepository.deleteById(command.auctionId());
     }
 
+    public void changeStock(SignInInfo signInInfo, UpdateAuctionStockCommand command) {
+        if (!signInInfo.isType(Role.SELLER)) {
+            throw new UnauthorizedException("판매자만 재고를 수정할 수 있습니다.", ErrorCode.A017);
+        }
+        Auction auction = findAuctionObject(command.auctionId());
+        auction.changeStock(command.changeRequestStock(), command.requestTime(), signInInfo.id());
+
+        auctionRepository.save(auction);
+    }
+
+    /**
+     * 경매 상품에 대한 입찰(구매)을 진행한다.
+     *
+     * @param auctionId   경매 번호
+     * @param price       구매를 원하는 가격
+     * @param quantity    수량
+     * @param requestTime 요청 시간
+     */
+    public void submitBid(long auctionId, long price, long quantity, ZonedDateTime requestTime) {
+        Auction auction = findAuctionObject(auctionId);
+        auction.submit(price, quantity, requestTime);
+        auctionRepository.save(auction);
+    }
+
     /**
      * 경매 단건 조회
      */
     public AuctionInfo getAuction(long auctionId) {
-        // auctionRepository 에서 auctionId로 조회
         Auction auction = findAuctionObject(auctionId);
 
         return Mapper.convertToAuctionInfo(auction);
@@ -142,23 +165,15 @@ public class AuctionService {
                 .toList();
     }
 
-    public void changeStock(SignInInfo signInInfo, UpdateAuctionStockCommand command) {
-        if (!signInInfo.isType(Role.SELLER)) {
-            throw new UnauthorizedException("판매자만 재고를 수정할 수 있습니다.", ErrorCode.A017);
-        }
-        Auction auction = findAuctionObject(command.auctionId());
-
-        if (!auction.currentStatus(command.requestTime()).isWaiting()) {
-            String message = String.format("시작 전인 경매의 재고만 수정할 수 있습니다. 시작시간=%s, 요청시간=%s", auction.getStartedAt(),
-                    command.requestTime());
-            throw new BadRequestException(message, ErrorCode.A021);
-        }
-        if (!auction.isSeller(signInInfo.id())) {
-            throw new UnauthorizedException("자신이 등록한 경매만 수정할 수 있습니다.", ErrorCode.A018);
-        }
-
-        auction.changeStock(command.changeRequestStock());
-
+    /**
+     * 경매 상품에 대한 입찰 취소를 진행한다. - 경매 도메인 내에서 이를 quantity에 대한 검증 로직을 넣었습니다.
+     *
+     * @param auctionId 경매 아이디
+     * @param quantity  환불할 수량
+     */
+    public void cancelBid(long auctionId, long quantity) {
+        Auction auction = findAuctionObject(auctionId);
+        auction.refundStock(quantity);
         auctionRepository.save(auction);
     }
 
@@ -179,47 +194,6 @@ public class AuctionService {
         // auction.변경해줘(command);
 
         // 저장
-        auctionRepository.save(auction);
-    }
-
-    /**
-     * 경매 상품에 대한 입찰(구매)을 진행한다.
-     *
-     * @param auctionId   경매 번호
-     * @param price       구매를 원하는 가격
-     * @param quantity    수량
-     * @param requestTime 요청 시간
-     */
-    public void submitBid(long auctionId, long price, long quantity, ZonedDateTime requestTime) {
-        // 검증
-        Auction auction = findAuctionObject(auctionId);
-
-        if (!auction.canPurchase(quantity)) {
-            throw new BadRequestException(
-                    "해당 수량만큼 구매할 수 없습니다. 재고: " + auction.getCurrentStock() + ", "
-                            + "요청: " + quantity + ", 인당구매제한: " + auction.getMaximumPurchaseLimitCount(),
-                    ErrorCode.A014);
-        }
-
-        AuctionStatus currentStatus = auction.currentStatus(requestTime);
-        if (!currentStatus.isRunning()) {
-            throw new BadRequestException(
-                    "진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + currentStatus,
-                    ErrorCode.A016);
-        }
-
-        // TODO 구매(입찰) 로직
-    }
-
-    /**
-     * 경매 상품에 대한 입찰 취소를 진행한다. - 경매 도메인 내에서 이를 quantity에 대한 검증 로직을 넣었습니다.
-     *
-     * @param auctionId 경매 아이디
-     * @param quantity  환불할 수량
-     */
-    public void cancelBid(long auctionId, long quantity) {
-        Auction auction = findAuctionObject(auctionId);
-        auction.refundStock(quantity);
         auctionRepository.save(auction);
     }
 
