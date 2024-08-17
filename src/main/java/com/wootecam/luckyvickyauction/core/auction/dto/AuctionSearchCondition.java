@@ -2,6 +2,7 @@ package com.wootecam.luckyvickyauction.core.auction.dto;
 
 // 조회할때 조건
 public record AuctionSearchCondition(
+        int offset,
         int size
 ) {
     public AuctionSearchCondition {
