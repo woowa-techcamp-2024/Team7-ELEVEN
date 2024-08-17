@@ -61,4 +61,16 @@ public class AuctionCoreRepositoryTest {
                 () -> assertThat(foundAuction.isShowStock()).isEqualTo(auction.isShowStock())
         );
     }
+
+    @Test
+    void 경매의_id에_해당하는_경매가_없으면_empty를_반환한다() {
+        // given
+        Long notExistId = 1L;
+
+        // when
+        boolean isExist = auctionJpaRepository.findById(notExistId).isPresent();
+
+        // then
+        assertThat(isExist).isFalse();
+    }
 }
