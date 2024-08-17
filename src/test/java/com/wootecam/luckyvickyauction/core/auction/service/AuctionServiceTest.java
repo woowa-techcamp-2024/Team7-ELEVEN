@@ -274,7 +274,7 @@ class AuctionServiceTest {
                         .build();
                 Auction savedAuction = auctionRepository.save(auction);
 
-                // when
+                // expect
                 assertThatThrownBy(() -> auctionService.submitBid(savedAuction.getId(), 7000L, 101, now))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(String.format("해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d", 100L, 101L, 10L));
