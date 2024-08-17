@@ -108,7 +108,6 @@ public class AuctionService {
      * 경매 단건 조회
      */
     public AuctionInfo getAuction(long auctionId) {
-        // auctionRepository 에서 auctionId로 조회
         Auction auction = findAuctionObject(auctionId);
 
         return Mapper.convertToAuctionInfo(auction);
@@ -178,12 +177,6 @@ public class AuctionService {
         auctionRepository.save(auction);
     }
 
-    private Auction findAuctionObject(long auctionId) {
-        return auctionRepository.findById(auctionId)
-                .orElseThrow(
-                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A011));
-    }
-
     /**
      * 경매 옵션 변경
      */
@@ -202,5 +195,11 @@ public class AuctionService {
 
         // 저장
         auctionRepository.save(auction);
+    }
+
+    private Auction findAuctionObject(long auctionId) {
+        return auctionRepository.findById(auctionId)
+                .orElseThrow(
+                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A011));
     }
 }
