@@ -2,20 +2,15 @@ package com.wootecam.luckyvickyauction.core.auction.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.wootecam.luckyvickyauction.context.RepositoryTest;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class AuctionQueryDslRepositoryTest {
-
-    @Autowired
-    AuctionJpaRepository repository;
+class AuctionQueryDslRepositoryTest extends RepositoryTest {
 
     @Nested
     class 구매자_경매목록_조회_동적_쿼리_실행시 {
@@ -29,12 +24,12 @@ class AuctionQueryDslRepositoryTest {
             var condition = new AuctionSearchCondition(offset, size);
 
             for (int i = 0; i < size + 3; i++) {
-                repository.save(AuctionEntity.builder()
+                auctionJpaRepository.save(AuctionEntity.builder()
                         .build());
             }
 
             // when
-            List<AuctionEntity> result = repository.findAllBy(condition);
+            List<AuctionEntity> result = auctionJpaRepository.findAllBy(condition);
 
             // then
             assertThat(result.size()).isEqualTo(size);
@@ -49,19 +44,19 @@ class AuctionQueryDslRepositoryTest {
             var condition = new AuctionSearchCondition(offset, size);
 
             for (int i = 0; i < offset; i++) {
-                repository.save(AuctionEntity.builder()
+                auctionJpaRepository.save(AuctionEntity.builder()
                         .build());
             }
 
             List<Long> expectedIds = new ArrayList<>(size);
             for (int i = 0; i < size; i++) {
-                Long id = repository.save(AuctionEntity.builder()
+                Long id = auctionJpaRepository.save(AuctionEntity.builder()
                         .build()).getId();
                 expectedIds.add(id);
             }
 
             // when
-            List<AuctionEntity> result = repository.findAllBy(condition);
+            List<AuctionEntity> result = auctionJpaRepository.findAllBy(condition);
 
             // then
             assertThat(result)
