@@ -9,11 +9,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "AUCTION")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuctionEntity {
 
     @Id
@@ -32,4 +36,24 @@ public class AuctionEntity {
     private ZonedDateTime startedAt;
     private ZonedDateTime finishedAt;
     private boolean isShowStock;
+
+    @Builder
+    public AuctionEntity(Long id, Long sellerId, String productName, long originPrice, long currentPrice,
+                         long originStock, long currentStock, long maximumPurchaseLimitCount, PricePolicy pricePolicy,
+                         Duration variationDuration, ZonedDateTime startedAt, ZonedDateTime finishedAt,
+                         boolean isShowStock) {
+        this.id = id;
+        this.sellerId = sellerId;
+        this.productName = productName;
+        this.originPrice = originPrice;
+        this.currentPrice = currentPrice;
+        this.originStock = originStock;
+        this.currentStock = currentStock;
+        this.maximumPurchaseLimitCount = maximumPurchaseLimitCount;
+        this.pricePolicy = pricePolicy;
+        this.variationDuration = variationDuration;
+        this.startedAt = startedAt;
+        this.finishedAt = finishedAt;
+        this.isShowStock = isShowStock;
+    }
 }
