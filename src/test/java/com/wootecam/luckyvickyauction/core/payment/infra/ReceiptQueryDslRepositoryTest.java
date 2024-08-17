@@ -2,7 +2,7 @@ package com.wootecam.luckyvickyauction.core.payment.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.wootecam.luckyvickyauction.RepositoryTest;
+import com.wootecam.luckyvickyauction.context.RepositoryTest;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
