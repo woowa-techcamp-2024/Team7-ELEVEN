@@ -23,6 +23,9 @@ class SellerAuctionControllerTest extends SpringBootTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/198">Github issue</a>
+     */
     @Nested
     class 판매자_경매_등록_API {
 
