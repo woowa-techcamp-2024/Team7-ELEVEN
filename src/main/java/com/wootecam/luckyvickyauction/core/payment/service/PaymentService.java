@@ -41,8 +41,8 @@ public class PaymentService {
                     .price(price)
                     .quantity(quantity)
                     .bidStatus(BidStatus.BID)
-                    .seller(savedSeller)
-                    .buyer(savedBuyer)
+                    .sellerId(savedSeller.getId())
+                    .buyerId(savedBuyer.getId())
                     .build();
             bidHistoryRepository.save(bidHistory);
         }
@@ -80,8 +80,7 @@ public class PaymentService {
         BidHistory refundTargetBidHistory = findRefundTargetBidHistory(bidHistoryId);
         refundTargetBidHistory.markAsRefund();
 
-        Member refundTargetBuyer = refundTargetBidHistory.getBuyer();
-        if (!buyer.isSameMember(refundTargetBuyer.getSignInId())) {
+        if (!(buyer.getId() == refundTargetBidHistory.getBuyerId())) {
             throw new UnauthorizedException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
         }
 
@@ -89,7 +88,10 @@ public class PaymentService {
         long price = refundTargetBidHistory.getPrice();
         long quantity = refundTargetBidHistory.getQuantity();
 
-        Member seller = refundTargetBidHistory.getSeller();
+        Member seller = memberRepository.findById(refundTargetBidHistory.getSellerId()).orElseThrow(
+                () -> new NotFoundException("환불할 입찰 내역의 판매자를 찾을 수 없습니다. 판매자 id=" + refundTargetBidHistory.getSellerId(),
+                        ErrorCode.M002));
+
         buyer.chargePoint(price * quantity);
         seller.usePoint(price * quantity);
 

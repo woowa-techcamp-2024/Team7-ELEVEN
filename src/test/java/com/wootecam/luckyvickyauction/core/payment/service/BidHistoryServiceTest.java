@@ -62,8 +62,8 @@ class BidHistoryServiceTest {
                     .quantity(1)
                     .bidStatus(BidStatus.BID)
                     .auctionId(1L)
-                    .seller(seller)
-                    .buyer(buyer)
+                    .sellerId(seller.getId())
+                    .buyerId(buyer.getId())
                     .createdAt(now)
                     .updatedAt(now)
                     .build();
@@ -80,8 +80,8 @@ class BidHistoryServiceTest {
                     () -> assertThat(bidHistoryInfo.quantity()).isEqualTo(1),
                     () -> assertThat(bidHistoryInfo.bidStatus()).isEqualTo(BidStatus.BID),
                     () -> assertThat(bidHistoryInfo.auctionId()).isEqualTo(1L),
-                    () -> assertThat(bidHistoryInfo.seller()).isEqualTo(seller),
-                    () -> assertThat(bidHistoryInfo.buyer()).isEqualTo(buyer)
+                    () -> assertThat(bidHistoryInfo.sellerId()).isEqualTo(seller.getId()),
+                    () -> assertThat(bidHistoryInfo.buyerId()).isEqualTo(buyer.getId())
             );
         }
 
@@ -111,8 +111,8 @@ class BidHistoryServiceTest {
 
             BidHistory bidHistory = BidHistory.builder()
                     .id(1L)
-                    .seller(seller)
-                    .buyer(buyer)
+                    .sellerId(seller.getId())
+                    .buyerId(buyer.getId())
                     .build();
             bidHistoryRepository.save(bidHistory);
 
@@ -141,8 +141,8 @@ class BidHistoryServiceTest {
                     .quantity(1)
                     .bidStatus(BidStatus.BID)
                     .auctionId(1L)
-                    .seller(seller1)
-                    .buyer(buyer)
+                    .sellerId(seller1.getId())
+                    .buyerId(buyer.getId())
                     .createdAt(now)
                     .updatedAt(now)
                     .build();
