@@ -12,7 +12,7 @@ class AuctionSearchConditionTest {
     class 구매자가_경매목록을_조회할때 {
 
         /**
-         * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/88
+         * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/88">GitHub issue</a>
          */
         @ParameterizedTest
         @ValueSource(ints = {0, 101})
