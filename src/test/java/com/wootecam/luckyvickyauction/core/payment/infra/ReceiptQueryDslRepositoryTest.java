@@ -2,22 +2,18 @@ package com.wootecam.luckyvickyauction.core.payment.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.wootecam.luckyvickyauction.RepositoryTest;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
-import com.wootecam.luckyvickyauction.global.config.JpaConfig;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
-@Import(JpaConfig.class)
-@DataJpaTest
-class ReceiptQueryDslRepositoryTest {
+class ReceiptQueryDslRepositoryTest extends RepositoryTest {
 
     @Autowired
     private ReceiptJpaRepository repository;
