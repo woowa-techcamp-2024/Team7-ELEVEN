@@ -1,10 +1,10 @@
 package com.wootecam.luckyvickyauction.core.member.service;
 
+import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInRequestInfo;
+import com.wootecam.luckyvickyauction.core.member.controller.dto.SignUpRequestInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.dto.SignUpRequestInfo;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +30,9 @@ public class MemberService {
     }
 
     public SignInInfo signIn(SignInRequestInfo signInRequestInfo) {
-        Member member = memberRepository.findBySignInId(signInRequestInfo.signInId()).orElseThrow(
-                () -> new BadRequestException("아이디에 해당되는 사용자를 찾을 수 없습니다. signInId=" + signInRequestInfo.signInId(),
+        Member member = memberRepository.findBySignInId(signInRequestInfo.signInId())
+                .orElseThrow(() -> new BadRequestException(
+                        "아이디에 해당되는 사용자를 찾을 수 없습니다. signInId=" + signInRequestInfo.signInId(),
                         ErrorCode.M002));
 
         if (!member.confirmPassword(signInRequestInfo.password())) {
