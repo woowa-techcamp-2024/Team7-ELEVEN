@@ -120,8 +120,8 @@ class PaymentServiceTest {
                         .price(100L)
                         .quantity(1L)
                         .bidStatus(BidStatus.BID)
-                        .seller(seller)
-                        .buyer(buyer)
+                        .sellerId(seller.getId())
+                        .buyerId(buyer.getId())
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
@@ -132,8 +132,8 @@ class PaymentServiceTest {
 
                 // then
                 BidHistory savedBidHistory = bidHistoryRepository.findById(1L).get();
-                Member savedBuyer = savedBidHistory.getBuyer();
-                Member savedSeller = savedBidHistory.getSeller();
+                Member savedBuyer = memberRepository.findById(savedBidHistory.getBuyerId()).get();
+                Member savedSeller = memberRepository.findById(savedBidHistory.getSellerId()).get();
                 Auction savedAuction = auctionRepository.findById(savedBidHistory.getAuctionId()).get();
                 assertAll(
                         () -> assertThat(savedBidHistory.getBidStatus()).isEqualTo(BidStatus.REFUND),
@@ -167,8 +167,8 @@ class PaymentServiceTest {
                         .price(100L)
                         .quantity(1L)
                         .bidStatus(BidStatus.BID)
-                        .seller(seller)
-                        .buyer(buyer)
+                        .sellerId(seller.getId())
+                        .buyerId(buyer.getId())
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
@@ -230,8 +230,8 @@ class PaymentServiceTest {
                         .price(100L)
                         .quantity(1L)
                         .bidStatus(BidStatus.REFUND)
-                        .seller(seller)
-                        .buyer(buyer)
+                        .sellerId(seller.getId())
+                        .buyerId(buyer.getId())
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
@@ -269,8 +269,8 @@ class PaymentServiceTest {
                         .price(100L)
                         .quantity(1L)
                         .bidStatus(BidStatus.BID)
-                        .seller(seller)
-                        .buyer(buyer)
+                        .sellerId(seller.getId())
+                        .buyerId(buyer.getId())
                         .createdAt(now)
                         .updatedAt(now)
                         .build();

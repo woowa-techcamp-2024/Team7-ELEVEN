@@ -19,12 +19,10 @@ public class ConstantPricePolicy implements PricePolicy {
     }
 
     @Override
-    public long applyWholeDiscount(long variationCount, long price) {
+    public long calculatePriceAtVariation(long price, long variationCount) {
         validateVariationWidthOverPrice(price);
 
-        long totalPriceDecrease = variationCount * variationWidth;
-
-        return price - totalPriceDecrease;
+        return price - variationCount * variationWidth;
     }
 
     private void validateVariationWidthOverPrice(long price) {

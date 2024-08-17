@@ -60,8 +60,8 @@ public class FakeBidHistoryRepository implements BidHistoryRepository {
                 .quantity(bidHistory.getQuantity())
                 .bidStatus(bidHistory.getBidStatus())
                 .auctionId(bidHistory.getAuctionId())
-                .seller(bidHistory.getSeller())
-                .buyer(bidHistory.getBuyer())
+                .sellerId(bidHistory.getSellerId())
+                .buyerId(bidHistory.getBuyerId())
                 .createdAt(bidHistory.getCreatedAt())
                 .updatedAt(bidHistory.getUpdatedAt())
                 .build();

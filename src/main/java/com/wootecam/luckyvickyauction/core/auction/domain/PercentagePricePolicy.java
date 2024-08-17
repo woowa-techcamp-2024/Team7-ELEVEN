@@ -27,7 +27,7 @@ public class PercentagePricePolicy implements PricePolicy {
     }
 
     @Override
-    public long applyWholeDiscount(long variationCount, long price) {
+    public long calculatePriceAtVariation(long price, long variationCount) {
         long discountedPrice = price;
         double discountFactor = (100 - discountRate) / 100.0;
 

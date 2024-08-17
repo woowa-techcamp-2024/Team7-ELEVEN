@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
+import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.core.auction.infra.FakeAuctionRepository;
@@ -14,6 +15,8 @@ import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,7 +42,24 @@ abstract class GetSellerAuctionTest {
         void 판매자의_경매목록을_반환한다() {
             // given
             Member seller = MemberFixture.createSellerWithDefaultPoint();
-            Auction auction = auctionRepository.save(AuctionFixture.createWaitingAuction());
+
+            ZonedDateTime now = ZonedDateTime.now();
+            Auction action = Auction.builder()
+                    .sellerId(seller.getId())
+                    .productName("productName")
+                    .originPrice(10000L)
+                    .currentPrice(10000L)
+                    .originStock(100L)
+                    .currentStock(100L)
+                    .maximumPurchaseLimitCount(10L)
+                    .pricePolicy(new ConstantPricePolicy(1000L))
+                    .variationDuration(Duration.ofMinutes(10L))
+                    .startedAt(now.plusHours(1))
+                    .finishedAt(now.plusHours(2))
+                    .isShowStock(true)
+                    .build();
+
+            Auction auction = auctionRepository.save(action);
 
             SignInInfo signInInfo = new SignInInfo(seller.getId(), seller.getRole());
 
