@@ -1,8 +1,8 @@
 package com.wootecam.luckyvickyauction.core.member.controller;
 
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.dto.SignUpRequestInfo;
+import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInRequestInfo;
+import com.wootecam.luckyvickyauction.core.member.controller.dto.SignUpRequestInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

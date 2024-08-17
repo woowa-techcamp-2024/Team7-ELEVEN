@@ -1,4 +1,4 @@
-package com.wootecam.luckyvickyauction.core.member.dto;
+package com.wootecam.luckyvickyauction.core.member.controller.dto;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
