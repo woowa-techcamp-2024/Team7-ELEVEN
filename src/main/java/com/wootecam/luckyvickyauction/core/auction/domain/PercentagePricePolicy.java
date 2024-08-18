@@ -16,6 +16,7 @@ public class PercentagePricePolicy implements PricePolicy {
 
     public PercentagePricePolicy() {
     }
+
     public PercentagePricePolicy(double discountRate) {
         validateDiscountRate(discountRate);
         this.discountRate = discountRate;
