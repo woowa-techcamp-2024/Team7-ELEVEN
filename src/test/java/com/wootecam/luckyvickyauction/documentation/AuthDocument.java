@@ -18,6 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+/**
+ * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/167">연관 이슈</a>
+ */
 public class AuthDocument extends DocumentationTest {
 
     @Nested

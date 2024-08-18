@@ -60,8 +60,7 @@ public final class Mapper {
     }
 
     /**
-     * Auction을 BuyerAuctionInfo로 변환 <br>
-     * - stock 노출 여부를 확인하여 노출 여부에 따라 stock을 노출하거나 노출하지 않습니다.
+     * Auction을 BuyerAuctionInfo로 변환 <br> - stock 노출 여부를 확인하여 노출 여부에 따라 stock을 노출하거나 노출하지 않습니다.
      *
      * @param auction
      * @return
@@ -108,24 +107,25 @@ public final class Mapper {
     }
 
     public static BuyerReceiptSimpleInfo convertToBuyerReceiptSimpleInfo(BidHistory history) {
-        return new BuyerReceiptSimpleInfo(
-                history.getId(),
-                history.getBidStatus(),
-                history.getAuctionId(),
-                history.getQuantity(),
-                history.getPrice()
-        );
+        return BuyerReceiptSimpleInfo.builder()
+                .id(history.getId())
+                .auctionId(history.getAuctionId())
+                .type(history.getBidStatus())
+                .productName(history.getProductName())
+                .price(history.getPrice())
+                .quantity(history.getQuantity())
+                .build();
     }
 
     public static SellerReceiptSimpleInfo convertToSellerReceiptSimpleInfo(BidHistory history) {
-        return new SellerReceiptSimpleInfo(
-                history.getId(),
-                history.getAuctionId(),
-                history.getBidStatus(),
-                history.getProductName(),
-                history.getPrice(),
-                history.getQuantity()
-        );
+        return SellerReceiptSimpleInfo.builder()
+                .id(history.getId())
+                .auctionId(history.getAuctionId())
+                .type(history.getBidStatus())
+                .productName(history.getProductName())
+                .price(history.getPrice())
+                .quantity(history.getQuantity())
+                .build();
     }
 
     public static BuyerAuctionSimpleInfo convertToBuyerAuctionSimpleInfo(Auction auction) {

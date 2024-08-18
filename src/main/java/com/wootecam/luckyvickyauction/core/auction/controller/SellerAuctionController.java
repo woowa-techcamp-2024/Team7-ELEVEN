@@ -3,6 +3,7 @@ package com.wootecam.luckyvickyauction.core.auction.controller;
 import com.wootecam.luckyvickyauction.core.auction.dto.CancelAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
@@ -55,9 +56,10 @@ public class SellerAuctionController {
 
     // 판매자는 자신이 등록한 경매 목록을 조회한다.
     @GetMapping("/seller")
-    public List<SellerAuctionSimpleInfo> getSellerAuctions() {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<SellerAuctionSimpleInfo>> getSellerAuctions(
+            @RequestBody SellerAuctionSearchCondition condition) {
+        List<SellerAuctionSimpleInfo> infos = auctionService.getSellerAuctionSimpleInfos(condition);
+        return ResponseEntity.ok(infos);
     }
 
     // 판매자는 자신이 등록한 경매를 상세 조회한다.

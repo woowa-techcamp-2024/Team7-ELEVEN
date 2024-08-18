@@ -7,7 +7,6 @@ import com.wootecam.luckyvickyauction.context.RepositoryTest;
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
-import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Nested;
