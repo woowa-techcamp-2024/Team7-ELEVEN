@@ -1,5 +1,13 @@
-[[Auth]]
+[[Auction]]
 == 경매
+
+=== 경매 생성
+
+==== 고정 가격 정책
+operation::auctions/post/constant_policy/success[snippets='http-request,http-response,request-fields']
+
+==== 비율 가격 정책
+operation::auctions/post/percentage_policy/success[snippets='http-request,http-response,request-fields']
 
 === 목록 조회
 
@@ -8,3 +16,8 @@ operation::auctions/getAuctions/success[snippets='http-request,http-response,req
 
 ==== 판매자
 operation::auctions/getSellerAuctions/success[snippets='http-request,http-response,request-fields']
+
+=== 상세 조회
+
+==== 판매자
+operation::auctions/getSellerAuctionDetail/success[snippets='http-request,http-response,request-fields']

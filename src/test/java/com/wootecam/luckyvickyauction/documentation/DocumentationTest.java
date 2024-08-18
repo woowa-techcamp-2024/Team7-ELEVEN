@@ -30,10 +30,13 @@ import org.springframework.web.context.WebApplicationContext;
 @WebMvcTest({
         FakeErrorCodeController.class,
         AuthController.class,
+        SellerAuctionController.class,
+        ReceiptController.class,
         BuyerAuctionController.class,
         SellerAuctionController.class,
         ReceiptController.class,
 })
+@Import(JsonConfig.class)
 @ExtendWith(RestDocumentationExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class DocumentationTest {
