@@ -41,7 +41,7 @@ class SellerAuctionControllerTest extends DocumentationTest {
                     .accept(MediaType.APPLICATION_JSON_VALUE)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(objectMapper.writeValueAsString(condition))
-                    .when().post("/auctions")
+                    .when().post("post /auctions success constantPolicy")
                     .then().log().all()
                     .apply(document("auctions/create",
                             requestFields(
@@ -78,7 +78,7 @@ class SellerAuctionControllerTest extends DocumentationTest {
                     .body(objectMapper.writeValueAsString(condition))
                     .when().post("/auctions")
                     .then().log().all()
-                    .apply(document("auctions/create",
+                    .apply(document("post /auctions success percentagePolicy",
                             requestFields(
                                     fieldWithPath("sellerId").description("판매자 ID"),
                                     fieldWithPath("productName").description("상품 이름"),
