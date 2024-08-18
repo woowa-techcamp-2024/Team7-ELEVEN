@@ -24,9 +24,9 @@ public class BuyerAuctionController {
 
     // 사용자는 경매 목록을 조회한다.
     @GetMapping
-    public List<BuyerAuctionSimpleInfo> getAuctions(@RequestBody AuctionSearchCondition condition) {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<BuyerAuctionSimpleInfo>> getAuctions(@RequestBody AuctionSearchCondition condition) {
+        List<BuyerAuctionSimpleInfo> infos = auctionService.getBuyerAuctionSimpleInfos(condition);
+        return ResponseEntity.ok(infos);
     }
 
     // 사용자는 경매의 상세정보를 조회한다.
