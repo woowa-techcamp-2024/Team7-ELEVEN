@@ -23,16 +23,16 @@ public class BuyerAuctionInfoTest {
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.",
                         ErrorCode.A001, 1L, 1L, "", 10000, 10000, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true),
+                        ZonedDateTime.now()),
                 Arguments.of("상품 원가는 0보다 커야 합니다. 상품 원가: 0",
                         ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true),
+                        ZonedDateTime.now()),
                 Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0",
                         ErrorCode.A013, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true),
+                        ZonedDateTime.now()),
                 Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0",
                         ErrorCode.A003, 1L, 1L, "상품이름", 10000, 10000, 10, 0, Duration.ofMinutes(1L),
-                        ZonedDateTime.now(), ZonedDateTime.now(), true)
+                        ZonedDateTime.now(), ZonedDateTime.now())
         );
     }
 
@@ -44,7 +44,7 @@ public class BuyerAuctionInfoTest {
         String productName = "상품이름";
         long originPrice = 10000;
         long currentPrice = 10000;
-        int stock = 10;
+        long stock = 10;
         int maximumPurchaseLimitCount = 10;
 
         int variationWidth = 1000;
@@ -57,7 +57,7 @@ public class BuyerAuctionInfoTest {
         // when
         BuyerAuctionInfo buyerAuctionInfo = new BuyerAuctionInfo(auctionId, sellerId, productName, originPrice,
                 currentPrice, stock,
-                maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt, true);
+                maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt);
 
         // then
         assertAll(
@@ -71,13 +71,12 @@ public class BuyerAuctionInfoTest {
                 () -> assertThat(buyerAuctionInfo.pricePolicy()).isEqualTo(pricePolicy),
                 () -> assertThat(buyerAuctionInfo.variationDuration()).isEqualTo(varitationDuration),
                 () -> assertThat(buyerAuctionInfo.startedAt()).isEqualTo(startedAt),
-                () -> assertThat(buyerAuctionInfo.finishedAt()).isEqualTo(finishedAt),
-                () -> assertThat(buyerAuctionInfo.isShowStock()).isTrue()
+                () -> assertThat(buyerAuctionInfo.finishedAt()).isEqualTo(finishedAt)
         );
     }
 
     @Test
-    void 재고_노출이_비활성화된_경매는_재고를_0으로_처리한다() {
+    void 재고_노출이_비활성화된_경매는_재고는_null이다() {
         // given
         Long auctionId = 1L;
         Long sellerId = 1L;
@@ -113,7 +112,7 @@ public class BuyerAuctionInfoTest {
         BuyerAuctionInfo buyerAuctionInfo = Mapper.convertToBuyerAuctionInfo(auction);
 
         // then
-        assertThat(buyerAuctionInfo.stock()).isEqualTo(0);
+        assertThat(buyerAuctionInfo.stock()).isEqualTo(null);
     }
 
     @ParameterizedTest
@@ -130,8 +129,7 @@ public class BuyerAuctionInfoTest {
             int maximumPurchaseLimitCount,
             Duration variationDuration,
             ZonedDateTime startedAt,
-            ZonedDateTime finishedAt,
-            boolean isShowStock
+            ZonedDateTime finishedAt
     ) {
         // expect
         assertThatThrownBy(() -> BuyerAuctionInfo.builder()
@@ -146,7 +144,6 @@ public class BuyerAuctionInfoTest {
                 .variationDuration(variationDuration)
                 .startedAt(startedAt)
                 .finishedAt(finishedAt)
-                .isShowStock(isShowStock)
                 .build()
         )
                 .isInstanceOf(BadRequestException.class)

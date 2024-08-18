@@ -3,6 +3,7 @@ package com.wootecam.luckyvickyauction.documentation;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
+import com.wootecam.luckyvickyauction.core.auction.controller.BuyerAuctionController;
 import com.wootecam.luckyvickyauction.core.auction.controller.SellerAuctionController;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.controller.AuthController;
@@ -26,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 @WebMvcTest({
         FakeErrorCodeController.class,
         AuthController.class,
+        BuyerAuctionController.class,
         SellerAuctionController.class
 })
 @Import(JsonConfig.class)
