@@ -19,7 +19,9 @@ public class AuctionCoreRepository implements AuctionRepository {
 
     @Override
     public Auction save(Auction auction) {
-        return null;
+        AuctionEntity auctionEntity = Mapper.convertToAuctionEntity(auction);
+        AuctionEntity saved = auctionJpaRepository.save(auctionEntity);
+        return Mapper.convertToAuction(saved);
     }
 
     @Override

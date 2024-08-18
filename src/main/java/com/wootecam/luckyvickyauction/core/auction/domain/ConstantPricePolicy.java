@@ -2,6 +2,7 @@ package com.wootecam.luckyvickyauction.core.auction.domain;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import java.util.Objects;
 
 public class ConstantPricePolicy implements PricePolicy {
 
@@ -39,5 +40,22 @@ public class ConstantPricePolicy implements PricePolicy {
     @Override
     public PricePolicyType getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ConstantPricePolicy that = (ConstantPricePolicy) o;
+        return variationWidth == that.variationWidth && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, variationWidth);
     }
 }

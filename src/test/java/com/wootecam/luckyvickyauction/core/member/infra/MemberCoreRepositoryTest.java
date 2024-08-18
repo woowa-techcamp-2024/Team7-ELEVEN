@@ -2,7 +2,7 @@ package com.wootecam.luckyvickyauction.core.member.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.wootecam.luckyvickyauction.RepositoryTest;
+import com.wootecam.luckyvickyauction.context.RepositoryTest;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
