@@ -122,7 +122,6 @@ class MapperTest {
     class 영속성_엔티티_변환_케이스 {
 
 
-
         @Test
         public void 거래내역_영속성_엔티티를_도메인_엔티티로_변환하면_정보가_동일하다() {
             // given

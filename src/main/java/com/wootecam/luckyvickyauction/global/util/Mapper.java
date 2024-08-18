@@ -202,7 +202,7 @@ public final class Mapper {
                 .isShowStock(auction.isShowStock())
                 .build();
     }
-  
+
     public static Member convertToMember(MemberEntity entity) {
         return Member.builder()
                 .id(entity.getId())
