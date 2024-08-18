@@ -8,6 +8,8 @@ import com.wootecam.luckyvickyauction.core.auction.controller.SellerAuctionContr
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.controller.AuthController;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
+import com.wootecam.luckyvickyauction.core.payment.controller.ReceiptController;
+import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
 import com.wootecam.luckyvickyauction.documentation.errorcode.FakeErrorCodeController;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
@@ -26,7 +28,8 @@ import org.springframework.web.context.WebApplicationContext;
         FakeErrorCodeController.class,
         AuthController.class,
         BuyerAuctionController.class,
-        SellerAuctionController.class
+        SellerAuctionController.class,
+        ReceiptController.class,
 })
 @ExtendWith(RestDocumentationExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -39,6 +42,9 @@ public class DocumentationTest {
 
     @MockBean
     protected AuctionService auctionService;
+
+    @MockBean
+    protected BidHistoryService bidHistoryService;
 
     @BeforeEach
     void setUp(final WebApplicationContext webApplicationContext,
