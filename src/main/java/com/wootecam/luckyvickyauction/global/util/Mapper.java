@@ -201,7 +201,7 @@ public final class Mapper {
                 .isShowStock(auction.isShowStock())
                 .build();
     }
-  
+
     public static Member convertToMember(MemberEntity entity) {
         return Member.builder()
                 .id(entity.getId())
@@ -222,4 +222,18 @@ public final class Mapper {
                 .build();
     }
 
+    public static ReceiptEntity convertToReceiptEntity(BidHistory bidHistory) {
+        return ReceiptEntity.builder()
+                .id(bidHistory.getId())
+                .productName(bidHistory.getProductName())
+                .price(bidHistory.getPrice())
+                .quantity(bidHistory.getQuantity())
+                .bidStatus(bidHistory.getBidStatus())
+                .auctionId(bidHistory.getAuctionId())
+                .sellerId(bidHistory.getSellerId())
+                .buyerId(bidHistory.getBuyerId())
+                .createdAt(bidHistory.getCreatedAt())
+                .updatedAt(bidHistory.getUpdatedAt())
+                .build();
+    }
 }
