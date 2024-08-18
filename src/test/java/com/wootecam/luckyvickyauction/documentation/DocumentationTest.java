@@ -12,8 +12,9 @@ import com.wootecam.luckyvickyauction.core.member.service.MemberService;
 import com.wootecam.luckyvickyauction.core.payment.controller.PaymentController;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import com.wootecam.luckyvickyauction.core.payment.controller.PaymentController;
+import com.wootecam.luckyvickyauction.core.payment.controller.ReceiptController;
+import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
 import com.wootecam.luckyvickyauction.documentation.errorcode.FakeErrorCodeController;
-import com.wootecam.luckyvickyauction.global.config.JsonConfig;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,9 +37,9 @@ import org.springframework.web.context.WebApplicationContext;
         AuthController.class,
         BuyerAuctionController.class,
         SellerAuctionController.class,
-        PaymentController.class
+        PaymentController.class,
+        ReceiptController.class
 })
-@Import(JsonConfig.class)
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -55,10 +55,14 @@ public class DocumentationTest {
 
     @MockBean
     protected MemberService memberService;
+
     @MockBean
     protected AuctionService auctionService;
     @MockBean
     protected PaymentService paymentService;
+
+    @MockBean
+    protected BidHistoryService bidHistoryService;
 
     @BeforeEach
     void setUp(final WebApplicationContext webApplicationContext,

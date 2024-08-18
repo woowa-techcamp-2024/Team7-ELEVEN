@@ -1,0 +1,10 @@
+[[Auth]]
+== 경매
+
+=== 목록 조회
+
+==== 구매자
+operation::auctions/getAuctions/success[snippets='http-request,http-response,request-fields']
+
+==== 판매자
+operation::auctions/getSellerAuctions/success[snippets='http-request,http-response,request-fields']
