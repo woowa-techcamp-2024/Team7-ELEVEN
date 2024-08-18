@@ -9,4 +9,5 @@
 
 include::auth.adoc[]
 include::auctions.adoc[]
+include::receipt.adoc[]
 include::errorCode.adoc[]
