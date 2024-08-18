@@ -2,6 +2,7 @@
 == 사용자 가입 및 로그인
 
 === 회원가입
+operation::auth/signup/success[snippets='http-request,http-response,request-fields']
 
 === 로그인
 operation::auth/signin/success[snippets='http-request,http-response,request-fields']
