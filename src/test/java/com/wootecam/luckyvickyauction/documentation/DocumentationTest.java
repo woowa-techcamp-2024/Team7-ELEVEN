@@ -7,6 +7,7 @@ import com.wootecam.luckyvickyauction.core.auction.controller.BuyerAuctionContro
 import com.wootecam.luckyvickyauction.core.auction.controller.SellerAuctionController;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.controller.AuthController;
+import com.wootecam.luckyvickyauction.core.member.domain.AuthenticationContext;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
 import com.wootecam.luckyvickyauction.core.payment.controller.ReceiptController;
 import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
@@ -26,7 +27,6 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@Import(JsonConfig.class)
 @WebMvcTest({
         FakeErrorCodeController.class,
         AuthController.class,
@@ -51,6 +51,9 @@ public class DocumentationTest {
 
     @MockBean
     protected BidHistoryService bidHistoryService;
+
+    @MockBean
+    protected AuthenticationContext authenticationContext;
 
     @BeforeEach
     void setUp(final WebApplicationContext webApplicationContext,
