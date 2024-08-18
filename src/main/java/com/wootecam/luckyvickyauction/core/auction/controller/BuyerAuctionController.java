@@ -3,6 +3,7 @@ package com.wootecam.luckyvickyauction.core.auction.controller;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
+import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import java.util.List;
@@ -22,20 +23,22 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 @RequiredArgsConstructor
 public class BuyerAuctionController {
 
+    private final AuctionService auctionService;
+
     private final PaymentService paymentService;
 
     // 사용자는 경매 목록을 조회한다.
     @GetMapping
-    public List<BuyerAuctionSimpleInfo> getAuctions(@RequestBody AuctionSearchCondition condition) {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<BuyerAuctionSimpleInfo>> getAuctions(@RequestBody AuctionSearchCondition condition) {
+        List<BuyerAuctionSimpleInfo> infos = auctionService.getBuyerAuctionSimpleInfos(condition);
+        return ResponseEntity.ok(infos);
     }
 
     // 사용자는 경매의 상세정보를 조회한다.
     @GetMapping("/{auctionId}")
-    public BuyerAuctionInfo getAuction(@PathVariable Long auctionId) {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
+    public ResponseEntity<BuyerAuctionInfo> getAuction(@PathVariable("auctionId") Long auctionId) {
+        BuyerAuctionInfo result = auctionService.getBuyerAuction(auctionId);
+        return ResponseEntity.ok(result);
     }
 
     // 사용자는 경매에 입찰한다.

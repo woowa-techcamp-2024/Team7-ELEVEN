@@ -1,0 +1,8 @@
+[[Receipts]]
+== 거래 이력
+
+=== 구매자 거래이력 확인
+operation::receipts/getReceipts/success[snippets='http-request,http-response,request-fields']
+
+=== 판매자 거래이력 확인
+operation::receipts/getSellerReceipts/success[snippets='http-request,http-response,request-fields']

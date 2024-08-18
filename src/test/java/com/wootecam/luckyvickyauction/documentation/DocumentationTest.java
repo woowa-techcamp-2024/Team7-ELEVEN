@@ -8,6 +8,8 @@ import com.wootecam.luckyvickyauction.core.auction.controller.SellerAuctionContr
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.controller.AuthController;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
+import com.wootecam.luckyvickyauction.core.payment.controller.ReceiptController;
+import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import com.wootecam.luckyvickyauction.documentation.errorcode.FakeErrorCodeController;
 import com.wootecam.luckyvickyauction.global.config.JsonConfig;
@@ -29,7 +31,8 @@ import org.springframework.web.context.WebApplicationContext;
         FakeErrorCodeController.class,
         AuthController.class,
         SellerAuctionController.class,
-        BuyerAuctionController.class
+        BuyerAuctionController.class,
+        ReceiptController.class
 })
 @Import(JsonConfig.class)
 @ExtendWith(RestDocumentationExtension.class)
@@ -40,10 +43,14 @@ public class DocumentationTest {
 
     @MockBean
     protected MemberService memberService;
+
     @MockBean
     protected AuctionService auctionService;
     @MockBean
     protected PaymentService paymentService;
+
+    @MockBean
+    protected BidHistoryService bidHistoryService;
 
     @BeforeEach
     void setUp(final WebApplicationContext webApplicationContext,
