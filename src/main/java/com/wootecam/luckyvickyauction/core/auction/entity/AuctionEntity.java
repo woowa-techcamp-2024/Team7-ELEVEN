@@ -39,9 +39,9 @@ public class AuctionEntity {
 
     @Builder
     private AuctionEntity(Long id, Long sellerId, String productName, long originPrice, long currentPrice,
-                         long originStock, long currentStock, long maximumPurchaseLimitCount, PricePolicy pricePolicy,
-                         Duration variationDuration, ZonedDateTime startedAt, ZonedDateTime finishedAt,
-                         boolean isShowStock) {
+                          long originStock, long currentStock, long maximumPurchaseLimitCount, PricePolicy pricePolicy,
+                          Duration variationDuration, ZonedDateTime startedAt, ZonedDateTime finishedAt,
+                          boolean isShowStock) {
         this.id = id;
         this.sellerId = sellerId;
         this.productName = productName;

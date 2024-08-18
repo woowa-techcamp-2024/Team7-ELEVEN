@@ -74,7 +74,6 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
         void 거래내역을_저장한다() {
             // given
             BidHistory bidHistory = BidHistory.builder()
-                    .id(1L)
                     .productName("상품 이름")
                     .price(1000L)
                     .quantity(1L)
@@ -91,7 +90,6 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
 
             // then
             assertAll(
-                    () -> assertThat(saved.getId()).isEqualTo(bidHistory.getId()),
                     () -> assertThat(saved.getProductName()).isEqualTo(bidHistory.getProductName()),
                     () -> assertThat(saved.getPrice()).isEqualTo(bidHistory.getPrice()),
                     () -> assertThat(saved.getQuantity()).isEqualTo(bidHistory.getQuantity()),
