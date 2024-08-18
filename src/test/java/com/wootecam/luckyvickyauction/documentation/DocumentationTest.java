@@ -11,6 +11,7 @@ import com.wootecam.luckyvickyauction.core.member.service.MemberService;
 import com.wootecam.luckyvickyauction.core.payment.controller.ReceiptController;
 import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
 import com.wootecam.luckyvickyauction.documentation.errorcode.FakeErrorCodeController;
+import com.wootecam.luckyvickyauction.global.config.JsonConfig;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -27,10 +29,13 @@ import org.springframework.web.context.WebApplicationContext;
 @WebMvcTest({
         FakeErrorCodeController.class,
         AuthController.class,
+        SellerAuctionController.class,
+        ReceiptController.class,
         BuyerAuctionController.class,
         SellerAuctionController.class,
         ReceiptController.class,
 })
+@Import(JsonConfig.class)
 @ExtendWith(RestDocumentationExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class DocumentationTest {
