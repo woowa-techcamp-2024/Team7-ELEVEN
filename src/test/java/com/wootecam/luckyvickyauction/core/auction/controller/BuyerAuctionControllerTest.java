@@ -36,7 +36,7 @@ class BuyerAuctionControllerTest extends DocumentationTest {
                     .when()
                     .get("/auctions/{auctionId}", auctionId.toString())
                     .then().log().all()
-                    .apply(document("auctions/{auctionId}",
+                    .apply(document("auctions/{auctionId}/constant_policy/success",
                             responseFields(
                                     fieldWithPath("auctionId").description("경매 ID"),
                                     fieldWithPath("sellerId").description("판매자 ID"),
@@ -75,7 +75,7 @@ class BuyerAuctionControllerTest extends DocumentationTest {
                     .when()
                     .get("/auctions/{auctionId}", auctionId.toString())
                     .then().log().all()
-                    .apply(document("auctions/{auctionId}",
+                    .apply(document("auctions/{auctionId}/percentage_policy/success",
                             responseFields(
                                     fieldWithPath("auctionId").description("경매 ID"),
                                     fieldWithPath("sellerId").description("판매자 ID"),
