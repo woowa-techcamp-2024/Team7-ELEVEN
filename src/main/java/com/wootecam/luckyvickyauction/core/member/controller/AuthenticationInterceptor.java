@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.member.controller;
 
+import com.wootecam.luckyvickyauction.core.member.domain.AuthenticationContext;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
+    private final AuthenticationContext authenticationContext;
+
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
             throws Exception {
@@ -35,6 +38,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
 
         SignInInfo signInInfo = (SignInInfo) attribute;
+        authenticationContext.setPrincipal(String.valueOf(signInInfo.id()));
+
         authorize(handlerMethod, signInInfo);
 
         return true;
