@@ -4,28 +4,35 @@ import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchConditi
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
+import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-// @RestController  // TODO: [선행 @Repository가 생길 때, 주석을 풀 것] [writeAt: 2024/08/16/16:12] [writeBy: chhs2131]
+@RestController
 @RequestMapping("/receipts")
 @RequiredArgsConstructor
 public class ReceiptController {
 
+    private final BidHistoryService bidHistoryService;
+
     // 구매자는 자신의 거래 이력 목록을 조회할 수 있다.
     @GetMapping
-    public List<BuyerReceiptSimpleInfo> getReceipts(@RequestBody BuyerReceiptSearchCondition condition) {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<BuyerReceiptSimpleInfo>> getReceipts(
+            @RequestBody BuyerReceiptSearchCondition condition) {
+        List<BuyerReceiptSimpleInfo> infos = bidHistoryService.getBuyerReceiptSimpleInfos(condition);
+        return ResponseEntity.ok(infos);
     }
 
     // 판매자는 자신의 거래 이력 목록을 조회할 수 있다.
     @GetMapping("/seller")
-    public List<SellerReceiptSimpleInfo> getSellerReceipts(@RequestBody SellerReceiptSearchCondition condition) {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
+    public ResponseEntity<List<SellerReceiptSimpleInfo>> getSellerReceipts(
+            @RequestBody SellerReceiptSearchCondition condition) {
+        List<SellerReceiptSimpleInfo> infos = bidHistoryService.getSellerReceiptSimpleInfos(condition);
+        return ResponseEntity.ok(infos);
     }
 }
