@@ -19,62 +19,63 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
     @Autowired
     private AuctionRepository auctionRepository;
 
-    @Autowired
-    private AuctionJpaRepository auctionJpaRepository;
+    @Nested
+    class 경매_조회_작업을_수행할_때 {
 
-    @Test
-    void 경매의_id로_경매를_조회한다() {
-        // given
-        ZonedDateTime now = ZonedDateTime.now();
-        AuctionEntity auction = AuctionEntity.builder()
-                .id(1L)
-                .sellerId(2L)
-                .productName("상품 이름")
-                .originPrice(1000L)
-                .currentPrice(1000L)
-                .originStock(100L)
-                .currentStock(100L)
-                .maximumPurchaseLimitCount(10L)
-                .pricePolicy(new ConstantPricePolicy(10L))
-                .variationDuration(Duration.ofMinutes(10L))
-                .startedAt(now)
-                .finishedAt(now.plusHours(1))
-                .isShowStock(true)
-                .build();
+        @Test
+        void 경매의_id로_경매를_조회한다() {
+            // given
+            ZonedDateTime now = ZonedDateTime.now();
+            Auction auction = Auction.builder()
+                    .id(1L)
+                    .sellerId(2L)
+                    .productName("상품 이름")
+                    .originPrice(1000L)
+                    .currentPrice(1000L)
+                    .originStock(100L)
+                    .currentStock(100L)
+                    .maximumPurchaseLimitCount(10L)
+                    .pricePolicy(new ConstantPricePolicy(10L))
+                    .variationDuration(Duration.ofMinutes(10L))
+                    .startedAt(now)
+                    .finishedAt(now.plusHours(1))
+                    .isShowStock(true)
+                    .build();
+            Auction saved = auctionRepository.save(auction);
 
-        // when
-        auctionJpaRepository.save(auction);
+            // when
+            Auction foundAuction = auctionRepository.findById(saved.getId()).get();
 
-        // then
-        AuctionEntity foundAuction = auctionJpaRepository.findById(auction.getId()).get();
-        assertAll(
-                () -> assertThat(foundAuction.getId()).isEqualTo(auction.getId()),
-                () -> assertThat(foundAuction.getSellerId()).isEqualTo(auction.getSellerId()),
-                () -> assertThat(foundAuction.getProductName()).isEqualTo(auction.getProductName()),
-                () -> assertThat(foundAuction.getOriginPrice()).isEqualTo(auction.getOriginPrice()),
-                () -> assertThat(foundAuction.getCurrentPrice()).isEqualTo(auction.getCurrentPrice()),
-                () -> assertThat(foundAuction.getOriginStock()).isEqualTo(auction.getOriginStock()),
-                () -> assertThat(foundAuction.getCurrentStock()).isEqualTo(auction.getCurrentStock()),
-                () -> assertThat(foundAuction.getMaximumPurchaseLimitCount()).isEqualTo(
-                        auction.getMaximumPurchaseLimitCount()),
-                () -> assertThat(foundAuction.getPricePolicy()).isEqualTo(auction.getPricePolicy()),
-                () -> assertThat(foundAuction.getVariationDuration()).isEqualTo(auction.getVariationDuration()),
-                () -> assertThat(foundAuction.getStartedAt()).isEqualTo(auction.getStartedAt()),
-                () -> assertThat(foundAuction.getFinishedAt()).isEqualTo(auction.getFinishedAt()),
-                () -> assertThat(foundAuction.isShowStock()).isEqualTo(auction.isShowStock())
-        );
-    }
+            // then
+            assertAll(
+                    () -> assertThat(foundAuction.getId()).isEqualTo(saved.getId()),
+                    () -> assertThat(foundAuction.getSellerId()).isEqualTo(saved.getSellerId()),
+                    () -> assertThat(foundAuction.getProductName()).isEqualTo(saved.getProductName()),
+                    () -> assertThat(foundAuction.getOriginPrice()).isEqualTo(saved.getOriginPrice()),
+                    () -> assertThat(foundAuction.getCurrentPrice()).isEqualTo(saved.getCurrentPrice()),
+                    () -> assertThat(foundAuction.getOriginStock()).isEqualTo(saved.getOriginStock()),
+                    () -> assertThat(foundAuction.getCurrentStock()).isEqualTo(saved.getCurrentStock()),
+                    () -> assertThat(foundAuction.getMaximumPurchaseLimitCount()).isEqualTo(
+                            saved.getMaximumPurchaseLimitCount()),
+                    () -> assertThat(foundAuction.getPricePolicy()).isEqualTo(saved.getPricePolicy()),
+                    () -> assertThat(foundAuction.getVariationDuration()).isEqualTo(saved.getVariationDuration()),
+                    () -> assertThat(foundAuction.getStartedAt()).isEqualTo(saved.getStartedAt()),
+                    () -> assertThat(foundAuction.getFinishedAt()).isEqualTo(saved.getFinishedAt()),
+                    () -> assertThat(foundAuction.isShowStock()).isEqualTo(saved.isShowStock())
+            );
+        }
 
-    @Test
-    void 경매의_id에_해당하는_경매가_없으면_empty를_반환한다() {
-        // given
-        Long notExistId = 1L;
+        @Test
+        void 경매의_id에_해당하는_경매가_없으면_empty를_반환한다() {
+            // given
+            Long notExistId = 1L;
 
-        // when
-        boolean isExist = auctionJpaRepository.findById(notExistId).isPresent();
+            // when
+            boolean isExist = auctionRepository.findById(notExistId).isPresent();
 
-        // then
-        assertThat(isExist).isFalse();
+            // then
+            assertThat(isExist).isFalse();
+        }
     }
 
     @Nested

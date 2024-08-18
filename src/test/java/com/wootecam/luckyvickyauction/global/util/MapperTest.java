@@ -11,9 +11,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
-import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Nested;
@@ -119,45 +117,6 @@ class MapperTest {
     }
 
     @Nested
-    class 영속성_엔티티_변환_케이스 {
-
-
-        @Test
-        public void 거래내역_영속성_엔티티를_도메인_엔티티로_변환하면_정보가_동일하다() {
-            // given
-            ReceiptEntity entity = ReceiptEntity.builder()
-                    .id(1L)
-                    .auctionId(2L)
-                    .productName("상품 이름")
-                    .price(1000L)
-                    .quantity(1L)
-                    .sellerId(3L)
-                    .buyerId(4L)
-                    .bidStatus(BidStatus.BID)
-                    .updatedAt(ZonedDateTime.now())
-                    .createdAt(ZonedDateTime.now().plusHours(1))
-                    .build();
-
-            // when
-            BidHistory domainEntity = Mapper.convertToReceipt(entity);
-
-            // then
-            assertAll(
-                    () -> assertEquals(entity.getId(), domainEntity.getId()),
-                    () -> assertEquals(entity.getAuctionId(), domainEntity.getAuctionId()),
-                    () -> assertEquals(entity.getProductName(), domainEntity.getProductName()),
-                    () -> assertEquals(entity.getPrice(), domainEntity.getPrice()),
-                    () -> assertEquals(entity.getQuantity(), domainEntity.getQuantity()),
-                    () -> assertEquals(entity.getSellerId(), domainEntity.getSellerId()),
-                    () -> assertEquals(entity.getBuyerId(), domainEntity.getBuyerId()),
-                    () -> assertEquals(entity.getBidStatus(), domainEntity.getBidStatus()),
-                    () -> assertEquals(entity.getCreatedAt(), domainEntity.getCreatedAt()),
-                    () -> assertEquals(entity.getUpdatedAt(), domainEntity.getUpdatedAt())
-            );
-        }
-    }
-
-    @Nested
     class 회원정보_맵핑시에 extends MapperMemberTest {
     }
 
@@ -165,4 +124,8 @@ class MapperTest {
     class 경매_맵핑시에 extends MapperAuctionTest {
     }
 
+
+    @Nested
+    class 거래내역_맵핑시에 extends MapperReceiptTest {
+    }
 }

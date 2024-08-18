@@ -4,6 +4,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
+import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +19,15 @@ public class ReceiptCoreRepository implements BidHistoryRepository {
 
     @Override
     public BidHistory save(BidHistory bidHistory) {
-        return null;
+        ReceiptEntity entity = Mapper.convertToReceiptEntity(bidHistory);
+        ReceiptEntity saved = receiptJpaRepository.save(entity);
+        return Mapper.convertToReceipt(saved);
     }
 
     @Override
     public Optional<BidHistory> findById(long bidHistoryId) {
-        return Optional.empty();
+        Optional<ReceiptEntity> found = receiptJpaRepository.findById(bidHistoryId);
+        return found.map(Mapper::convertToReceipt);
     }
 
     @Override
