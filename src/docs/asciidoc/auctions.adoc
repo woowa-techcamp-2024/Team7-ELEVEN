@@ -6,6 +6,9 @@
 ==== 구매자
 operation::auctions/getAuctions/success[snippets='http-request,http-response,request-fields']
 
+==== 판매자
+operation::auctions/getSellerAuctions/success[snippets='http-request,http-response,request-fields']
+
 === 상세 조회
 
 ==== 판매자
