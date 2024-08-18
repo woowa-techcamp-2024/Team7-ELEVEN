@@ -1,19 +1,30 @@
 package com.wootecam.luckyvickyauction.core.payment.controller;
 
+import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.payment.dto.BuyerChargePointCommand;
+import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
-// @RestController  // TODO: [선행 @Repository가 생길 때, 주석을 풀 것] [writeAt: 2024/08/16/16:12] [writeBy: chhs2131]
+@RestController
 @RequestMapping("/payments")
 @RequiredArgsConstructor
 public class PaymentController {
 
+    private final PaymentService paymentService;
+
     // 사용자는 포인트를 충전한다.
     @PostMapping("/points/charge")
-    public void chargePoint(@RequestParam("amount") long amount) {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
+    public ResponseEntity<Void> chargePoint(
+            @RequestBody BuyerChargePointCommand command,
+            @SessionAttribute("member") Member member
+    ) {
+        paymentService.chargePoint(member, command.amount());
+        return ResponseEntity.ok().build();
     }
 }
