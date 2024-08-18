@@ -23,8 +23,10 @@ import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 // TODO: [update, change 메소드에서 경매 상태 조건을 확인하는 부분을 서비스가 아니라 Auction이 갖게 하도록 변경하기] [writeAt: 2024/08/15/14:18] [writeBy: HiiWee]
+@Service
 @RequiredArgsConstructor
 public class AuctionService {
 
