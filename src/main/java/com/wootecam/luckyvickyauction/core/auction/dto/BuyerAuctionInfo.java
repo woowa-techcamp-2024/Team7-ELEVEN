@@ -17,13 +17,12 @@ public record BuyerAuctionInfo(
         String productName,
         long originPrice,
         long currentPrice,
-        long stock,
+        Long stock,
         long maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,
         ZonedDateTime startedAt,
-        ZonedDateTime finishedAt,
-        boolean isShowStock
+        ZonedDateTime finishedAt
 ) {
 
     public static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
