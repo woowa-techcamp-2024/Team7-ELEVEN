@@ -21,9 +21,11 @@ public class AuthController {
 
     // 신규 회원은 회원가입을 한다.
     @PostMapping("/signup")
-    public void signup(@RequestBody SignUpRequestInfo request) {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
+    public ResponseEntity<Void> signup(@RequestBody SignUpRequestInfo request) {
+        memberService.signUp(request);
+
+        return ResponseEntity.ok()
+                .build();
     }
 
     // 사용자는 로그인을 한다.

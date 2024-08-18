@@ -4,11 +4,16 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wootecam.luckyvickyauction.core.auction.controller.BuyerAuctionController;
+import com.wootecam.luckyvickyauction.core.auction.controller.SellerAuctionController;
+import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.controller.AuthController;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
 import com.wootecam.luckyvickyauction.core.payment.controller.PaymentController;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
+import com.wootecam.luckyvickyauction.core.payment.controller.PaymentController;
 import com.wootecam.luckyvickyauction.documentation.errorcode.FakeErrorCodeController;
+import com.wootecam.luckyvickyauction.global.config.JsonConfig;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +25,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,8 +35,11 @@ import org.springframework.web.context.WebApplicationContext;
 @WebMvcTest({
         FakeErrorCodeController.class,
         AuthController.class,
+        BuyerAuctionController.class,
+        SellerAuctionController.class,
         PaymentController.class
 })
+@Import(JsonConfig.class)
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -46,6 +55,8 @@ public class DocumentationTest {
 
     @MockBean
     protected MemberService memberService;
+    @MockBean
+    protected AuctionService auctionService;
     @MockBean
     protected PaymentService paymentService;
 
