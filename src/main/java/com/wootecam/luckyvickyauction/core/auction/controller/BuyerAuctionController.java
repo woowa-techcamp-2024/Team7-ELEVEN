@@ -6,6 +6,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,8 +31,9 @@ public class BuyerAuctionController {
 
     // 사용자는 경매의 상세정보를 조회한다.
     @GetMapping("/{auctionId}")
-    public BuyerAuctionInfo getAuction(@PathVariable("auctionId") Long auctionId) {
-        return auctionService.getBuyerAuction(auctionId);
+    public ResponseEntity<BuyerAuctionInfo> getAuction(@PathVariable("auctionId") Long auctionId) {
+        BuyerAuctionInfo result = auctionService.getBuyerAuction(auctionId);
+        return ResponseEntity.ok(result);
     }
 
     // 사용자는 경매에 입찰한다.
