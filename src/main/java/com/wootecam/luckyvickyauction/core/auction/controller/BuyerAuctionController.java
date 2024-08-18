@@ -54,7 +54,7 @@ public class BuyerAuctionController {
     @DeleteMapping("/bids/{receiptId}")
     public ResponseEntity<Void> refundAuction(
             @SessionAttribute("member") Member member,
-            @PathVariable Long receiptId
+            @PathVariable("receiptId") Long receiptId
     ) {
         paymentService.refund(member, receiptId);
         return ResponseEntity.ok().build();
