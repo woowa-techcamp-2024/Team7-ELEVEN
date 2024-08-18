@@ -8,4 +8,5 @@
 :docinfo: shared-head
 
 include::auth.adoc[]
+include::receipts.adoc[]
 include::errorCode.adoc[]

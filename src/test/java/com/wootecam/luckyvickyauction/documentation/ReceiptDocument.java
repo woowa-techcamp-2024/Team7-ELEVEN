@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.snippet.Attributes.key;
 
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
@@ -39,6 +40,7 @@ public class ReceiptDocument extends DocumentationTest {
                                             .description("거래 내역을 조회할 판매자의 식별자"),
                                     fieldWithPath("size").type(JsonFieldType.NUMBER)
                                             .description("조회할 거래 내역의 개수")
+                                            .attributes(key("constraints").value("최소:1 ~ 최대:100"))
                             )
                     ))
                     .statusCode(HttpStatus.OK.value());
@@ -78,6 +80,7 @@ public class ReceiptDocument extends DocumentationTest {
                                             .description("거래 내역을 조회할 판매자의 식별자"),
                                     fieldWithPath("size").type(JsonFieldType.NUMBER)
                                             .description("조회할 거래 내역의 개수")
+                                            .attributes(key("constraints").value("최소:1 ~ 최대:100"))
                             )
                     ))
                     .statusCode(HttpStatus.OK.value());
