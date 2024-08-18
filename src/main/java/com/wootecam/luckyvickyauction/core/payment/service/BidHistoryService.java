@@ -14,7 +14,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-// TODO [추후 Controller로 책임 변경] [writeAt: 2024/08/16/16:31] [writeBy: minseok-oh]
 @Service
 @RequiredArgsConstructor
 public class BidHistoryService {

@@ -32,7 +32,8 @@ import org.springframework.web.context.WebApplicationContext;
         SellerAuctionController.class,
         ReceiptController.class,
         BuyerAuctionController.class,
-        SellerAuctionController.class
+        SellerAuctionController.class,
+        ReceiptController.class,
 })
 @Import(JsonConfig.class)
 @ExtendWith(RestDocumentationExtension.class)
