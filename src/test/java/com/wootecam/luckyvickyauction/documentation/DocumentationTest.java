@@ -5,6 +5,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 
 import com.wootecam.luckyvickyauction.core.member.controller.AuthController;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
+import com.wootecam.luckyvickyauction.core.payment.controller.ReceiptController;
+import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
 import com.wootecam.luckyvickyauction.documentation.errorcode.FakeErrorCodeController;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
@@ -21,7 +23,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 @WebMvcTest({
         FakeErrorCodeController.class,
-        AuthController.class
+        AuthController.class,
+        ReceiptController.class,
 })
 @ExtendWith(RestDocumentationExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -31,6 +34,9 @@ public class DocumentationTest {
 
     @MockBean
     protected MemberService memberService;
+
+    @MockBean
+    protected BidHistoryService bidHistoryService;
 
     @BeforeEach
     void setUp(final WebApplicationContext webApplicationContext,
