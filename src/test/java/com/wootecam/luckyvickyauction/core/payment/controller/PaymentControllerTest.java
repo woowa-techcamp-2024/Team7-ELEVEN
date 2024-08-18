@@ -29,7 +29,7 @@ class PaymentControllerTest extends DocumentationTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .cookie(new Cookie("JSESSIONID", "sessionId"))
-                        .sessionAttr("member", member)
+                        .sessionAttr("signInMember", member)
                         .content(objectMapper.writeValueAsString(command))
                 )
                 .andExpect(status().isOk())
@@ -38,7 +38,7 @@ class PaymentControllerTest extends DocumentationTest {
                                 cookieWithName("JSESSIONID").description("세션 ID")
                         ),
                         requestFields(
-                                fieldWithPath("amount").description("충전할 포인트 금액")
+                                fieldWithPath("amount").type("Number").description("충전할 포인트 금액")
                         )
                 ));
     }
