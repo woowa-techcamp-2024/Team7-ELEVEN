@@ -15,6 +15,7 @@ import com.wootecam.luckyvickyauction.documentation.DocumentationTest;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 
 class PaymentControllerTest extends DocumentationTest {
 
@@ -38,7 +39,7 @@ class PaymentControllerTest extends DocumentationTest {
                                 cookieWithName("JSESSIONID").description("세션 ID")
                         ),
                         requestFields(
-                                fieldWithPath("amount").type("Number").description("충전할 포인트 금액")
+                                fieldWithPath("amount").type(JsonFieldType.NUMBER).description("충전할 포인트 금액")
                         )
                 ));
     }
