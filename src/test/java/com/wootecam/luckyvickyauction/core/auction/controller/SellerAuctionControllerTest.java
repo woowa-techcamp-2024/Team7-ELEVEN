@@ -5,17 +5,17 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wootecam.luckyvickyauction.context.SpringBootTest;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.fixture.CreateAuctionCommandFixture;
+import com.wootecam.luckyvickyauction.documentation.DocumentationTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-class SellerAuctionControllerTest extends SpringBootTest {
+class SellerAuctionControllerTest extends DocumentationTest {
 
     @Autowired
     private MockMvc mockMvc;
