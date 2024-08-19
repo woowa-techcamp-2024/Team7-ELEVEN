@@ -8,7 +8,6 @@ import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.controller.Login;
 import com.wootecam.luckyvickyauction.core.member.controller.SellerOnly;
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 @RestController
 @RequestMapping("/auctions")
@@ -46,14 +44,11 @@ public class SellerAuctionController {
      * @param auctionId 취소할 경매의 ID
      * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/171">Github issue</a>
      */
+    @SellerOnly
     @DeleteMapping("/{auctionId}")
-    public void cancelAuction(
-            @SessionAttribute("signInMember") Member member,
-            @PathVariable("auctionId") Long auctionId
-    ) {
-        SignInInfo signInInfo = new SignInInfo(member.getId(), member.getRole());
+    public void cancelAuction(@Login SignInInfo sellerInfo, @PathVariable("auctionId") Long auctionId) {
         CancelAuctionCommand command = new CancelAuctionCommand(ZonedDateTime.now(), auctionId);
-        auctionService.cancelAuction(signInInfo, command);
+        auctionService.cancelAuction(sellerInfo, command);
     }
 
     // 판매자는 자신이 등록한 경매 목록을 조회한다.

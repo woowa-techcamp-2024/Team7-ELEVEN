@@ -125,13 +125,14 @@ class SellerAuctionControllerTest extends DocumentationTest {
         void 판매자_경매_취소() throws Exception {
             // given
             Long auctionId = 1L;
-            Member sellerId = MemberFixture.createSellerWithDefaultPoint();
+            Member seller = MemberFixture.createSellerWithDefaultPoint();
+            SignInInfo signInInfo = new SignInInfo(seller.getId(), Role.SELLER);
 
             // when
             ResultActions perform = mockMvc.perform(
                     delete("/auctions/{auctionId}", auctionId)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
-                            .sessionAttr("signInMember", sellerId)
+                            .sessionAttr("signInMember", signInInfo)
             );
 
             // then
