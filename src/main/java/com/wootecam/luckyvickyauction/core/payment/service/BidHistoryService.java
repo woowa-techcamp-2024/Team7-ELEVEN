@@ -37,8 +37,9 @@ public class BidHistoryService {
                 .toList();
     }
 
-    public List<SellerReceiptSimpleInfo> getSellerReceiptSimpleInfos(SellerReceiptSearchCondition condition) {
-        List<BidHistory> bidHistories = bidHistoryRepository.findAllBy(condition);
+    public List<SellerReceiptSimpleInfo> getSellerReceiptSimpleInfos(SignInInfo sellerInfo,
+                                                                     SellerReceiptSearchCondition condition) {
+        List<BidHistory> bidHistories = bidHistoryRepository.findAllBySellerId(sellerInfo.id(), condition);
         return bidHistories.stream()
                 .map(Mapper::convertToSellerReceiptSimpleInfo)
                 .toList();

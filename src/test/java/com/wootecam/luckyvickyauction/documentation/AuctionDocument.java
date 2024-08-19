@@ -74,6 +74,7 @@ public class AuctionDocument extends DocumentationTest {
 
     /**
      * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/130">Github issue</a>
+     * TODO: 현식햄 머지하면 진행할 것!
      */
     @Nested
     @Disabled

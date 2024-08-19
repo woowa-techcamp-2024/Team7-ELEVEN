@@ -59,7 +59,7 @@ public class FakeBidHistoryRepository implements BidHistoryRepository {
     }
 
     @Override
-    public List<BidHistory> findAllBy(SellerReceiptSearchCondition condition) {
+    public List<BidHistory> findAllBySellerId(Long sellerId, SellerReceiptSearchCondition condition) {
         return bidHistories.values().stream()
                 .filter(history -> true)
                 .toList();

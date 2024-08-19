@@ -1,6 +1,5 @@
 package com.wootecam.luckyvickyauction.documentation;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -112,25 +110,26 @@ public class ReceiptDocument extends DocumentationTest {
         }
 
         @Test
-        void 판매자는_정상적으로_거래이력을_확인한다() {
-            SellerReceiptSearchCondition condition = new SellerReceiptSearchCondition(1L, 3);
+        void 판매자는_정상적으로_거래이력을_확인한다() throws Exception {
+            SellerReceiptSearchCondition condition = new SellerReceiptSearchCondition(3);
             List<SellerReceiptSimpleInfo> sellerReceiptSimpleInfos = sellerReceiptSimpleInfosSample();
-            given(bidHistoryService.getSellerReceiptSimpleInfos(any())).willReturn(sellerReceiptSimpleInfos);
+            SignInInfo sellerInfo = new SignInInfo(1L, Role.SELLER);
+            given(bidHistoryService.getSellerReceiptSimpleInfos(sellerInfo, condition)).willReturn(
+                    sellerReceiptSimpleInfos);
+            given(authenticationContext.getPrincipal()).willReturn(sellerInfo);
 
-            docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(condition)
-                    .when().get("/receipts/seller")
-                    .then().log().all()
-                    .apply(document("receipts/getSellerReceipts/success",
+            mockMvc.perform(get("/receipts/seller")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .sessionAttr("signInMember", sellerInfo)
+                            .content(objectMapper.writeValueAsString(condition)))
+                    .andDo(document("receipts/getSellerReceipts/success",
                             requestFields(
-                                    fieldWithPath("sellerId").type(JsonFieldType.NUMBER)
-                                            .description("거래 내역을 조회할 판매자의 식별자"),
                                     fieldWithPath("size").type(JsonFieldType.NUMBER)
                                             .description("조회할 거래 내역의 개수")
                                             .attributes(key("constraints").value("최소:1 ~ 최대:100"))
                             )
                     ))
-                    .statusCode(HttpStatus.OK.value());
+                    .andExpect(status().isOk());
         }
 
         private List<SellerReceiptSimpleInfo> sellerReceiptSimpleInfosSample() {

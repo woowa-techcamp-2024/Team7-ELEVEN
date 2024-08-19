@@ -47,8 +47,8 @@ public class ReceiptCoreRepository implements BidHistoryRepository {
     }
 
     @Override
-    public List<BidHistory> findAllBy(SellerReceiptSearchCondition condition) {
-        return receiptJpaRepository.findAllBy(condition).stream()
+    public List<BidHistory> findAllBySellerId(Long sellerId, SellerReceiptSearchCondition condition) {
+        return receiptJpaRepository.findAllBy(sellerId, condition).stream()
                 .map(Mapper::convertToReceipt)
                 .toList();
     }

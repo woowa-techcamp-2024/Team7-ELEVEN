@@ -3,6 +3,7 @@ package com.wootecam.luckyvickyauction.core.payment.controller;
 import com.wootecam.luckyvickyauction.core.member.controller.BuyerOnly;
 import com.wootecam.luckyvickyauction.core.member.controller.Login;
 import com.wootecam.luckyvickyauction.core.member.controller.Roles;
+import com.wootecam.luckyvickyauction.core.member.controller.SellerOnly;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
@@ -46,11 +47,11 @@ public class ReceiptController {
     }
 
     // 판매자는 자신의 거래 이력 목록을 조회할 수 있다.
-//    @SellerOnly
+    @SellerOnly
     @GetMapping("/seller")
-    public ResponseEntity<List<SellerReceiptSimpleInfo>> getSellerReceipts(
-            @RequestBody SellerReceiptSearchCondition condition) {
-        List<SellerReceiptSimpleInfo> infos = bidHistoryService.getSellerReceiptSimpleInfos(condition);
+    public ResponseEntity<List<SellerReceiptSimpleInfo>> getSellerReceipts(@Login SignInInfo sellerInfo,
+                                                                           @RequestBody SellerReceiptSearchCondition condition) {
+        List<SellerReceiptSimpleInfo> infos = bidHistoryService.getSellerReceiptSimpleInfos(sellerInfo, condition);
         return ResponseEntity.ok(infos);
     }
 }

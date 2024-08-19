@@ -27,13 +27,13 @@ public class ReceiptQueryDslRepositoryImpl implements ReceiptQueryDslRepository 
     }
 
     @Override
-    public List<ReceiptEntity> findAllBy(SellerReceiptSearchCondition condition) {
+    public List<ReceiptEntity> findAllBy(Long sellerId, SellerReceiptSearchCondition condition) {
         QReceiptEntity receipt = QReceiptEntity.receiptEntity;
 
         return factory
                 .select(receipt)
                 .from(receipt)
-                .where(receipt.sellerId.eq(condition.sellerId()))
+                .where(receipt.sellerId.eq(sellerId))
                 .limit(condition.size())
                 .fetch();
     }
