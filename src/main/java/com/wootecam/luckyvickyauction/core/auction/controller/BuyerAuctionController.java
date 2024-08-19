@@ -1,9 +1,13 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
+import com.wootecam.luckyvickyauction.core.auction.controller.dto.BidRequest;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
+import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

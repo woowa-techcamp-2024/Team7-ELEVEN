@@ -14,12 +14,15 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.restdocs.snippet.Attributes.key;
 
 import com.wootecam.luckyvickyauction.core.auction.controller.dto.BidRequest;
+import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import io.restassured.http.Cookie;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
