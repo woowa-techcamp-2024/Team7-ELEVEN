@@ -34,7 +34,7 @@ public class SellerAuctionController {
 
     // 판매자는 경매를 취소한다.
     @DeleteMapping("/{auctionId}")
-    public void cancelAuction(@PathVariable Long auctionId) {
+    public void cancelAuction(@PathVariable("auctionId") Long auctionId) {
         // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
         throw new UnsupportedOperationException();
     }
@@ -49,7 +49,7 @@ public class SellerAuctionController {
 
     // 판매자는 자신이 등록한 경매를 상세 조회한다.
     @GetMapping("/{auctionId}/seller")
-    public ResponseEntity<SellerAuctionInfo> getSellerAuction(@PathVariable Long auctionId) {
+    public ResponseEntity<SellerAuctionInfo> getSellerAuction(@PathVariable("auctionId") Long auctionId) {
         SellerAuctionInfo sellerAuctionInfo = auctionService.getSellerAuction(auctionId);
         return ResponseEntity.ok(sellerAuctionInfo);
     }
