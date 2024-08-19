@@ -282,8 +282,9 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
         })
         void 검색조건을_받으면_정상적으로_처리한다(int offset, int size, int expectedSize) {
             // given
+            long sellerId = 1L;
             createAuctions(10);
-            SellerAuctionSearchCondition condition = new SellerAuctionSearchCondition(offset, size);
+            SellerAuctionSearchCondition condition = new SellerAuctionSearchCondition(sellerId, offset, size);
 
             // when
             List<Auction> auctions = auctionRepository.findAllBy(condition);
@@ -310,7 +311,8 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
         @Test
         void 조건에_해당하는_경매가_없으면_정상_반환한다() {
             // given
-            SellerAuctionSearchCondition condition = new SellerAuctionSearchCondition(0, 10);
+            long sellerId = 1L;
+            SellerAuctionSearchCondition condition = new SellerAuctionSearchCondition(sellerId, 0, 10);
 
             // when
             List<Auction> auctions = auctionRepository.findAllBy(condition);

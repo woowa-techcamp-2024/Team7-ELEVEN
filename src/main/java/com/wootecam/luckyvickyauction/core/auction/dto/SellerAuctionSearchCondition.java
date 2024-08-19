@@ -4,6 +4,7 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 
 public record SellerAuctionSearchCondition(
+        long sellerId,
         int offset,
         int size
 ) {

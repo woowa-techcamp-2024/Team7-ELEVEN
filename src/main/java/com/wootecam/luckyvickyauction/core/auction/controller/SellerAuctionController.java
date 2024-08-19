@@ -1,11 +1,14 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
+import com.wootecam.luckyvickyauction.core.auction.controller.dto.SellerAuctionSearchRequest;
 import com.wootecam.luckyvickyauction.core.auction.dto.CancelAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
+import com.wootecam.luckyvickyauction.core.member.controller.Login;
+import com.wootecam.luckyvickyauction.core.member.controller.SellerOnly;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import java.time.ZonedDateTime;
@@ -55,9 +58,15 @@ public class SellerAuctionController {
     }
 
     // 판매자는 자신이 등록한 경매 목록을 조회한다.
+    @SellerOnly
     @GetMapping("/seller")
     public ResponseEntity<List<SellerAuctionSimpleInfo>> getSellerAuctions(
-            @RequestBody SellerAuctionSearchCondition condition) {
+            @Login SignInInfo sellerInfo,
+            @RequestBody SellerAuctionSearchRequest request) {
+        SellerAuctionSearchCondition condition = new SellerAuctionSearchCondition(
+                sellerInfo.id(),
+                request.offset(),
+                request.size());
         List<SellerAuctionSimpleInfo> infos = auctionService.getSellerAuctionSimpleInfos(condition);
         return ResponseEntity.ok(infos);
     }
