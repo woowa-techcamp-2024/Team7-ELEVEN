@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
+import com.wootecam.luckyvickyauction.core.auction.controller.dto.SellerAuctionSearchRequest;
 import com.wootecam.luckyvickyauction.core.auction.dto.CancelAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
@@ -56,7 +57,12 @@ public class SellerAuctionController {
     @SellerOnly
     @GetMapping("/seller")
     public ResponseEntity<List<SellerAuctionSimpleInfo>> getSellerAuctions(
-            @RequestBody SellerAuctionSearchCondition condition) {
+            @Login SignInInfo sellerInfo,
+            @RequestBody SellerAuctionSearchRequest request) {
+        SellerAuctionSearchCondition condition = new SellerAuctionSearchCondition(
+                sellerInfo.id(),
+                request.offset(),
+                request.size());
         List<SellerAuctionSimpleInfo> infos = auctionService.getSellerAuctionSimpleInfos(condition);
         return ResponseEntity.ok(infos);
     }

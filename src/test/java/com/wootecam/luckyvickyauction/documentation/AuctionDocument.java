@@ -1,7 +1,11 @@
 package com.wootecam.luckyvickyauction.documentation;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -11,6 +15,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.wootecam.luckyvickyauction.core.auction.controller.dto.BidRequest;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
@@ -18,6 +23,9 @@ import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
+import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
+import io.restassured.http.Cookie;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -153,4 +161,45 @@ public class AuctionDocument extends DocumentationTest {
                     .andExpect(status().isOk());
         }
     }
+
+
+    @Nested
+    class 구매자_경매_입찰 {
+
+        // TODO: [인증객체를 사용한 테스트로 전환할 것!] [writeAt: 2024/08/19/19:12] [writeBy: chhs2131]
+        @Test
+        @Disabled
+        void 경매_입찰을_성공하면_OK응답을_반환한다() {
+            String auctionId = "1";
+            Member buyer = MemberFixture.createBuyerWithDefaultPoint();
+            BidRequest bidRequest = new BidRequest(10000L, 20L);
+            willDoNothing().given(paymentService)
+                    .process(any(Member.class), anyLong(), anyLong(), anyLong(), any(ZonedDateTime.class));
+
+            docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .sessionAttr("signInMember",
+                            buyer)  // TODO: [인증 객체 만드는거 기다리기? - String되버리는 문제] [writeAt: 2024/08/19/22:40] [writeBy: chhs2131]
+                    .cookie(new Cookie.Builder("JSESSIONID", "session-id-value").build()) // 쿠키 설정
+                    .body(bidRequest)
+                    .when().post("/auctions/{auctionId}/bids", auctionId)
+                    .then().log().all()
+                    .apply(document("auctions/bids/success",
+                            requestCookies(
+                                    cookieWithName("JSESSIONID").description("세션 ID")
+                            ),
+                            pathParameters(
+                                    parameterWithName("auctionId").description("입찰한 경매의 ID")
+                            ),
+                            requestFields(
+                                    fieldWithPath("price").type(JsonFieldType.NUMBER)
+                                            .description("입찰을 희망하는 가격"),
+                                    fieldWithPath("quantity").type(JsonFieldType.NUMBER)
+                                            .description("입찰을 희망하는 수량")
+                            )
+                    ))
+                    .statusCode(HttpStatus.OK.value());
+        }
+
+    }
+
 }
