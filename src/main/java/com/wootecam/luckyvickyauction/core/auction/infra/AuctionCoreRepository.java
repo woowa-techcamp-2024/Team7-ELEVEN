@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 public class AuctionCoreRepository implements AuctionRepository {
 
     private final AuctionJpaRepository auctionJpaRepository;
+    private final AuctionQueryDslRepository queryDslRepository;
 
     @Override
     public Auction save(Auction auction) {
@@ -37,7 +38,10 @@ public class AuctionCoreRepository implements AuctionRepository {
 
     @Override
     public List<Auction> findAllBy(AuctionSearchCondition condition) {
-        return List.of();
+        List<AuctionEntity> entities = queryDslRepository.findAllBy(condition);
+        return entities.stream()
+                .map(Mapper::convertToAuction)
+                .toList();
     }
 
     @Override
