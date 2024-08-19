@@ -3,17 +3,21 @@ package com.wootecam.luckyvickyauction.documentation;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -113,7 +117,7 @@ public class AuctionDocument extends DocumentationTest {
     class 판매자_경매_상세_조회 {
 
         @Test
-        void 경매_id를_전달하면_성공적으로_경매_상세정보를_반환한다() {
+        void 경매_id를_전달하면_성공적으로_경매_상세정보를_반환한다() throws Exception {
             String auctionId = "1";
             SellerAuctionInfo sellerAuctionInfo = SellerAuctionInfo.builder()
                     .auctionId(1L)
@@ -129,17 +133,21 @@ public class AuctionDocument extends DocumentationTest {
                     .finishedAt(ZonedDateTime.now().plusHours(1))
                     .isShowStock(true)
                     .build();
-            given(auctionService.getSellerAuction(1L)).willReturn(sellerAuctionInfo);
+            SignInInfo sellerInfo = new SignInInfo(1L, Role.SELLER);
+            given(auctionService.getSellerAuction(sellerInfo, 1L)).willReturn(sellerAuctionInfo);
+            given(authenticationContext.getPrincipal()).willReturn(sellerInfo);
 
-            docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().get("/auctions/{auctionId}/seller", auctionId)
-                    .then().log().all()
-                    .apply(document("auctions/getSellerAuctionDetail/success",
-                            pathParameters(
-                                    parameterWithName("auctionId").description("조회할 경매 ID")
+            mockMvc.perform(get("/auctions/{auctionId}/seller", auctionId)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .sessionAttr("signInMember", sellerInfo))
+                    .andDo(
+                            document("auctions/getSellerAuctionDetail/success",
+                                    pathParameters(
+                                            parameterWithName("auctionId").description("조회할 경매 ID")
+                                    )
                             )
-                    ))
-                    .statusCode(HttpStatus.OK.value());
+                    )
+                    .andExpect(status().isOk());
         }
     }
 }

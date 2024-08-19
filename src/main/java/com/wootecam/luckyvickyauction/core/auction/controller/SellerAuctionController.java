@@ -51,7 +51,9 @@ public class SellerAuctionController {
         auctionService.cancelAuction(sellerInfo, command);
     }
 
+    // TODO: 현식햄 머지하면 진행하기!
     // 판매자는 자신이 등록한 경매 목록을 조회한다.
+    @SellerOnly
     @GetMapping("/seller")
     public ResponseEntity<List<SellerAuctionSimpleInfo>> getSellerAuctions(
             @RequestBody SellerAuctionSearchCondition condition) {
@@ -60,13 +62,16 @@ public class SellerAuctionController {
     }
 
     // 판매자는 자신이 등록한 경매를 상세 조회한다.
+    @SellerOnly
     @GetMapping("/{auctionId}/seller")
-    public ResponseEntity<SellerAuctionInfo> getSellerAuction(@PathVariable("auctionId") Long auctionId) {
-        SellerAuctionInfo sellerAuctionInfo = auctionService.getSellerAuction(auctionId);
+    public ResponseEntity<SellerAuctionInfo> getSellerAuction(@Login SignInInfo sellerInfo,
+                                                              @PathVariable("auctionId") Long auctionId) {
+        SellerAuctionInfo sellerAuctionInfo = auctionService.getSellerAuction(sellerInfo, auctionId);
         return ResponseEntity.ok(sellerAuctionInfo);
     }
 
     // 판매자는 자신의 경매 상품의 재고를 수정한다.
+    @SellerOnly
     @PatchMapping("/{auctionId}/stock")
     public void changeAuctionStock(@PathVariable Long auctionId, @RequestParam long amount) {
         // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]

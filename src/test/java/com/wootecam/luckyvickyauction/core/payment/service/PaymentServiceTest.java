@@ -341,15 +341,21 @@ class PaymentServiceTest {
             @Test
             void 포인트가_충전된다() {
                 // given
-                Member member = new Member(1L, "testSignInId", "password00", Role.BUYER, new Point(0));
+                Member member = Member.builder()
+                        .signInId("testSignInId")
+                        .password("password00")
+                        .role(Role.BUYER)
+                        .point(new Point(0))
+                        .build();
+                Member savedMember = memberRepository.save(member);
 
                 // when
-                paymentService.chargePoint(member, 1000L);
+                paymentService.chargePoint(new SignInInfo(savedMember.getId(), Role.BUYER), 1000L);
 
                 // then
-                Member savedMember = memberRepository.findById(1L).get();
-                Point savedMemberPoint = savedMember.getPoint();
-                assertThat(savedMemberPoint.getAmount()).isEqualTo(1000L);
+                Member resultMember = memberRepository.findById(savedMember.getId()).get();
+                Point point = resultMember.getPoint();
+                assertThat(point.getAmount()).isEqualTo(1000L);
             }
 
         }
@@ -361,9 +367,11 @@ class PaymentServiceTest {
             void 예외가_발생한다() {
                 // given
                 Member member = Member.createMemberWithRole("testSignInId", "password00", "BUYER");
+                Member savedMember = memberRepository.save(member);
 
                 // expect
-                assertThatThrownBy(() -> paymentService.chargePoint(member, -1L))
+                assertThatThrownBy(
+                        () -> paymentService.chargePoint(new SignInInfo(savedMember.getId(), Role.BUYER), -1L))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("포인트는 음수가 될 수 없습니다. 충전 포인트=-1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",

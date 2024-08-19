@@ -10,9 +10,12 @@ public interface AuctionRepository {
 
     Optional<Auction> findById(Long id);
 
+    Optional<Auction> findByIdAndSellerId(long id, Long sellerId);
+
     void deleteById(long id);
 
     List<Auction> findAllBy(AuctionSearchCondition condition);
 
     List<Auction> findAllBy(SellerAuctionSearchCondition condition);
+
 }

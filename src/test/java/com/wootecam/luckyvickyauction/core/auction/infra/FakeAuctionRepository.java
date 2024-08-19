@@ -71,6 +71,14 @@ public class FakeAuctionRepository implements AuctionRepository {
     }
 
     @Override
+    public Optional<Auction> findByIdAndSellerId(long id, Long sellerId) {
+        return auctions.values()
+                .stream()
+                .filter(auction -> auction.getId() == id && auction.getSellerId().equals(sellerId))
+                .findAny();
+    }
+
+    @Override
     public void deleteById(long id) {
         auctions.remove(id);
     }

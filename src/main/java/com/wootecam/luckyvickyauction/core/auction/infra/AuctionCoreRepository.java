@@ -31,8 +31,13 @@ public class AuctionCoreRepository implements AuctionRepository {
     }
 
     @Override
-    public void deleteById(long id) {
+    public Optional<Auction> findByIdAndSellerId(long id, Long sellerId) {
+        return auctionJpaRepository.findByIdAndSellerId(id, sellerId)
+                .map(Mapper::convertToAuction);
+    }
 
+    @Override
+    public void deleteById(long id) {
     }
 
     @Override

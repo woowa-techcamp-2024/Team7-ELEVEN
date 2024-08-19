@@ -126,13 +126,15 @@ public class PaymentService {
     /**
      * 사용자의 포인트를 충전한다 - 포인트가 음수이면 예외가 발생한다
      *
-     * @param member      포인트를 충전할 사용자
+     * @param memberInfo  포인트를 충전할 사용자
      * @param chargePoint 충전할 포인트
      */
-    public void chargePoint(Member member, long chargePoint) {
+    public void chargePoint(SignInInfo memberInfo, long chargePoint) {
         if (chargePoint < 0) {
             throw new BadRequestException("포인트는 음수가 될 수 없습니다. 충전 포인트=" + chargePoint, ErrorCode.P005);
         }
+        Member member = memberRepository.findById(memberInfo.id())
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다. 사용자 id=" + memberInfo.id(), ErrorCode.M002));
 
         member.chargePoint(chargePoint);
         memberRepository.save(member);

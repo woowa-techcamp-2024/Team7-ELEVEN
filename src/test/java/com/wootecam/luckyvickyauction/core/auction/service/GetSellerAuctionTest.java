@@ -60,7 +60,7 @@ abstract class GetSellerAuctionTest {
             SignInInfo signInInfo = new SignInInfo(seller.getId(), seller.getRole());
 
             // when
-            SellerAuctionInfo sellerAuctionInfo = auctionService.getSellerAuction(auction.getId());
+            SellerAuctionInfo sellerAuctionInfo = auctionService.getSellerAuction(signInInfo, auction.getId());
 
             // then
             assertAll(
