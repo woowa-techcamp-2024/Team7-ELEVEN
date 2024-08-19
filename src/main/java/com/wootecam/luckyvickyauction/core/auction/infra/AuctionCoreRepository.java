@@ -32,7 +32,7 @@ public class AuctionCoreRepository implements AuctionRepository {
 
     @Override
     public void deleteById(long id) {
-        // FIXME~~~ 바로 다음 PR에 작업할 것이에요~~~
+        auctionJpaRepository.deleteById(id);
     }
 
     @Override

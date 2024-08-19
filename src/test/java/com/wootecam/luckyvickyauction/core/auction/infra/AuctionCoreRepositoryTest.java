@@ -188,7 +188,6 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
 
     }
 
-
     @Nested
     class 구매자가_경매_목록을_조회할_때 {
 
@@ -319,6 +318,37 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
             assertThat(auctions).isEmpty();
         }
 
-    }
+        @Nested
+        class 경매_취소_작업을_수행할_때 {
 
+            @Test
+            void 경매_식별번호가_전달되면_정상적으로_삭제된다() {
+                // given
+                AuctionEntity entity = AuctionEntity.builder().build();
+                AuctionEntity savedAuction = auctionJpaRepository.save(entity);
+
+                // when
+                auctionRepository.deleteById(savedAuction.getId());
+
+                // then
+                List<AuctionEntity> all = auctionJpaRepository.findAll();
+                assertThat(all).isEmpty();
+            }
+
+            @Test
+            void 존재하지않는_경매_식별번호가_전달되면_정상적으로_무시된다() {
+                // given
+                long nonExistentId = 1L;
+
+                // when
+                auctionRepository.deleteById(nonExistentId);
+
+                // then
+                List<AuctionEntity> all = auctionJpaRepository.findAll();
+                assertThat(all).isEmpty();
+            }
+
+        }
+
+    }
 }
