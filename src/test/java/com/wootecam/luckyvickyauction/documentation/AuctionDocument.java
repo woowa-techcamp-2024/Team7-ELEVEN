@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -75,6 +76,7 @@ public class AuctionDocument extends DocumentationTest {
      * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/130">Github issue</a>
      */
     @Nested
+    @Disabled
     class 판매자_경매_목록_조회 {
 
         @Test

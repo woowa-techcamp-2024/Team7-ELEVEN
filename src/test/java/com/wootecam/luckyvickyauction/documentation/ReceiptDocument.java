@@ -1,15 +1,18 @@
 package com.wootecam.luckyvickyauction.documentation;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
@@ -30,7 +33,7 @@ public class ReceiptDocument extends DocumentationTest {
     class 거래내역_상세_조회 {
 
         @Test
-        void 거래내역_id에_해당하는_거래내역을_조회한다() {
+        void 거래내역_id에_해당하는_거래내역을_조회한다() throws Exception {
             String receiptId = "1";
             BidHistoryInfo bidHistoryInfo = BidHistoryInfo.builder()
                     .bidHistoryId(1L)
@@ -44,18 +47,20 @@ public class ReceiptDocument extends DocumentationTest {
                     .createdAt(ZonedDateTime.now())
                     .updatedAt(ZonedDateTime.now().plusHours(1))
                     .build();
-            given(bidHistoryService.getBidHistoryInfo(anyLong())).willReturn(bidHistoryInfo);
+            SignInInfo memberInfo = new SignInInfo(1L, Role.SELLER);
+            given(authenticationContext.getPrincipal()).willReturn(memberInfo);
+            given(bidHistoryService.getBidHistoryInfo(memberInfo, 1L)).willReturn(bidHistoryInfo);
 
-            docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().get("/receipts/{receiptId}", receiptId)
-                    .then().log().all()
-                    .apply(document("receipts/getReceipt/success",
+            mockMvc.perform(get("/receipts/{receiptId}", receiptId)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .sessionAttr("signInMember", memberInfo))
+                    .andDo(
+                            document("receipts/getReceipt/success",
                                     pathParameters(
                                             parameterWithName("receiptId").description("조회할 거래내역 ID")
                                     )
                             )
-                    )
-                    .statusCode(HttpStatus.OK.value());
+                    ).andExpect(status().isOk());
         }
     }
 

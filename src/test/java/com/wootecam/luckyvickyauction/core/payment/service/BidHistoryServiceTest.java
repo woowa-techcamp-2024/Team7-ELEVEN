@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
@@ -68,7 +70,8 @@ class BidHistoryServiceTest {
             bidHistoryRepository.save(bidHistory);
 
             // when
-            BidHistoryInfo bidHistoryInfo = bidHistoryService.getBidHistoryInfo(1L);
+            BidHistoryInfo bidHistoryInfo = bidHistoryService.getBidHistoryInfo(
+                    new SignInInfo(seller.getId(), Role.SELLER), 1L);
 
             // then
             assertAll(
@@ -90,7 +93,8 @@ class BidHistoryServiceTest {
             long bidHistoryId = 1L;
 
             // expect
-            assertThatThrownBy(() -> bidHistoryService.getBidHistoryInfo(bidHistoryId))
+            assertThatThrownBy(
+                    () -> bidHistoryService.getBidHistoryInfo(new SignInInfo(member.getId(), Role.BUYER), bidHistoryId))
                     .isInstanceOf(NotFoundException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.B000));

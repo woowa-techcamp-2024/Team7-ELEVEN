@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.payment.infra;
 
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
@@ -34,6 +35,20 @@ public class FakeBidHistoryRepository implements BidHistoryRepository {
     public Optional<BidHistory> findById(long bidHistoryId) {
         // ID로 BidHistory 검색
         return Optional.ofNullable(bidHistories.get(bidHistoryId));
+    }
+
+    @Override
+    public Optional<BidHistory> findByIdAndMemberId(long bidHistoryId, Long memberId, Role role) {
+        if (role.equals(Role.SELLER)) {
+            return bidHistories.values()
+                    .stream()
+                    .filter(bidHistory -> bidHistory.getId() == bidHistoryId && bidHistory.getSellerId() == memberId)
+                    .findAny();
+        }
+        return bidHistories.values()
+                .stream()
+                .filter(bidHistory -> bidHistory.getId() == bidHistoryId && bidHistory.getBuyerId() == memberId)
+                .findAny();
     }
 
     // TODO: [ReceiptSelectCondition 조건 이후 변경 사항] [writeAt: 2024/08/15/16:03] [writeBy: yudonggeun]

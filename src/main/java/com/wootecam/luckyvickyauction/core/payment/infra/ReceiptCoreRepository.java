@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.payment.infra;
 
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
@@ -28,6 +29,14 @@ public class ReceiptCoreRepository implements BidHistoryRepository {
     public Optional<BidHistory> findById(long bidHistoryId) {
         Optional<ReceiptEntity> found = receiptJpaRepository.findById(bidHistoryId);
         return found.map(Mapper::convertToReceipt);
+    }
+
+    @Override
+    public Optional<BidHistory> findByIdAndMemberId(long bidHistoryId, Long memberId, Role role) {
+        if (role.equals(Role.SELLER)) {
+            return receiptJpaRepository.findByIdAndSellerId(bidHistoryId, memberId);
+        }
+        return receiptJpaRepository.findByIdAndBuyerId(bidHistoryId, memberId);
     }
 
     @Override

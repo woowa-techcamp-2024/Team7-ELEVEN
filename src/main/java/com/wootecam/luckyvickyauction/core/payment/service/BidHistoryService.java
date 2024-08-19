@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.payment.service;
 
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
@@ -20,12 +21,11 @@ public class BidHistoryService {
 
     private final BidHistoryRepository bidHistoryRepository;
 
-    public BidHistoryInfo getBidHistoryInfo(long bidHistoryId) {
-        // 검증
-        BidHistory bidHistory = bidHistoryRepository.findById(bidHistoryId)
+    public BidHistoryInfo getBidHistoryInfo(SignInInfo memberInfo, long bidHistoryId) {
+        BidHistory bidHistory = bidHistoryRepository.findByIdAndMemberId(bidHistoryId, memberInfo.id(),
+                        memberInfo.role())
                 .orElseThrow(() -> new NotFoundException("입찰 내역을 찾을 수 없습니다. 내역 id=" + bidHistoryId, ErrorCode.B000));
 
-        // 반환
         return Mapper.convertToBidHistoryInfo(bidHistory);
     }
 
