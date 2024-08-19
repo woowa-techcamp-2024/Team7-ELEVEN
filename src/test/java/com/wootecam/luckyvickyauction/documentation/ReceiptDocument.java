@@ -1,26 +1,21 @@
 package com.wootecam.luckyvickyauction.documentation;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
-import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
-import java.time.ZonedDateTime;
-
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
+import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
@@ -62,7 +57,9 @@ public class ReceiptDocument extends DocumentationTest {
                     )
                     .statusCode(HttpStatus.OK.value());
         }
-      
+    }
+
+    @Nested
     class 거래_이력 {
 
         @Test
@@ -146,3 +143,4 @@ public class ReceiptDocument extends DocumentationTest {
         }
     }
 }
+

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
@@ -14,7 +13,6 @@ import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
 import com.wootecam.luckyvickyauction.core.payment.infra.FakeBidHistoryRepository;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.ZonedDateTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
