@@ -3,7 +3,9 @@ package com.wootecam.luckyvickyauction.core.auction.domain;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.util.Objects;
+import lombok.Getter;
 
+@Getter
 public class ConstantPricePolicy implements PricePolicy {
 
     private PricePolicyType type = PricePolicyType.CONSTANT;
@@ -11,6 +13,7 @@ public class ConstantPricePolicy implements PricePolicy {
 
     public ConstantPricePolicy() {
     }
+
     public ConstantPricePolicy(long variationWidth) {
         validateVariationWidth(variationWidth);
         this.variationWidth = variationWidth;
