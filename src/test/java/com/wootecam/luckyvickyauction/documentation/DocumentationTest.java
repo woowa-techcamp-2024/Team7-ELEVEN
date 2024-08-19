@@ -11,9 +11,9 @@ import com.wootecam.luckyvickyauction.core.member.controller.AuthController;
 import com.wootecam.luckyvickyauction.core.member.domain.AuthenticationContext;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
 import com.wootecam.luckyvickyauction.core.payment.controller.PaymentController;
-import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import com.wootecam.luckyvickyauction.core.payment.controller.ReceiptController;
 import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
+import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import com.wootecam.luckyvickyauction.documentation.errorcode.FakeErrorCodeController;
 import com.wootecam.luckyvickyauction.global.config.JsonConfig;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -62,9 +62,10 @@ public class DocumentationTest {
     protected MemberService memberService;
 
     @MockBean
-    protected AuctionService auctionService;
-    @MockBean
     protected PaymentService paymentService;
+
+    @MockBean
+    protected AuctionService auctionService;
 
     @MockBean
     protected BidHistoryService bidHistoryService;

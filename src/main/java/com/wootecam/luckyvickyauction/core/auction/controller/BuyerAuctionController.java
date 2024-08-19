@@ -1,11 +1,13 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
+import com.wootecam.luckyvickyauction.core.auction.controller.dto.BidRequest;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,9 +45,11 @@ public class BuyerAuctionController {
 
     // 사용자는 경매에 입찰한다.
     @PostMapping("/{auctionId}/bids")
-    public void bidAuction(@PathVariable Long auctionId, long price, long quantity) {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
+    public ResponseEntity<Void> bidAuction(@SessionAttribute("signInMember") Member member,
+                                           @PathVariable(name = "auctionId") Long auctionId,
+                                           @RequestBody BidRequest bidRequest) {
+        paymentService.process(member, bidRequest.price(), auctionId, bidRequest.quantity(), ZonedDateTime.now());
+        return ResponseEntity.ok().build();
     }
 
     /**
