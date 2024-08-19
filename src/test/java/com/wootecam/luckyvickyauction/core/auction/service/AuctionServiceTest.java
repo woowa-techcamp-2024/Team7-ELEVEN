@@ -58,13 +58,14 @@ class AuctionServiceTest {
         ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
         ZonedDateTime finishedAt = startedAt.plusHours(1);
 
-        CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, ZonedDateTime.now(), startedAt, finishedAt, true
+        SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
+        CreateAuctionCommand command = new CreateAuctionCommand(productName, originPrice, stock,
+                maximumPurchaseLimitCount, pricePolicy, varitationDuration, ZonedDateTime.now(), startedAt, finishedAt,
+                true
         );
 
         // when
-        auctionService.createAuction(command);
+        auctionService.createAuction(sellerInfo, command);
         Auction createdAuction = auctionRepository.findById(1L).get();
 
         // then
@@ -103,13 +104,14 @@ class AuctionServiceTest {
         ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
+        SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, ZonedDateTime.now(), startedAt, finishedAt, true
         );
 
         // expect
-        assertThatNoException().isThrownBy(() -> auctionService.createAuction(command));
+        assertThatNoException().isThrownBy(() -> auctionService.createAuction(sellerInfo, command));
     }
 
     @ParameterizedTest(name = "경매 지속시간이 {0}인 경우 BadRequestException 예외가 발생하고 에러 코드는 A008이다.")
@@ -130,13 +132,14 @@ class AuctionServiceTest {
         ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
+        SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, ZonedDateTime.now(), startedAt, finishedAt, true
         );
 
         // expect
-        assertThatThrownBy(() -> auctionService.createAuction(command))
+        assertThatThrownBy(() -> auctionService.createAuction(sellerInfo, command))
                 .isInstanceOf(BadRequestException.class)
                 .satisfies(exception -> {
                     assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);

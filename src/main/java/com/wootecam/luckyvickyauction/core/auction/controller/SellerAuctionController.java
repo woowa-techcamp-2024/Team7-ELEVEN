@@ -6,6 +6,8 @@ import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
+import com.wootecam.luckyvickyauction.core.member.controller.Login;
+import com.wootecam.luckyvickyauction.core.member.controller.SellerOnly;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import java.time.ZonedDateTime;
@@ -31,12 +33,12 @@ public class SellerAuctionController {
     private final AuctionService auctionService;
 
     // 판매자는 경매를 생성한다.
+    @SellerOnly
     @PostMapping
-    public ResponseEntity<Void> createAuction(@RequestBody CreateAuctionCommand command) {
-        auctionService.createAuction(command);
+    public ResponseEntity<Void> createAuction(@Login SignInInfo sellerInfo, @RequestBody CreateAuctionCommand command) {
+        auctionService.createAuction(sellerInfo, command);
         return ResponseEntity.ok().build();
     }
-
 
     /**
      * 판매자는 경매를 취소한다.

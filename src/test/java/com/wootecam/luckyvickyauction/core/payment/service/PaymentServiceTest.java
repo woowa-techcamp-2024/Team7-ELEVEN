@@ -146,6 +146,43 @@ class PaymentServiceTest {
         }
 
         @Nested
+        class 만약_환불을_요청한_구매자를_찾을_수_없다면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
+
+                Member seller = MemberFixture.createSellerWithDefaultPoint();
+                memberRepository.save(seller);
+
+                Auction auction = AuctionFixture.createSoldOutAuction();
+                auctionRepository.save(auction);
+
+                ZonedDateTime now = ZonedDateTime.now();
+                BidHistory bidHistory = BidHistory.builder()
+                        .id(1L)
+                        .auctionId(1L)
+                        .productName("test")
+                        .price(100L)
+                        .quantity(1L)
+                        .bidStatus(BidStatus.BID)
+                        .sellerId(seller.getId())
+                        .buyerId(buyer.getId())
+                        .createdAt(now)
+                        .updatedAt(now)
+                        .build();
+                bidHistoryRepository.save(bidHistory);
+
+                // expect
+                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L))
+                        .isInstanceOf(NotFoundException.class)
+                        .hasMessage("환불할 입찰 내역의 구매자를 찾을 수 없습니다. 구매자 id=1")
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.M002);
+            }
+        }
+
+        @Nested
         class 만약_요청한_사용자가_구매자가_아니라면 {
 
             @Test

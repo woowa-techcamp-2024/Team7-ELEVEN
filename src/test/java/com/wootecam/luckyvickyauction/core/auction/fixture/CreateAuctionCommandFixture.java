@@ -82,7 +82,7 @@ public class CreateAuctionCommandFixture {
         }
 
         public CreateAuctionCommand build() {
-            return new CreateAuctionCommand(sellerId, productName, originPrice, stock, maximumPurchaseLimitCount,
+            return new CreateAuctionCommand(productName, originPrice, stock, maximumPurchaseLimitCount,
                     pricePolicy, variationDuration, requestTime, startedAt, finishedAt, isShowStock);
         }
     }

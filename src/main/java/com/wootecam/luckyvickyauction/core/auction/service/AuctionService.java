@@ -32,9 +32,9 @@ public class AuctionService {
 
     private final AuctionRepository auctionRepository;
 
-    public void createAuction(CreateAuctionCommand command) {
+    public void createAuction(SignInInfo sellerInfo, CreateAuctionCommand command) {
         Auction auction = Auction.builder()
-                .sellerId(command.sellerId())
+                .sellerId(sellerInfo.id())
                 .productName(command.productName())
                 .currentPrice(command.originPrice())
                 .originPrice(command.originPrice())
