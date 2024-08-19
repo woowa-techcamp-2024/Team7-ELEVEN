@@ -1,19 +1,29 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.fixture.CreateAuctionCommandFixture;
+import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.documentation.DocumentationTest;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 class SellerAuctionControllerTest extends DocumentationTest {
 
@@ -43,7 +53,7 @@ class SellerAuctionControllerTest extends DocumentationTest {
                     .body(objectMapper.writeValueAsString(condition))
                     .when().post("/auctions")
                     .then().log().all()
-                    .apply(document("/auctions/post/constant_policy/success",
+                    .apply(document("auctions/post/constant_policy/success",
                             requestFields(
                                     fieldWithPath("sellerId").description("판매자 ID"),
                                     fieldWithPath("productName").description("상품 이름"),
@@ -78,7 +88,7 @@ class SellerAuctionControllerTest extends DocumentationTest {
                     .body(objectMapper.writeValueAsString(condition))
                     .when().post("/auctions")
                     .then().log().all()
-                    .apply(document("/auctions/post/percentage_policy/success",
+                    .apply(document("auctions/post/percentage_policy/success",
                             requestFields(
                                     fieldWithPath("sellerId").description("판매자 ID"),
                                     fieldWithPath("productName").description("상품 이름"),
@@ -97,6 +107,39 @@ class SellerAuctionControllerTest extends DocumentationTest {
                             )
                     ))
                     .statusCode(200);
+        }
+    }
+
+    @Nested
+    class 판매자_경매_등록_취소_API {
+
+        @Test
+        void 판매자_경매_취소() throws Exception {
+            // given
+            Long auctionId = 1L;
+            Member sellerId = MemberFixture.createSellerWithDefaultPoint();
+
+            // when
+            ResultActions perform = mockMvc.perform(
+                    delete("/auctions/{auctionId}", auctionId)
+                            .cookie(new Cookie("JSESSIONID", "sessionId"))
+                            .sessionAttr("signInMember", sellerId)
+            );
+
+            // then
+            ResultActions docs = perform.andExpect(status().isOk());
+
+            // docs
+            docs.andDo(
+                    document("auctions/delete/success",
+                            requestCookies(
+                                    cookieWithName("JSESSIONID").description("세션 ID")
+                            ),
+                            pathParameters(
+                                    parameterWithName("auctionId").description("취소할 경매 ID")
+                            )
+                    )
+            );
         }
     }
 }
