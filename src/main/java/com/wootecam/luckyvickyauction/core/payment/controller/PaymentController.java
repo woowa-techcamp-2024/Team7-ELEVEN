@@ -22,7 +22,7 @@ public class PaymentController {
     @PostMapping("/points/charge")
     public ResponseEntity<Void> chargePoint(
             @RequestBody BuyerChargePointCommand command,
-            @SessionAttribute("member") Member member
+            @SessionAttribute("signInMember") Member member
     ) {
         paymentService.chargePoint(member, command.amount());
         return ResponseEntity.ok().build();
