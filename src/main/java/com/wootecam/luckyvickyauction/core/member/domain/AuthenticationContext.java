@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.member.domain;
 
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
@@ -9,9 +10,9 @@ import org.springframework.web.context.annotation.RequestScope;
 @RequestScope
 public class AuthenticationContext {
 
-    private String principal;
+    private SignInInfo principal;
 
-    public void setPrincipal(String principal) {
+    public void setPrincipal(SignInInfo principal) {
         this.principal = principal;
     }
 }

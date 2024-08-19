@@ -23,6 +23,6 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        return Long.parseLong(authenticationContext.getPrincipal());
+        return authenticationContext.getPrincipal();
     }
 }

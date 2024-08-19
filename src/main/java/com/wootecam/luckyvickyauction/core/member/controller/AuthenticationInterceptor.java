@@ -38,7 +38,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
 
         SignInInfo signInInfo = (SignInInfo) attribute;
-        authenticationContext.setPrincipal(String.valueOf(signInInfo.id()));
+        authenticationContext.setPrincipal(signInInfo);
 
         authorize(handlerMethod, signInInfo);
 
