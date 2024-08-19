@@ -70,7 +70,7 @@ public class ReceiptDocument extends DocumentationTest {
 
             docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(condition)
-                    .when().get("/receipts")
+                    .when().get("/receipts/buyer")
                     .then().log().all()
                     .apply(document("receipts/getReceipts/success",
                             requestFields(

@@ -30,7 +30,7 @@ public class ReceiptController {
     }
 
     // 구매자는 자신의 거래 이력 목록을 조회할 수 있다.
-    @GetMapping
+    @GetMapping("/buyer")
     public ResponseEntity<List<BuyerReceiptSimpleInfo>> getReceipts(
             @RequestBody BuyerReceiptSearchCondition condition) {
         List<BuyerReceiptSimpleInfo> infos = bidHistoryService.getBuyerReceiptSimpleInfos(condition);
