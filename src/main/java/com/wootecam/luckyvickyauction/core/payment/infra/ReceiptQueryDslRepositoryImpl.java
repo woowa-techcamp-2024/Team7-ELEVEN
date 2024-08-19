@@ -15,13 +15,13 @@ public class ReceiptQueryDslRepositoryImpl implements ReceiptQueryDslRepository 
     private final JPAQueryFactory factory;
 
     @Override
-    public List<ReceiptEntity> findAllBy(BuyerReceiptSearchCondition condition) {
+    public List<ReceiptEntity> findAllByBuyerId(Long buyerId, BuyerReceiptSearchCondition condition) {
         QReceiptEntity receipt = QReceiptEntity.receiptEntity;
 
         return factory
                 .select(receipt)
                 .from(receipt)
-                .where(receipt.buyerId.eq(condition.buyerId()))
+                .where(receipt.buyerId.eq(buyerId))
                 .limit(condition.size())
                 .fetch();
     }

@@ -29,8 +29,9 @@ public class BidHistoryService {
         return Mapper.convertToBidHistoryInfo(bidHistory);
     }
 
-    public List<BuyerReceiptSimpleInfo> getBuyerReceiptSimpleInfos(BuyerReceiptSearchCondition condition) {
-        List<BidHistory> bidHistories = bidHistoryRepository.findAllBy(condition);
+    public List<BuyerReceiptSimpleInfo> getBuyerReceiptSimpleInfos(SignInInfo buyerInfo,
+                                                                   BuyerReceiptSearchCondition condition) {
+        List<BidHistory> bidHistories = bidHistoryRepository.findAllByBuyerId(buyerInfo.id(), condition);
         return bidHistories.stream()
                 .map(Mapper::convertToBuyerReceiptSimpleInfo)
                 .toList();

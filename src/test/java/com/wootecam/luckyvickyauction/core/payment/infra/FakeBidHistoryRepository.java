@@ -51,11 +51,10 @@ public class FakeBidHistoryRepository implements BidHistoryRepository {
                 .findAny();
     }
 
-    // TODO: [ReceiptSelectCondition 조건 이후 변경 사항] [writeAt: 2024/08/15/16:03] [writeBy: yudonggeun]
     @Override
-    public List<BidHistory> findAllBy(BuyerReceiptSearchCondition condition) {
+    public List<BidHistory> findAllByBuyerId(Long buyerId, BuyerReceiptSearchCondition condition) {
         return bidHistories.values().stream()
-                .filter(history -> true)
+                .limit(condition.size())
                 .toList();
     }
 

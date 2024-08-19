@@ -14,7 +14,7 @@ public interface BidHistoryRepository {
 
     Optional<BidHistory> findByIdAndMemberId(long bidHistoryId, Long memberId, Role role);
 
-    List<BidHistory> findAllBy(BuyerReceiptSearchCondition condition);
+    List<BidHistory> findAllByBuyerId(Long buyerId, BuyerReceiptSearchCondition condition);
 
     List<BidHistory> findAllBy(SellerReceiptSearchCondition condition);
 }
