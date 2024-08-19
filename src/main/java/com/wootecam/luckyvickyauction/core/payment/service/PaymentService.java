@@ -28,45 +28,30 @@ public class PaymentService {
      * 1. 구매자 확인 <br> 2. 구매자 포인트를 감소 <br> 3. 판매자에게 포인트 지급 <br> 4. 구매 요청 <br> - 실패하면 -> 예외 발생 및 구매자와 판매자 포인트 롤백 <br> -
      * 성공하면 -> BidHistory 저장 및 구매자, 판매자 업데이트 적용
      */
-    public void process(Member buyer, long price, long auctionId, long quantity, ZonedDateTime requestTime) {
-        if (!buyer.isBuyer()) {
-            throw new BadRequestException("구매자만 입찰을 할 수 있습니다.", ErrorCode.P000);
-        }
+    public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, ZonedDateTime requestTime) {
+        Member buyer = findMemberObject(buyerInfo.id());
         AuctionInfo auctionInfo = auctionService.getAuction(auctionId);
         Member seller = findMemberObject(auctionInfo.sellerId());
         buyer.usePoint(price * quantity);
         seller.chargePoint(price * quantity);
 
-        if (submitBid(price, auctionId, quantity, buyer, seller, requestTime)) {
-            Member savedBuyer = memberRepository.save(buyer);
-            Member savedSeller = memberRepository.save(seller);
-            BidHistory bidHistory = BidHistory.builder()
-                    .productName(auctionInfo.productName())
-                    .price(price)
-                    .quantity(quantity)
-                    .bidStatus(BidStatus.BID)
-                    .sellerId(savedSeller.getId())
-                    .buyerId(savedBuyer.getId())
-                    .build();
-            bidHistoryRepository.save(bidHistory);
-        }
+        auctionService.submitBid(auctionId, price, quantity, requestTime);
+        Member savedBuyer = memberRepository.save(buyer);
+        Member savedSeller = memberRepository.save(seller);
+        BidHistory bidHistory = BidHistory.builder()
+                .productName(auctionInfo.productName())
+                .price(price)
+                .quantity(quantity)
+                .bidStatus(BidStatus.BID)
+                .sellerId(savedSeller.getId())
+                .buyerId(savedBuyer.getId())
+                .build();
+        bidHistoryRepository.save(bidHistory);
     }
 
     private Member findMemberObject(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다.", ErrorCode.M002));
-    }
-
-    private boolean submitBid(long price, long auctionId, long quantity, Member buyer, Member seller,
-                              ZonedDateTime requestTime) {
-        try {
-            auctionService.submitBid(auctionId, price, quantity, requestTime);
-            return true;
-        } catch (BadRequestException e) {
-            buyer.chargePoint(price * quantity);
-            seller.usePoint(price * quantity);
-            return false;
-        }
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다. id=" + id, ErrorCode.M002));
     }
 
     /**
@@ -101,21 +86,11 @@ public class PaymentService {
         buyer.chargePoint(price * quantity);
         seller.usePoint(price * quantity);
 
-        // 환불 요청에 대한 정보 저장
-        if (cancelBid(refundTargetBidHistory.getAuctionId(), quantity)) {
-            memberRepository.save(buyer);
-            memberRepository.save(seller);
-            bidHistoryRepository.save(refundTargetBidHistory);  // 정상적으로 환불 처리된 경우 해당 이력을 '환불' 상태로 변경
-        }
-    }
+        auctionService.cancelBid(refundTargetBidHistory.getAuctionId(), quantity);
 
-    private boolean cancelBid(long auctionId, long quantity) {
-        try {
-            auctionService.cancelBid(auctionId, quantity);
-            return true;
-        } catch (BadRequestException e) {
-            return false;
-        }
+        memberRepository.save(buyer);
+        memberRepository.save(seller);
+        bidHistoryRepository.save(refundTargetBidHistory);  // 정상적으로 환불 처리된 경우 해당 이력을 '환불' 상태로 변경
     }
 
     private BidHistory findRefundTargetBidHistory(long bidHistoryId) {
