@@ -132,12 +132,12 @@ public class AuctionService {
      * @param auctionId 경매 ID
      * @return 판매자용 경매 정보
      */
-    public SellerAuctionInfo getSellerAuction(SignInInfo signInInfo, long auctionId) {
+    public SellerAuctionInfo getSellerAuction(long auctionId) {
         Auction auction = findAuctionObject(auctionId);
 
-        if (!signInInfo.isSameId(auction.getSellerId())) {
-            throw new UnauthorizedException("판매자는 자신이 등록한 경매만 조회할 수 있습니다.", ErrorCode.A027);
-        }
+//        if (!signInInfo.isSameId(auction.getSellerId())) {
+//            throw new UnauthorizedException("판매자는 자신이 등록한 경매만 조회할 수 있습니다.", ErrorCode.A027);
+//        }
 
         return Mapper.convertToSellerAuctionInfo(auction);
     }
