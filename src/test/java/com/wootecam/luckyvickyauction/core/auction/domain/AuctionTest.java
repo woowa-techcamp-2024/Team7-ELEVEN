@@ -469,7 +469,7 @@ class AuctionTest {
                 // expect
                 assertThatThrownBy(() -> auction.refundStock(-1L))
                         .isInstanceOf(BadRequestException.class)
-                        .hasMessage("변경할 재고는 1보다 작을 수 없습니다. inputStock=-1")
+                        .hasMessage("환불할 재고는 1보다 작을 수 없습니다. inputStock=-1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.A022));
             }
@@ -502,7 +502,7 @@ class AuctionTest {
                 // expect
                 assertThatThrownBy(() -> auction.refundStock(1L))
                         .isInstanceOf(BadRequestException.class)
-                        .hasMessage("변경 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=1")
+                        .hasMessage("환불 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.A023));
             }

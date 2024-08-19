@@ -144,12 +144,12 @@ public class Auction {
 
         if (refundStockAmount < MINIMUM_STOCK_COUNT) {
             throw new BadRequestException(
-                    String.format("변경할 재고는 %d보다 작을 수 없습니다. inputStock=%s", MINIMUM_STOCK_COUNT, refundStockAmount),
+                    String.format("환불할 재고는 %d보다 작을 수 없습니다. inputStock=%s", MINIMUM_STOCK_COUNT, refundStockAmount),
                     ErrorCode.A022);
         }
 
         if (newCurrentStock > this.originStock) {
-            throw new BadRequestException("변경 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=" + refundStockAmount,
+            throw new BadRequestException("환불 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=" + refundStockAmount,
                     ErrorCode.A023);
         }
 

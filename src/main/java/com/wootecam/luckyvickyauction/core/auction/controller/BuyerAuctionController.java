@@ -45,11 +45,12 @@ public class BuyerAuctionController {
     }
 
     // 사용자는 경매에 입찰한다.
+    @BuyerOnly
     @PostMapping("/{auctionId}/bids")
-    public ResponseEntity<Void> bidAuction(@SessionAttribute("signInMember") Member member,
+    public ResponseEntity<Void> bidAuction(@Login SignInInfo signInInfo,
                                            @PathVariable(name = "auctionId") Long auctionId,
                                            @RequestBody BidRequest bidRequest) {
-        paymentService.process(member, bidRequest.price(), auctionId, bidRequest.quantity(), ZonedDateTime.now());
+        paymentService.process(signInInfo, bidRequest.price(), auctionId, bidRequest.quantity(), ZonedDateTime.now());
         return ResponseEntity.ok().build();
     }
 

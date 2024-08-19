@@ -52,7 +52,6 @@ public class SellerAuctionController {
         auctionService.cancelAuction(sellerInfo, command);
     }
 
-    // TODO: 현식햄 머지하면 진행하기!
     // 판매자는 자신이 등록한 경매 목록을 조회한다.
     @SellerOnly
     @GetMapping("/seller")
