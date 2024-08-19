@@ -131,7 +131,7 @@ class SellerAuctionControllerTest extends DocumentationTest {
 
             // docs
             docs.andDo(
-                    document("/auctions/delete/success",
+                    document("auctions/delete/success",
                             requestCookies(
                                     cookieWithName("JSESSIONID").description("세션 ID")
                             ),
