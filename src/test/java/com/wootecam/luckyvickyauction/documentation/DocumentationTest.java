@@ -11,7 +11,6 @@ import com.wootecam.luckyvickyauction.core.member.controller.AuthController;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
 import com.wootecam.luckyvickyauction.core.payment.controller.PaymentController;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
-import com.wootecam.luckyvickyauction.core.payment.controller.PaymentController;
 import com.wootecam.luckyvickyauction.core.payment.controller.ReceiptController;
 import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
 import com.wootecam.luckyvickyauction.documentation.errorcode.FakeErrorCodeController;
