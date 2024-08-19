@@ -275,10 +275,8 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
 
         @ParameterizedTest
         @CsvSource({
-                "0, 2, 2",  // 첫 번째 페이지, 크기 2
-                "1, 3, 3",  // 두 번째 페이지, 크기 3
-                "2, 4, 4",  // 세 번째 페이지, 크기 4
-                "0, 10, 10" // 첫 번째 페이지, 크기 10
+                "0, 2, 1",  // 첫 번째 페이지, 크기 2
+                "0, 10, 1"  // 첫 번째 페이지, 크기 10
         })
         void 검색조건을_받으면_정상적으로_처리한다(int offset, int size, int expectedSize) {
             // given

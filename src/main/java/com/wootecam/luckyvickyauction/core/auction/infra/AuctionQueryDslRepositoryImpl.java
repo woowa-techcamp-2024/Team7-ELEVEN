@@ -30,6 +30,7 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
         return query
                 .select(auction)
                 .from(auction)
+                .where(auction.sellerId.eq(condition.sellerId()))
                 .limit(condition.size())
                 .offset(condition.offset())
                 .fetch();
