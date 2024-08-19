@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
+import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.core.auction.infra.FakeAuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
@@ -24,6 +25,7 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -56,19 +58,97 @@ class PaymentServiceTest {
             @Test
             void 입찰이_진행된다() {
                 // given
+                ZonedDateTime now = ZonedDateTime.now();
+                Member seller = Member.builder()
+                        .signInId("sellerId")
+                        .password("password0")
+                        .role(Role.SELLER)
+                        .point(new Point(0))
+                        .build();
+                Member buyer = Member.builder()
+                        .signInId("sellerId")
+                        .password("password0")
+                        .role(Role.BUYER)
+                        .point(new Point(10000L))
+                        .build();
+                Member savedSeller = memberRepository.save(seller);
+                Member savedBuyer = memberRepository.save(buyer);
+                Auction runningAuction = Auction.builder()
+                        .sellerId(savedSeller.getId())
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(100L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+                Auction savedAuction = auctionRepository.save(runningAuction);
+
                 // when
+                paymentService.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L, savedAuction.getId(), 1L,
+                        now.minusMinutes(30));
+
                 // then
+                Auction auction = auctionRepository.findById(savedAuction.getId()).get();
+                Member finalBuyer = memberRepository.findById(savedBuyer.getId()).get();
+                Member finalSeller = memberRepository.findById(savedSeller.getId()).get();
+                assertAll(
+                        () -> assertThat(auction.getCurrentStock()).isEqualTo(99L),
+                        () -> assertThat(finalBuyer.getPoint()).isEqualTo(new Point(0)),
+                        () -> assertThat(finalSeller.getPoint()).isEqualTo(new Point(10000L))
+                );
             }
         }
 
         @Nested
-        class 만약_요청한_사용자가_구매자가_아니라면 {
+        class 만약_요청한_구매자를_찾을_수_없다면 {
 
             @Test
             void 예외가_발생한다() {
                 // given
-                // when
-                // then
+                ZonedDateTime now = ZonedDateTime.now();
+                Member seller = Member.builder()
+                        .signInId("sellerId")
+                        .password("password0")
+                        .role(Role.SELLER)
+                        .point(new Point(0))
+                        .build();
+                Member buyer = Member.builder()
+                        .signInId("sellerId")
+                        .password("password0")
+                        .role(Role.BUYER)
+                        .point(new Point(10000L))
+                        .build();
+                Member savedSeller = memberRepository.save(seller);
+                Member savedBuyer = memberRepository.save(buyer);
+                Auction runningAuction = Auction.builder()
+                        .sellerId(savedSeller.getId())
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(100L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+                Auction savedAuction = auctionRepository.save(runningAuction);
+
+                // expect
+                assertThatThrownBy(
+                        () -> paymentService.process(new SignInInfo(savedBuyer.getId() + 1L, Role.BUYER), 10000L,
+                                savedAuction.getId(), 1L, now.minusMinutes(30)))
+                        .isInstanceOf(NotFoundException.class)
+                        .hasMessage("사용자를 찾을 수 없습니다. id=" + (savedBuyer.getId() + 1L))
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.M002);
             }
         }
 
@@ -78,19 +158,92 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                // when
-                // then
+                ZonedDateTime now = ZonedDateTime.now();
+                Member seller = Member.builder()
+                        .signInId("sellerId")
+                        .password("password0")
+                        .role(Role.SELLER)
+                        .point(new Point(0))
+                        .build();
+                Member buyer = Member.builder()
+                        .signInId("sellerId")
+                        .password("password0")
+                        .role(Role.BUYER)
+                        .point(new Point(10000L))
+                        .build();
+                Member savedSeller = memberRepository.save(seller);
+                Member savedBuyer = memberRepository.save(buyer);
+                Auction runningAuction = Auction.builder()
+                        .sellerId(savedSeller.getId() + 100)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(100L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+                Auction savedAuction = auctionRepository.save(runningAuction);
+
+                // expect
+                assertThatThrownBy(
+                        () -> paymentService.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L,
+                                savedAuction.getId(), 1L, now.minusMinutes(30)))
+                        .isInstanceOf(NotFoundException.class)
+                        .hasMessage("사용자를 찾을 수 없습니다. id=" + runningAuction.getSellerId())
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.M002);
             }
         }
 
         @Nested
-        class 만약_요청한_물건의_금액이_사용자가_가진_포인트보다_많다면 {
+        class 만약_요청한_물건의_금액이_사용자가_가진_포인트보다_크다면 {
 
             @Test
             void 예외가_발생한다() {
                 // given
-                // when
-                // then
+                ZonedDateTime now = ZonedDateTime.now();
+                Member seller = Member.builder()
+                        .signInId("sellerId")
+                        .password("password0")
+                        .role(Role.SELLER)
+                        .point(new Point(0))
+                        .build();
+                Member buyer = Member.builder()
+                        .signInId("sellerId")
+                        .password("password0")
+                        .role(Role.BUYER)
+                        .point(new Point(10000L))
+                        .build();
+                Member savedSeller = memberRepository.save(seller);
+                Member savedBuyer = memberRepository.save(buyer);
+                Auction runningAuction = Auction.builder()
+                        .sellerId(savedSeller.getId())
+                        .productName("productName")
+                        .originPrice(10001L)
+                        .currentPrice(10001L)
+                        .originStock(100L)
+                        .currentStock(100L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+                Auction savedAuction = auctionRepository.save(runningAuction);
+
+                // expect
+                assertThatThrownBy(
+                        () -> paymentService.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L,
+                                savedAuction.getId(), 1L, now.minusMinutes(30)))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage(String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d",
+                                savedAuction.getCurrentPrice(), 10000L))
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A029);
             }
         }
     }
