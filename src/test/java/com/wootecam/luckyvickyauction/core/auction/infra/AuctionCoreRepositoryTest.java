@@ -7,8 +7,10 @@ import com.wootecam.luckyvickyauction.context.RepositoryTest;
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
+import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,4 +182,37 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
         }
 
     }
+
+    @Nested
+    class 경매_취소_작업을_수행할_때 {
+
+        @Test
+        void 경매_식별번호가_전달되면_정상적으로_삭제된다() {
+            // given
+            AuctionEntity entity = AuctionEntity.builder().build();
+            AuctionEntity savedAuction = auctionJpaRepository.save(entity);
+
+            // when
+            auctionRepository.deleteById(savedAuction.getId());
+
+            // then
+            List<AuctionEntity> all = auctionJpaRepository.findAll();
+            assertThat(all).isEmpty();
+        }
+
+        @Test
+        void 존재하지않는_경매_식별번호가_전달되면_정상적으로_무시된다() {
+            // given
+            long nonExistentId = 1L;
+
+            // when
+            auctionRepository.deleteById(nonExistentId);
+
+            // then
+            List<AuctionEntity> all = auctionJpaRepository.findAll();
+            assertThat(all).isEmpty();
+        }
+
+    }
+
 }
