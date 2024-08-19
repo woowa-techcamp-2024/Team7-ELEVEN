@@ -14,8 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.fixture.BuyerAuctionInfoFixture;
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.documentation.DocumentationTest;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Nested;
@@ -32,15 +32,14 @@ class BuyerAuctionControllerTest extends DocumentationTest {
         void 성공시() throws Exception {
             // given
             Long receiptId = 1L;
-            Member buyer = MemberFixture.create()
-                    .build();
+            SignInInfo signInInfo = new SignInInfo(1L, Role.BUYER);
 
             // when
             ResultActions perform = mockMvc.perform(delete("/auctions/bids/{receiptId}", receiptId)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaType.APPLICATION_JSON_VALUE)
                     .cookie(new Cookie("JSESSIONID", "sessionId"))
-                    .sessionAttr("signInMember", buyer)
+                    .sessionAttr("signInMember", signInInfo)
             );
 
             // then

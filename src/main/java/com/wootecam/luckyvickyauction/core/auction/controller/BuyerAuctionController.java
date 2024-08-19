@@ -4,7 +4,9 @@ import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.member.controller.BuyerOnly;
+import com.wootecam.luckyvickyauction.core.member.controller.Login;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 @RestController
 @RequestMapping("/auctions")
@@ -54,12 +55,10 @@ public class BuyerAuctionController {
      * @param receiptId
      * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/32">Github Story Issue</a>
      */
+    @BuyerOnly
     @DeleteMapping("/bids/{receiptId}")
-    public ResponseEntity<Void> refundAuction(
-            @SessionAttribute("signInMember") Member member,
-            @PathVariable("receiptId") Long receiptId
-    ) {
-        paymentService.refund(member, receiptId);
+    public ResponseEntity<Void> refundAuction(@Login SignInInfo buyerInfo, @PathVariable("receiptId") Long receiptId) {
+        paymentService.refund(buyerInfo, receiptId);
         return ResponseEntity.ok().build();
     }
 
