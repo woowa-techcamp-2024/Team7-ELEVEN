@@ -2,6 +2,7 @@ package com.wootecam.luckyvickyauction.core.auction.dto;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -17,7 +18,7 @@ class AuctionSearchConditionTest {
         @ParameterizedTest
         @ValueSource(ints = {0, 101})
         void size가_1보다_작거나_100보다_크면_예외가_발생한다(int size) {
-            assertThrows(IllegalArgumentException.class, () -> new AuctionSearchCondition(0, size));
+            assertThrows(BadRequestException.class, () -> new AuctionSearchCondition(0, size));
         }
     }
 
