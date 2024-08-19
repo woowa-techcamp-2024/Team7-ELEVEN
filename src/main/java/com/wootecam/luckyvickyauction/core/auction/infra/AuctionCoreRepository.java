@@ -32,7 +32,7 @@ public class AuctionCoreRepository implements AuctionRepository {
 
     @Override
     public void deleteById(long id) {
-
+        // FIXME~~~ 바로 다음 PR에 작업할 것이에요~~~
     }
 
     @Override
@@ -45,6 +45,9 @@ public class AuctionCoreRepository implements AuctionRepository {
 
     @Override
     public List<Auction> findAllBy(SellerAuctionSearchCondition condition) {
-        return List.of();
+        List<AuctionEntity> entities = auctionJpaRepository.findAllBy(condition);
+        return entities.stream()
+                .map(Mapper::convertToAuction)
+                .toList();
     }
 }
