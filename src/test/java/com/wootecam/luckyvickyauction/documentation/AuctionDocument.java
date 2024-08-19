@@ -5,10 +5,15 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
+import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
+import java.time.Duration;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -104,4 +109,37 @@ public class AuctionDocument extends DocumentationTest {
         }
     }
 
+    @Nested
+    class 판매자_경매_상세_조회 {
+
+        @Test
+        void 경매_id를_전달하면_성공적으로_경매_상세정보를_반환한다() {
+            String auctionId = "1";
+            SellerAuctionInfo sellerAuctionInfo = SellerAuctionInfo.builder()
+                    .auctionId(1L)
+                    .productName("쓸만한 경매품")
+                    .originPrice(10000)
+                    .currentPrice(8000)
+                    .originStock(100)
+                    .currentStock(50)
+                    .maximumPurchaseLimitCount(10)
+                    .pricePolicy(new ConstantPricePolicy(10L))
+                    .variationDuration(Duration.ofMinutes(10))
+                    .startedAt(ZonedDateTime.now())
+                    .finishedAt(ZonedDateTime.now().plusHours(1))
+                    .isShowStock(true)
+                    .build();
+            given(auctionService.getSellerAuction(1L)).willReturn(sellerAuctionInfo);
+
+            docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when().get("/auctions/{auctionId}/seller", auctionId)
+                    .then().log().all()
+                    .apply(document("auctions/getSellerAuctionDetail/success",
+                            pathParameters(
+                                    parameterWithName("auctionId").description("조회할 경매 ID")
+                            )
+                    ))
+                    .statusCode(HttpStatus.OK.value());
+        }
+    }
 }

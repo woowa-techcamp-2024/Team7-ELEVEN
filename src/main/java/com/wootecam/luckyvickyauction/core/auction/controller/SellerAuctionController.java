@@ -64,9 +64,9 @@ public class SellerAuctionController {
 
     // 판매자는 자신이 등록한 경매를 상세 조회한다.
     @GetMapping("/{auctionId}/seller")
-    public SellerAuctionInfo getSellerAuction(@PathVariable Long auctionId) {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
+    public ResponseEntity<SellerAuctionInfo> getSellerAuction(@PathVariable("auctionId") Long auctionId) {
+        SellerAuctionInfo sellerAuctionInfo = auctionService.getSellerAuction(auctionId);
+        return ResponseEntity.ok(sellerAuctionInfo);
     }
 
     // 판매자는 자신의 경매 상품의 재고를 수정한다.

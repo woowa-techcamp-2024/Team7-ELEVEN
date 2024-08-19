@@ -53,7 +53,7 @@ class SellerAuctionControllerTest extends DocumentationTest {
                     .body(objectMapper.writeValueAsString(condition))
                     .when().post("/auctions")
                     .then().log().all()
-                    .apply(document("/auctions/post/constant_policy/success",
+                    .apply(document("auctions/post/constant_policy/success",
                             requestFields(
                                     fieldWithPath("sellerId").description("판매자 ID"),
                                     fieldWithPath("productName").description("상품 이름"),
@@ -88,7 +88,7 @@ class SellerAuctionControllerTest extends DocumentationTest {
                     .body(objectMapper.writeValueAsString(condition))
                     .when().post("/auctions")
                     .then().log().all()
-                    .apply(document("/auctions/post/percentage_policy/success",
+                    .apply(document("auctions/post/percentage_policy/success",
                             requestFields(
                                     fieldWithPath("sellerId").description("판매자 ID"),
                                     fieldWithPath("productName").description("상품 이름"),
