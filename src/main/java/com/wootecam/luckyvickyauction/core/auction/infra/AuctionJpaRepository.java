@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AuctionJpaRepository extends JpaRepository<AuctionEntity, Long>, AuctionQueryDslRepository {
 
-    Optional<AuctionEntity> findByIdAndSellerId(long id, Long sellerId);
+    Optional<AuctionEntity> findById(long id);
 }

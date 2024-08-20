@@ -1,16 +1,20 @@
 package com.wootecam.luckyvickyauction.core.auction.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
+import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.core.auction.infra.FakeAuctionRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,22 +73,21 @@ abstract class GetSellerAuctionTest {
         }
     }
 
-    // TODO [추후 인증객체 만들어진 후 주석 해제] [writeAt: 2024/08/18/17:40] [writeBy: minseok-oh]
-//    @Nested
-//    class 요철한_판매자가_경매의_판매자가_아닌_경우 {
-//
-//        @Test
-//        void 예외가_발생한다() {
-//            // given
-//            Member seller = MemberFixture.createSellerWithDefaultPoint();
-//            Auction auction = auctionRepository.save(AuctionFixture.createWaitingAuction());
-//            SignInInfo signInInfo = new SignInInfo(seller.getId() + 1, seller.getRole());
-//
-//            // expect
-//            assertThatThrownBy(() -> auctionService.getSellerAuction(signInInfo, auction.getId()))
-//                    .isInstanceOf(UnauthorizedException.class)
-//                    .hasMessage("판매자는 자신이 등록한 경매만 조회할 수 있습니다.")
-//                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A027);
-//        }
-//    }
+    @Nested
+    class 요철한_판매자가_경매의_판매자가_아닌_경우 {
+
+        @Test
+        void 예외가_발생한다() {
+            // given
+            Member seller = MemberFixture.createSellerWithDefaultPoint();
+            Auction auction = auctionRepository.save(AuctionFixture.createWaitingAuction());
+            SignInInfo signInInfo = new SignInInfo(seller.getId() + 1, seller.getRole());
+
+            // expect
+            assertThatThrownBy(() -> auctionService.getSellerAuction(signInInfo, auction.getId()))
+                    .isInstanceOf(UnauthorizedException.class)
+                    .hasMessage("판매자는 자신이 등록한 경매만 조회할 수 있습니다.")
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A027);
+        }
+    }
 }

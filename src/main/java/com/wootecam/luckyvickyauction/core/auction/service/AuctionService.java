@@ -135,8 +135,12 @@ public class AuctionService {
      * @return 판매자용 경매 정보
      */
     public SellerAuctionInfo getSellerAuction(SignInInfo sellerInfo, long auctionId) {
-        Auction auction = auctionRepository.findByIdAndSellerId(auctionId, sellerInfo.id())
-                .orElseThrow(() -> new NotFoundException("경매를 찾을 수 없습니다.", ErrorCode.A035));
+        Auction auction = findAuctionObject(auctionId);
+
+        if (!auction.isSeller(sellerInfo.id())) {
+            throw new UnauthorizedException("판매자는 자신이 등록한 경매만 조회할 수 있습니다.", ErrorCode.A027);
+        }
+
         return Mapper.convertToSellerAuctionInfo(auction);
     }
 
