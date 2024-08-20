@@ -59,9 +59,6 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'io.rest-assured:spring-mock-mvc:5.3.2'
-
-    // h2
-    testCompileOnly 'com.h2database:h2:2.2.220'
 }
 
 tasks.named('test') {
