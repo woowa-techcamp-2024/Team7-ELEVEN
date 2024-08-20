@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class BuyerAuctionController {
 
     private final AuctionService auctionService;
-
     private final PaymentService paymentService;
 
     // 사용자는 경매 목록을 조회한다.
@@ -66,5 +65,4 @@ public class BuyerAuctionController {
         paymentService.refund(buyerInfo, receiptId);
         return ResponseEntity.ok().build();
     }
-
 }

@@ -16,12 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,6 +29,7 @@ public class SellerAuctionController {
 
     private final AuctionService auctionService;
 
+    // TODO 시간 필요
     // 판매자는 경매를 생성한다.
     @SellerOnly
     @PostMapping
@@ -38,6 +37,8 @@ public class SellerAuctionController {
         auctionService.createAuction(sellerInfo, command);
         return ResponseEntity.ok().build();
     }
+
+    // TODO 시간 필요
 
     /**
      * 판매자는 경매를 취소한다.
@@ -74,13 +75,4 @@ public class SellerAuctionController {
         SellerAuctionInfo sellerAuctionInfo = auctionService.getSellerAuction(sellerInfo, auctionId);
         return ResponseEntity.ok(sellerAuctionInfo);
     }
-
-    // 판매자는 자신의 경매 상품의 재고를 수정한다.
-    @SellerOnly
-    @PatchMapping("/{auctionId}/stock")
-    public void changeAuctionStock(@PathVariable Long auctionId, @RequestParam long amount) {
-        // TODO: [Task에 맞게 로직 구현할 것!] [writeAt: 2024/08/16/17:40] [writeBy: chhs2131]
-        throw new UnsupportedOperationException();
-    }
-
 }

@@ -11,8 +11,6 @@ import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
-import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
-import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionStockCommand;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
@@ -26,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// TODO: [update, change 메소드에서 경매 상태 조건을 확인하는 부분을 서비스가 아니라 Auction이 갖게 하도록 변경하기] [writeAt: 2024/08/15/14:18] [writeBy: HiiWee]
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -59,38 +56,22 @@ public class AuctionService {
      * @param command    취소할 경매 정보
      */
     public void cancelAuction(SignInInfo signInInfo, CancelAuctionCommand command) {
-        // 회원 권한이 판매자인지 확인한다.
         if (!signInInfo.isType(Role.SELLER)) {
             throw new UnauthorizedException("판매자만 경매를 취소할 수 있습니다.", ErrorCode.A024);
         }
 
-        // 경매 정보를 불러온다.
         Auction auction = findAuctionObject(command.auctionId());
 
-        // 경매의 소유주가 해당 판매자인지 확인한다.
         if (!auction.isSeller(signInInfo.id())) {
             throw new UnauthorizedException("자신이 등록한 경매만 취소할 수 있습니다.", ErrorCode.A025);
         }
-
-        // 취소하려는 경매의 상태가 '경매 시작 전'인지 확인한다.
         if (!auction.currentStatus(command.requestTime()).isWaiting()) {
             String message = String.format("시작 전인 경매만 취소할 수 있습니다. 시작시간=%s, 요청시간=%s", auction.getStartedAt(),
                     command.requestTime());
             throw new BadRequestException(message, ErrorCode.A026);
         }
 
-        // 취소를 진행한다.
         auctionRepository.deleteById(command.auctionId());
-    }
-
-    public void changeStock(SignInInfo signInInfo, UpdateAuctionStockCommand command) {
-        if (!signInInfo.isType(Role.SELLER)) {
-            throw new UnauthorizedException("판매자만 재고를 수정할 수 있습니다.", ErrorCode.A017);
-        }
-        Auction auction = findAuctionObject(command.auctionId());
-        auction.changeStock(command.changeRequestStock(), command.requestTime(), signInInfo.id());
-
-        auctionRepository.save(auction);
     }
 
     /**
@@ -177,26 +158,6 @@ public class AuctionService {
     public void cancelBid(long auctionId, long quantity) {
         Auction auction = findAuctionObject(auctionId);
         auction.refundStock(quantity);
-        auctionRepository.save(auction);
-    }
-
-    /**
-     * 경매 옵션 변경
-     */
-    public void changeOption(UpdateAuctionCommand command) {
-        // 검증
-        Auction auction = findAuctionObject(command.auctionId());
-
-        if (!auction.currentStatus(command.requestTime()).isWaiting()) {
-            throw new BadRequestException(
-                    "시작 전인 경매만 변경할 수 있습니다. 변경요청시간: " + command.requestTime() + ", 경매시작시간: " + auction.getStartedAt(),
-                    ErrorCode.A012);
-        }
-
-        // 변경 TODO
-        // auction.변경해줘(command);
-
-        // 저장
         auctionRepository.save(auction);
     }
 
