@@ -11,7 +11,7 @@ import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.controller.Login;
 import com.wootecam.luckyvickyauction.core.member.controller.SellerOnly;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,12 +30,12 @@ public class SellerAuctionController {
 
     private final AuctionService auctionService;
 
-    // 판매자는 경매를 생성한다.
+    // 판매자는 경매를 등록한다.
     @SellerOnly
     @PostMapping
     public ResponseEntity<Void> createAuction(@Login SignInInfo sellerInfo,
                                               @RequestBody CreateAuctionRequest request,
-                                              @CurrentTime ZonedDateTime now) {
+                                              @CurrentTime LocalDateTime now) {
         CreateAuctionCommand command = new CreateAuctionCommand(request.productName(), request.originPrice(),
                 request.stock(), request.maximumPurchaseLimitCount(), request.pricePolicy(),
                 request.variationDuration(), now, request.startedAt(), request.finishedAt(), request.isShowStock());
@@ -53,7 +53,7 @@ public class SellerAuctionController {
     @DeleteMapping("/{auctionId}")
     public void cancelAuction(@Login SignInInfo sellerInfo,
                               @PathVariable("auctionId") Long auctionId,
-                              @CurrentTime ZonedDateTime now) {
+                              @CurrentTime LocalDateTime now) {
         CancelAuctionCommand command = new CancelAuctionCommand(now, auctionId);
         auctionService.cancelAuction(sellerInfo, command);
     }
@@ -61,9 +61,8 @@ public class SellerAuctionController {
     // 판매자는 자신이 등록한 경매 목록을 조회한다.
     @SellerOnly
     @GetMapping("/seller")
-    public ResponseEntity<List<SellerAuctionSimpleInfo>> getSellerAuctions(
-            @Login SignInInfo sellerInfo,
-            @RequestBody SellerAuctionSearchRequest request) {
+    public ResponseEntity<List<SellerAuctionSimpleInfo>> getSellerAuctions(@Login SignInInfo sellerInfo,
+                                                                           @RequestBody SellerAuctionSearchRequest request) {
         SellerAuctionSearchCondition condition = new SellerAuctionSearchCondition(
                 sellerInfo.id(),
                 request.offset(),

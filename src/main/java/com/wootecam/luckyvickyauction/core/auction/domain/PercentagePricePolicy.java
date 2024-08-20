@@ -27,7 +27,7 @@ public class PercentagePricePolicy implements PricePolicy {
             String message = String.format("할인율은 %d%% 초과 %d%% 이하여야 합니다. 할인율: %f%%", (int) MINIMUM_RATE,
                     (int) MAXIMUM_RATE,
                     discountRate);
-            throw new BadRequestException(message, ErrorCode.A010);
+            throw new BadRequestException(message, ErrorCode.A009);
         }
     }
 

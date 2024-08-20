@@ -13,7 +13,7 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class PaymentService {
      * 1. 구매자 확인 <br> 2. 구매자 포인트를 감소 <br> 3. 판매자에게 포인트 지급 <br> 4. 구매 요청 <br> - 실패하면 -> 예외 발생 및 구매자와 판매자 포인트 롤백 <br> -
      * 성공하면 -> BidHistory 저장 및 구매자, 판매자 업데이트 적용
      */
-    public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, ZonedDateTime requestTime) {
+    public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, LocalDateTime requestTime) {
         Member buyer = findMemberObject(buyerInfo.id());
         AuctionInfo auctionInfo = auctionService.getAuction(auctionId);
         Member seller = findMemberObject(auctionInfo.sellerId());
@@ -42,7 +42,7 @@ public class PaymentService {
                 .productName(auctionInfo.productName())
                 .price(price)
                 .quantity(quantity)
-                .bidStatus(BidStatus.BID)
+                .bidStatus(BidStatus.PURCHASED)
                 .sellerId(savedSeller.getId())
                 .buyerId(savedBuyer.getId())
                 .build();

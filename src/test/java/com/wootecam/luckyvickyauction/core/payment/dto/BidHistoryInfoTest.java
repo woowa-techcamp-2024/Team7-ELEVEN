@@ -1,12 +1,13 @@
 package com.wootecam.luckyvickyauction.core.payment.dto;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
+import com.wootecam.luckyvickyauction.core.member.domain.Point;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
 class BidHistoryInfoTest {
@@ -18,12 +19,24 @@ class BidHistoryInfoTest {
         String productName = "상품이름";
         long price = 10000L;
         long quantity = 1L;
-        BidStatus bidStatus = BidStatus.BID;
+        BidStatus bidStatus = BidStatus.PURCHASED;
         Long auctionId = 1L;
-        Member seller = MemberFixture.createSellerWithDefaultPoint();
-        Member buyer = MemberFixture.createBuyerWithDefaultPoint();
-        ZonedDateTime createdAt = ZonedDateTime.now();
-        ZonedDateTime updatedAt = ZonedDateTime.now();
+        Member seller = Member.builder()
+                .id(1L)
+                .signInId("buyerId")
+                .password("password00")
+                .role(Role.BUYER)
+                .point(new Point(1000L))
+                .build();
+        Member buyer = Member.builder()
+                .id(2L)
+                .signInId("sellerId")
+                .password("password00")
+                .role(Role.SELLER)
+                .point(new Point(1000L))
+                .build();
+        LocalDateTime createdAt = LocalDateTime.now();
+        LocalDateTime updatedAt = LocalDateTime.now();
 
         // when
         BidHistoryInfo bidHistoryInfo = new BidHistoryInfo(id, productName, price, quantity, bidStatus, auctionId,

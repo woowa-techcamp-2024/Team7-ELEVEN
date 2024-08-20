@@ -3,14 +3,14 @@ package com.wootecam.luckyvickyauction.core.auction.fixture;
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 public class AuctionFixture {
     private AuctionFixture() {
     }
 
     public static Auction createRunningAuction() {
-        ZonedDateTime now = ZonedDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
         return Auction.builder()
                 .sellerId(1L)
@@ -29,7 +29,7 @@ public class AuctionFixture {
     }
 
     public static Auction createWaitingAuction() {
-        ZonedDateTime now = ZonedDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
         return Auction.builder()
                 .sellerId(1L)
@@ -48,7 +48,7 @@ public class AuctionFixture {
     }
 
     public static Auction createFinishedAuction() {
-        ZonedDateTime now = ZonedDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
         return Auction.builder()
                 .sellerId(1L)
@@ -67,7 +67,7 @@ public class AuctionFixture {
     }
 
     public static Auction createSoldOutAuction() {
-        ZonedDateTime now = ZonedDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
         return Auction.builder()
                 .sellerId(1L)

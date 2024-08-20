@@ -4,41 +4,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.luckyvickyauction.context.ServiceTest;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
-import com.wootecam.luckyvickyauction.core.payment.infra.FakeBidHistoryRepository;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class BidHistoryServiceTest {
-    private BidHistoryService bidHistoryService;
-    private BidHistoryRepository bidHistoryRepository;
-
-    @BeforeEach
-    void setUp() {
-        bidHistoryRepository = new FakeBidHistoryRepository();
-        bidHistoryService = new BidHistoryService(bidHistoryRepository);
-    }
+class BidHistoryServiceTest extends ServiceTest {
 
     @Nested
     class getBidHistory_메서드는 {
@@ -57,16 +47,16 @@ class BidHistoryServiceTest {
         @MethodSource("provideMembersForSuccess")
         void 소유자가_거래내역_조회시_성공한다(Long memberId, String description) {
             // given
-            ZonedDateTime now = ZonedDateTime.now();
-            Member seller = MemberFixture.createSellerWithDefaultPoint();  // 소유자
-            Member buyer = MemberFixture.createBuyerWithDefaultPoint();  // 소유자
+            LocalDateTime now = LocalDateTime.now();
+            Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
+            Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
             BidHistory bidHistory = BidHistory.builder()
                     .id(1L)
                     .productName("멋진 상품")
                     .price(1000000)
                     .quantity(1)
-                    .bidStatus(BidStatus.BID)
+                    .bidStatus(BidStatus.PURCHASED)
                     .auctionId(1L)
                     .sellerId(seller.getId())
                     .buyerId(buyer.getId())
@@ -85,7 +75,7 @@ class BidHistoryServiceTest {
                     () -> assertThat(bidHistoryInfo.productName()).isEqualTo("멋진 상품"),
                     () -> assertThat(bidHistoryInfo.price()).isEqualTo(1000000),
                     () -> assertThat(bidHistoryInfo.quantity()).isEqualTo(1),
-                    () -> assertThat(bidHistoryInfo.bidStatus()).isEqualTo(BidStatus.BID),
+                    () -> assertThat(bidHistoryInfo.bidStatus()).isEqualTo(BidStatus.PURCHASED),
                     () -> assertThat(bidHistoryInfo.auctionId()).isEqualTo(1L),
                     () -> assertThat(bidHistoryInfo.sellerId()).isEqualTo(seller.getId()),
                     () -> assertThat(bidHistoryInfo.buyerId()).isEqualTo(buyer.getId())
@@ -95,7 +85,7 @@ class BidHistoryServiceTest {
         @Test
         void 존재하지않는_거래내역을_조회할때_예외가_발생한다() {
             // given
-            Member member = MemberFixture.createBuyerWithDefaultPoint();
+            Member member = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
             long bidHistoryId = 1L;
 
             // expect

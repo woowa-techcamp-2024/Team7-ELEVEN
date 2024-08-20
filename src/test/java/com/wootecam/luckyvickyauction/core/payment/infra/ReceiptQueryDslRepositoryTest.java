@@ -7,7 +7,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.Nested;
@@ -35,12 +35,12 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                         .productName("상품1")
                         .price(1000)
                         .quantity(1)
-                        .bidStatus(BidStatus.BID)
+                        .bidStatus(BidStatus.PURCHASED)
                         .auctionId(4L)
                         .buyerId(buyerId)
                         .sellerId(2L)
-                        .createdAt(ZonedDateTime.now())
-                        .updatedAt(ZonedDateTime.now())
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
                         .build());
             }
 
@@ -67,24 +67,24 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
-                    .bidStatus(BidStatus.BID)
+                    .bidStatus(BidStatus.PURCHASED)
                     .auctionId(4L)
                     .buyerId(buyerId)
                     .sellerId(2L)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build());
 
             repository.save(ReceiptEntity.builder()
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
-                    .bidStatus(BidStatus.BID)
+                    .bidStatus(BidStatus.PURCHASED)
                     .auctionId(4L)
                     .buyerId(otherBuyerId)
                     .sellerId(2L)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build());
             // when
             List<ReceiptEntity> receipts = repository.findAllByBuyerId(buyerId, condition);
@@ -111,12 +111,12 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                         .productName("상품1")
                         .price(1000)
                         .quantity(1)
-                        .bidStatus(BidStatus.BID)
+                        .bidStatus(BidStatus.PURCHASED)
                         .auctionId(4L)
                         .buyerId(2L)
                         .sellerId(sellerId)
-                        .createdAt(ZonedDateTime.now())
-                        .updatedAt(ZonedDateTime.now())
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
                         .build());
             }
 
@@ -139,24 +139,24 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
-                    .bidStatus(BidStatus.BID)
+                    .bidStatus(BidStatus.PURCHASED)
                     .auctionId(4L)
                     .buyerId(2L)
                     .sellerId(sellerId)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build());
 
             repository.save(ReceiptEntity.builder()
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
-                    .bidStatus(BidStatus.BID)
+                    .bidStatus(BidStatus.PURCHASED)
                     .auctionId(4L)
                     .buyerId(2L)
                     .sellerId(otherSellerId)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build());
             // when
             List<ReceiptEntity> receipts = repository.findAllBySellerId(sellerId, condition);

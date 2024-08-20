@@ -18,7 +18,7 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -57,18 +57,18 @@ public class AuctionService {
      */
     public void cancelAuction(SignInInfo signInInfo, CancelAuctionCommand command) {
         if (!signInInfo.isType(Role.SELLER)) {
-            throw new UnauthorizedException("판매자만 경매를 취소할 수 있습니다.", ErrorCode.A024);
+            throw new UnauthorizedException("판매자만 경매를 취소할 수 있습니다.", ErrorCode.A017);
         }
 
         Auction auction = findAuctionObject(command.auctionId());
 
         if (!auction.isSeller(signInInfo.id())) {
-            throw new UnauthorizedException("자신이 등록한 경매만 취소할 수 있습니다.", ErrorCode.A025);
+            throw new UnauthorizedException("자신이 등록한 경매만 취소할 수 있습니다.", ErrorCode.A018);
         }
         if (!auction.currentStatus(command.requestTime()).isWaiting()) {
             String message = String.format("시작 전인 경매만 취소할 수 있습니다. 시작시간=%s, 요청시간=%s", auction.getStartedAt(),
                     command.requestTime());
-            throw new BadRequestException(message, ErrorCode.A026);
+            throw new BadRequestException(message, ErrorCode.A019);
         }
 
         auctionRepository.deleteById(command.auctionId());
@@ -82,7 +82,7 @@ public class AuctionService {
      * @param quantity    수량
      * @param requestTime 요청 시간
      */
-    public void submitBid(long auctionId, long price, long quantity, ZonedDateTime requestTime) {
+    public void submitBid(long auctionId, long price, long quantity, LocalDateTime requestTime) {
         Auction auction = findAuctionObject(auctionId);
         auction.submit(price, quantity, requestTime);
         auctionRepository.save(auction);
@@ -119,7 +119,7 @@ public class AuctionService {
         Auction auction = findAuctionObject(auctionId);
 
         if (!auction.isSeller(sellerInfo.id())) {
-            throw new UnauthorizedException("판매자는 자신이 등록한 경매만 조회할 수 있습니다.", ErrorCode.A027);
+            throw new UnauthorizedException("판매자는 자신이 등록한 경매만 조회할 수 있습니다.", ErrorCode.A020);
         }
 
         return Mapper.convertToSellerAuctionInfo(auction);
@@ -164,6 +164,6 @@ public class AuctionService {
     private Auction findAuctionObject(long auctionId) {
         return auctionRepository.findById(auctionId)
                 .orElseThrow(
-                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A011));
+                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A010));
     }
 }

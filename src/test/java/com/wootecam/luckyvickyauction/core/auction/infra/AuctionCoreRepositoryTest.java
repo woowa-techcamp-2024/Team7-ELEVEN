@@ -11,7 +11,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
@@ -31,7 +31,7 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
         @Test
         void 경매의_id로_경매를_조회한다() {
             // given
-            ZonedDateTime now = ZonedDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
             Auction auction = Auction.builder()
                     .id(1L)
                     .sellerId(2L)
@@ -90,7 +90,7 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
         @Test
         void 경매_도메인_엔티티를_받으면_정상적으로_수행한다() {
             // given
-            ZonedDateTime now = ZonedDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
             Auction auction = Auction.builder()
                     .sellerId(2L)
                     .productName("상품 이름")
@@ -132,7 +132,7 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
         @Test
         void 이미_등록된_아이디인_경우_정상적으로_수정한다() {
             // given
-            ZonedDateTime now = ZonedDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
             Auction auction = Auction.builder()
                     .sellerId(2L)
                     .productName("상품 이름")
@@ -248,7 +248,7 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
         List<AuctionEntity> auctions = new ArrayList<>();
 
         for (long i = 1; i <= count; i++) {
-            ZonedDateTime now = ZonedDateTime.now().plusHours(i);
+            LocalDateTime now = LocalDateTime.now().plusHours(i);
             AuctionEntity auction = AuctionEntity.builder()
                     .sellerId(i)
                     .productName("productName" + i)

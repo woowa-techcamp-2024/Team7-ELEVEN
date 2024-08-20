@@ -3,8 +3,7 @@ package com.wootecam.luckyvickyauction.core.auction.fixture;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import java.time.Duration;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 public class BuyerAuctionInfoFixture {
     private Long auctionId = 1L;
@@ -16,8 +15,8 @@ public class BuyerAuctionInfoFixture {
     private long maximumPurchaseLimitCount = 10;
     private PricePolicy pricePolicy = PricePolicy.createPercentagePricePolicy(10);
     private Duration variationDuration = Duration.ofMinutes(1L);
-    private ZonedDateTime startedAt = ZonedDateTime.of(2024, 8, 15, 14, 18, 0, 0, ZoneId.of("Asia/Seoul"));
-    private ZonedDateTime finishedAt = ZonedDateTime.of(2024, 8, 15, 15, 18, 0, 0, ZoneId.of("Asia/Seoul"));
+    private LocalDateTime startedAt = LocalDateTime.of(2024, 8, 15, 14, 18, 0, 0);
+    private LocalDateTime finishedAt = LocalDateTime.of(2024, 8, 15, 15, 18, 0, 0);
 
     public static BuyerAuctionInfoFixture create() {
         return new BuyerAuctionInfoFixture();
@@ -68,12 +67,12 @@ public class BuyerAuctionInfoFixture {
         return this;
     }
 
-    public BuyerAuctionInfoFixture startedAt(ZonedDateTime startedAt) {
+    public BuyerAuctionInfoFixture startedAt(LocalDateTime startedAt) {
         this.startedAt = startedAt;
         return this;
     }
 
-    public BuyerAuctionInfoFixture finishedAt(ZonedDateTime finishedAt) {
+    public BuyerAuctionInfoFixture finishedAt(LocalDateTime finishedAt) {
         this.finishedAt = finishedAt;
         return this;
     }

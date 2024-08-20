@@ -36,7 +36,7 @@ public class ConstantPricePolicy implements PricePolicy {
         if (price <= variationWidth) {
             throw new BadRequestException(
                     String.format("상품 원가는 가격 변동폭보다 커야 합니다. 상품 원가: %d, 가격 변동폭: %d", price, variationWidth),
-                    ErrorCode.A009);
+                    ErrorCode.A008);
         }
     }
 

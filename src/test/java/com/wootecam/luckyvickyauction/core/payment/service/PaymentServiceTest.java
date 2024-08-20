@@ -4,50 +4,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.luckyvickyauction.context.ServiceTest;
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
-import com.wootecam.luckyvickyauction.core.auction.infra.FakeAuctionRepository;
-import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
-import com.wootecam.luckyvickyauction.core.member.infra.FakeMemberRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
-import com.wootecam.luckyvickyauction.core.payment.infra.FakeBidHistoryRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
-import java.time.ZonedDateTime;
-import org.junit.jupiter.api.BeforeEach;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-// TODO: AuctionService 세부 사항 결정되면 테스트
-class PaymentServiceTest {
-
-    private AuctionRepository auctionRepository;
-    private AuctionService auctionService;
-    private MemberRepository memberRepository;
-    private BidHistoryRepository bidHistoryRepository;
-    private PaymentService paymentService;
-
-    @BeforeEach
-    void setUp() {
-        auctionRepository = new FakeAuctionRepository();
-        auctionService = new AuctionService(auctionRepository);
-        memberRepository = new FakeMemberRepository();
-        bidHistoryRepository = new FakeBidHistoryRepository();
-        paymentService = new PaymentService(auctionService, memberRepository, bidHistoryRepository);
-    }
+class PaymentServiceTest extends ServiceTest {
 
     @Nested
     class process_메소드는 {
@@ -58,7 +35,7 @@ class PaymentServiceTest {
             @Test
             void 입찰이_진행된다() {
                 // given
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Member seller = Member.builder()
                         .signInId("sellerId")
                         .password("password0")
@@ -111,7 +88,7 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Member seller = Member.builder()
                         .signInId("sellerId")
                         .password("password0")
@@ -158,7 +135,7 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Member seller = Member.builder()
                         .signInId("sellerId")
                         .password("password0")
@@ -205,7 +182,7 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Member seller = Member.builder()
                         .signInId("sellerId")
                         .password("password0")
@@ -243,7 +220,7 @@ class PaymentServiceTest {
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d",
                                 savedAuction.getCurrentPrice(), 10000L))
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A029);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A022);
             }
         }
     }
@@ -257,23 +234,20 @@ class PaymentServiceTest {
             @Test
             void 환불이_진행된다() {
                 // given
-                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
-                memberRepository.save(buyer);
-
-                Member seller = MemberFixture.createSellerWithDefaultPoint();
-                memberRepository.save(seller);
+                Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
+                Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 BidHistory bidHistory = BidHistory.builder()
                         .id(1L)
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
                         .quantity(1L)
-                        .bidStatus(BidStatus.BID)
+                        .bidStatus(BidStatus.PURCHASED)
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .createdAt(now)
@@ -299,65 +273,25 @@ class PaymentServiceTest {
         }
 
         @Nested
-        class 만약_환불을_요청한_구매자를_찾을_수_없다면 {
-
-            @Test
-            void 예외가_발생한다() {
-                // given
-                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
-
-                Member seller = MemberFixture.createSellerWithDefaultPoint();
-                memberRepository.save(seller);
-
-                Auction auction = AuctionFixture.createSoldOutAuction();
-                auctionRepository.save(auction);
-
-                ZonedDateTime now = ZonedDateTime.now();
-                BidHistory bidHistory = BidHistory.builder()
-                        .id(1L)
-                        .auctionId(1L)
-                        .productName("test")
-                        .price(100L)
-                        .quantity(1L)
-                        .bidStatus(BidStatus.BID)
-                        .sellerId(seller.getId())
-                        .buyerId(buyer.getId())
-                        .createdAt(now)
-                        .updatedAt(now)
-                        .build();
-                bidHistoryRepository.save(bidHistory);
-
-                // expect
-                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L))
-                        .isInstanceOf(NotFoundException.class)
-                        .hasMessage("환불할 입찰 내역의 구매자를 찾을 수 없습니다. 구매자 id=1")
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.M002);
-            }
-        }
-
-        @Nested
         class 만약_요청한_사용자가_구매자가_아니라면 {
 
             @Test
             void 예외가_발생한다() {
                 // given
-                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
-                memberRepository.save(buyer);
-
-                Member seller = MemberFixture.createSellerWithDefaultPoint();
-                memberRepository.save(seller);
+                Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
+                Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 BidHistory bidHistory = BidHistory.builder()
                         .id(1L)
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
                         .quantity(1L)
-                        .bidStatus(BidStatus.BID)
+                        .bidStatus(BidStatus.PURCHASED)
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .createdAt(now)
@@ -380,11 +314,7 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
-                memberRepository.save(buyer);
-
-                Member seller = MemberFixture.createSellerWithDefaultPoint();
-                memberRepository.save(seller);
+                Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
 
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
@@ -404,16 +334,13 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
-                memberRepository.save(buyer);
-
-                Member seller = MemberFixture.createSellerWithDefaultPoint();
-                memberRepository.save(seller);
+                Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
+                Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 BidHistory bidHistory = BidHistory.builder()
                         .id(1L)
                         .auctionId(1L)
@@ -433,7 +360,7 @@ class PaymentServiceTest {
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("이미 환불된 입찰 내역입니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.B005));
+                                ErrorCode.B002));
             }
         }
 
@@ -443,23 +370,20 @@ class PaymentServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                Member buyer = MemberFixture.createBuyerWithDefaultPoint();
-                memberRepository.save(buyer);
-
-                Member seller = MemberFixture.createSellerWithDefaultPoint();
-                memberRepository.save(seller);
+                Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
+                Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 BidHistory bidHistory = BidHistory.builder()
                         .id(1L)
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
                         .quantity(1L)
-                        .bidStatus(BidStatus.BID)
+                        .bidStatus(BidStatus.PURCHASED)
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .createdAt(now)

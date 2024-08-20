@@ -2,11 +2,11 @@ package com.wootecam.luckyvickyauction.core.auction.dto;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public record CancelAuctionCommand(
-        ZonedDateTime requestTime,
+        LocalDateTime requestTime,
         long auctionId
 ) {
 
@@ -18,7 +18,7 @@ public record CancelAuctionCommand(
 
     private void validateNotNull(Object value, String fieldName) {
         if (Objects.isNull(value)) {
-            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.A007);
+            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.G000);
         }
     }
 }

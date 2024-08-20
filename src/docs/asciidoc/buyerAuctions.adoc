@@ -1,0 +1,11 @@
+[[buyerAuction]]
+== 경매: 구매자(구매자 권한 필요)
+
+=== 경매 입찰
+
+operation::buyerAuctions/purchase/success[snippets='http-request,http-response,request-cookies,path-parameters,request-fields']
+
+=== 경매 환불
+
+operation::buyerAuctions/cancel/success[snippets='http-request,http-response,request-cookies,path-parameters']
+

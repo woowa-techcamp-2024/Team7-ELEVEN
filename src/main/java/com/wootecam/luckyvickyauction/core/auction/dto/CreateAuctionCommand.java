@@ -6,7 +6,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -30,9 +30,9 @@ public record CreateAuctionCommand(
         long maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,
-        ZonedDateTime requestTime,
-        ZonedDateTime startedAt,
-        ZonedDateTime finishedAt,
+        LocalDateTime requestTime,
+        LocalDateTime startedAt,
+        LocalDateTime finishedAt,
         boolean isShowStock
 ) {
     private static final String ERROR_PRODUCT_NAME = "상품 이름은 비어있을 수 없습니다.";
@@ -86,16 +86,16 @@ public record CreateAuctionCommand(
         }
     }
 
-    private void validateAuctionTime(ZonedDateTime startedAt, ZonedDateTime finishedAt) {
+    private void validateAuctionTime(LocalDateTime startedAt, LocalDateTime finishedAt) {
         if (!startedAt.isBefore(finishedAt)) {
             throw new BadRequestException(String.format(ERROR_AUCTION_TIME, startedAt, finishedAt), ErrorCode.A006);
         }
     }
 
-    private void validateStartedAt(ZonedDateTime nowAt, ZonedDateTime startedAt) {
+    private void validateStartedAt(LocalDateTime nowAt, LocalDateTime startedAt) {
         if (startedAt.isBefore(nowAt)) {
             String message = String.format(ERROR_STARTED_AT, nowAt, startedAt);
-            throw new BadRequestException(message, ErrorCode.A020);
+            throw new BadRequestException(message, ErrorCode.A014);
         }
     }
 
@@ -107,7 +107,7 @@ public record CreateAuctionCommand(
 
     private void validateNotNull(Object value, String fieldName) {
         if (Objects.isNull(value)) {
-            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.A007);
+            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.G000);
         }
     }
 }

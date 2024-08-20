@@ -28,15 +28,6 @@ public class ReceiptController {
 
     private final BidHistoryService bidHistoryService;
 
-    // 사용자는 자신의 거래 이력을 상세 조회할 수 있다.
-    @Roles({Role.BUYER, Role.SELLER})
-    @GetMapping("/{receiptId}")
-    public ResponseEntity<BidHistoryInfo> getReceipt(@Login SignInInfo memberInfo,
-                                                     @PathVariable("receiptId") Long receiptId) {
-        BidHistoryInfo bidHistoryInfo = bidHistoryService.getBidHistoryInfo(memberInfo, receiptId);
-        return ResponseEntity.ok(bidHistoryInfo);
-    }
-
     // 구매자는 자신의 거래 이력 목록을 조회할 수 있다.
     @BuyerOnly
     @GetMapping("/buyer")
@@ -53,5 +44,14 @@ public class ReceiptController {
                                                                            @RequestBody SellerReceiptSearchCondition condition) {
         List<SellerReceiptSimpleInfo> infos = bidHistoryService.getSellerReceiptSimpleInfos(sellerInfo, condition);
         return ResponseEntity.ok(infos);
+    }
+
+    // 사용자는 자신의 거래 이력을 상세 조회할 수 있다.
+    @Roles({Role.BUYER, Role.SELLER})
+    @GetMapping("/{receiptId}")
+    public ResponseEntity<BidHistoryInfo> getReceipt(@Login SignInInfo memberInfo,
+                                                     @PathVariable("receiptId") Long receiptId) {
+        BidHistoryInfo bidHistoryInfo = bidHistoryService.getBidHistoryInfo(memberInfo, receiptId);
+        return ResponseEntity.ok(bidHistoryInfo);
     }
 }

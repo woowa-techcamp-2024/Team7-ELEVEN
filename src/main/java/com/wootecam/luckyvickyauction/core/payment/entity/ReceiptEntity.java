@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,12 +27,12 @@ public class ReceiptEntity {
     private long auctionId;
     private Long sellerId;
     private Long buyerId;
-    private ZonedDateTime createdAt;
-    private ZonedDateTime updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Builder
     private ReceiptEntity(Long id, String productName, long price, long quantity, BidStatus bidStatus, long auctionId,
-                          Long sellerId, Long buyerId, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
+                          Long sellerId, Long buyerId, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.productName = productName;
         this.price = price;

@@ -26,7 +26,7 @@ public class PricePolicyConverter implements AttributeConverter<PricePolicy, Str
         try {
             return objectMapper.writeValueAsString(pricePolicy);
         } catch (IOException e) {
-            throw new InfraStructureException("해당 객체를 String으로 변환할 수 없습니다.", ErrorCode.A030);
+            throw new InfraStructureException("해당 객체를 String으로 변환할 수 없습니다.", ErrorCode.A023);
         }
     }
 
@@ -45,10 +45,10 @@ public class PricePolicyConverter implements AttributeConverter<PricePolicy, Str
                 case CONSTANT:
                     return objectMapper.treeToValue(jsonNode, ConstantPricePolicy.class);
                 default:
-                    throw new BadRequestException("해당 type으로 변환할 수 없습니다. 현재 type=" + type, ErrorCode.A031);
+                    throw new BadRequestException("해당 type으로 변환할 수 없습니다. 현재 type=" + type, ErrorCode.A024);
             }
         } catch (IOException e) {
-            throw new InfraStructureException("해당 JSON을 PricePolicy 객체로 변환하는 데 실패했습니다." + e, ErrorCode.A032);
+            throw new InfraStructureException("해당 JSON을 PricePolicy 객체로 변환하는 데 실패했습니다." + e, ErrorCode.A025);
         }
     }
 }

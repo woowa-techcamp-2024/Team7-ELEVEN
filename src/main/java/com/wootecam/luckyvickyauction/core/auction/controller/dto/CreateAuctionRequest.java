@@ -2,7 +2,7 @@ package com.wootecam.luckyvickyauction.core.auction.controller.dto;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 public record CreateAuctionRequest(
         String productName,
@@ -11,8 +11,8 @@ public record CreateAuctionRequest(
         long maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,
-        ZonedDateTime startedAt,
-        ZonedDateTime finishedAt,
+        LocalDateTime startedAt,
+        LocalDateTime finishedAt,
         boolean isShowStock
 ) {
 }

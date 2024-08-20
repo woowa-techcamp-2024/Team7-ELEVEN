@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
 class BidHistoryTest {
@@ -13,14 +13,14 @@ class BidHistoryTest {
     @Test
     void 성공적으로_환불_표시를_한다() {
         // given
-        ZonedDateTime now = ZonedDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
         BidHistory refundBidHistory = BidHistory.builder()
                 .id(1L)
                 .auctionId(1L)
                 .productName("test")
                 .price(100L)
                 .quantity(1L)
-                .bidStatus(BidStatus.BID)
+                .bidStatus(BidStatus.PURCHASED)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
@@ -43,7 +43,7 @@ class BidHistoryTest {
         assertThatThrownBy(() -> refundBidHistory.markAsRefund())
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("이미 환불된 입찰 내역입니다.")
-                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.B005));
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.B002));
 
     }
 }

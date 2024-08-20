@@ -11,7 +11,7 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,17 +22,17 @@ public class BuyerAuctionInfoTest {
     static Stream<Arguments> auctionInfoDtoArguments() {
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.",
-                        ErrorCode.A001, 1L, 1L, "", 10000, 10000, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now()),
+                        ErrorCode.A001, 1L, 1L, "", 10000, 10000, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        LocalDateTime.now()),
                 Arguments.of("상품 원가는 0보다 커야 합니다. 상품 원가: 0",
-                        ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now()),
+                        ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        LocalDateTime.now()),
                 Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0",
-                        ErrorCode.A013, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now()),
+                        ErrorCode.A011, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        LocalDateTime.now()),
                 Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0",
                         ErrorCode.A003, 1L, 1L, "상품이름", 10000, 10000, 10, 0, Duration.ofMinutes(1L),
-                        ZonedDateTime.now(), ZonedDateTime.now())
+                        LocalDateTime.now(), LocalDateTime.now())
         );
     }
 
@@ -51,8 +51,8 @@ public class BuyerAuctionInfoTest {
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-        ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1L);
-        ZonedDateTime finishedAt = ZonedDateTime.now();
+        LocalDateTime startedAt = LocalDateTime.now().minusHours(1L);
+        LocalDateTime finishedAt = LocalDateTime.now();
 
         // when
         BuyerAuctionInfo buyerAuctionInfo = new BuyerAuctionInfo(auctionId, sellerId, productName, originPrice,
@@ -89,8 +89,8 @@ public class BuyerAuctionInfoTest {
         Duration varitationDuration = Duration.ofMinutes(10L);  // 변동 시간 단위
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-        ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1L);
-        ZonedDateTime finishedAt = startedAt.plusHours(1L);
+        LocalDateTime startedAt = LocalDateTime.now().minusHours(1L);
+        LocalDateTime finishedAt = startedAt.plusHours(1L);
 
         Auction auction = Auction.builder()
                 .id(auctionId)
@@ -128,8 +128,8 @@ public class BuyerAuctionInfoTest {
             long stock,
             int maximumPurchaseLimitCount,
             Duration variationDuration,
-            ZonedDateTime startedAt,
-            ZonedDateTime finishedAt
+            LocalDateTime startedAt,
+            LocalDateTime finishedAt
     ) {
         // expect
         assertThatThrownBy(() -> BuyerAuctionInfo.builder()

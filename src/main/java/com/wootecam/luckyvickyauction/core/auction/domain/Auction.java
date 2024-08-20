@@ -3,7 +3,7 @@ package com.wootecam.luckyvickyauction.core.auction.domain;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -22,8 +22,8 @@ public class Auction {
     private long maximumPurchaseLimitCount;
     private PricePolicy pricePolicy;
     private Duration variationDuration;
-    private ZonedDateTime startedAt;
-    private ZonedDateTime finishedAt;
+    private LocalDateTime startedAt;
+    private LocalDateTime finishedAt;
     private boolean isShowStock;
 
     @Builder
@@ -38,8 +38,8 @@ public class Auction {
             long maximumPurchaseLimitCount,
             PricePolicy pricePolicy,
             Duration variationDuration,
-            ZonedDateTime startedAt,
-            ZonedDateTime finishedAt,
+            LocalDateTime startedAt,
+            LocalDateTime finishedAt,
             boolean isShowStock
     ) {
         validateDurationTime(startedAt, finishedAt);
@@ -60,7 +60,7 @@ public class Auction {
         this.isShowStock = isShowStock;
     }
 
-    private void validateDurationTime(ZonedDateTime startedAt, ZonedDateTime finishedAt) {
+    private void validateDurationTime(LocalDateTime startedAt, LocalDateTime finishedAt) {
         Duration diff = Duration.between(startedAt, finishedAt);
         long diffNanos = diff.toNanos();
         long tenMinutesInNanos = 10L * 60 * 1_000_000_000; // 10분을 나노초로 변환
@@ -68,11 +68,11 @@ public class Auction {
         if (!(diffNanos % tenMinutesInNanos == 0 && diffNanos / tenMinutesInNanos <= 6)) {
             String message = String.format("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: %.9f분",
                     diffNanos / (60.0 * 1_000_000_000));
-            throw new BadRequestException(message, ErrorCode.A008);
+            throw new BadRequestException(message, ErrorCode.A007);
         }
     }
 
-    private void validateMinimumPrice(ZonedDateTime startedAt, ZonedDateTime finishedAt, Duration variationDuration,
+    private void validateMinimumPrice(LocalDateTime startedAt, LocalDateTime finishedAt, Duration variationDuration,
                                       long originPrice, PricePolicy pricePolicy) {
         Duration totalDuration = Duration.between(startedAt, finishedAt);
         long variationCount = totalDuration.dividedBy(variationDuration) - 1;
@@ -82,7 +82,7 @@ public class Auction {
         if (discountedPrice <= 0) {
             String message = String.format("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 모든 할인 적용 후 가격: %d",
                     originPrice, variationCount, discountedPrice);
-            throw new BadRequestException(message, ErrorCode.A028);
+            throw new BadRequestException(message, ErrorCode.A021);
         }
     }
 
@@ -98,12 +98,12 @@ public class Auction {
         if (refundStockAmount < MINIMUM_STOCK_COUNT) {
             throw new BadRequestException(
                     String.format("환불할 재고는 %d보다 작을 수 없습니다. inputStock=%s", MINIMUM_STOCK_COUNT, refundStockAmount),
-                    ErrorCode.A022);
+                    ErrorCode.A015);
         }
 
         if (newCurrentStock > this.originStock) {
             throw new BadRequestException("환불 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=" + refundStockAmount,
-                    ErrorCode.A023);
+                    ErrorCode.A016);
         }
 
         this.currentStock = newCurrentStock;
@@ -116,11 +116,11 @@ public class Auction {
      * @param quantity    구매자가 구매할 상품 갯수
      * @param requestTime 구매자가 요청한 시간
      */
-    public void submit(long price, long quantity, ZonedDateTime requestTime) {
+    public void submit(long price, long quantity, LocalDateTime requestTime) {
         AuctionStatus currentStatus = currentStatus(requestTime);
         if (!currentStatus.isRunning()) {
             String message = String.format("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: %s", currentStatus);
-            throw new BadRequestException(message, ErrorCode.A016);
+            throw new BadRequestException(message, ErrorCode.A013);
         }
         verifyCurrentPrice(price, requestTime);
         verifyPurchaseQuantity(quantity);
@@ -129,7 +129,7 @@ public class Auction {
     }
 
     // TODO: [SOLD_OUT의 상태관리는 어떻게 해야할것인가?!] [writeAt: 2024/08/14/11:12] [writeBy: HiiWee]
-    public AuctionStatus currentStatus(ZonedDateTime requestTime) {
+    public AuctionStatus currentStatus(LocalDateTime requestTime) {
         if (requestTime.isBefore(startedAt)) {
             return AuctionStatus.WAITING;
         }
@@ -141,7 +141,7 @@ public class Auction {
         return AuctionStatus.FINISHED;
     }
 
-    private void verifyCurrentPrice(long inputPrice, ZonedDateTime requestTime) {
+    private void verifyCurrentPrice(long inputPrice, LocalDateTime requestTime) {
         Duration elapsedDuration = Duration.between(startedAt, requestTime);
         long currentVariationCount = elapsedDuration.dividedBy(variationDuration);
 
@@ -149,7 +149,7 @@ public class Auction {
 
         if (actualPrice != inputPrice) {
             String message = String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d", actualPrice, inputPrice);
-            throw new BadRequestException(message, ErrorCode.A029);
+            throw new BadRequestException(message, ErrorCode.A022);
         }
     }
 
@@ -158,7 +158,7 @@ public class Auction {
             String message = String.format(
                     "해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d", currentStock, quantity,
                     maximumPurchaseLimitCount);
-            throw new BadRequestException(message, ErrorCode.A014);
+            throw new BadRequestException(message, ErrorCode.A012);
         }
     }
 
