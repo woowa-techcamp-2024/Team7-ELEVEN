@@ -2,11 +2,11 @@ package com.wootecam.luckyvickyauction.core.auction.dto;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public record CancelAuctionCommand(
-        ZonedDateTime requestTime,
+        LocalDateTime requestTime,
         long auctionId
 ) {
 

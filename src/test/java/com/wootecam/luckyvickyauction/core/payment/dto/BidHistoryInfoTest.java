@@ -7,7 +7,7 @@ import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
 class BidHistoryInfoTest {
@@ -35,8 +35,8 @@ class BidHistoryInfoTest {
                 .role(Role.SELLER)
                 .point(new Point(1000L))
                 .build();
-        ZonedDateTime createdAt = ZonedDateTime.now();
-        ZonedDateTime updatedAt = ZonedDateTime.now();
+        LocalDateTime createdAt = LocalDateTime.now();
+        LocalDateTime updatedAt = LocalDateTime.now();
 
         // when
         BidHistoryInfo bidHistoryInfo = new BidHistoryInfo(id, productName, price, quantity, bidStatus, auctionId,

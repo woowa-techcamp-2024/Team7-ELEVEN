@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
 class BidHistoryTest {
@@ -13,7 +13,7 @@ class BidHistoryTest {
     @Test
     void 성공적으로_환불_표시를_한다() {
         // given
-        ZonedDateTime now = ZonedDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
         BidHistory refundBidHistory = BidHistory.builder()
                 .id(1L)
                 .auctionId(1L)

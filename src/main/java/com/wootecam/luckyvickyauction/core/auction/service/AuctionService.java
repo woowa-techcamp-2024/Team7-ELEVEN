@@ -18,7 +18,7 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -82,7 +82,7 @@ public class AuctionService {
      * @param quantity    수량
      * @param requestTime 요청 시간
      */
-    public void submitBid(long auctionId, long price, long quantity, ZonedDateTime requestTime) {
+    public void submitBid(long auctionId, long price, long quantity, LocalDateTime requestTime) {
         Auction auction = findAuctionObject(auctionId);
         auction.submit(price, quantity, requestTime);
         auctionRepository.save(auction);

@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -19,6 +19,6 @@ public class CurrentTimeArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        return ZonedDateTime.now();
+        return LocalDateTime.now();
     }
 }

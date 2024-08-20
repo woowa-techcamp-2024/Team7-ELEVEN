@@ -9,8 +9,8 @@ import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class CreateAuctionCommandTest {
     static Stream<Arguments> generateInvalidCreateAuctionCommandArgs() {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         return Stream.of(
                 Arguments.of("경매 재고는 인당 구매수량보다 작을 수 없다.", ErrorCode.A000,
@@ -103,13 +103,13 @@ class CreateAuctionCommandTest {
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-        ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1L);
-        ZonedDateTime finishedAt = startedAt.plusHours(1L);
+        LocalDateTime startedAt = LocalDateTime.now().plusHours(1L);
+        LocalDateTime finishedAt = startedAt.plusHours(1L);
 
         // expect
         assertThatNoException().isThrownBy(() -> new CreateAuctionCommand(
                 productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, ZonedDateTime.now(), startedAt, finishedAt, true
+                varitationDuration, LocalDateTime.now(), startedAt, finishedAt, true
         ));
     }
 
@@ -119,8 +119,8 @@ class CreateAuctionCommandTest {
     void validation_test(
             String displayName, ErrorCode expectedErrorCode,
             String productName, int originPrice, int stock, int maximumPurchaseLimitCount,
-            PricePolicy auctionType, Duration varitationDuration, ZonedDateTime nowAt,
-            ZonedDateTime startedAt, ZonedDateTime finishedAt
+            PricePolicy auctionType, Duration varitationDuration, LocalDateTime nowAt,
+            LocalDateTime startedAt, LocalDateTime finishedAt
     ) {
         // expect
         assertThatThrownBy(

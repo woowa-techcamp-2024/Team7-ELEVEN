@@ -8,7 +8,7 @@ import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,8 +27,8 @@ class AuctionTest {
             void 하락하는_가격의_최소값이_0원_이하가_되지_않는_경우_경매가_정상_생성된다() {
                 // given
                 ConstantPricePolicy pricePolicy = new ConstantPricePolicy(100);
-                ZonedDateTime startedAt = ZonedDateTime.now();
-                ZonedDateTime finishedAt = startedAt.plusMinutes(30);
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(30);
                 Duration variationDuration = Duration.ofMinutes(10);
                 long initialPrice = 1000L;
 
@@ -60,7 +60,7 @@ class AuctionTest {
                 int variationWidth = 10000;
                 Duration varitationDuration = Duration.ofMinutes(1L);
                 PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
 
                 // when & then
                 assertThatThrownBy(() ->
@@ -86,8 +86,8 @@ class AuctionTest {
             void 경매_진행_중_가격이_0원_이하가_되는_경우_예외가_발생한다() {
                 // given
                 ConstantPricePolicy pricePolicy = new ConstantPricePolicy(100);
-                ZonedDateTime startedAt = ZonedDateTime.now();
-                ZonedDateTime finishedAt = startedAt.plusMinutes(60);
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(60);
                 Duration variationDuration = Duration.ofMinutes(10);
                 long initialPrice = 500;
 
@@ -123,8 +123,8 @@ class AuctionTest {
                     long initialPrice, long durationMinutes, long variationMinutes, boolean shouldPass) {
                 // given
                 ConstantPricePolicy pricePolicy = new ConstantPricePolicy(100);
-                ZonedDateTime startedAt = ZonedDateTime.now();
-                ZonedDateTime finishedAt = startedAt.plusMinutes(durationMinutes);
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(durationMinutes);
                 Duration variationDuration = Duration.ofMinutes(variationMinutes);
 
                 // expect
@@ -178,8 +178,8 @@ class AuctionTest {
             void 하락하는_가격의_최소값이_0원_이하가_되지_않는_경우_경매가_정상_생성된다() {
                 // given
                 PercentagePricePolicy pricePolicy = new PercentagePricePolicy(50.0);
-                ZonedDateTime startedAt = ZonedDateTime.now();
-                ZonedDateTime finishedAt = startedAt.plusMinutes(10);
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(10);
                 Duration variationDuration = Duration.ofMinutes(1);
                 long initialPrice = 512;
 
@@ -205,8 +205,8 @@ class AuctionTest {
             void validate메소드는_경매_진행_중_가격이_0원_이하가_되는_경우_예외가_발생한다() {
                 // given
                 PercentagePricePolicy pricePolicy = new PercentagePricePolicy(50.0);
-                ZonedDateTime startedAt = ZonedDateTime.now();
-                ZonedDateTime finishedAt = startedAt.plusMinutes(10);
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(10);
                 Duration variationDuration = Duration.ofMinutes(1);
                 long initialPrice = 256;
 
@@ -248,7 +248,7 @@ class AuctionTest {
                 // given
                 long originStock = 999999L;
                 long currentStock = 999998L;
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("상품이름")
@@ -280,7 +280,7 @@ class AuctionTest {
                 // given
                 long originStock = 999999L;
                 long currentStock = 0L;
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("상품이름")
@@ -313,7 +313,7 @@ class AuctionTest {
                 // given
                 long originStock = 999999L;
                 long currentStock = 999999L;
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("상품이름")
@@ -351,7 +351,7 @@ class AuctionTest {
                 Auction auction = AuctionFixture.createWaitingAuction();
 
                 // expect
-                assertThatThrownBy(() -> auction.submit(2000, 10, ZonedDateTime.now()))
+                assertThatThrownBy(() -> auction.submit(2000, 10, LocalDateTime.now()))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + AuctionStatus.WAITING)
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A016);
@@ -364,7 +364,7 @@ class AuctionTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -379,7 +379,7 @@ class AuctionTest {
                         .finishedAt(now.plusMinutes(30))
                         .isShowStock(true)
                         .build();
-                ZonedDateTime requestTime = now.minusMinutes(30).plusMinutes(33);
+                LocalDateTime requestTime = now.minusMinutes(30).plusMinutes(33);
 
                 // expect
                 assertThatThrownBy(() -> auction.submit(7001L, 10, requestTime))
@@ -396,7 +396,7 @@ class AuctionTest {
             @ValueSource(longs = {0L, 31L, 101L})
             void 예외가_발생한다(long requestQuantity) {
                 // given
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -427,7 +427,7 @@ class AuctionTest {
             @Test
             void 상품의_현재_재고가_차감된다() {
                 // given
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -442,7 +442,7 @@ class AuctionTest {
                         .finishedAt(now.plusMinutes(30))
                         .isShowStock(true)
                         .build();
-                ZonedDateTime requestTime = now.minusMinutes(30).plusMinutes(33);
+                LocalDateTime requestTime = now.minusMinutes(30).plusMinutes(33);
 
                 // when
                 auction.submit(7000L, 10, requestTime);
