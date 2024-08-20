@@ -5,38 +5,37 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.luckyvickyauction.context.ServiceTest;
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
+import com.wootecam.luckyvickyauction.core.auction.dto.CancelAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
+import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
-import com.wootecam.luckyvickyauction.core.auction.infra.FakeAuctionRepository;
+import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
+import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Optional;
+import java.util.stream.Stream;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class AuctionServiceTest {
-
-    private AuctionRepository auctionRepository;
-    private AuctionService auctionService;
-
-    @BeforeEach
-    void setUp() {
-        auctionRepository = new FakeAuctionRepository();
-        auctionService = new AuctionService(auctionRepository);
-    }
+class AuctionServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("경매가 성공적으로 생성된다.")
@@ -353,27 +352,140 @@ class AuctionServiceTest {
     }
 
     @Nested
-    class getSellerAuction_메소드는 extends GetSellerAuctionTest {
+    class getSellerAuction_메소드는 {
 
+        @Nested
+        class 정상적인_요청이_오면 {
+
+            @Test
+            void 판매자의_경매목록을_반환한다() {
+                // given
+                Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
+
+                ZonedDateTime now = ZonedDateTime.now();
+                Auction action = Auction.builder()
+                        .sellerId(seller.getId())
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(100L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.plusHours(1))
+                        .finishedAt(now.plusHours(2))
+                        .isShowStock(true)
+                        .build();
+
+                Auction auction = auctionRepository.save(action);
+
+                SignInInfo signInInfo = new SignInInfo(seller.getId(), seller.getRole());
+
+                // when
+                SellerAuctionInfo sellerAuctionInfo = auctionService.getSellerAuction(signInInfo, auction.getId());
+
+                // then
+                assertAll(
+                        () -> assertThat(sellerAuctionInfo.auctionId()).isEqualTo(auction.getId())
+                );
+            }
+        }
+
+        @Nested
+        class 요철한_판매자가_경매의_판매자가_아닌_경우 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
+                Auction auction = auctionRepository.save(AuctionFixture.createWaitingAuction());
+                SignInInfo signInInfo = new SignInInfo(seller.getId() + 1, seller.getRole());
+
+                // expect
+                AssertionsForClassTypes.assertThatThrownBy(
+                                () -> auctionService.getSellerAuction(signInInfo, auction.getId()))
+                        .isInstanceOf(UnauthorizedException.class)
+                        .hasMessage("판매자는 자신이 등록한 경매만 조회할 수 있습니다.")
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A027);
+            }
+        }
     }
 
     @Nested
-    class cancelAuction_메소드는 extends CancelAuctionTest {
+    class cancelAuction_메소드는 {
 
-    }
+        @Test
+        void 정상적으로_취소되어_경매가_삭제된다() {
+            // given
+            SignInInfo signInInfo = new SignInInfo(1L, Role.SELLER);
+            CancelAuctionCommand command = new CancelAuctionCommand(ZonedDateTime.now(), 1L);
+            Auction auction = AuctionFixture.createWaitingAuction();
+            auctionRepository.save(auction);
 
-    /**
-     * 현재 RUNNING 상태인 Auction을 생성 및 Repository에 저장하고 반환합니다.
-     *
-     * @return 저장된 Auction 반환
-     */
-    private Auction saveRunningAuction() {
-        Auction auction = AuctionFixture.createRunningAuction();
-        return auctionRepository.save(auction);
-    }
+            // when
+            auctionService.cancelAuction(signInInfo, command);
+            Optional<Auction> foundAuction = auctionRepository.findById(1L);
 
-    private Auction saveWaitingAuction() {
-        Auction auction = AuctionFixture.createWaitingAuction();
-        return auctionRepository.save(auction);
+            // then
+            assertThat(foundAuction).isNotPresent();
+        }
+
+        static Stream<Arguments> generateInvalidAuction() {
+            return Stream.of(
+                    Arguments.of("진행중인 경매는 취소할 수 없다.", AuctionFixture.createRunningAuction()),
+                    Arguments.of("종료된 경매는 취소할 수 없다.", AuctionFixture.createFinishedAuction())
+            );
+        }
+
+        @Test
+        void 판매자가_권한이_없는_사용자_접근시_예외가_발생한다() {
+            // given
+            SignInInfo signInInfo = new SignInInfo(1L, Role.BUYER);
+            CancelAuctionCommand command = new CancelAuctionCommand(ZonedDateTime.now(), 1L);
+
+            // expect
+            assertThatThrownBy(
+                    () -> auctionService.cancelAuction(signInInfo, command))
+                    .isInstanceOf(UnauthorizedException.class)
+                    .hasMessage("판매자만 경매를 취소할 수 있습니다.")
+                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                            ErrorCode.A024));
+        }
+
+        @Test
+        void 경매를_등록한_판매자와_경매를_수정하려는_판매자가_다른_경우_예외가_발생한다() {
+            // given
+            SignInInfo signInInfo = new SignInInfo(2L, Role.SELLER);
+            CancelAuctionCommand command = new CancelAuctionCommand(ZonedDateTime.now(), 1L);
+            Auction auction = AuctionFixture.createWaitingAuction();
+            auctionRepository.save(auction);
+
+            // expect
+            assertThatThrownBy(
+                    () -> auctionService.cancelAuction(signInInfo, command))
+                    .isInstanceOf(UnauthorizedException.class)
+                    .hasMessage("자신이 등록한 경매만 취소할 수 있습니다.")
+                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                            ErrorCode.A025));
+        }
+
+        @ParameterizedTest(name = "{0}")
+        @MethodSource("generateInvalidAuction")
+        void 경매_상태가_시작전이_아닌경우_예외가_발생한다(String displayName, Auction auction) {
+            // given
+            SignInInfo signInInfo = new SignInInfo(1L, Role.SELLER);
+            CancelAuctionCommand command = new CancelAuctionCommand(ZonedDateTime.now(), 1L);
+
+            auctionRepository.save(auction);
+
+            // expect
+            assertThatThrownBy(
+                    () -> auctionService.cancelAuction(signInInfo, command))
+                    .isInstanceOf(BadRequestException.class)
+                    .hasMessageStartingWith("시작 전인 경매만 취소할 수 있습니다.")
+                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                            ErrorCode.A026));
+        }
     }
 }
