@@ -14,6 +14,7 @@ public class CreateAuctionCommandFixture {
 
     public static class Builder {
 
+        private ZonedDateTime now = ZonedDateTime.now();
         private Long sellerId = 1L;
         private String productName = "상품이름";
         private long originPrice = 10000L;

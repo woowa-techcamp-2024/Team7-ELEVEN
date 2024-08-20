@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
+import com.wootecam.luckyvickyauction.core.auction.controller.dto.CreateAuctionRequest;
 import com.wootecam.luckyvickyauction.core.auction.controller.dto.SellerAuctionSearchRequest;
 import com.wootecam.luckyvickyauction.core.auction.dto.CancelAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
@@ -29,16 +30,18 @@ public class SellerAuctionController {
 
     private final AuctionService auctionService;
 
-    // TODO 시간 필요
     // 판매자는 경매를 생성한다.
     @SellerOnly
     @PostMapping
-    public ResponseEntity<Void> createAuction(@Login SignInInfo sellerInfo, @RequestBody CreateAuctionCommand command) {
+    public ResponseEntity<Void> createAuction(@Login SignInInfo sellerInfo,
+                                              @RequestBody CreateAuctionRequest request,
+                                              @CurrentTime ZonedDateTime now) {
+        CreateAuctionCommand command = new CreateAuctionCommand(request.productName(), request.originPrice(),
+                request.stock(), request.maximumPurchaseLimitCount(), request.pricePolicy(),
+                request.variationDuration(), now, request.startedAt(), request.finishedAt(), request.isShowStock());
         auctionService.createAuction(sellerInfo, command);
         return ResponseEntity.ok().build();
     }
-
-    // TODO 시간 필요
 
     /**
      * 판매자는 경매를 취소한다.
@@ -48,8 +51,10 @@ public class SellerAuctionController {
      */
     @SellerOnly
     @DeleteMapping("/{auctionId}")
-    public void cancelAuction(@Login SignInInfo sellerInfo, @PathVariable("auctionId") Long auctionId) {
-        CancelAuctionCommand command = new CancelAuctionCommand(ZonedDateTime.now(), auctionId);
+    public void cancelAuction(@Login SignInInfo sellerInfo,
+                              @PathVariable("auctionId") Long auctionId,
+                              @CurrentTime ZonedDateTime now) {
+        CancelAuctionCommand command = new CancelAuctionCommand(now, auctionId);
         auctionService.cancelAuction(sellerInfo, command);
     }
 

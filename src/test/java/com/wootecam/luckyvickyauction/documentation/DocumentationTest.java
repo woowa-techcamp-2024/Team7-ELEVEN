@@ -5,6 +5,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wootecam.luckyvickyauction.core.auction.controller.BuyerAuctionController;
+import com.wootecam.luckyvickyauction.core.auction.controller.CurrentTimeArgumentResolver;
 import com.wootecam.luckyvickyauction.core.auction.controller.SellerAuctionController;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.controller.AuthController;
@@ -73,6 +74,9 @@ public class DocumentationTest {
 
     @MockBean
     protected AuthenticationContext authenticationContext;
+
+    @MockBean
+    protected CurrentTimeArgumentResolver currentTimeArgumentResolver;
 
     @BeforeEach
     void setUp(final WebApplicationContext webApplicationContext,

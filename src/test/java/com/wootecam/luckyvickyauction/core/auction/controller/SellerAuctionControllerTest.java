@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
@@ -13,20 +14,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
-import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
-import com.wootecam.luckyvickyauction.core.auction.fixture.CreateAuctionCommandFixture;
+import com.wootecam.luckyvickyauction.core.auction.controller.dto.CreateAuctionRequest;
+import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
+import com.wootecam.luckyvickyauction.core.auction.domain.PercentagePricePolicy;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.documentation.DocumentationTest;
 import jakarta.servlet.http.Cookie;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultActions;
 
 class SellerAuctionControllerTest extends DocumentationTest {
 
@@ -42,18 +44,22 @@ class SellerAuctionControllerTest extends DocumentationTest {
         @Test
         void ConstantPolicy_경매_생성() throws Exception {
             // given
-            CreateAuctionCommand condition = CreateAuctionCommandFixture.create()
-                    .pricePolicy(PricePolicy.createConstantPricePolicy(100))
-                    .build();
+            ZonedDateTime now = ZonedDateTime.now();
+            CreateAuctionRequest request = new CreateAuctionRequest(
+                    "productName", 10000L, 100L, 10L, new ConstantPricePolicy(100L), Duration.ofMinutes(10),
+                    now.plusHours(1), now.plusHours(2), true);
             SignInInfo signInInfo = new SignInInfo(1L, Role.SELLER);
             given(authenticationContext.getPrincipal()).willReturn(signInInfo);
+            given(currentTimeArgumentResolver.supportsParameter(any())).willReturn(true);
+            given(currentTimeArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
+                    ZonedDateTime.now());
 
             // expect
             mockMvc.perform(post("/auctions")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
                             .sessionAttr("signInMember", signInInfo)
-                            .content(objectMapper.writeValueAsString(condition))
+                            .content(objectMapper.writeValueAsString(request))
                     )
                     .andDo(
                             document("auctions/post/constant_policy/success",
@@ -68,7 +74,6 @@ class SellerAuctionControllerTest extends DocumentationTest {
                                                     "절대 가격 정책시 가격 절대 변동폭"),
                                             fieldWithPath("variationDuration").description("경매 기간"),
                                             fieldWithPath("isShowStock").description("재고 노출 여부"),
-                                            fieldWithPath("requestTime").description("요청 시간"),
                                             fieldWithPath("startedAt").description("경매 시작 시간"),
                                             fieldWithPath("finishedAt").description("경매 종료 시간"),
                                             fieldWithPath("isShowStock").description("재고 노출 여부")
@@ -80,18 +85,22 @@ class SellerAuctionControllerTest extends DocumentationTest {
         @Test
         void PercentagePolicy_경매_생성() throws Exception {
             // given
-            CreateAuctionCommand condition = CreateAuctionCommandFixture.create()
-                    .pricePolicy(PricePolicy.createPercentagePricePolicy(10))
-                    .build();
+            ZonedDateTime now = ZonedDateTime.now();
+            CreateAuctionRequest request = new CreateAuctionRequest(
+                    "productName", 10000L, 100L, 10L, new PercentagePricePolicy(10.0), Duration.ofMinutes(10),
+                    now.plusHours(1), now.plusHours(2), true);
             SignInInfo signInInfo = new SignInInfo(1L, Role.SELLER);
             given(authenticationContext.getPrincipal()).willReturn(signInInfo);
+            given(currentTimeArgumentResolver.supportsParameter(any())).willReturn(true);
+            given(currentTimeArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
+                    ZonedDateTime.now());
 
             // expect
             mockMvc.perform(post("/auctions")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
                             .sessionAttr("signInMember", signInInfo)
-                            .content(objectMapper.writeValueAsString(condition)))
+                            .content(objectMapper.writeValueAsString(request)))
                     .andDo(
                             document("auctions/post/percentage_policy/success",
                                     requestFields(
@@ -104,7 +113,6 @@ class SellerAuctionControllerTest extends DocumentationTest {
                                             fieldWithPath("pricePolicy.discountRate").description("퍼센트 가격 정책시 가격 할인율"),
                                             fieldWithPath("variationDuration").description("경매 기간"),
                                             fieldWithPath("isShowStock").description("재고 노출 여부"),
-                                            fieldWithPath("requestTime").description("요청 시간"),
                                             fieldWithPath("startedAt").description("경매 시작 시간"),
                                             fieldWithPath("finishedAt").description("경매 종료 시간"),
                                             fieldWithPath("isShowStock").description("재고 노출 여부")
@@ -123,28 +131,20 @@ class SellerAuctionControllerTest extends DocumentationTest {
             Long auctionId = 1L;
             Member seller = MemberFixture.createSellerWithDefaultPoint();
             SignInInfo signInInfo = new SignInInfo(seller.getId(), Role.SELLER);
+            given(currentTimeArgumentResolver.supportsParameter(any())).willReturn(true);
+            given(currentTimeArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
+                    ZonedDateTime.now());
 
-            // when
-            ResultActions perform = mockMvc.perform(
+            mockMvc.perform(
                     delete("/auctions/{auctionId}", auctionId)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
                             .sessionAttr("signInMember", signInInfo)
-            );
-
-            // then
-            ResultActions docs = perform.andExpect(status().isOk());
-
-            // docs
-            docs.andDo(
+            ).andDo(
                     document("auctions/delete/success",
-                            requestCookies(
-                                    cookieWithName("JSESSIONID").description("세션 ID")
-                            ),
-                            pathParameters(
-                                    parameterWithName("auctionId").description("취소할 경매 ID")
-                            )
+                            requestCookies(cookieWithName("JSESSIONID").description("세션 ID")),
+                            pathParameters(parameterWithName("auctionId").description("취소할 경매 ID"))
                     )
-            );
+            ).andExpect(status().isOk());
         }
     }
 }
