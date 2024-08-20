@@ -1,0 +1,12 @@
+[[memberAuctions]]
+
+== 경매: 사용자(공통)
+
+=== 사용자: 경매 목록 조회
+operation::memberAuctions/findAllBuyerAuctions/success[snippets='http-request,http-response,request-fields,response-fields']
+
+=== 사용자: 경매 상세 조회(고정 할인)
+operation::memberAuctions/findOneConstantPolicy/success[snippets='http-request,http-response,path-parameters,response-fields']
+
+=== 사용자: 경매 상세 조회(퍼센트 할인)
+operation::memberAuctions/findOnePercentagePolicy/success[snippets='http-request,http-response,path-parameters,response-fields']
