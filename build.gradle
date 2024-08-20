@@ -62,6 +62,9 @@ dependencies {
 
     // h2
     testCompileOnly 'com.h2database:h2:2.2.220'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {
