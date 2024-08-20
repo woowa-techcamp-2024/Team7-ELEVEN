@@ -18,9 +18,9 @@ import com.wootecam.luckyvickyauction.core.auction.controller.dto.CreateAuctionR
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PercentagePricePolicy;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.documentation.DocumentationTest;
 import jakarta.servlet.http.Cookie;
 import java.time.Duration;
@@ -129,7 +129,13 @@ class SellerAuctionControllerTest extends DocumentationTest {
         void 판매자_경매_취소() throws Exception {
             // given
             Long auctionId = 1L;
-            Member seller = MemberFixture.createSellerWithDefaultPoint();
+            Member seller = Member.builder()
+                    .id(1L)
+                    .signInId("sellerId")
+                    .password("password00")
+                    .role(Role.SELLER)
+                    .point(new Point(1000L))
+                    .build();
             SignInInfo signInInfo = new SignInInfo(seller.getId(), Role.SELLER);
             given(currentTimeArgumentResolver.supportsParameter(any())).willReturn(true);
             given(currentTimeArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(

@@ -17,7 +17,6 @@ public class MemberFixture {
 
     public static Member createBuyerWithDefaultPoint() {
         return Member.builder()
-                .id(1L)
                 .signInId("buyerId")
                 .password("password00")
                 .role(Role.BUYER)
@@ -27,7 +26,6 @@ public class MemberFixture {
 
     public static Member createSellerWithDefaultPoint() {
         return Member.builder()
-                .id(2L)
                 .signInId("sellerId")
                 .password("password00")
                 .role(Role.SELLER)

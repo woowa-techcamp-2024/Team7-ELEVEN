@@ -4,31 +4,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.luckyvickyauction.context.ServiceTest;
 import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInRequestInfo;
 import com.wootecam.luckyvickyauction.core.member.controller.dto.SignUpRequestInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.core.member.infra.FakeMemberRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class MemberServiceTest {
-
-    private MemberRepository memberRepository;
-
-    private MemberService memberService;
-
-    @BeforeEach
-    void setUp() {
-        memberRepository = new FakeMemberRepository();
-        memberService = new MemberService(memberRepository);
-    }
+class MemberServiceTest extends ServiceTest {
 
     @Nested
     class signUp_메소드는 {
