@@ -23,7 +23,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 class PaymentDocument extends DocumentationTest {
 
     @Test
-    void 사용자는_포인트를_충전할_수_있다_API() throws Exception {
+    void 사용자_포인트_충전() throws Exception {
         BuyerChargePointCommand command = new BuyerChargePointCommand(10000);
         SignInInfo sellerInfo = new SignInInfo(1L, Role.BUYER);
 

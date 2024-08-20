@@ -212,7 +212,7 @@ class BuyerAuctionDocument extends DocumentationTest {
     }
 
     @Nested
-    class 구매자_경매_취소_API {
+    class 구매자_경매_취소 {
 
         @Test
         void 성공시() throws Exception {
