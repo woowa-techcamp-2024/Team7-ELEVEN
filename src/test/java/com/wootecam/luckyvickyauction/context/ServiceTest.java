@@ -4,9 +4,9 @@ import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
-import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
+import com.wootecam.luckyvickyauction.core.payment.service.ReceiptService;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,13 +31,13 @@ public abstract class ServiceTest {
     protected AuctionService auctionService;
 
     @Autowired
-    protected BidHistoryRepository bidHistoryRepository;
+    protected ReceiptRepository receiptRepository;
 
     @Autowired
     protected PaymentService paymentService;
 
     @Autowired
-    protected BidHistoryService bidHistoryService;
+    protected ReceiptService receiptService;
 
     @AfterEach
     void tearDown() {

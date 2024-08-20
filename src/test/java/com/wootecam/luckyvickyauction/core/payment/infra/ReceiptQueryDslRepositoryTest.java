@@ -3,7 +3,7 @@ package com.wootecam.luckyvickyauction.core.payment.infra;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.wootecam.luckyvickyauction.context.RepositoryTest;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
@@ -35,7 +35,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                         .productName("상품1")
                         .price(1000)
                         .quantity(1)
-                        .bidStatus(BidStatus.PURCHASED)
+                        .receiptStatus(ReceiptStatus.PURCHASED)
                         .auctionId(4L)
                         .buyerId(buyerId)
                         .sellerId(2L)
@@ -67,7 +67,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
-                    .bidStatus(BidStatus.PURCHASED)
+                    .receiptStatus(ReceiptStatus.PURCHASED)
                     .auctionId(4L)
                     .buyerId(buyerId)
                     .sellerId(2L)
@@ -79,7 +79,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
-                    .bidStatus(BidStatus.PURCHASED)
+                    .receiptStatus(ReceiptStatus.PURCHASED)
                     .auctionId(4L)
                     .buyerId(otherBuyerId)
                     .sellerId(2L)
@@ -111,7 +111,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                         .productName("상품1")
                         .price(1000)
                         .quantity(1)
-                        .bidStatus(BidStatus.PURCHASED)
+                        .receiptStatus(ReceiptStatus.PURCHASED)
                         .auctionId(4L)
                         .buyerId(2L)
                         .sellerId(sellerId)
@@ -139,7 +139,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
-                    .bidStatus(BidStatus.PURCHASED)
+                    .receiptStatus(ReceiptStatus.PURCHASED)
                     .auctionId(4L)
                     .buyerId(2L)
                     .sellerId(sellerId)
@@ -151,7 +151,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
-                    .bidStatus(BidStatus.PURCHASED)
+                    .receiptStatus(ReceiptStatus.PURCHASED)
                     .auctionId(4L)
                     .buyerId(2L)
                     .sellerId(otherSellerId)

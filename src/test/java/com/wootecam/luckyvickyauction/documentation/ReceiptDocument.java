@@ -18,10 +18,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
-import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
 import jakarta.servlet.http.Cookie;
@@ -43,7 +43,7 @@ public class ReceiptDocument extends DocumentationTest {
             BuyerReceiptSearchCondition condition = new BuyerReceiptSearchCondition(3);
             List<BuyerReceiptSimpleInfo> buyerReceiptSimpleInfos = buyerReceiptSimpleInfosSample();
             SignInInfo buyerInfo = new SignInInfo(1L, Role.BUYER);
-            given(bidHistoryService.getBuyerReceiptSimpleInfos(buyerInfo, condition)).willReturn(
+            given(receiptService.getBuyerReceiptSimpleInfos(buyerInfo, condition)).willReturn(
                     buyerReceiptSimpleInfos);
             given(authenticationContext.getPrincipal()).willReturn(buyerInfo);
 
@@ -93,7 +93,7 @@ public class ReceiptDocument extends DocumentationTest {
                         .price(i * 1000)
                         .productName("내가 구매한 상품" + i)
                         .quantity(i * 10)
-                        .type(i % 2 == 1 ? BidStatus.PURCHASED : BidStatus.REFUND)
+                        .type(i % 2 == 1 ? ReceiptStatus.PURCHASED : ReceiptStatus.REFUND)
                         .build();
                 buyerReceiptSimpleInfos.add(receipt);
             }
@@ -106,7 +106,7 @@ public class ReceiptDocument extends DocumentationTest {
             SellerReceiptSearchCondition condition = new SellerReceiptSearchCondition(3);
             List<SellerReceiptSimpleInfo> sellerReceiptSimpleInfos = sellerReceiptSimpleInfosSample();
             SignInInfo sellerInfo = new SignInInfo(1L, Role.SELLER);
-            given(bidHistoryService.getSellerReceiptSimpleInfos(sellerInfo, condition)).willReturn(
+            given(receiptService.getSellerReceiptSimpleInfos(sellerInfo, condition)).willReturn(
                     sellerReceiptSimpleInfos);
             given(authenticationContext.getPrincipal()).willReturn(sellerInfo);
 
@@ -154,7 +154,7 @@ public class ReceiptDocument extends DocumentationTest {
                         .price(i * 1000)
                         .productName("내가 판매한 상품" + i)
                         .quantity(i * 10)
-                        .type(i % 2 == 0 ? BidStatus.PURCHASED : BidStatus.REFUND)
+                        .type(i % 2 == 0 ? ReceiptStatus.PURCHASED : ReceiptStatus.REFUND)
                         .build();
                 sellerReceiptSimpleInfos.add(receipt);
             }
@@ -169,12 +169,12 @@ public class ReceiptDocument extends DocumentationTest {
         @Test
         void 거래내역_id에_해당하는_거래내역을_조회한다() throws Exception {
             String receiptId = "1";
-            BidHistoryInfo bidHistoryInfo = BidHistoryInfo.builder()
-                    .bidHistoryId(1L)
+            ReceiptInfo receiptInfo = ReceiptInfo.builder()
+                    .receiptId(1L)
                     .productName("상품명")
                     .price(1000L)
                     .quantity(1L)
-                    .bidStatus(BidStatus.PURCHASED)
+                    .receiptStatus(ReceiptStatus.PURCHASED)
                     .auctionId(1L)
                     .sellerId(1L)
                     .buyerId(2L)
@@ -183,7 +183,7 @@ public class ReceiptDocument extends DocumentationTest {
                     .build();
             SignInInfo memberInfo = new SignInInfo(1L, Role.SELLER);
             given(authenticationContext.getPrincipal()).willReturn(memberInfo);
-            given(bidHistoryService.getBidHistoryInfo(memberInfo, 1L)).willReturn(bidHistoryInfo);
+            given(receiptService.getReceiptInfo(memberInfo, 1L)).willReturn(receiptInfo);
 
             mockMvc.perform(get("/receipts/{receiptId}", receiptId)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
@@ -200,7 +200,7 @@ public class ReceiptDocument extends DocumentationTest {
                                             parameterWithName("receiptId").description("조회할 거래내역 ID")
                                     ),
                                     responseFields(
-                                            fieldWithPath("bidHistoryId").type(JsonFieldType.NUMBER)
+                                            fieldWithPath("receiptId").type(JsonFieldType.NUMBER)
                                                     .description("거래 내역 ID"),
                                             fieldWithPath("productName").type(JsonFieldType.STRING)
                                                     .description("상품명"),
@@ -208,7 +208,7 @@ public class ReceiptDocument extends DocumentationTest {
                                                     .description("구매 가격"),
                                             fieldWithPath("quantity").type(JsonFieldType.NUMBER)
                                                     .description("구매 수량"),
-                                            fieldWithPath("bidStatus").type(JsonFieldType.STRING)
+                                            fieldWithPath("receiptStatus").type(JsonFieldType.STRING)
                                                     .description("입찰 상태 (구매완료, 환불완료)"),
                                             fieldWithPath("auctionId").type(JsonFieldType.NUMBER)
                                                     .description("경매 ID"),

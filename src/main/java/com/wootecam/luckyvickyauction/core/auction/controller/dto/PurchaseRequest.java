@@ -3,11 +3,11 @@ package com.wootecam.luckyvickyauction.core.auction.controller.dto;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 
-public record BidRequest(
+public record PurchaseRequest(
         long price,
         long quantity
 ) {
-    public BidRequest {
+    public PurchaseRequest {
         validatePrice(price);
         validateQuantity(quantity);
     }
