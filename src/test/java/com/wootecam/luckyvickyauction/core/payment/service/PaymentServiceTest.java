@@ -220,7 +220,7 @@ class PaymentServiceTest extends ServiceTest {
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d",
                                 savedAuction.getCurrentPrice(), 10000L))
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A029);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A022);
             }
         }
     }
@@ -360,7 +360,7 @@ class PaymentServiceTest extends ServiceTest {
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("이미 환불된 입찰 내역입니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.B005));
+                                ErrorCode.B002));
             }
         }
 

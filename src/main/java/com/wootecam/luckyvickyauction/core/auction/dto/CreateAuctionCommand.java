@@ -95,7 +95,7 @@ public record CreateAuctionCommand(
     private void validateStartedAt(LocalDateTime nowAt, LocalDateTime startedAt) {
         if (startedAt.isBefore(nowAt)) {
             String message = String.format(ERROR_STARTED_AT, nowAt, startedAt);
-            throw new BadRequestException(message, ErrorCode.A020);
+            throw new BadRequestException(message, ErrorCode.A014);
         }
     }
 
@@ -107,7 +107,7 @@ public record CreateAuctionCommand(
 
     private void validateNotNull(Object value, String fieldName) {
         if (Objects.isNull(value)) {
-            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.A007);
+            throw new BadRequestException(String.format(ERROR_NULL_VALUE, fieldName), ErrorCode.G000);
         }
     }
 }

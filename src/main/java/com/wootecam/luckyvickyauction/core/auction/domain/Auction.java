@@ -68,7 +68,7 @@ public class Auction {
         if (!(diffNanos % tenMinutesInNanos == 0 && diffNanos / tenMinutesInNanos <= 6)) {
             String message = String.format("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: %.9f분",
                     diffNanos / (60.0 * 1_000_000_000));
-            throw new BadRequestException(message, ErrorCode.A008);
+            throw new BadRequestException(message, ErrorCode.A007);
         }
     }
 
@@ -82,7 +82,7 @@ public class Auction {
         if (discountedPrice <= 0) {
             String message = String.format("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 모든 할인 적용 후 가격: %d",
                     originPrice, variationCount, discountedPrice);
-            throw new BadRequestException(message, ErrorCode.A028);
+            throw new BadRequestException(message, ErrorCode.A021);
         }
     }
 
@@ -98,12 +98,12 @@ public class Auction {
         if (refundStockAmount < MINIMUM_STOCK_COUNT) {
             throw new BadRequestException(
                     String.format("환불할 재고는 %d보다 작을 수 없습니다. inputStock=%s", MINIMUM_STOCK_COUNT, refundStockAmount),
-                    ErrorCode.A022);
+                    ErrorCode.A015);
         }
 
         if (newCurrentStock > this.originStock) {
             throw new BadRequestException("환불 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=" + refundStockAmount,
-                    ErrorCode.A023);
+                    ErrorCode.A016);
         }
 
         this.currentStock = newCurrentStock;
@@ -120,7 +120,7 @@ public class Auction {
         AuctionStatus currentStatus = currentStatus(requestTime);
         if (!currentStatus.isRunning()) {
             String message = String.format("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: %s", currentStatus);
-            throw new BadRequestException(message, ErrorCode.A016);
+            throw new BadRequestException(message, ErrorCode.A013);
         }
         verifyCurrentPrice(price, requestTime);
         verifyPurchaseQuantity(quantity);
@@ -149,7 +149,7 @@ public class Auction {
 
         if (actualPrice != inputPrice) {
             String message = String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d", actualPrice, inputPrice);
-            throw new BadRequestException(message, ErrorCode.A029);
+            throw new BadRequestException(message, ErrorCode.A022);
         }
     }
 
@@ -158,7 +158,7 @@ public class Auction {
             String message = String.format(
                     "해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d", currentStock, quantity,
                     maximumPurchaseLimitCount);
-            throw new BadRequestException(message, ErrorCode.A014);
+            throw new BadRequestException(message, ErrorCode.A012);
         }
     }
 

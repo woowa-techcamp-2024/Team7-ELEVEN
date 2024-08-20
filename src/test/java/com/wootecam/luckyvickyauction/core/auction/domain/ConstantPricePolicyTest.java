@@ -26,7 +26,7 @@ class ConstantPricePolicyTest {
         assertThatThrownBy(() -> constantPricePolicy.calculatePriceAtVariation(100L, 10))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(String.format("상품 원가는 가격 변동폭보다 커야 합니다. 상품 원가: %d, 가격 변동폭: %d", 100L, 100L))
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A009);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);
     }
 
     @Test

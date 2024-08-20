@@ -26,7 +26,7 @@ class AuctionInfoTest {
                         ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
                         LocalDateTime.now(), true),
                 Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0",
-                        ErrorCode.A013, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        ErrorCode.A011, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
                         LocalDateTime.now(), true),
                 Arguments.of("재고는 0보다 작을 수 없습니다. 재고: -1",
                         ErrorCode.A000, 1L, 1L, "상품이름", 10000, 10000, -1, 10, Duration.ofMinutes(1L),

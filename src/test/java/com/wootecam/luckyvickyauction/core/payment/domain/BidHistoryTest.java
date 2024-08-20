@@ -43,7 +43,7 @@ class BidHistoryTest {
         assertThatThrownBy(() -> refundBidHistory.markAsRefund())
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("이미 환불된 입찰 내역입니다.")
-                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.B005));
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.B002));
 
     }
 }

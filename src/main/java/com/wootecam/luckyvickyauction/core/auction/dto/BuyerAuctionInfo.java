@@ -63,7 +63,7 @@ public record BuyerAuctionInfo(
 
     private void validateCurrentPrice(long currentPrice) {
         if (currentPrice <= 0) {
-            throw new BadRequestException(String.format(ERROR_CURRENT_PRICE, currentPrice), ErrorCode.A013);
+            throw new BadRequestException(String.format(ERROR_CURRENT_PRICE, currentPrice), ErrorCode.A011);
         }
     }
 

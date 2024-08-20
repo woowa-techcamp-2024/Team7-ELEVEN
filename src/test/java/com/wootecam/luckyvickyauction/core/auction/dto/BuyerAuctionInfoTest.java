@@ -28,7 +28,7 @@ public class BuyerAuctionInfoTest {
                         ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
                         LocalDateTime.now()),
                 Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0",
-                        ErrorCode.A013, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        ErrorCode.A011, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
                         LocalDateTime.now()),
                 Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0",
                         ErrorCode.A003, 1L, 1L, "상품이름", 10000, 10000, 10, 0, Duration.ofMinutes(1L),
