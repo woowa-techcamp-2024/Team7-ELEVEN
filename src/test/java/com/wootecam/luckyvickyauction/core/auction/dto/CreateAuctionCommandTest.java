@@ -12,7 +12,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -91,8 +90,7 @@ class CreateAuctionCommandTest {
     }
 
     @Test
-    @DisplayName("경매 생성 요청을 정상 생성한다.")
-    void success_case() {
+    void 경매_생성_요청을_정상_생성한다() {
         // given
         String productName = "상품이름";
         int originPrice = 10000;
@@ -115,8 +113,7 @@ class CreateAuctionCommandTest {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("generateInvalidCreateAuctionCommandArgs")
-    @DisplayName("경매 생성 요청이 잘못된 경우 예외가 발생한다.")
-    void validation_test(
+    void 경매_생성_요청이_잘못된_경우_예외가_발생한다(
             String displayName, ErrorCode expectedErrorCode,
             String productName, int originPrice, int stock, int maximumPurchaseLimitCount,
             PricePolicy auctionType, Duration varitationDuration, LocalDateTime nowAt,

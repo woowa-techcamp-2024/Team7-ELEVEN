@@ -27,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.assertj.core.api.AssertionsForClassTypes;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,109 +36,124 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class AuctionServiceTest extends ServiceTest {
 
-    @Test
-    @DisplayName("경매가 성공적으로 생성된다.")
-    void create_auction_success_case() {
-        // given
-        Long sellerId = 1L;  // 판매자 정보
-        String productName = "상품이름";
-        long originPrice = 10000;
-        long stock = 999999;  // 재고
-        long maximumPurchaseLimitCount = 10;
+    @Nested
+    class createAuction_메소드는 {
 
-        int variationWidth = 1000;
-        Duration varitationDuration = Duration.ofMinutes(10L);  // 변동 시간 단위
-        PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+        @Nested
+        class 정상적인_요청이_들어오면 {
 
-        LocalDateTime startedAt = LocalDateTime.now().plusHours(1);
-        LocalDateTime finishedAt = startedAt.plusHours(1);
+            @Test
+            void 경매가_생성된다() {
+                // given
+                Long sellerId = 1L;  // 판매자 정보
+                String productName = "상품이름";
+                long originPrice = 10000;
+                long stock = 999999;  // 재고
+                long maximumPurchaseLimitCount = 10;
 
-        SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
-        CreateAuctionCommand command = new CreateAuctionCommand(productName, originPrice, stock,
-                maximumPurchaseLimitCount, pricePolicy, varitationDuration, LocalDateTime.now(), startedAt, finishedAt,
-                true
-        );
+                int variationWidth = 1000;
+                Duration varitationDuration = Duration.ofMinutes(10L);  // 변동 시간 단위
+                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-        // when
-        auctionService.createAuction(sellerInfo, command);
-        Auction createdAuction = auctionRepository.findById(1L).get();
+                LocalDateTime startedAt = LocalDateTime.now().plusHours(1);
+                LocalDateTime finishedAt = startedAt.plusHours(1);
 
-        // then
-        assertAll(
-                () -> assertThat(createdAuction.getSellerId()).isEqualTo(sellerId),
-                () -> assertThat(createdAuction.getProductName()).isEqualTo(productName),
-                () -> assertThat(createdAuction.getOriginPrice()).isEqualTo(originPrice),
-                () -> assertThat(createdAuction.getCurrentPrice()).isEqualTo(originPrice),
-                () -> assertThat(createdAuction.getOriginStock()).isEqualTo(stock),
-                () -> assertThat(createdAuction.getCurrentStock()).isEqualTo(stock),
-                () -> assertThat(createdAuction.getMaximumPurchaseLimitCount()).isEqualTo(maximumPurchaseLimitCount),
-                () -> assertThat(createdAuction.getPricePolicy()).isEqualTo(pricePolicy),
-                () -> assertThat(createdAuction.getVariationDuration()).isEqualTo(varitationDuration),
-                () -> assertThat(createdAuction.getStartedAt()).isEqualTo(startedAt),
-                () -> assertThat(createdAuction.getFinishedAt()).isEqualTo(finishedAt),
-                () -> assertThat(createdAuction.isShowStock()).isTrue(),
-                () -> assertThat(createdAuction.getId()).isNotNull()
-        );
-    }
+                SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
+                CreateAuctionCommand command = new CreateAuctionCommand(productName, originPrice, stock,
+                        maximumPurchaseLimitCount, pricePolicy, varitationDuration, LocalDateTime.now(), startedAt,
+                        finishedAt,
+                        true
+                );
 
-    @ParameterizedTest
-    @ValueSource(ints = {10, 20, 30, 40, 50, 60})
-    @DisplayName("경매의 지속시간은 최소 10분 최대 60분이다.")
-    void auction_duration_should_be_between_10_and_60_minutes(int durationTime) {
-        // given
-        Long sellerId = 1L;  // 판매자 정보
-        String productName = "상품이름";
-        int originPrice = 10000;
-        int stock = 999999;  // 재고
-        int maximumPurchaseLimitCount = 10;
+                // when
+                auctionService.createAuction(sellerInfo, command);
+                Auction createdAuction = auctionRepository.findById(1L).get();
 
-        int variationWidth = 1000;
-        Duration varitationDuration = Duration.ofMinutes(10L);  // 변동 시간 단위
-        PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+                // then
+                assertAll(
+                        () -> assertThat(createdAuction.getSellerId()).isEqualTo(sellerId),
+                        () -> assertThat(createdAuction.getProductName()).isEqualTo(productName),
+                        () -> assertThat(createdAuction.getOriginPrice()).isEqualTo(originPrice),
+                        () -> assertThat(createdAuction.getCurrentPrice()).isEqualTo(originPrice),
+                        () -> assertThat(createdAuction.getOriginStock()).isEqualTo(stock),
+                        () -> assertThat(createdAuction.getCurrentStock()).isEqualTo(stock),
+                        () -> assertThat(createdAuction.getMaximumPurchaseLimitCount()).isEqualTo(
+                                maximumPurchaseLimitCount),
+                        () -> assertThat(createdAuction.getPricePolicy()).isEqualTo(pricePolicy),
+                        () -> assertThat(createdAuction.getVariationDuration()).isEqualTo(varitationDuration),
+                        () -> assertThat(createdAuction.getStartedAt()).isEqualTo(startedAt),
+                        () -> assertThat(createdAuction.getFinishedAt()).isEqualTo(finishedAt),
+                        () -> assertThat(createdAuction.isShowStock()).isTrue(),
+                        () -> assertThat(createdAuction.getId()).isNotNull()
+                );
+            }
+        }
 
-        LocalDateTime startedAt = LocalDateTime.now().plusHours(1);
-        LocalDateTime finishedAt = startedAt.plusMinutes(durationTime);
+        @Nested
+        class 경매의_지속시간이_최소10분_최대60분이면 {
 
-        SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
-        CreateAuctionCommand command = new CreateAuctionCommand(
-                productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, LocalDateTime.now(), startedAt, finishedAt, true
-        );
+            @ParameterizedTest
+            @ValueSource(ints = {10, 20, 30, 40, 50, 60})
+            void 경매가_생성된다(int durationTime) {
+                // given
+                Long sellerId = 1L;
+                String productName = "상품이름";
+                int originPrice = 10000;
+                int stock = 999999;
+                int maximumPurchaseLimitCount = 10;
 
-        // expect
-        assertThatNoException().isThrownBy(() -> auctionService.createAuction(sellerInfo, command));
-    }
+                int variationWidth = 1000;
+                Duration varitationDuration = Duration.ofMinutes(10L);
+                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-    @ParameterizedTest(name = "경매 지속시간이 {0}인 경우 BadRequestException 예외가 발생하고 에러 코드는 A008이다.")
-    @ValueSource(ints = {9, 11, 19, 21, 29, 31, 39, 41, 49, 51, 59, 61})
-    @DisplayName("경매의 지속시간이 10, 20, 30, 40, 50, 60이 아닌 경우 예외가 발생한다.")
-    void auction_duration_should_be_between_10_and_60_minutes_fail(long durationTime) {
-        // given
-        Long sellerId = 1L;  // 판매자 정보
-        String productName = "상품이름";
-        int originPrice = 10000;
-        int stock = 999999;  // 재고
-        int maximumPurchaseLimitCount = 10;
+                LocalDateTime startedAt = LocalDateTime.now().plusHours(1);
+                LocalDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
-        int variationWidth = 1000;
-        Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
-        PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+                SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
+                CreateAuctionCommand command = new CreateAuctionCommand(
+                        productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                        varitationDuration, LocalDateTime.now(), startedAt, finishedAt, true
+                );
 
-        LocalDateTime startedAt = LocalDateTime.now().plusHours(1);
-        LocalDateTime finishedAt = startedAt.plusMinutes(durationTime);
+                // expect
+                assertThatNoException().isThrownBy(() -> auctionService.createAuction(sellerInfo, command));
+            }
+        }
 
-        SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
-        CreateAuctionCommand command = new CreateAuctionCommand(
-                productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, LocalDateTime.now(), startedAt, finishedAt, true
-        );
+        @Nested
+        class 만약_경매_지속시간이_10분_단위가_아니라면 {
 
-        // expect
-        assertThatThrownBy(() -> auctionService.createAuction(sellerInfo, command))
-                .isInstanceOf(BadRequestException.class)
-                .satisfies(exception -> {
-                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A007);
-                });
+            @ParameterizedTest
+            @ValueSource(ints = {9, 11, 19, 21, 29, 31, 39, 41, 49, 51, 59, 61})
+            void 예외가_발생한다(int invalidDurationTime) {
+                // given
+                Long sellerId = 1L;
+                String productName = "상품이름";
+                int originPrice = 10000;
+                int stock = 999999;
+                int maximumPurchaseLimitCount = 10;
+
+                int variationWidth = 1000;
+                Duration varitationDuration = Duration.ofMinutes(1L);
+                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+
+                LocalDateTime startedAt = LocalDateTime.now().plusHours(1);
+                LocalDateTime finishedAt = startedAt.plusMinutes(invalidDurationTime);
+
+                SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
+                CreateAuctionCommand command = new CreateAuctionCommand(
+                        productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                        varitationDuration, LocalDateTime.now(), startedAt, finishedAt, true
+                );
+
+                // expect
+                assertThatThrownBy(() -> auctionService.createAuction(sellerInfo, command))
+                        .isInstanceOf(BadRequestException.class)
+                        .satisfies(exception -> {
+                            assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A007);
+                        });
+            }
+        }
     }
 
     @Nested
