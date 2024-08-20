@@ -109,7 +109,6 @@ public class Auction {
         this.currentStock = newCurrentStock;
     }
 
-
     /**
      * 1. 현재 상태가 진행 중 인지 검증 <br> 2. 현재 가격으로 구매할 수 있는지 검증 <br> 3. 요청 수량만큼의 재고가 남아있는지 검증 <br> 이후 실제 요청을 처리합니다.
      *
