@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum BidStatus {
 
-    BID("입찰"),
-    REFUND("환불");
+    PURCHASED("구매완료"),
+    REFUND("환불완료");
 
     private final String description;
 

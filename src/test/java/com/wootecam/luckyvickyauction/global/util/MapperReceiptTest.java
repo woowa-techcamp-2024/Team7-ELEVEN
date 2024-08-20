@@ -29,7 +29,7 @@ abstract class MapperReceiptTest {
                     .quantity(1L)
                     .sellerId(3L)
                     .buyerId(4L)
-                    .bidStatus(BidStatus.BID)
+                    .bidStatus(BidStatus.PURCHASED)
                     .updatedAt(ZonedDateTime.now())
                     .createdAt(ZonedDateTime.now().plusHours(1))
                     .build();
@@ -67,7 +67,7 @@ abstract class MapperReceiptTest {
                     .quantity(1L)
                     .sellerId(3L)
                     .buyerId(4L)
-                    .bidStatus(BidStatus.BID)
+                    .bidStatus(BidStatus.PURCHASED)
                     .updatedAt(ZonedDateTime.now())
                     .createdAt(ZonedDateTime.now().plusHours(1))
                     .build();

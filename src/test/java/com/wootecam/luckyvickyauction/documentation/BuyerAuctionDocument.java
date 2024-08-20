@@ -9,6 +9,9 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -189,6 +192,8 @@ class BuyerAuctionDocument extends DocumentationTest {
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
                             .content(objectMapper.writeValueAsString(bidRequest)))
                     .andDo(document("buyerAuctions/purchase/success",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
                             requestCookies(
                                     cookieWithName("JSESSIONID").description("세션 ID")
                             ),
@@ -220,6 +225,8 @@ class BuyerAuctionDocument extends DocumentationTest {
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
                             .sessionAttr("signInMember", signInInfo)
                     ).andDo(document("buyerAuctions/cancel/success",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
                             requestCookies(
                                     cookieWithName("JSESSIONID").description("세션 ID")
                             ),

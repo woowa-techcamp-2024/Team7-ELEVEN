@@ -1,5 +1,0 @@
-[[Receipt]]
-== 거래내역 조회
-
-=== 거래내역 상세 조회
-operation::receipts/getReceipt/success[snippets='http-request,http-response,request-fields']

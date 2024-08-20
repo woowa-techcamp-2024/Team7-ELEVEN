@@ -20,7 +20,7 @@ class BidHistoryTest {
                 .productName("test")
                 .price(100L)
                 .quantity(1L)
-                .bidStatus(BidStatus.BID)
+                .bidStatus(BidStatus.PURCHASED)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
