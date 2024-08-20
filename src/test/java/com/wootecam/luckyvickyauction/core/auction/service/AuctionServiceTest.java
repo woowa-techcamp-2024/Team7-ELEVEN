@@ -11,8 +11,6 @@ import com.wootecam.luckyvickyauction.core.auction.domain.AuctionStatus;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
-import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionCommand;
-import com.wootecam.luckyvickyauction.core.auction.dto.UpdateAuctionStockCommand;
 import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.core.auction.infra.FakeAuctionRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
@@ -20,7 +18,6 @@ import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.BeforeEach;
@@ -147,66 +144,6 @@ class AuctionServiceTest {
     }
 
     @Nested
-    @DisplayName("changeOption test")
-    class changeOption {
-
-        @Test
-        @DisplayName("경매 ID에 해당하는 경매를 찾을 수 없는 경우 예외가 발생하고 에러 코드는 A011이다.")
-        void notFound_should_throw_exception() {
-            // given
-            Long auctionId = 1L;  // 경매 정보
-            Long sellerId = 1L;
-            int originPrice = 10000;
-            int stock = 999999;  // 재고
-            int maximumPurchaseLimitCount = 10;
-
-            int variationWidth = 1000;
-            Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
-            PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
-
-            ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1L);
-            ZonedDateTime finishedAt = startedAt.plusHours(1L);
-
-            final UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
-                    auctionId, sellerId, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                    varitationDuration, startedAt, finishedAt, true, ZonedDateTime.now()
-            );
-
-            // expect
-            assertThatThrownBy(() -> auctionService.changeOption(updateAuctionCommand))
-                    .isInstanceOf(NotFoundException.class)
-                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.A011));
-        }
-
-        @Test
-        @DisplayName("이미 시작한 경매를 변경하려는 경우 예외가 발생하고 에러 코드는 A012이다.")
-        void when_change_auction_that_is_started() {
-            // given
-            Auction runningAuction = saveRunningAuction();
-            UpdateAuctionCommand updateAuctionCommand = new UpdateAuctionCommand(
-                    runningAuction.getId(),
-                    runningAuction.getSellerId(),
-                    runningAuction.getOriginPrice(),
-                    80L,
-                    runningAuction.getMaximumPurchaseLimitCount(),
-                    runningAuction.getPricePolicy(),
-                    runningAuction.getVariationDuration(),
-                    ZonedDateTime.now().plusHours(1L),
-                    ZonedDateTime.now().plusHours(2L),
-                    true,
-                    ZonedDateTime.now()
-            );
-
-            // expect
-            assertThatThrownBy(() -> auctionService.changeOption(updateAuctionCommand))
-                    .isInstanceOf(BadRequestException.class)
-                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.A012));
-        }
-    }
-
-    @Nested
     class submitBid_메소드는 {
 
         @Nested
@@ -313,91 +250,6 @@ class AuctionServiceTest {
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + AuctionStatus.WAITING)
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A016);
-            }
-        }
-    }
-
-    @Nested
-    class changeStock_메소드는 {
-
-        @Nested
-        class 만약_요청한_사용자가_판매자가_아니라면 {
-
-            @Test
-            void 예외가_발생한다() {
-                // given
-                Auction auction = saveWaitingAuction();
-                ZonedDateTime now = ZonedDateTime.now();
-
-                // expect
-                assertThatThrownBy(
-                        () -> auctionService.changeStock(new SignInInfo(10L, Role.BUYER),
-                                new UpdateAuctionStockCommand(now, auction.getId(), 50L)))
-                        .isInstanceOf(UnauthorizedException.class)
-                        .hasMessage("판매자만 재고를 수정할 수 있습니다.")
-                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.A017));
-            }
-        }
-
-        @Nested
-        class 만약_요청한_경매의_상태가_시작전이_아니라면 {
-
-            @Test
-            void 예외가_발생한다() {
-                // given
-                Auction auction = saveRunningAuction();
-                ZonedDateTime now = ZonedDateTime.now();
-
-                // expect
-                String message = String.format("시작 전인 경매의 재고만 수정할 수 있습니다. 시작시간=%s, 요청시간=%s", auction.getStartedAt(),
-                        now);
-                assertThatThrownBy(
-                        () -> auctionService.changeStock(new SignInInfo(auction.getSellerId(), Role.SELLER),
-                                new UpdateAuctionStockCommand(now, auction.getId(), 50L)))
-                        .isInstanceOf(BadRequestException.class)
-                        .hasMessage(message)
-                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.A021));
-            }
-        }
-
-        @Nested
-        class 만약_요청_판매자와_경매를_만든_판매자가_다르다면 {
-
-            @Test
-            void 예외가_발생한다() {
-                // given
-                Auction auction = saveWaitingAuction();
-                ZonedDateTime now = ZonedDateTime.now();
-
-                // expect
-                assertThatThrownBy(
-                        () -> auctionService.changeStock(new SignInInfo(auction.getSellerId() + 1L, Role.SELLER),
-                                new UpdateAuctionStockCommand(now, auction.getId(), 50)))
-                        .isInstanceOf(UnauthorizedException.class)
-                        .hasMessage("자신이 등록한 경매만 수정할 수 있습니다.")
-                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.A018));
-            }
-        }
-
-        @Nested
-        class 정상적인_재고_변경_요청이_오면 {
-
-            @Test
-            void 재고를_변경한다() {
-                // given
-                Auction auction = saveWaitingAuction();
-                ZonedDateTime now = ZonedDateTime.now();
-
-                // when
-                auctionService.changeStock(new SignInInfo(auction.getId(), Role.SELLER),
-                        new UpdateAuctionStockCommand(now, auction.getId(), 50L));
-                Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
-
-                // then
-                assertThat(updatedAuction.getCurrentStock()).isEqualTo(50L);
             }
         }
     }

@@ -2,7 +2,6 @@ package com.wootecam.luckyvickyauction.core.auction.domain;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import lombok.Builder;
@@ -85,52 +84,6 @@ public class Auction {
                     originPrice, variationCount, discountedPrice);
             throw new BadRequestException(message, ErrorCode.A028);
         }
-    }
-
-    public void update() {
-        // TODO 경매 옵션을 변경하는 로직 (Update)
-    }
-
-    public void updateShowStock(Boolean isShowStock, Long requestSellerId) {
-        if (isShowStock != null) {
-            this.isShowStock = isShowStock;
-        }
-
-        if (!this.sellerId.equals(requestSellerId)) {
-            throw new UnauthorizedException("동일한 판매자만 경매의 가격 노출 정책을 변경할 수 있습니다.", ErrorCode.A015);
-        }
-    }
-
-    public void updatePricePolicy(PricePolicy newPricePolicy, Long requestSellerId) {
-        if (newPricePolicy == null) {
-            return;
-        }
-
-        if (!this.sellerId.equals(requestSellerId)) {
-            throw new UnauthorizedException("동일한 판매자만 경매의 가격 정책을 변경할 수 있습니다.", ErrorCode.A015);
-        }
-
-        this.pricePolicy = newPricePolicy;
-    }
-
-    /**
-     * 경매 재고량을 변경합니다 - 변경은 경매 시작 전에만 가능하므로 원래 재고와 현재 재고를 같은 값으로 변경합니다
-     */
-    public void changeStock(long changeRequestStock, ZonedDateTime requestTime, Long ownerId) {
-        if (!currentStatus(requestTime).isWaiting()) {
-            String message = String.format("시작 전인 경매의 재고만 수정할 수 있습니다. 시작시간=%s, 요청시간=%s", startedAt, requestTime);
-            throw new BadRequestException(message, ErrorCode.A021);
-        }
-        if (!isSeller(ownerId)) {
-            throw new UnauthorizedException("자신이 등록한 경매만 수정할 수 있습니다.", ErrorCode.A018);
-        }
-        if (changeRequestStock < MINIMUM_STOCK_COUNT) {
-            String message = String.format("변경 할 재고는 %d개 이상이어야 합니다. inputStock=%d", MINIMUM_STOCK_COUNT,
-                    changeRequestStock);
-            throw new BadRequestException(message, ErrorCode.A019);
-        }
-        originStock = changeRequestStock;
-        currentStock = changeRequestStock;
     }
 
     /**
