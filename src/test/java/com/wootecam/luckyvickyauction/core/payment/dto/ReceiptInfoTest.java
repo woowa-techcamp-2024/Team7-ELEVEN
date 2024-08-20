@@ -6,11 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
-class BidHistoryInfoTest {
+class ReceiptInfoTest {
 
     @Test
     void 입찰_내역_생성_요청을_정상적으로_처리한다() {
@@ -19,7 +19,7 @@ class BidHistoryInfoTest {
         String productName = "상품이름";
         long price = 10000L;
         long quantity = 1L;
-        BidStatus bidStatus = BidStatus.PURCHASED;
+        ReceiptStatus receiptStatus = ReceiptStatus.PURCHASED;
         Long auctionId = 1L;
         Member seller = Member.builder()
                 .id(1L)
@@ -39,19 +39,19 @@ class BidHistoryInfoTest {
         LocalDateTime updatedAt = LocalDateTime.now();
 
         // when
-        BidHistoryInfo bidHistoryInfo = new BidHistoryInfo(id, productName, price, quantity, bidStatus, auctionId,
+        ReceiptInfo receiptInfo = new ReceiptInfo(id, productName, price, quantity, receiptStatus, auctionId,
                 seller.getId(), buyer.getId(), createdAt, updatedAt);
 
         // then
         assertAll(
-                () -> assertThat(bidHistoryInfo.bidHistoryId()).isEqualTo(id),
-                () -> assertThat(bidHistoryInfo.productName()).isEqualTo(productName),
-                () -> assertThat(bidHistoryInfo.price()).isEqualTo(price),
-                () -> assertThat(bidHistoryInfo.quantity()).isEqualTo(quantity),
-                () -> assertThat(bidHistoryInfo.bidStatus()).isEqualTo(bidStatus),
-                () -> assertThat(bidHistoryInfo.auctionId()).isEqualTo(auctionId),
-                () -> assertThat(bidHistoryInfo.sellerId()).isEqualTo(seller.getId()),
-                () -> assertThat(bidHistoryInfo.buyerId()).isEqualTo(buyer.getId())
+                () -> assertThat(receiptInfo.receiptId()).isEqualTo(id),
+                () -> assertThat(receiptInfo.productName()).isEqualTo(productName),
+                () -> assertThat(receiptInfo.price()).isEqualTo(price),
+                () -> assertThat(receiptInfo.quantity()).isEqualTo(quantity),
+                () -> assertThat(receiptInfo.receiptStatus()).isEqualTo(receiptStatus),
+                () -> assertThat(receiptInfo.auctionId()).isEqualTo(auctionId),
+                () -> assertThat(receiptInfo.sellerId()).isEqualTo(seller.getId()),
+                () -> assertThat(receiptInfo.buyerId()).isEqualTo(buyer.getId())
         );
     }
 }

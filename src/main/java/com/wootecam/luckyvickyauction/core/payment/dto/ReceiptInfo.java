@@ -1,16 +1,16 @@
 package com.wootecam.luckyvickyauction.core.payment.dto;
 
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
-public record BidHistoryInfo(
-        long bidHistoryId,
+public record ReceiptInfo(
+        long receiptId,
         String productName,
         long price,
         long quantity,
-        BidStatus bidStatus,
+        ReceiptStatus receiptStatus,
         long auctionId,
         long sellerId,
         long buyerId,

@@ -7,8 +7,8 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -20,7 +20,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.wootecam.luckyvickyauction.core.auction.controller.dto.BidRequest;
+import com.wootecam.luckyvickyauction.core.auction.controller.dto.PurchaseRequest;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
@@ -180,17 +180,17 @@ class BuyerAuctionDocument extends DocumentationTest {
         @Test
         void 경매_입찰을_성공하면_OK응답을_반환한다() throws Exception {
             String auctionId = "1";
-            BidRequest bidRequest = new BidRequest(10000L, 20L);
+            PurchaseRequest purchaseRequest = new PurchaseRequest(10000L, 20L);
             SignInInfo buyerInfo = new SignInInfo(1L, Role.BUYER);
             willDoNothing().given(paymentService)
                     .process(any(SignInInfo.class), anyLong(), anyLong(), anyLong(), any(LocalDateTime.class));
             given(authenticationContext.getPrincipal()).willReturn(buyerInfo);
 
-            mockMvc.perform(post("/auctions/{auctionId}/bids", auctionId)
+            mockMvc.perform(post("/auctions/{auctionId}/purchase", auctionId)
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .sessionAttr("signInMember", buyerInfo)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
-                            .content(objectMapper.writeValueAsString(bidRequest)))
+                            .content(objectMapper.writeValueAsString(purchaseRequest)))
                     .andDo(document("buyerAuctions/purchase/success",
                             preprocessRequest(prettyPrint()),
                             preprocessResponse(prettyPrint()),
@@ -219,7 +219,7 @@ class BuyerAuctionDocument extends DocumentationTest {
             Long receiptId = 1L;
             SignInInfo signInInfo = new SignInInfo(1L, Role.BUYER);
 
-            mockMvc.perform(delete("/auctions/bids/{receiptId}", receiptId)
+            mockMvc.perform(put("/receipts/{receiptId}/refund", receiptId)
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))

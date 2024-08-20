@@ -82,10 +82,28 @@ public class AuctionService {
      * @param quantity    수량
      * @param requestTime 요청 시간
      */
-    public void submitBid(long auctionId, long price, long quantity, LocalDateTime requestTime) {
+    public void submitPurchase(long auctionId, long price, long quantity, LocalDateTime requestTime) {
         Auction auction = findAuctionObject(auctionId);
         auction.submit(price, quantity, requestTime);
         auctionRepository.save(auction);
+    }
+
+    /**
+     * 경매 상품에 대한 입찰 취소를 진행한다. - 경매 도메인 내에서 이를 quantity에 대한 검증 로직을 넣었습니다.
+     *
+     * @param auctionId 경매 아이디
+     * @param quantity  환불할 수량
+     */
+    public void cancelPurchase(long auctionId, long quantity) {
+        Auction auction = findAuctionObject(auctionId);
+        auction.refundStock(quantity);
+        auctionRepository.save(auction);
+    }
+
+    private Auction findAuctionObject(long auctionId) {
+        return auctionRepository.findById(auctionId)
+                .orElseThrow(
+                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A010));
     }
 
     /**
@@ -147,23 +165,5 @@ public class AuctionService {
         return auctionRepository.findAllBy(condition).stream()
                 .map(Mapper::convertToSellerAuctionSimpleInfo)
                 .toList();
-    }
-
-    /**
-     * 경매 상품에 대한 입찰 취소를 진행한다. - 경매 도메인 내에서 이를 quantity에 대한 검증 로직을 넣었습니다.
-     *
-     * @param auctionId 경매 아이디
-     * @param quantity  환불할 수량
-     */
-    public void cancelBid(long auctionId, long quantity) {
-        Auction auction = findAuctionObject(auctionId);
-        auction.refundStock(quantity);
-        auctionRepository.save(auction);
-    }
-
-    private Auction findAuctionObject(long auctionId) {
-        return auctionRepository.findById(auctionId)
-                .orElseThrow(
-                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A010));
     }
 }

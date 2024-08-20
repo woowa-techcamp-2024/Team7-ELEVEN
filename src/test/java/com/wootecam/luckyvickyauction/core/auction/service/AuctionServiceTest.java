@@ -157,7 +157,7 @@ class AuctionServiceTest extends ServiceTest {
     }
 
     @Nested
-    class submitBid_메소드는 {
+    class submitPurchase_메소드는 {
 
         @Nested
         class 정상적인_구매요청이_들어오면 {
@@ -183,7 +183,7 @@ class AuctionServiceTest extends ServiceTest {
                 Auction savedAuction = auctionRepository.save(auction);
 
                 // when
-                auctionService.submitBid(savedAuction.getId(), 7000L, 10, now);
+                auctionService.submitPurchase(savedAuction.getId(), 7000L, 10, now);
 
                 // then
                 Auction afterAuction = auctionRepository.findById(savedAuction.getId()).get();
@@ -197,7 +197,7 @@ class AuctionServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // expect
-                assertThatThrownBy(() -> auctionService.submitBid(1L, 1000L, 10L, LocalDateTime.now()))
+                assertThatThrownBy(() -> auctionService.submitPurchase(1L, 1000L, 10L, LocalDateTime.now()))
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("경매(Auction)를 찾을 수 없습니다. AuctionId: 1")
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A010);
@@ -228,7 +228,7 @@ class AuctionServiceTest extends ServiceTest {
                 Auction savedAuction = auctionRepository.save(auction);
 
                 // expect
-                assertThatThrownBy(() -> auctionService.submitBid(savedAuction.getId(), 7000L, 101, now))
+                assertThatThrownBy(() -> auctionService.submitPurchase(savedAuction.getId(), 7000L, 101, now))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(String.format("해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d", 100L, 101L, 10L));
             }
@@ -259,7 +259,7 @@ class AuctionServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(
-                        () -> auctionService.submitBid(savedAuction.getId(), 7000L, 10L, LocalDateTime.now()))
+                        () -> auctionService.submitPurchase(savedAuction.getId(), 7000L, 10L, LocalDateTime.now()))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + AuctionStatus.WAITING)
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A013);
@@ -268,7 +268,7 @@ class AuctionServiceTest extends ServiceTest {
     }
 
     @Nested
-    class cancelBid_메소드는 {
+    class cancelPurchase_메소드는 {
 
         @Nested
         class 정상적인_입찰_취소_요청이_오면 {
@@ -294,7 +294,7 @@ class AuctionServiceTest extends ServiceTest {
                 auction = auctionRepository.save(auction);
 
                 // when
-                auctionService.cancelBid(auction.getId(), 50L);
+                auctionService.cancelPurchase(auction.getId(), 50L);
                 Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
 
                 // then
@@ -326,7 +326,7 @@ class AuctionServiceTest extends ServiceTest {
                 Auction savedAuction = auctionRepository.save(auction);
 
                 // expect
-                assertThatThrownBy(() -> auctionService.cancelBid(savedAuction.getId(), 0))
+                assertThatThrownBy(() -> auctionService.cancelPurchase(savedAuction.getId(), 0))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("환불할 재고는 1보다 작을 수 없습니다. inputStock=0")
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A015);
@@ -357,7 +357,7 @@ class AuctionServiceTest extends ServiceTest {
                 Auction savedAuction = auctionRepository.save(auction);
 
                 // expect
-                assertThatThrownBy(() -> auctionService.cancelBid(savedAuction.getId(), 60L))
+                assertThatThrownBy(() -> auctionService.cancelPurchase(savedAuction.getId(), 60L))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("환불 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=60")
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A016);

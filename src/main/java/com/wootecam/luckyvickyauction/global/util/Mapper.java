@@ -11,9 +11,9 @@ import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.entity.MemberEntity;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
-import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
+import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import lombok.AccessLevel;
@@ -39,18 +39,18 @@ public final class Mapper {
                 .build();
     }
 
-    public static BidHistoryInfo convertToBidHistoryInfo(BidHistory bidHistory) {
-        return BidHistoryInfo.builder()
-                .bidHistoryId(bidHistory.getId())
-                .productName(bidHistory.getProductName())
-                .price(bidHistory.getPrice())
-                .quantity(bidHistory.getQuantity())
-                .bidStatus(bidHistory.getBidStatus())
-                .auctionId(bidHistory.getAuctionId())
-                .sellerId(bidHistory.getSellerId())
-                .buyerId(bidHistory.getBuyerId())
-                .createdAt(bidHistory.getCreatedAt())
-                .updatedAt(bidHistory.getUpdatedAt())
+    public static ReceiptInfo convertToReceiptInfo(Receipt receipt) {
+        return ReceiptInfo.builder()
+                .receiptId(receipt.getId())
+                .productName(receipt.getProductName())
+                .price(receipt.getPrice())
+                .quantity(receipt.getQuantity())
+                .receiptStatus(receipt.getReceiptStatus())
+                .auctionId(receipt.getAuctionId())
+                .sellerId(receipt.getSellerId())
+                .buyerId(receipt.getBuyerId())
+                .createdAt(receipt.getCreatedAt())
+                .updatedAt(receipt.getUpdatedAt())
                 .build();
     }
 
@@ -95,22 +95,22 @@ public final class Mapper {
                 .build();
     }
 
-    public static BuyerReceiptSimpleInfo convertToBuyerReceiptSimpleInfo(BidHistory history) {
+    public static BuyerReceiptSimpleInfo convertToBuyerReceiptSimpleInfo(Receipt history) {
         return BuyerReceiptSimpleInfo.builder()
                 .id(history.getId())
                 .auctionId(history.getAuctionId())
-                .type(history.getBidStatus())
+                .type(history.getReceiptStatus())
                 .productName(history.getProductName())
                 .price(history.getPrice())
                 .quantity(history.getQuantity())
                 .build();
     }
 
-    public static SellerReceiptSimpleInfo convertToSellerReceiptSimpleInfo(BidHistory history) {
+    public static SellerReceiptSimpleInfo convertToSellerReceiptSimpleInfo(Receipt history) {
         return SellerReceiptSimpleInfo.builder()
                 .id(history.getId())
                 .auctionId(history.getAuctionId())
-                .type(history.getBidStatus())
+                .type(history.getReceiptStatus())
                 .productName(history.getProductName())
                 .price(history.getPrice())
                 .quantity(history.getQuantity())
@@ -140,13 +140,13 @@ public final class Mapper {
         );
     }
 
-    public static BidHistory convertToReceipt(ReceiptEntity receiptEntity) {
-        return BidHistory.builder()
+    public static Receipt convertToReceipt(ReceiptEntity receiptEntity) {
+        return Receipt.builder()
                 .id(receiptEntity.getId())
                 .productName(receiptEntity.getProductName())
                 .price(receiptEntity.getPrice())
                 .quantity(receiptEntity.getQuantity())
-                .bidStatus(receiptEntity.getBidStatus())
+                .receiptStatus(receiptEntity.getReceiptStatus())
                 .auctionId(receiptEntity.getAuctionId())
                 .sellerId(receiptEntity.getSellerId())
                 .buyerId(receiptEntity.getBuyerId())
@@ -211,18 +211,18 @@ public final class Mapper {
                 .build();
     }
 
-    public static ReceiptEntity convertToReceiptEntity(BidHistory bidHistory) {
+    public static ReceiptEntity convertToReceiptEntity(Receipt receipt) {
         return ReceiptEntity.builder()
-                .id(bidHistory.getId())
-                .productName(bidHistory.getProductName())
-                .price(bidHistory.getPrice())
-                .quantity(bidHistory.getQuantity())
-                .bidStatus(bidHistory.getBidStatus())
-                .auctionId(bidHistory.getAuctionId())
-                .sellerId(bidHistory.getSellerId())
-                .buyerId(bidHistory.getBuyerId())
-                .createdAt(bidHistory.getCreatedAt())
-                .updatedAt(bidHistory.getUpdatedAt())
+                .id(receipt.getId())
+                .productName(receipt.getProductName())
+                .price(receipt.getPrice())
+                .quantity(receipt.getQuantity())
+                .receiptStatus(receipt.getReceiptStatus())
+                .auctionId(receipt.getAuctionId())
+                .sellerId(receipt.getSellerId())
+                .buyerId(receipt.getBuyerId())
+                .createdAt(receipt.getCreatedAt())
+                .updatedAt(receipt.getUpdatedAt())
                 .build();
     }
 }
