@@ -25,12 +25,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AuctionService {
 
     private final AuctionRepository auctionRepository;
 
+    @Transactional
     public void createAuction(SignInInfo sellerInfo, CreateAuctionCommand command) {
         Auction auction = Auction.builder()
                 .sellerId(sellerInfo.id())
@@ -55,6 +56,7 @@ public class AuctionService {
      * @param signInInfo 경매를 취소하려는 사용자 정보
      * @param command    취소할 경매 정보
      */
+    @Transactional
     public void cancelAuction(SignInInfo signInInfo, CancelAuctionCommand command) {
         if (!signInInfo.isType(Role.SELLER)) {
             throw new UnauthorizedException("판매자만 경매를 취소할 수 있습니다.", ErrorCode.A017);
@@ -82,6 +84,7 @@ public class AuctionService {
      * @param quantity    수량
      * @param requestTime 요청 시간
      */
+    @Transactional
     public void submitPurchase(long auctionId, long price, long quantity, LocalDateTime requestTime) {
         Auction auction = findAuctionObject(auctionId);
         auction.submit(price, quantity, requestTime);
@@ -94,6 +97,7 @@ public class AuctionService {
      * @param auctionId 경매 아이디
      * @param quantity  환불할 수량
      */
+    @Transactional
     public void cancelPurchase(long auctionId, long quantity) {
         Auction auction = findAuctionObject(auctionId);
         auction.refundStock(quantity);
