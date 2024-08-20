@@ -121,7 +121,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             }
 
             // when
-            List<ReceiptEntity> receipts = repository.findAllBy(sellerId, condition);
+            List<ReceiptEntity> receipts = repository.findAllBySellerId(sellerId, condition);
 
             // then
             assertThat(receipts).hasSize(size);
@@ -159,7 +159,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .updatedAt(ZonedDateTime.now())
                     .build());
             // when
-            List<ReceiptEntity> receipts = repository.findAllBy(sellerId, condition);
+            List<ReceiptEntity> receipts = repository.findAllBySellerId(sellerId, condition);
 
             // then
             assertThat(receipts)

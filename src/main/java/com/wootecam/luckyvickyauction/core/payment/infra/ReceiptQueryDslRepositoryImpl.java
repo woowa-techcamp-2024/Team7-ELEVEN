@@ -27,7 +27,7 @@ public class ReceiptQueryDslRepositoryImpl implements ReceiptQueryDslRepository 
     }
 
     @Override
-    public List<ReceiptEntity> findAllBy(Long sellerId, SellerReceiptSearchCondition condition) {
+    public List<ReceiptEntity> findAllBySellerId(Long sellerId, SellerReceiptSearchCondition condition) {
         QReceiptEntity receipt = QReceiptEntity.receiptEntity;
 
         return factory

@@ -9,5 +9,5 @@ public interface ReceiptQueryDslRepository {
 
     List<ReceiptEntity> findAllByBuyerId(Long buyerId, BuyerReceiptSearchCondition condition);
 
-    List<ReceiptEntity> findAllBy(Long sellerId, SellerReceiptSearchCondition condition);
+    List<ReceiptEntity> findAllBySellerId(Long sellerId, SellerReceiptSearchCondition condition);
 }
