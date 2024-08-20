@@ -7,11 +7,14 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.wootecam.luckyvickyauction.core.auction.controller.dto.BidRequest;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
@@ -19,14 +22,13 @@ import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
-import io.restassured.http.Cookie;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
+import jakarta.servlet.http.Cookie;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -83,16 +85,19 @@ public class AuctionDocument extends DocumentationTest {
     class 판매자_경매_목록_조회 {
 
         @Test
-        void 경매_조회_조건을_전달하면_성공적으로_경매_목록을_반환한다() {
+        void 경매_조회_조건을_전달하면_성공적으로_경매_목록을_반환한다() throws Exception {
             AuctionSearchCondition condition = new AuctionSearchCondition(10, 2);
             List<SellerAuctionSimpleInfo> infos = sellerAuctionSimpleInfosSample();
+            SignInInfo sellerInfo = new SignInInfo(1L, Role.SELLER);
             given(auctionService.getSellerAuctionSimpleInfos(any())).willReturn(infos);
+            given(authenticationContext.getPrincipal()).willReturn(sellerInfo);
 
-            docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(condition)
-                    .when().get("/auctions/seller")
-                    .then().log().all()
-                    .apply(document("auctions/getSellerAuctions/success",
+            mockMvc.perform(get("/auctions/seller")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .cookie(new Cookie("JSESSIONID", "sessionId"))
+                            .sessionAttr("signInMember", sellerInfo)
+                            .content(objectMapper.writeValueAsString(condition)))
+                    .andDo(document("auctions/getSellerAuctions/success",
                             requestFields(
                                     fieldWithPath("offset").type(JsonFieldType.NUMBER)
                                             .description("조회를 시작할 순서"),
@@ -101,7 +106,7 @@ public class AuctionDocument extends DocumentationTest {
                                             .attributes(key("constraints").value("최소: 1 ~ 최대: 100"))
                             )
                     ))
-                    .statusCode(HttpStatus.OK.value());
+                    .andExpect(status().isOk());
         }
 
         private List<SellerAuctionSimpleInfo> sellerAuctionSimpleInfosSample() {
@@ -122,7 +127,7 @@ public class AuctionDocument extends DocumentationTest {
     class 판매자_경매_상세_조회 {
 
         @Test
-        void 경매_id를_전달하면_성공적으로_경매_상세정보를_반환한다() {
+        void 경매_id를_전달하면_성공적으로_경매_상세정보를_반환한다() throws Exception {
             String auctionId = "1";
             SellerAuctionInfo sellerAuctionInfo = SellerAuctionInfo.builder()
                     .auctionId(1L)
@@ -138,42 +143,42 @@ public class AuctionDocument extends DocumentationTest {
                     .finishedAt(ZonedDateTime.now().plusHours(1))
                     .isShowStock(true)
                     .build();
-            given(auctionService.getSellerAuction(1L)).willReturn(sellerAuctionInfo);
+            SignInInfo sellerInfo = new SignInInfo(1L, Role.SELLER);
+            given(auctionService.getSellerAuction(sellerInfo, 1L)).willReturn(sellerAuctionInfo);
+            given(authenticationContext.getPrincipal()).willReturn(sellerInfo);
 
-            docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().get("/auctions/{auctionId}/seller", auctionId)
-                    .then().log().all()
-                    .apply(document("auctions/getSellerAuctionDetail/success",
-                            pathParameters(
-                                    parameterWithName("auctionId").description("조회할 경매 ID")
+            mockMvc.perform(get("/auctions/{auctionId}/seller", auctionId)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .sessionAttr("signInMember", sellerInfo))
+                    .andDo(
+                            document("auctions/getSellerAuctionDetail/success",
+                                    pathParameters(
+                                            parameterWithName("auctionId").description("조회할 경매 ID")
+                                    )
                             )
-                    ))
-                    .statusCode(HttpStatus.OK.value());
+                    )
+                    .andExpect(status().isOk());
         }
     }
-
 
     @Nested
     class 구매자_경매_입찰 {
 
-        // TODO: [인증객체를 사용한 테스트로 전환할 것!] [writeAt: 2024/08/19/19:12] [writeBy: chhs2131]
         @Test
-        @Disabled
-        void 경매_입찰을_성공하면_OK응답을_반환한다() {
+        void 경매_입찰을_성공하면_OK응답을_반환한다() throws Exception {
             String auctionId = "1";
-            Member buyer = MemberFixture.createBuyerWithDefaultPoint();
             BidRequest bidRequest = new BidRequest(10000L, 20L);
+            SignInInfo buyerInfo = new SignInInfo(1L, Role.BUYER);
             willDoNothing().given(paymentService)
-                    .process(any(Member.class), anyLong(), anyLong(), anyLong(), any(ZonedDateTime.class));
+                    .process(any(SignInInfo.class), anyLong(), anyLong(), anyLong(), any(ZonedDateTime.class));
+            given(authenticationContext.getPrincipal()).willReturn(buyerInfo);
 
-            docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .sessionAttr("signInMember",
-                            buyer)  // TODO: [인증 객체 만드는거 기다리기? - String되버리는 문제] [writeAt: 2024/08/19/22:40] [writeBy: chhs2131]
-                    .cookie(new Cookie.Builder("JSESSIONID", "session-id-value").build()) // 쿠키 설정
-                    .body(bidRequest)
-                    .when().post("/auctions/{auctionId}/bids", auctionId)
-                    .then().log().all()
-                    .apply(document("auctions/bids/success",
+            mockMvc.perform(post("/auctions/{auctionId}/bids", auctionId)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .sessionAttr("signInMember", buyerInfo)
+                            .cookie(new Cookie("JSESSIONID", "sessionId"))
+                            .content(objectMapper.writeValueAsString(bidRequest)))
+                    .andDo(document("auctions/bids/success",
                             requestCookies(
                                     cookieWithName("JSESSIONID").description("세션 ID")
                             ),
@@ -187,7 +192,7 @@ public class AuctionDocument extends DocumentationTest {
                                             .description("입찰을 희망하는 수량")
                             )
                     ))
-                    .statusCode(HttpStatus.OK.value());
+                    .andExpect(status().isOk());
         }
 
     }

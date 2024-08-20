@@ -58,13 +58,14 @@ class AuctionServiceTest {
         ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
         ZonedDateTime finishedAt = startedAt.plusHours(1);
 
-        CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                varitationDuration, ZonedDateTime.now(), startedAt, finishedAt, true
+        SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
+        CreateAuctionCommand command = new CreateAuctionCommand(productName, originPrice, stock,
+                maximumPurchaseLimitCount, pricePolicy, varitationDuration, ZonedDateTime.now(), startedAt, finishedAt,
+                true
         );
 
         // when
-        auctionService.createAuction(command);
+        auctionService.createAuction(sellerInfo, command);
         Auction createdAuction = auctionRepository.findById(1L).get();
 
         // then
@@ -103,13 +104,14 @@ class AuctionServiceTest {
         ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
+        SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, ZonedDateTime.now(), startedAt, finishedAt, true
         );
 
         // expect
-        assertThatNoException().isThrownBy(() -> auctionService.createAuction(command));
+        assertThatNoException().isThrownBy(() -> auctionService.createAuction(sellerInfo, command));
     }
 
     @ParameterizedTest(name = "경매 지속시간이 {0}인 경우 BadRequestException 예외가 발생하고 에러 코드는 A008이다.")
@@ -130,13 +132,14 @@ class AuctionServiceTest {
         ZonedDateTime startedAt = ZonedDateTime.now().plusHours(1);
         ZonedDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
+        SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
         CreateAuctionCommand command = new CreateAuctionCommand(
-                sellerId, productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
+                productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
                 varitationDuration, ZonedDateTime.now(), startedAt, finishedAt, true
         );
 
         // expect
-        assertThatThrownBy(() -> auctionService.createAuction(command))
+        assertThatThrownBy(() -> auctionService.createAuction(sellerInfo, command))
                 .isInstanceOf(BadRequestException.class)
                 .satisfies(exception -> {
                     assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);
@@ -431,6 +434,68 @@ class AuctionServiceTest {
 
                 // then
                 assertThat(updatedAuction.getCurrentStock()).isEqualTo(100L);
+            }
+        }
+
+        @Nested
+        class 환불_할_재고가_1개_미만이라면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                ZonedDateTime now = ZonedDateTime.now();
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(50L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+                Auction savedAuction = auctionRepository.save(auction);
+
+                // expect
+                assertThatThrownBy(() -> auctionService.cancelBid(savedAuction.getId(), 0))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("환불할 재고는 1보다 작을 수 없습니다. inputStock=0")
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A022);
+            }
+        }
+
+        @Nested
+        class 환불_후_재고가_원래_재고보다_많다면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                ZonedDateTime now = ZonedDateTime.now();
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(50L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+                Auction savedAuction = auctionRepository.save(auction);
+
+                // expect
+                assertThatThrownBy(() -> auctionService.cancelBid(savedAuction.getId(), 60L))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("환불 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=60")
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A023);
             }
         }
     }

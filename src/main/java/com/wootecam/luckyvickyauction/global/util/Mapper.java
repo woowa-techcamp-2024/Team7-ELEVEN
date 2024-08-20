@@ -19,18 +19,9 @@ import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-/**
- * 현재 재고는 currentStock을 담아 놓았습니다
- */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Mapper {
 
-    /**
-     * Auction을 AuctionInfo로 변환 - 재고의 경우에는 currentStock을 담아 놓았습니다
-     *
-     * @param auction
-     * @return
-     */
     public static AuctionInfo convertToAuctionInfo(Auction auction) {
         return AuctionInfo.builder()
                 .auctionId(auction.getId())
@@ -40,6 +31,10 @@ public final class Mapper {
                 .currentPrice(auction.getCurrentPrice())
                 .stock(auction.getCurrentStock())
                 .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
+                .pricePolicy(auction.getPricePolicy())
+                .variationDuration(auction.getVariationDuration())
+                .startedAt(auction.getStartedAt())
+                .finishedAt(auction.getFinishedAt())
                 .isShowStock(auction.isShowStock())
                 .build();
     }
@@ -59,12 +54,6 @@ public final class Mapper {
                 .build();
     }
 
-    /**
-     * Auction을 BuyerAuctionInfo로 변환 <br> - stock 노출 여부를 확인하여 노출 여부에 따라 stock을 노출하거나 노출하지 않습니다.
-     *
-     * @param auction
-     * @return
-     */
     public static BuyerAuctionInfo convertToBuyerAuctionInfo(Auction auction) {
         Long stock = auction.isShowStock() ? auction.getCurrentStock() : null;
 

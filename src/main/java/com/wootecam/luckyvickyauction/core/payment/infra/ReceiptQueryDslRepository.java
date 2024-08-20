@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ReceiptQueryDslRepository {
 
-    List<ReceiptEntity> findAllBy(BuyerReceiptSearchCondition condition);
+    List<ReceiptEntity> findAllByBuyerId(Long buyerId, BuyerReceiptSearchCondition condition);
 
-    List<ReceiptEntity> findAllBy(SellerReceiptSearchCondition condition);
+    List<ReceiptEntity> findAllBySellerId(Long sellerId, SellerReceiptSearchCondition condition);
 }

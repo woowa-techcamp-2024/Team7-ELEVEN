@@ -8,8 +8,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerChargePointCommand;
 import com.wootecam.luckyvickyauction.documentation.DocumentationTest;
 import jakarta.servlet.http.Cookie;
@@ -20,17 +20,17 @@ import org.springframework.restdocs.payload.JsonFieldType;
 class PaymentControllerTest extends DocumentationTest {
 
     @Test
-    void 구매자는_충전_API() throws Exception {
+    void 사용자는_포인트를_충전할_수_있다_API() throws Exception {
         // given
         var command = new BuyerChargePointCommand(10000);
-        Member member = MemberFixture.create().build();
+        SignInInfo sellerInfo = new SignInInfo(1L, Role.BUYER);
 
         // expect
         mockMvc.perform(post("/payments/points/charge")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .cookie(new Cookie("JSESSIONID", "sessionId"))
-                        .sessionAttr("signInMember", member)
+                        .sessionAttr("signInMember", sellerInfo)
                         .content(objectMapper.writeValueAsString(command))
                 )
                 .andExpect(status().isOk())

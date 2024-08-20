@@ -28,7 +28,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             // given
             Long buyerId = 1L;
             int size = 100;
-            var condition = new BuyerReceiptSearchCondition(buyerId, size);
+            var condition = new BuyerReceiptSearchCondition(size);
 
             for (int i = 0; i < size + 1; i++) {
                 repository.save(ReceiptEntity.builder()
@@ -45,7 +45,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             }
 
             // when
-            List<ReceiptEntity> receipts = repository.findAllBy(condition);
+            List<ReceiptEntity> receipts = repository.findAllByBuyerId(buyerId, condition);
 
             // then
             assertThat(receipts).hasSize(size);
@@ -61,7 +61,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             Long buyerId = 1L;
             Long otherBuyerId = 2L;
             int size = 100;
-            var condition = new BuyerReceiptSearchCondition(buyerId, size);
+            var condition = new BuyerReceiptSearchCondition(size);
 
             repository.save(ReceiptEntity.builder()
                     .productName("상품1")
@@ -87,7 +87,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .updatedAt(ZonedDateTime.now())
                     .build());
             // when
-            List<ReceiptEntity> receipts = repository.findAllBy(condition);
+            List<ReceiptEntity> receipts = repository.findAllByBuyerId(buyerId, condition);
 
             // then
             assertThat(receipts)
@@ -104,7 +104,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             // given
             Long sellerId = 1L;
             int size = 100;
-            var condition = new SellerReceiptSearchCondition(sellerId, size);
+            var condition = new SellerReceiptSearchCondition(size);
 
             for (int i = 0; i < size + 1; i++) {
                 repository.save(ReceiptEntity.builder()
@@ -121,7 +121,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             }
 
             // when
-            List<ReceiptEntity> receipts = repository.findAllBy(condition);
+            List<ReceiptEntity> receipts = repository.findAllBySellerId(sellerId, condition);
 
             // then
             assertThat(receipts).hasSize(size);
@@ -133,7 +133,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             Long sellerId = 1L;
             Long otherSellerId = 2L;
             int size = 100;
-            var condition = new SellerReceiptSearchCondition(sellerId, size);
+            var condition = new SellerReceiptSearchCondition(size);
 
             repository.save(ReceiptEntity.builder()
                     .productName("상품1")
@@ -159,7 +159,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .updatedAt(ZonedDateTime.now())
                     .build());
             // when
-            List<ReceiptEntity> receipts = repository.findAllBy(condition);
+            List<ReceiptEntity> receipts = repository.findAllBySellerId(sellerId, condition);
 
             // then
             assertThat(receipts)

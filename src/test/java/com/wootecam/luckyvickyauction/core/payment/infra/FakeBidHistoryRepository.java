@@ -17,35 +17,30 @@ public class FakeBidHistoryRepository implements BidHistoryRepository {
     @Override
     public BidHistory save(BidHistory bidHistory) {
         if (bidHistory.getId() == null) {
-            // 새로운 BidHistory 객체인 경우
             bidHistory = createBidHistory(id, bidHistory);
             id++;
         } else {
-            // 기존 BidHistory 객체인 경우 업데이트
             bidHistory = createBidHistory(bidHistory.getId(), bidHistory);
         }
 
-        // BidHistory 객체를 저장소에 저장
         bidHistories.put(bidHistory.getId(), bidHistory);
         return bidHistory;
     }
 
     @Override
     public Optional<BidHistory> findById(long bidHistoryId) {
-        // ID로 BidHistory 검색
         return Optional.ofNullable(bidHistories.get(bidHistoryId));
     }
 
-    // TODO: [ReceiptSelectCondition 조건 이후 변경 사항] [writeAt: 2024/08/15/16:03] [writeBy: yudonggeun]
     @Override
-    public List<BidHistory> findAllBy(BuyerReceiptSearchCondition condition) {
+    public List<BidHistory> findAllByBuyerId(Long buyerId, BuyerReceiptSearchCondition condition) {
         return bidHistories.values().stream()
-                .filter(history -> true)
+                .limit(condition.size())
                 .toList();
     }
 
     @Override
-    public List<BidHistory> findAllBy(SellerReceiptSearchCondition condition) {
+    public List<BidHistory> findAllBySellerId(Long sellerId, SellerReceiptSearchCondition condition) {
         return bidHistories.values().stream()
                 .filter(history -> true)
                 .toList();

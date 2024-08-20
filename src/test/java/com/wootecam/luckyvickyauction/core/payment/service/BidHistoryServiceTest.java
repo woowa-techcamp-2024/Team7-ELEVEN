@@ -5,15 +5,23 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistoryRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
+import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
+import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.infra.FakeBidHistoryRepository;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -68,7 +76,8 @@ class BidHistoryServiceTest {
             bidHistoryRepository.save(bidHistory);
 
             // when
-            BidHistoryInfo bidHistoryInfo = bidHistoryService.getBidHistoryInfo(1L);
+            BidHistoryInfo bidHistoryInfo = bidHistoryService.getBidHistoryInfo(
+                    new SignInInfo(seller.getId(), Role.SELLER), 1L);
 
             // then
             assertAll(
@@ -90,71 +99,104 @@ class BidHistoryServiceTest {
             long bidHistoryId = 1L;
 
             // expect
-            assertThatThrownBy(() -> bidHistoryService.getBidHistoryInfo(bidHistoryId))
+            assertThatThrownBy(
+                    () -> bidHistoryService.getBidHistoryInfo(new SignInInfo(member.getId(), Role.BUYER), bidHistoryId))
                     .isInstanceOf(NotFoundException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.B000));
         }
 
-        // TODO [추후 소유자 인증 객체 생성 후 구현] [writeAt: 2024/08/18/16:21] [writeBy: minseok-oh]
+        @Test
+        void 해당_거래내역의_소유자가_아닌경우_예외가_발생한다() {
+            // given
+            Member seller = Member.builder().id(1L).signInId("판매자").password("password00").role(Role.SELLER)
+                    .build();  // 소유자
+            Member buyer = Member.builder().id(2L).signInId("구매자").password("password00").role(Role.BUYER)
+                    .build();  // 소유자
+            SignInInfo nonOwner = new SignInInfo(3L, Role.BUYER);
 
-//        @Test
-//        void 해당_거래내역의_소유자가_아닌경우_예외가_발생한다() {
-//
-//            // given
-//            Member seller = Member.builder().id(1L).signInId("판매자").password("password00").role(Role.SELLER)
-//                    .build();  // 소유자
-//            Member buyer = Member.builder().id(2L).signInId("구매자").password("password00").role(Role.BUYER)
-//                    .build();  // 소유자
-//            Member nonOwner = Member.builder().id(3L).signInId("나쁜놈").password("password00").role(Role.BUYER)
-//                    .build();  // 비소유자
-//
-//            BidHistory bidHistory = BidHistory.builder()
-//                    .id(1L)
-//                    .sellerId(seller.getId())
-//                    .buyerId(buyer.getId())
-//                    .build();
-//            bidHistoryRepository.save(bidHistory);
-//
-//            // expect
-//            assertThatThrownBy(() -> bidHistoryService.getBidHistoryInfo(1L))
-//                    .isInstanceOf(UnauthorizedException.class)
-//                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-//                            ErrorCode.B001));
-//        }
+            BidHistory bidHistory = BidHistory.builder()
+                    .id(1L)
+                    .sellerId(seller.getId())
+                    .buyerId(buyer.getId())
+                    .build();
+            bidHistoryRepository.save(bidHistory);
 
-//        @Test
-//        void 다른_판매자의_구매이력_조회시_예외가_발생한다() {
-//            // given
-//            ZonedDateTime now = ZonedDateTime.now();
-//            Member seller1 = Member.builder().id(1L).signInId("판매자").password("password00").role(Role.SELLER)
-//                    .build();  // 판매자
-//            Member seller2 = Member.builder().id(2L).signInId("옆집 사장님").password("password00").role(Role.SELLER)
-//                    .build();  // 판매자
-//            Member buyer = Member.builder().id(3L).signInId("구매자").password("password00").role(Role.BUYER)
-//                    .build();  // 구매자
-//
-//            BidHistory bidHistory = BidHistory.builder()
-//                    .id(1L)
-//                    .productName("멋진 상품")
-//                    .price(1000000)
-//                    .quantity(1)
-//                    .bidStatus(BidStatus.BID)
-//                    .auctionId(1L)
-//                    .sellerId(seller1.getId())
-//                    .buyerId(buyer.getId())
-//                    .createdAt(now)
-//                    .updatedAt(now)
-//                    .build();
-//            bidHistoryRepository.save(bidHistory);
-//
-//            // expect
-//            assertThatThrownBy(() -> bidHistoryService.getBidHistoryInfo(1L))
-//                    .isInstanceOf(UnauthorizedException.class)
-//                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-//                            ErrorCode.B001));
-//        }
-
+            // expect
+            assertThatThrownBy(() -> bidHistoryService.getBidHistoryInfo(nonOwner, 1L))
+                    .isInstanceOf(UnauthorizedException.class)
+                    .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                            ErrorCode.B001));
+        }
     }
 
+    @Nested
+    class getBuyerReceiptSimpleInfos_메소드는 {
+
+        @Nested
+        class 정상적인_요청이_들어오면 {
+
+            @Test
+            void 특정_구매자의_거래이력을_조회할_수_있다() {
+                // given
+                Member seller = Member.builder().id(1L).signInId("판매자").password("password00").role(Role.SELLER)
+                        .build();
+                Member buyer = Member.builder().id(2L).signInId("구매자").password("password00").role(Role.BUYER)
+                        .build();
+
+                BidHistory bidHistory = BidHistory.builder()
+                        .id(1L)
+                        .sellerId(seller.getId())
+                        .buyerId(buyer.getId())
+                        .build();
+                bidHistoryRepository.save(bidHistory);
+
+                // when
+                List<BuyerReceiptSimpleInfo> buyerReceiptSimpleInfos = bidHistoryService.getBuyerReceiptSimpleInfos(
+                        new SignInInfo(buyer.getId(), Role.BUYER),
+                        new BuyerReceiptSearchCondition(5)
+                );
+
+                // then
+                assertAll(
+                        () -> assertThat(buyerReceiptSimpleInfos).hasSize(1)
+                );
+            }
+        }
+    }
+
+    @Nested
+    class getSellerReceiptSimpleInfos_메소드는 {
+
+        @Nested
+        class 정상적인_요청이_들어오면 {
+
+            @Test
+            void 특정_구매자의_거래이력을_조회할_수_있다() {
+                // given
+                Member seller = Member.builder().id(1L).signInId("판매자").password("password00").role(Role.SELLER)
+                        .build();
+                Member buyer = Member.builder().id(2L).signInId("구매자").password("password00").role(Role.BUYER)
+                        .build();
+
+                BidHistory bidHistory = BidHistory.builder()
+                        .id(1L)
+                        .sellerId(seller.getId())
+                        .buyerId(buyer.getId())
+                        .build();
+                bidHistoryRepository.save(bidHistory);
+
+                // when
+                List<SellerReceiptSimpleInfo> sellerReceiptSimpleInfos = bidHistoryService.getSellerReceiptSimpleInfos(
+                        new SignInInfo(seller.getId(), Role.SELLER),
+                        new SellerReceiptSearchCondition(5)
+                );
+
+                // then
+                assertAll(
+                        () -> assertThat(sellerReceiptSimpleInfos).hasSize(1)
+                );
+            }
+        }
+    }
 }

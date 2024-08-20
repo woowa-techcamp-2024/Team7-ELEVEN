@@ -24,17 +24,19 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 // TODO: [update, change 메소드에서 경매 상태 조건을 확인하는 부분을 서비스가 아니라 Auction이 갖게 하도록 변경하기] [writeAt: 2024/08/15/14:18] [writeBy: HiiWee]
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AuctionService {
 
     private final AuctionRepository auctionRepository;
 
-    public void createAuction(CreateAuctionCommand command) {
+    public void createAuction(SignInInfo sellerInfo, CreateAuctionCommand command) {
         Auction auction = Auction.builder()
-                .sellerId(command.sellerId())
+                .sellerId(sellerInfo.id())
                 .productName(command.productName())
                 .currentPrice(command.originPrice())
                 .originPrice(command.originPrice())
@@ -132,12 +134,12 @@ public class AuctionService {
      * @param auctionId 경매 ID
      * @return 판매자용 경매 정보
      */
-    public SellerAuctionInfo getSellerAuction(long auctionId) {
+    public SellerAuctionInfo getSellerAuction(SignInInfo sellerInfo, long auctionId) {
         Auction auction = findAuctionObject(auctionId);
 
-//        if (!signInInfo.isSameId(auction.getSellerId())) {
-//            throw new UnauthorizedException("판매자는 자신이 등록한 경매만 조회할 수 있습니다.", ErrorCode.A027);
-//        }
+        if (!auction.isSeller(sellerInfo.id())) {
+            throw new UnauthorizedException("판매자는 자신이 등록한 경매만 조회할 수 있습니다.", ErrorCode.A027);
+        }
 
         return Mapper.convertToSellerAuctionInfo(auction);
     }

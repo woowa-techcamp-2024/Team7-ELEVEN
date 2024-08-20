@@ -12,7 +12,6 @@ import java.util.Objects;
 /**
  * 경매 생성을 위한 명령 객체
  *
- * @param sellerId                  판매자 ID
  * @param productName               상품 이름
  * @param originPrice               상품 원가
  * @param stock                     재고 수량
@@ -25,7 +24,6 @@ import java.util.Objects;
  */
 
 public record CreateAuctionCommand(
-        Long sellerId,
         String productName,
         long originPrice,
         long stock,
@@ -47,7 +45,6 @@ public record CreateAuctionCommand(
     private static final String ERROR_NULL_VALUE = "%s는 Null일 수 없습니다.";
 
     public CreateAuctionCommand {
-        validateNotNull(sellerId, "판매자 ID");
         validateNotNull(productName, "상품 이름");
         validateNotNull(pricePolicy, "경매 유형");
         validateNotNull(variationDuration, "가격 변동 주기");

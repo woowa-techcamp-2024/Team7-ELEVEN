@@ -23,11 +23,10 @@ class BuyerReceiptSelectConditionTest {
         int size = 10;
 
         // when
-        BuyerReceiptSearchCondition buyerReceiptSearchCondition = new BuyerReceiptSearchCondition(buyerId, size);
+        BuyerReceiptSearchCondition buyerReceiptSearchCondition = new BuyerReceiptSearchCondition(size);
 
         // then
         assertAll(
-                () -> assertThat(buyerReceiptSearchCondition.buyerId()).isEqualTo(buyerId),
                 () -> assertThat(buyerReceiptSearchCondition.size()).isEqualTo(size)
         );
     }
@@ -36,7 +35,7 @@ class BuyerReceiptSelectConditionTest {
     @ValueSource(ints = {0, 101})
     public void size가_1미만이거나_100초과인_경우_예외가_발생한다(int size) {
 
-        assertThatThrownBy(() -> new BuyerReceiptSearchCondition(1L, size))
+        assertThatThrownBy(() -> new BuyerReceiptSearchCondition(size))
                 .isInstanceOf(BadRequestException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.G001);
     }

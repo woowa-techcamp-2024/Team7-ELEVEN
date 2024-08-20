@@ -55,6 +55,7 @@ public class DocumentationTest {
 
     @Autowired
     protected MockMvc mockMvc;
+
     @Autowired
     protected ObjectMapper objectMapper;
 
@@ -62,10 +63,10 @@ public class DocumentationTest {
     protected MemberService memberService;
 
     @MockBean
-    protected PaymentService paymentService;
+    protected AuctionService auctionService;
 
     @MockBean
-    protected AuctionService auctionService;
+    protected PaymentService paymentService;
 
     @MockBean
     protected BidHistoryService bidHistoryService;

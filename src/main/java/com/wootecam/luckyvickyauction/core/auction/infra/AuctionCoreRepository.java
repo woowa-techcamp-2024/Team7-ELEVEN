@@ -30,7 +30,6 @@ public class AuctionCoreRepository implements AuctionRepository {
         return auction.map(Mapper::convertToAuction);
     }
 
-    @Override
     public void deleteById(long id) {
         auctionJpaRepository.deleteById(id);
     }
