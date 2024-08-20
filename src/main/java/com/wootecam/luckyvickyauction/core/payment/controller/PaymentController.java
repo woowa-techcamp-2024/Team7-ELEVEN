@@ -23,10 +23,8 @@ public class PaymentController {
     // 사용자는 포인트를 충전한다.
     @Roles({Role.BUYER, Role.SELLER})
     @PostMapping("/points/charge")
-    public ResponseEntity<Void> chargePoint(
-            @Login SignInInfo memberInfo,
-            @RequestBody BuyerChargePointCommand command
-    ) {
+    public ResponseEntity<Void> chargePoint(@Login SignInInfo memberInfo,
+                                            @RequestBody BuyerChargePointCommand command) {
         paymentService.chargePoint(memberInfo, command.amount());
         return ResponseEntity.ok().build();
     }

@@ -56,7 +56,7 @@ class BidHistoryServiceTest extends ServiceTest {
                     .productName("멋진 상품")
                     .price(1000000)
                     .quantity(1)
-                    .bidStatus(BidStatus.BID)
+                    .bidStatus(BidStatus.PURCHASED)
                     .auctionId(1L)
                     .sellerId(seller.getId())
                     .buyerId(buyer.getId())
@@ -75,7 +75,7 @@ class BidHistoryServiceTest extends ServiceTest {
                     () -> assertThat(bidHistoryInfo.productName()).isEqualTo("멋진 상품"),
                     () -> assertThat(bidHistoryInfo.price()).isEqualTo(1000000),
                     () -> assertThat(bidHistoryInfo.quantity()).isEqualTo(1),
-                    () -> assertThat(bidHistoryInfo.bidStatus()).isEqualTo(BidStatus.BID),
+                    () -> assertThat(bidHistoryInfo.bidStatus()).isEqualTo(BidStatus.PURCHASED),
                     () -> assertThat(bidHistoryInfo.auctionId()).isEqualTo(1L),
                     () -> assertThat(bidHistoryInfo.sellerId()).isEqualTo(seller.getId()),
                     () -> assertThat(bidHistoryInfo.buyerId()).isEqualTo(buyer.getId())

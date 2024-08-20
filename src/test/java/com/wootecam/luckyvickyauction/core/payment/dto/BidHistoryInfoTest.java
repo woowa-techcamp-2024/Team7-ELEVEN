@@ -19,7 +19,7 @@ class BidHistoryInfoTest {
         String productName = "상품이름";
         long price = 10000L;
         long quantity = 1L;
-        BidStatus bidStatus = BidStatus.BID;
+        BidStatus bidStatus = BidStatus.PURCHASED;
         Long auctionId = 1L;
         Member seller = Member.builder()
                 .id(1L)

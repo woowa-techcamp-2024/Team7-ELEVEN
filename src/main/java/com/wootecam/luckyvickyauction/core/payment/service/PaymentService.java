@@ -42,7 +42,7 @@ public class PaymentService {
                 .productName(auctionInfo.productName())
                 .price(price)
                 .quantity(quantity)
-                .bidStatus(BidStatus.BID)
+                .bidStatus(BidStatus.PURCHASED)
                 .sellerId(savedSeller.getId())
                 .buyerId(savedBuyer.getId())
                 .build();
