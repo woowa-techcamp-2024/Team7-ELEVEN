@@ -138,7 +138,7 @@ class AuctionServiceTest extends ServiceTest {
         assertThatThrownBy(() -> auctionService.createAuction(sellerInfo, command))
                 .isInstanceOf(BadRequestException.class)
                 .satisfies(exception -> {
-                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);
+                    assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A007);
                 });
     }
 
@@ -186,7 +186,7 @@ class AuctionServiceTest extends ServiceTest {
                 assertThatThrownBy(() -> auctionService.submitBid(1L, 1000L, 10L, LocalDateTime.now()))
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("경매(Auction)를 찾을 수 없습니다. AuctionId: 1")
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A011);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A010);
             }
         }
 
@@ -248,7 +248,7 @@ class AuctionServiceTest extends ServiceTest {
                         () -> auctionService.submitBid(savedAuction.getId(), 7000L, 10L, LocalDateTime.now()))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + AuctionStatus.WAITING)
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A016);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A013);
             }
         }
     }
@@ -315,7 +315,7 @@ class AuctionServiceTest extends ServiceTest {
                 assertThatThrownBy(() -> auctionService.cancelBid(savedAuction.getId(), 0))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("환불할 재고는 1보다 작을 수 없습니다. inputStock=0")
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A022);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A015);
             }
         }
 
@@ -346,7 +346,7 @@ class AuctionServiceTest extends ServiceTest {
                 assertThatThrownBy(() -> auctionService.cancelBid(savedAuction.getId(), 60L))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("환불 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=60")
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A023);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A016);
             }
         }
     }
@@ -407,7 +407,7 @@ class AuctionServiceTest extends ServiceTest {
                                 () -> auctionService.getSellerAuction(signInInfo, auction.getId()))
                         .isInstanceOf(UnauthorizedException.class)
                         .hasMessage("판매자는 자신이 등록한 경매만 조회할 수 있습니다.")
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A027);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A020);
             }
         }
     }
@@ -450,7 +450,7 @@ class AuctionServiceTest extends ServiceTest {
                     .isInstanceOf(UnauthorizedException.class)
                     .hasMessage("판매자만 경매를 취소할 수 있습니다.")
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.A024));
+                            ErrorCode.A017));
         }
 
         @Test
@@ -467,7 +467,7 @@ class AuctionServiceTest extends ServiceTest {
                     .isInstanceOf(UnauthorizedException.class)
                     .hasMessage("자신이 등록한 경매만 취소할 수 있습니다.")
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.A025));
+                            ErrorCode.A018));
         }
 
         @ParameterizedTest(name = "{0}")
@@ -485,7 +485,7 @@ class AuctionServiceTest extends ServiceTest {
                     .isInstanceOf(BadRequestException.class)
                     .hasMessageStartingWith("시작 전인 경매만 취소할 수 있습니다.")
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.A026));
+                            ErrorCode.A019));
         }
     }
 }

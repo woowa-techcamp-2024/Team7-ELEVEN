@@ -79,7 +79,7 @@ class AuctionTest {
                                 .isShowStock(true)
                                 .build())
                         .isInstanceOf(BadRequestException.class)
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A009);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);
             }
 
             @Test
@@ -109,7 +109,7 @@ class AuctionTest {
                                 .build())
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: 500, 할인횟수: 5, 모든 할인 적용 후 가격: 0")
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A021);
             }
 
             @ParameterizedTest
@@ -167,7 +167,7 @@ class AuctionTest {
                                 initialPrice,
                                 durationMinutes / variationMinutes - 1,
                                 initialPrice - (durationMinutes / variationMinutes - 1) * 100))
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A021);
             }
         }
 
@@ -232,7 +232,7 @@ class AuctionTest {
                                 initialPrice,
                                 9,
                                 0))
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A021);
             }
         }
     }
@@ -301,7 +301,7 @@ class AuctionTest {
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("환불할 재고는 1보다 작을 수 없습니다. inputStock=-1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.A022));
+                                ErrorCode.A015));
             }
         }
 
@@ -334,7 +334,7 @@ class AuctionTest {
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("환불 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.A023));
+                                ErrorCode.A016));
             }
         }
     }
@@ -354,7 +354,7 @@ class AuctionTest {
                 assertThatThrownBy(() -> auction.submit(2000, 10, LocalDateTime.now()))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + AuctionStatus.WAITING)
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A016);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A013);
             }
         }
 
@@ -385,7 +385,7 @@ class AuctionTest {
                 assertThatThrownBy(() -> auction.submit(7001L, 10, requestTime))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d", 7000L, 7001L))
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A029);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A022);
             }
         }
 
@@ -417,7 +417,7 @@ class AuctionTest {
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(String.format("해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d",
                                 auction.getCurrentStock(), requestQuantity, auction.getMaximumPurchaseLimitCount()))
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A014);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A012);
             }
         }
 

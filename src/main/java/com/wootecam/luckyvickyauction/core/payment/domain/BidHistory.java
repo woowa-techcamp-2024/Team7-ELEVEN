@@ -48,7 +48,7 @@ public class BidHistory {
 
     public void markAsRefund() {
         if (bidStatus.equals(BidStatus.REFUND)) {
-            throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.B005);
+            throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.B002);
         }
         bidStatus = BidStatus.REFUND;
     }
