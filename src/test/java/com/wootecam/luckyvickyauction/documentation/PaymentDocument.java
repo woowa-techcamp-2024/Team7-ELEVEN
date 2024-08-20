@@ -1,4 +1,4 @@
-package com.wootecam.luckyvickyauction.core.payment.controller;
+package com.wootecam.luckyvickyauction.documentation;
 
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
@@ -11,13 +11,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerChargePointCommand;
-import com.wootecam.luckyvickyauction.documentation.DocumentationTest;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-class PaymentControllerTest extends DocumentationTest {
+class PaymentDocument extends DocumentationTest {
 
     @Test
     void 사용자는_포인트를_충전할_수_있다_API() throws Exception {
