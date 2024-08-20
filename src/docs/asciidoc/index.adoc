@@ -8,6 +8,7 @@
 :docinfo: shared-head
 
 include::auth.adoc[]
+include::point.adoc[]
 include::memberAuctions.adoc[]
 include::buyerAuctions.adoc[]
 include::receipt.adoc[]
