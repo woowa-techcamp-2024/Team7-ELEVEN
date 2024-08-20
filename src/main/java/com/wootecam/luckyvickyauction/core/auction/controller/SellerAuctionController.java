@@ -30,7 +30,7 @@ public class SellerAuctionController {
 
     private final AuctionService auctionService;
 
-    // 판매자는 경매를 생성한다.
+    // 판매자는 경매를 등록한다.
     @SellerOnly
     @PostMapping
     public ResponseEntity<Void> createAuction(@Login SignInInfo sellerInfo,
@@ -61,9 +61,8 @@ public class SellerAuctionController {
     // 판매자는 자신이 등록한 경매 목록을 조회한다.
     @SellerOnly
     @GetMapping("/seller")
-    public ResponseEntity<List<SellerAuctionSimpleInfo>> getSellerAuctions(
-            @Login SignInInfo sellerInfo,
-            @RequestBody SellerAuctionSearchRequest request) {
+    public ResponseEntity<List<SellerAuctionSimpleInfo>> getSellerAuctions(@Login SignInInfo sellerInfo,
+                                                                           @RequestBody SellerAuctionSearchRequest request) {
         SellerAuctionSearchCondition condition = new SellerAuctionSearchCondition(
                 sellerInfo.id(),
                 request.offset(),

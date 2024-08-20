@@ -10,6 +10,7 @@
 include::auth.adoc[]
 include::point.adoc[]
 include::memberAuctions.adoc[]
+include::sellerAuctions.adoc[]
 include::buyerAuctions.adoc[]
 include::receipts.adoc[]
 include::errorCode.adoc[]

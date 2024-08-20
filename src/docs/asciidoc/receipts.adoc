@@ -1,14 +1,14 @@
 [[Receipts]]
 == 거래 이력
 
-=== 구매자 거래 목록 조회
+=== 구매자 거래 목록 조회(구매자 권한 필요)
 
 operation::receipts/findAllBuyerReceipts/success[snippets='http-request,http-response,request-cookies,request-fields,response-fields']
 
-=== 판매자 거래 목록 조회
+=== 판매자 거래 목록 조회(판매자 권한 필요)
 
 operation::receipts/findAllSellerReceipts/success[snippets='http-request,http-response,request-cookies,request-fields,response-fields']
 
-=== 사용자(공통) 상세 조회
+=== 거래 상세 조회(판매자, 구매자 권한 필요)
 
 operation::receipts/findOneMemberReceipt/success[snippets='http-request,http-response,request-cookies,path-parameters,response-fields']

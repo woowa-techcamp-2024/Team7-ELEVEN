@@ -7,8 +7,12 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
@@ -46,7 +50,7 @@ class SellerAuctionDocument extends DocumentationTest {
      * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/198">Github issue</a>
      */
     @Nested
-    class 판매자_경매_등록_API {
+    class 판매자_경매_등록 {
 
         @Test
         void ConstantPolicy_경매_생성() throws Exception {
@@ -69,7 +73,12 @@ class SellerAuctionDocument extends DocumentationTest {
                             .content(objectMapper.writeValueAsString(request))
                     )
                     .andDo(
-                            document("auctions/post/constant_policy/success",
+                            document("sellerAuctions/createConstantPolicy/success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestCookies(
+                                            cookieWithName("JSESSIONID").description("세션 ID")
+                                    ),
                                     requestFields(
                                             fieldWithPath("productName").description("상품 이름"),
                                             fieldWithPath("originPrice").description("상품 원가"),
@@ -109,7 +118,12 @@ class SellerAuctionDocument extends DocumentationTest {
                             .sessionAttr("signInMember", signInInfo)
                             .content(objectMapper.writeValueAsString(request)))
                     .andDo(
-                            document("auctions/post/percentage_policy/success",
+                            document("sellerAuctions/createPercentagePolicy/success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestCookies(
+                                            cookieWithName("JSESSIONID").description("세션 ID")
+                                    ),
                                     requestFields(
                                             fieldWithPath("productName").description("상품 이름"),
                                             fieldWithPath("originPrice").description("상품 원가"),
@@ -126,6 +140,39 @@ class SellerAuctionDocument extends DocumentationTest {
                                     )
                             )
                     ).andExpect(status().isOk());
+        }
+    }
+
+    @Nested
+    class 판매자_경매_등록_취소_API {
+
+        @Test
+        void 판매자_경매_취소() throws Exception {
+            // given
+            Long auctionId = 1L;
+            Member seller = Member.builder()
+                    .id(1L)
+                    .signInId("sellerId")
+                    .password("password00")
+                    .role(Role.SELLER)
+                    .point(new Point(1000L))
+                    .build();
+            SignInInfo signInInfo = new SignInInfo(seller.getId(), Role.SELLER);
+            given(currentTimeArgumentResolver.supportsParameter(any())).willReturn(true);
+            given(currentTimeArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
+                    ZonedDateTime.now());
+
+            mockMvc.perform(delete("/auctions/{auctionId}", auctionId)
+                    .cookie(new Cookie("JSESSIONID", "sessionId"))
+                    .sessionAttr("signInMember", signInInfo)
+            ).andDo(
+                    document("sellerAuctions/delete/success",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            requestCookies(cookieWithName("JSESSIONID").description("세션 ID")),
+                            pathParameters(parameterWithName("auctionId").description("취소할 경매 ID"))
+                    )
+            ).andExpect(status().isOk());
         }
     }
 
@@ -148,13 +195,34 @@ class SellerAuctionDocument extends DocumentationTest {
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
                             .sessionAttr("signInMember", sellerInfo)
                             .content(objectMapper.writeValueAsString(condition)))
-                    .andDo(document("auctions/getSellerAuctions/success",
+                    .andDo(document("sellerAuctions/findAll/success",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            requestCookies(cookieWithName("JSESSIONID").description("세션 ID")),
                             requestFields(
                                     fieldWithPath("offset").type(JsonFieldType.NUMBER)
                                             .description("조회를 시작할 순서"),
                                     fieldWithPath("size").type(JsonFieldType.NUMBER)
                                             .description("조회할 페이지 크기")
                                             .attributes(key("constraints").value("최소: 1 ~ 최대: 100"))
+                            ),
+                            responseFields(
+                                    fieldWithPath("[].id").type(JsonFieldType.NUMBER)
+                                            .description("경매 ID"),
+                                    fieldWithPath("[].title").type(JsonFieldType.STRING)
+                                            .description("경매 노출 제목"),
+                                    fieldWithPath("[].originPrice").type(JsonFieldType.NUMBER)
+                                            .description("상품 원가"),
+                                    fieldWithPath("[].currentPrice").type(JsonFieldType.NUMBER)
+                                            .description("현재 가격"),
+                                    fieldWithPath("[].totalStock").type(JsonFieldType.NUMBER)
+                                            .description("총 재고"),
+                                    fieldWithPath("[].currentStock").type(JsonFieldType.NUMBER)
+                                            .description("현재 남은 재고"),
+                                    fieldWithPath("[].startedAt").type(JsonFieldType.STRING)
+                                            .description("경매 시작 시간"),
+                                    fieldWithPath("[].finishedAt").type(JsonFieldType.STRING)
+                                            .description("경매 종료 시간")
                             )
                     ))
                     .andExpect(status().isOk());
@@ -178,7 +246,7 @@ class SellerAuctionDocument extends DocumentationTest {
     class 판매자_경매_상세_조회 {
 
         @Test
-        void 경매_id를_전달하면_성공적으로_경매_상세정보를_반환한다() throws Exception {
+        void 경매_id를_전달하면_성공적으로_고정_할인_경매_상세정보를_반환한다() throws Exception {
             String auctionId = "1";
             SellerAuctionInfo sellerAuctionInfo = SellerAuctionInfo.builder()
                     .auctionId(1L)
@@ -200,47 +268,113 @@ class SellerAuctionDocument extends DocumentationTest {
 
             mockMvc.perform(get("/auctions/{auctionId}/seller", auctionId)
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .cookie(new Cookie("JSESSIONID", "sessionId"))
                             .sessionAttr("signInMember", sellerInfo))
                     .andDo(
-                            document("auctions/getSellerAuctionDetail/success",
+                            document("sellerAuctions/findOneConstantPolicy/success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestCookies(cookieWithName("JSESSIONID").description("세션 ID")),
                                     pathParameters(
                                             parameterWithName("auctionId").description("조회할 경매 ID")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("auctionId").type(JsonFieldType.NUMBER)
+                                                    .description("경매 ID"),
+                                            fieldWithPath("productName").type(JsonFieldType.STRING)
+                                                    .description("상품 이름"),
+                                            fieldWithPath("originPrice").type(JsonFieldType.NUMBER)
+                                                    .description("상품 원가"),
+                                            fieldWithPath("currentPrice").type(JsonFieldType.NUMBER)
+                                                    .description("현재 가격"),
+                                            fieldWithPath("originStock").type(JsonFieldType.NUMBER)
+                                                    .description("원래 재고"),
+                                            fieldWithPath("currentStock").type(JsonFieldType.NUMBER)
+                                                    .description("현재 재고"),
+                                            fieldWithPath("maximumPurchaseLimitCount").type(JsonFieldType.NUMBER)
+                                                    .description("최대 구매 수량 제한"),
+                                            fieldWithPath("pricePolicy.type").type(JsonFieldType.STRING)
+                                                    .description("가격 정책 유형"),
+                                            fieldWithPath("pricePolicy.variationWidth").type(JsonFieldType.NUMBER)
+                                                    .description("가격 변동 폭(고정 할인 정책)"),
+                                            fieldWithPath("variationDuration").type(JsonFieldType.STRING)
+                                                    .description("가격 변동 주기(분)"),
+                                            fieldWithPath("startedAt").type(JsonFieldType.STRING)
+                                                    .description("경매 시작 시간"),
+                                            fieldWithPath("finishedAt").type(JsonFieldType.STRING)
+                                                    .description("경매 종료 시간"),
+                                            fieldWithPath("isShowStock").type(JsonFieldType.BOOLEAN)
+                                                    .description("재고 표시 여부")
                                     )
                             )
                     )
                     .andExpect(status().isOk());
         }
-    }
-
-    @Nested
-    class 판매자_경매_등록_취소_API {
 
         @Test
-        void 판매자_경매_취소() throws Exception {
-            // given
-            Long auctionId = 1L;
-            Member seller = Member.builder()
-                    .id(1L)
-                    .signInId("sellerId")
-                    .password("password00")
-                    .role(Role.SELLER)
-                    .point(new Point(1000L))
+        void 경매_id를_전달하면_성공적으로_퍼센트_할인_경매_상세정보를_반환한다() throws Exception {
+            String auctionId = "1";
+            SellerAuctionInfo sellerAuctionInfo = SellerAuctionInfo.builder()
+                    .auctionId(1L)
+                    .productName("쓸만한 경매품")
+                    .originPrice(10000)
+                    .currentPrice(8000)
+                    .originStock(100)
+                    .currentStock(50)
+                    .maximumPurchaseLimitCount(10)
+                    .pricePolicy(new PercentagePricePolicy(10.0))
+                    .variationDuration(Duration.ofMinutes(10))
+                    .startedAt(ZonedDateTime.now())
+                    .finishedAt(ZonedDateTime.now().plusHours(1))
+                    .isShowStock(true)
                     .build();
-            SignInInfo signInInfo = new SignInInfo(seller.getId(), Role.SELLER);
-            given(currentTimeArgumentResolver.supportsParameter(any())).willReturn(true);
-            given(currentTimeArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
-                    ZonedDateTime.now());
+            SignInInfo sellerInfo = new SignInInfo(1L, Role.SELLER);
+            given(auctionService.getSellerAuction(sellerInfo, 1L)).willReturn(sellerAuctionInfo);
+            given(authenticationContext.getPrincipal()).willReturn(sellerInfo);
 
-            mockMvc.perform(
-                    delete("/auctions/{auctionId}", auctionId)
+            mockMvc.perform(get("/auctions/{auctionId}/seller", auctionId)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
-                            .sessionAttr("signInMember", signInInfo)
-            ).andDo(
-                    document("auctions/delete/success",
-                            requestCookies(cookieWithName("JSESSIONID").description("세션 ID")),
-                            pathParameters(parameterWithName("auctionId").description("취소할 경매 ID"))
+                            .sessionAttr("signInMember", sellerInfo))
+                    .andDo(
+                            document("sellerAuctions/findOnePercentagePolicy/success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestCookies(cookieWithName("JSESSIONID").description("세션 ID")),
+                                    pathParameters(
+                                            parameterWithName("auctionId").description("조회할 경매 ID")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("auctionId").type(JsonFieldType.NUMBER)
+                                                    .description("경매 ID"),
+                                            fieldWithPath("productName").type(JsonFieldType.STRING)
+                                                    .description("상품 이름"),
+                                            fieldWithPath("originPrice").type(JsonFieldType.NUMBER)
+                                                    .description("상품 원가"),
+                                            fieldWithPath("currentPrice").type(JsonFieldType.NUMBER)
+                                                    .description("현재 가격"),
+                                            fieldWithPath("originStock").type(JsonFieldType.NUMBER)
+                                                    .description("원래 재고"),
+                                            fieldWithPath("currentStock").type(JsonFieldType.NUMBER)
+                                                    .description("현재 재고"),
+                                            fieldWithPath("maximumPurchaseLimitCount").type(JsonFieldType.NUMBER)
+                                                    .description("최대 구매 수량 제한"),
+                                            fieldWithPath("pricePolicy.type").type(JsonFieldType.STRING)
+                                                    .description("가격 정책 유형"),
+                                            fieldWithPath("pricePolicy.discountRate").type(JsonFieldType.NUMBER)
+                                                    .description("가격 변동 폭(퍼센트 할인 정책)"),
+                                            fieldWithPath("variationDuration").type(JsonFieldType.STRING)
+                                                    .description("가격 변동 주기(분)"),
+                                            fieldWithPath("startedAt").type(JsonFieldType.STRING)
+                                                    .description("경매 시작 시간"),
+                                            fieldWithPath("finishedAt").type(JsonFieldType.STRING)
+                                                    .description("경매 종료 시간"),
+                                            fieldWithPath("isShowStock").type(JsonFieldType.BOOLEAN)
+                                                    .description("재고 표시 여부")
+                                    )
+                            )
                     )
-            ).andExpect(status().isOk());
+                    .andExpect(status().isOk());
         }
     }
 }

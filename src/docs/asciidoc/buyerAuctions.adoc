@@ -1,11 +1,11 @@
-[[buyerAuctions]]
-== 경매: 구매자
+[[buyerAuction]]
+== 경매: 구매자(구매자 권한 필요)
 
-=== 구매자: 경매 입찰(구매)
+=== 경매 입찰
 
 operation::buyerAuctions/purchase/success[snippets='http-request,http-response,request-cookies,path-parameters,request-fields']
 
-=== 구매자: 경매 환불(취소)
+=== 경매 환불
 
 operation::buyerAuctions/cancel/success[snippets='http-request,http-response,request-cookies,path-parameters']
 
