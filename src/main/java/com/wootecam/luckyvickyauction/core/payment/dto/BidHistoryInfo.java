@@ -1,7 +1,7 @@
 package com.wootecam.luckyvickyauction.core.payment.dto;
 
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
@@ -14,7 +14,7 @@ public record BidHistoryInfo(
         long auctionId,
         long sellerId,
         long buyerId,
-        ZonedDateTime createdAt,
-        ZonedDateTime updatedAt
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {
 }

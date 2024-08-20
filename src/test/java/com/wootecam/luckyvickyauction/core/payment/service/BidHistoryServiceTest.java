@@ -19,7 +19,7 @@ import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
@@ -47,7 +47,7 @@ class BidHistoryServiceTest extends ServiceTest {
         @MethodSource("provideMembersForSuccess")
         void 소유자가_거래내역_조회시_성공한다(Long memberId, String description) {
             // given
-            ZonedDateTime now = ZonedDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
             Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
             Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 

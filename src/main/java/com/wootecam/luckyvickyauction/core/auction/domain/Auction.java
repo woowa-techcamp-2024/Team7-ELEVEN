@@ -3,7 +3,7 @@ package com.wootecam.luckyvickyauction.core.auction.domain;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -22,8 +22,8 @@ public class Auction {
     private long maximumPurchaseLimitCount;
     private PricePolicy pricePolicy;
     private Duration variationDuration;
-    private ZonedDateTime startedAt;
-    private ZonedDateTime finishedAt;
+    private LocalDateTime startedAt;
+    private LocalDateTime finishedAt;
     private boolean isShowStock;
 
     @Builder
@@ -38,8 +38,8 @@ public class Auction {
             long maximumPurchaseLimitCount,
             PricePolicy pricePolicy,
             Duration variationDuration,
-            ZonedDateTime startedAt,
-            ZonedDateTime finishedAt,
+            LocalDateTime startedAt,
+            LocalDateTime finishedAt,
             boolean isShowStock
     ) {
         validateDurationTime(startedAt, finishedAt);
@@ -60,7 +60,7 @@ public class Auction {
         this.isShowStock = isShowStock;
     }
 
-    private void validateDurationTime(ZonedDateTime startedAt, ZonedDateTime finishedAt) {
+    private void validateDurationTime(LocalDateTime startedAt, LocalDateTime finishedAt) {
         Duration diff = Duration.between(startedAt, finishedAt);
         long diffNanos = diff.toNanos();
         long tenMinutesInNanos = 10L * 60 * 1_000_000_000; // 10분을 나노초로 변환
@@ -72,7 +72,7 @@ public class Auction {
         }
     }
 
-    private void validateMinimumPrice(ZonedDateTime startedAt, ZonedDateTime finishedAt, Duration variationDuration,
+    private void validateMinimumPrice(LocalDateTime startedAt, LocalDateTime finishedAt, Duration variationDuration,
                                       long originPrice, PricePolicy pricePolicy) {
         Duration totalDuration = Duration.between(startedAt, finishedAt);
         long variationCount = totalDuration.dividedBy(variationDuration) - 1;
@@ -116,7 +116,7 @@ public class Auction {
      * @param quantity    구매자가 구매할 상품 갯수
      * @param requestTime 구매자가 요청한 시간
      */
-    public void submit(long price, long quantity, ZonedDateTime requestTime) {
+    public void submit(long price, long quantity, LocalDateTime requestTime) {
         AuctionStatus currentStatus = currentStatus(requestTime);
         if (!currentStatus.isRunning()) {
             String message = String.format("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: %s", currentStatus);
@@ -129,7 +129,7 @@ public class Auction {
     }
 
     // TODO: [SOLD_OUT의 상태관리는 어떻게 해야할것인가?!] [writeAt: 2024/08/14/11:12] [writeBy: HiiWee]
-    public AuctionStatus currentStatus(ZonedDateTime requestTime) {
+    public AuctionStatus currentStatus(LocalDateTime requestTime) {
         if (requestTime.isBefore(startedAt)) {
             return AuctionStatus.WAITING;
         }
@@ -141,7 +141,7 @@ public class Auction {
         return AuctionStatus.FINISHED;
     }
 
-    private void verifyCurrentPrice(long inputPrice, ZonedDateTime requestTime) {
+    private void verifyCurrentPrice(long inputPrice, LocalDateTime requestTime) {
         Duration elapsedDuration = Duration.between(startedAt, requestTime);
         long currentVariationCount = elapsedDuration.dividedBy(variationDuration);
 

@@ -4,7 +4,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import lombok.Builder;
 
 /**
@@ -21,8 +21,8 @@ public record SellerAuctionInfo(
         long maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,
-        ZonedDateTime startedAt,
-        ZonedDateTime finishedAt,
+        LocalDateTime startedAt,
+        LocalDateTime finishedAt,
         boolean isShowStock
 ) {
 

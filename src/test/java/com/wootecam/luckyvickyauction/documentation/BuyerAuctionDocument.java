@@ -29,7 +29,7 @@ import com.wootecam.luckyvickyauction.core.auction.fixture.BuyerAuctionInfoFixtu
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import jakarta.servlet.http.Cookie;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
@@ -85,7 +85,7 @@ class BuyerAuctionDocument extends DocumentationTest {
 
             for (long i = 1; i <= 2; i++) {
                 BuyerAuctionSimpleInfo simpleInfo = new BuyerAuctionSimpleInfo(i, "쓸만한 경매품 " + i, i * 2000,
-                        ZonedDateTime.now(), ZonedDateTime.now().plusMinutes(30L));
+                        LocalDateTime.now(), LocalDateTime.now().plusMinutes(30L));
                 infos.add(simpleInfo);
             }
 
@@ -183,7 +183,7 @@ class BuyerAuctionDocument extends DocumentationTest {
             BidRequest bidRequest = new BidRequest(10000L, 20L);
             SignInInfo buyerInfo = new SignInInfo(1L, Role.BUYER);
             willDoNothing().given(paymentService)
-                    .process(any(SignInInfo.class), anyLong(), anyLong(), anyLong(), any(ZonedDateTime.class));
+                    .process(any(SignInInfo.class), anyLong(), anyLong(), anyLong(), any(LocalDateTime.class));
             given(authenticationContext.getPrincipal()).willReturn(buyerInfo);
 
             mockMvc.perform(post("/auctions/{auctionId}/bids", auctionId)

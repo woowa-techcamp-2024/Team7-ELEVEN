@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -30,8 +30,8 @@ abstract class MapperReceiptTest {
                     .sellerId(3L)
                     .buyerId(4L)
                     .bidStatus(BidStatus.PURCHASED)
-                    .updatedAt(ZonedDateTime.now())
-                    .createdAt(ZonedDateTime.now().plusHours(1))
+                    .updatedAt(LocalDateTime.now())
+                    .createdAt(LocalDateTime.now().plusHours(1))
                     .build();
 
             // when
@@ -68,8 +68,8 @@ abstract class MapperReceiptTest {
                     .sellerId(3L)
                     .buyerId(4L)
                     .bidStatus(BidStatus.PURCHASED)
-                    .updatedAt(ZonedDateTime.now())
-                    .createdAt(ZonedDateTime.now().plusHours(1))
+                    .updatedAt(LocalDateTime.now())
+                    .createdAt(LocalDateTime.now().plusHours(1))
                     .build();
 
             // when

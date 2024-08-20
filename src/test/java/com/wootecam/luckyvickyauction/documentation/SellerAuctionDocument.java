@@ -32,7 +32,7 @@ import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import jakarta.servlet.http.Cookie;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
@@ -55,7 +55,7 @@ class SellerAuctionDocument extends DocumentationTest {
         @Test
         void ConstantPolicy_경매_생성() throws Exception {
             // given
-            ZonedDateTime now = ZonedDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
             CreateAuctionRequest request = new CreateAuctionRequest(
                     "productName", 10000L, 100L, 10L, new ConstantPricePolicy(100L), Duration.ofMinutes(10),
                     now.plusHours(1), now.plusHours(2), true);
@@ -63,7 +63,7 @@ class SellerAuctionDocument extends DocumentationTest {
             given(authenticationContext.getPrincipal()).willReturn(signInInfo);
             given(currentTimeArgumentResolver.supportsParameter(any())).willReturn(true);
             given(currentTimeArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
-                    ZonedDateTime.now());
+                    LocalDateTime.now());
 
             // expect
             mockMvc.perform(post("/auctions")
@@ -101,7 +101,7 @@ class SellerAuctionDocument extends DocumentationTest {
         @Test
         void PercentagePolicy_경매_생성() throws Exception {
             // given
-            ZonedDateTime now = ZonedDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
             CreateAuctionRequest request = new CreateAuctionRequest(
                     "productName", 10000L, 100L, 10L, new PercentagePricePolicy(10.0), Duration.ofMinutes(10),
                     now.plusHours(1), now.plusHours(2), true);
@@ -109,7 +109,7 @@ class SellerAuctionDocument extends DocumentationTest {
             given(authenticationContext.getPrincipal()).willReturn(signInInfo);
             given(currentTimeArgumentResolver.supportsParameter(any())).willReturn(true);
             given(currentTimeArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
-                    ZonedDateTime.now());
+                    LocalDateTime.now());
 
             // expect
             mockMvc.perform(post("/auctions")
@@ -160,7 +160,7 @@ class SellerAuctionDocument extends DocumentationTest {
             SignInInfo signInInfo = new SignInInfo(seller.getId(), Role.SELLER);
             given(currentTimeArgumentResolver.supportsParameter(any())).willReturn(true);
             given(currentTimeArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
-                    ZonedDateTime.now());
+                    LocalDateTime.now());
 
             mockMvc.perform(delete("/auctions/{auctionId}", auctionId)
                     .cookie(new Cookie("JSESSIONID", "sessionId"))
@@ -234,7 +234,7 @@ class SellerAuctionDocument extends DocumentationTest {
             for (long i = 1; i <= 2; i++) {
                 SellerAuctionSimpleInfo simpleInfo = new SellerAuctionSimpleInfo(i, "내가 판매하는 경매품 " + i, i * 2000,
                         i * 2000 - 500, i * 100, i * 30,
-                        ZonedDateTime.now(), ZonedDateTime.now().plusMinutes(30L));
+                        LocalDateTime.now(), LocalDateTime.now().plusMinutes(30L));
                 infos.add(simpleInfo);
             }
 
@@ -258,8 +258,8 @@ class SellerAuctionDocument extends DocumentationTest {
                     .maximumPurchaseLimitCount(10)
                     .pricePolicy(new ConstantPricePolicy(10L))
                     .variationDuration(Duration.ofMinutes(10))
-                    .startedAt(ZonedDateTime.now())
-                    .finishedAt(ZonedDateTime.now().plusHours(1))
+                    .startedAt(LocalDateTime.now())
+                    .finishedAt(LocalDateTime.now().plusHours(1))
                     .isShowStock(true)
                     .build();
             SignInInfo sellerInfo = new SignInInfo(1L, Role.SELLER);
@@ -324,8 +324,8 @@ class SellerAuctionDocument extends DocumentationTest {
                     .maximumPurchaseLimitCount(10)
                     .pricePolicy(new PercentagePricePolicy(10.0))
                     .variationDuration(Duration.ofMinutes(10))
-                    .startedAt(ZonedDateTime.now())
-                    .finishedAt(ZonedDateTime.now().plusHours(1))
+                    .startedAt(LocalDateTime.now())
+                    .finishedAt(LocalDateTime.now().plusHours(1))
                     .isShowStock(true)
                     .build();
             SignInInfo sellerInfo = new SignInInfo(1L, Role.SELLER);

@@ -8,7 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,14 +33,14 @@ public class AuctionEntity {
     @Convert(converter = PricePolicyConverter.class)
     private PricePolicy pricePolicy;
     private Duration variationDuration;
-    private ZonedDateTime startedAt;
-    private ZonedDateTime finishedAt;
+    private LocalDateTime startedAt;
+    private LocalDateTime finishedAt;
     private boolean isShowStock;
 
     @Builder
     private AuctionEntity(Long id, Long sellerId, String productName, long originPrice, long currentPrice,
                           long originStock, long currentStock, long maximumPurchaseLimitCount, PricePolicy pricePolicy,
-                          Duration variationDuration, ZonedDateTime startedAt, ZonedDateTime finishedAt,
+                          Duration variationDuration, LocalDateTime startedAt, LocalDateTime finishedAt,
                           boolean isShowStock) {
         this.id = id;
         this.sellerId = sellerId;

@@ -25,7 +25,7 @@ import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
 import jakarta.servlet.http.Cookie;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
@@ -178,8 +178,8 @@ public class ReceiptDocument extends DocumentationTest {
                     .auctionId(1L)
                     .sellerId(1L)
                     .buyerId(2L)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now().plusHours(1))
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now().plusHours(1))
                     .build();
             SignInInfo memberInfo = new SignInInfo(1L, Role.SELLER);
             given(authenticationContext.getPrincipal()).willReturn(memberInfo);

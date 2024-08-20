@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.wootecam.luckyvickyauction.context.RepositoryTest;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
 import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +31,8 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
                     .auctionId(1L)
                     .sellerId(1L)
                     .buyerId(2L)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build();
             BidHistory saved = receiptCoreRepository.save(bidHistory);
 
@@ -81,8 +81,8 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
                     .auctionId(1L)
                     .sellerId(1L)
                     .buyerId(2L)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build();
 
             // when
@@ -114,8 +114,8 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
                     .auctionId(1L)
                     .sellerId(1L)
                     .buyerId(2L)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build();
             receiptCoreRepository.save(bidHistory);
 
