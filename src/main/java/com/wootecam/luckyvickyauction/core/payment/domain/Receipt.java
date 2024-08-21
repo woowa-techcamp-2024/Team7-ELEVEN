@@ -7,13 +7,13 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class BidHistory {
+public class Receipt {
 
     private Long id;
     private String productName;
     private long price;
     private long quantity;
-    private BidStatus bidStatus;
+    private ReceiptStatus receiptStatus;
     private long auctionId;
     private long sellerId;
     private long buyerId;
@@ -23,12 +23,12 @@ public class BidHistory {
     public static final String ERROR_VARIATION_UPDATE_AT = "생성 시간보다 수정 시간이 더 작을 수 없습니다. 생성시간: %s, 수정시간: %s";
 
     @Builder
-    public BidHistory(
+    public Receipt(
             final Long id,
             final String productName,
             final long price,
             final long quantity,
-            final BidStatus bidStatus,
+            final ReceiptStatus receiptStatus,
             final long auctionId,
             final long sellerId,
             final long buyerId,
@@ -38,7 +38,7 @@ public class BidHistory {
         this.productName = productName;
         this.price = price;
         this.quantity = quantity;
-        this.bidStatus = bidStatus;
+        this.receiptStatus = receiptStatus;
         this.auctionId = auctionId;
         this.sellerId = sellerId;
         this.buyerId = buyerId;
@@ -47,10 +47,10 @@ public class BidHistory {
     }
 
     public void markAsRefund() {
-        if (bidStatus.equals(BidStatus.REFUND)) {
-            throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.B002);
+        if (receiptStatus.equals(ReceiptStatus.REFUND)) {
+            throw new BadRequestException("이미 환불된 입찰 내역입니다.", ErrorCode.R002);
         }
-        bidStatus = BidStatus.REFUND;
+        receiptStatus = ReceiptStatus.REFUND;
     }
 
     public boolean isOwnedBy(long requestUserId) {

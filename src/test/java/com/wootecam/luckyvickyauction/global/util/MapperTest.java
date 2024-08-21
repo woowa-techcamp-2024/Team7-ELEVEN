@@ -11,7 +11,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
+import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -38,7 +38,7 @@ class MapperTest {
                 .point(new Point(1000L))
                 .build();
 
-        BidHistory history = BidHistory.builder()
+        Receipt history = Receipt.builder()
                 .id(1L)
                 .auctionId(232L)
                 .productName("상품 이름")
@@ -54,7 +54,7 @@ class MapperTest {
         // then
         assertAll(
                 () -> assertEquals(history.getId(), dto.id()),
-                () -> assertThat(history.getBidStatus()).isEqualTo(dto.type()),
+                () -> assertThat(history.getReceiptStatus()).isEqualTo(dto.type()),
                 () -> assertEquals(history.getAuctionId(), dto.auctionId()),
                 () -> assertEquals(history.getQuantity(), dto.quantity()),
                 () -> assertEquals(history.getPrice(), dto.price())

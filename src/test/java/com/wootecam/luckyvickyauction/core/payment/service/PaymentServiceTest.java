@@ -13,8 +13,8 @@ import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
+import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
@@ -241,30 +241,30 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 LocalDateTime now = LocalDateTime.now();
-                BidHistory bidHistory = BidHistory.builder()
+                Receipt receipt = Receipt.builder()
                         .id(1L)
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
                         .quantity(1L)
-                        .bidStatus(BidStatus.PURCHASED)
+                        .receiptStatus(ReceiptStatus.PURCHASED)
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
-                bidHistoryRepository.save(bidHistory);
+                receiptRepository.save(receipt);
 
                 // when
                 paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L);
 
                 // then
-                BidHistory savedBidHistory = bidHistoryRepository.findById(1L).get();
-                Member savedBuyer = memberRepository.findById(savedBidHistory.getBuyerId()).get();
-                Member savedSeller = memberRepository.findById(savedBidHistory.getSellerId()).get();
-                Auction savedAuction = auctionRepository.findById(savedBidHistory.getAuctionId()).get();
+                Receipt savedReceipt = receiptRepository.findById(1L).get();
+                Member savedBuyer = memberRepository.findById(savedReceipt.getBuyerId()).get();
+                Member savedSeller = memberRepository.findById(savedReceipt.getSellerId()).get();
+                Auction savedAuction = auctionRepository.findById(savedReceipt.getAuctionId()).get();
                 assertAll(
-                        () -> assertThat(savedBidHistory.getBidStatus()).isEqualTo(BidStatus.REFUND),
+                        () -> assertThat(savedReceipt.getReceiptStatus()).isEqualTo(ReceiptStatus.REFUND),
                         () -> assertThat(savedBuyer.getPoint().getAmount()).isEqualTo(1100L),
                         () -> assertThat(savedSeller.getPoint().getAmount()).isEqualTo(900L),
                         () -> assertThat(savedAuction.getCurrentStock()).isEqualTo(1L)
@@ -285,19 +285,19 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 LocalDateTime now = LocalDateTime.now();
-                BidHistory bidHistory = BidHistory.builder()
+                Receipt receipt = Receipt.builder()
                         .id(1L)
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
                         .quantity(1L)
-                        .bidStatus(BidStatus.PURCHASED)
+                        .receiptStatus(ReceiptStatus.PURCHASED)
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
-                bidHistoryRepository.save(bidHistory);
+                receiptRepository.save(receipt);
 
                 // expect
                 assertThatThrownBy(() -> paymentService.refund(new SignInInfo(seller.getId(), Role.SELLER), 1L))
@@ -341,26 +341,26 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 LocalDateTime now = LocalDateTime.now();
-                BidHistory bidHistory = BidHistory.builder()
+                Receipt receipt = Receipt.builder()
                         .id(1L)
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
                         .quantity(1L)
-                        .bidStatus(BidStatus.REFUND)
+                        .receiptStatus(ReceiptStatus.REFUND)
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
-                bidHistoryRepository.save(bidHistory);
+                receiptRepository.save(receipt);
 
                 // expect
                 assertThatThrownBy(() -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("이미 환불된 입찰 내역입니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.B002));
+                                ErrorCode.R002));
             }
         }
 
@@ -377,30 +377,31 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 LocalDateTime now = LocalDateTime.now();
-                BidHistory bidHistory = BidHistory.builder()
+                Receipt receipt = Receipt.builder()
                         .id(1L)
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
                         .quantity(1L)
-                        .bidStatus(BidStatus.PURCHASED)
+                        .receiptStatus(ReceiptStatus.PURCHASED)
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
-                bidHistoryRepository.save(bidHistory);
+                receiptRepository.save(receipt);
 
                 // expect
-                Member unbidBuyer = Member.builder()
+                Member unPurchasedBuyer = Member.builder()
                         .id(3L)
-                        .signInId("unbidBuyer")
+                        .signInId("unPurchasedBuyer")
                         .password("password00")
                         .role(Role.BUYER)
                         .point(new Point(1000L))
                         .build();
 
-                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(unbidBuyer.getId(), Role.BUYER), 1L))
+                assertThatThrownBy(
+                        () -> paymentService.refund(new SignInInfo(unPurchasedBuyer.getId(), Role.BUYER), 1L))
                         .isInstanceOf(UnauthorizedException.class)
                         .hasMessage("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",

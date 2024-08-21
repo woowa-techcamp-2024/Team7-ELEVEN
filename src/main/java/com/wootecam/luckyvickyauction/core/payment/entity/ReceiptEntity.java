@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.payment.entity;
 
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,7 +23,7 @@ public class ReceiptEntity {
     private String productName;
     private long price;
     private long quantity;
-    private BidStatus bidStatus;
+    private ReceiptStatus receiptStatus;
     private long auctionId;
     private Long sellerId;
     private Long buyerId;
@@ -31,13 +31,14 @@ public class ReceiptEntity {
     private LocalDateTime updatedAt;
 
     @Builder
-    private ReceiptEntity(Long id, String productName, long price, long quantity, BidStatus bidStatus, long auctionId,
+    private ReceiptEntity(Long id, String productName, long price, long quantity, ReceiptStatus receiptStatus,
+                          long auctionId,
                           Long sellerId, Long buyerId, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.productName = productName;
         this.price = price;
         this.quantity = quantity;
-        this.bidStatus = bidStatus;
+        this.receiptStatus = receiptStatus;
         this.auctionId = auctionId;
         this.sellerId = sellerId;
         this.buyerId = buyerId;

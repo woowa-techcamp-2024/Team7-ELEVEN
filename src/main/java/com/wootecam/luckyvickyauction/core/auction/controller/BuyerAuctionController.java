@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
-import com.wootecam.luckyvickyauction.core.auction.controller.dto.BidRequest;
+import com.wootecam.luckyvickyauction.core.auction.controller.dto.PurchaseRequest;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
@@ -13,16 +13,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auctions")
 @RequiredArgsConstructor
 public class BuyerAuctionController {
 
@@ -30,14 +28,14 @@ public class BuyerAuctionController {
     private final PaymentService paymentService;
 
     // 사용자는 경매 목록을 조회한다.
-    @GetMapping
+    @GetMapping("/auctions")
     public ResponseEntity<List<BuyerAuctionSimpleInfo>> getAuctions(@RequestBody AuctionSearchCondition condition) {
         List<BuyerAuctionSimpleInfo> infos = auctionService.getBuyerAuctionSimpleInfos(condition);
         return ResponseEntity.ok(infos);
     }
 
     // 사용자는 경매의 상세정보를 조회한다.
-    @GetMapping("/{auctionId}")
+    @GetMapping("/auctions/{auctionId}")
     public ResponseEntity<BuyerAuctionInfo> getAuction(@PathVariable("auctionId") Long auctionId) {
         BuyerAuctionInfo result = auctionService.getBuyerAuction(auctionId);
         return ResponseEntity.ok(result);
@@ -45,11 +43,12 @@ public class BuyerAuctionController {
 
     // 사용자는 경매에 입찰한다.
     @BuyerOnly
-    @PostMapping("/{auctionId}/bids")
-    public ResponseEntity<Void> bidAuction(@Login SignInInfo signInInfo,
-                                           @PathVariable(name = "auctionId") Long auctionId,
-                                           @RequestBody BidRequest bidRequest) {
-        paymentService.process(signInInfo, bidRequest.price(), auctionId, bidRequest.quantity(), LocalDateTime.now());
+    @PostMapping("/auctions/{auctionId}/purchase")
+    public ResponseEntity<Void> submitAuction(@Login SignInInfo signInInfo,
+                                              @CurrentTime LocalDateTime now,
+                                              @PathVariable(name = "auctionId") Long auctionId,
+                                              @RequestBody PurchaseRequest purchaseRequest) {
+        paymentService.process(signInInfo, purchaseRequest.price(), auctionId, purchaseRequest.quantity(), now);
         return ResponseEntity.ok().build();
     }
 
@@ -60,7 +59,7 @@ public class BuyerAuctionController {
      * @see <a href="https://github.com/woowa-techcamp-2024/Team7-ELEVEN/issues/32">Github Story Issue</a>
      */
     @BuyerOnly
-    @DeleteMapping("/bids/{receiptId}")
+    @PutMapping("/receipts/{receiptId}/refund")
     public ResponseEntity<Void> refundAuction(@Login SignInInfo buyerInfo, @PathVariable("receiptId") Long receiptId) {
         paymentService.refund(buyerInfo, receiptId);
         return ResponseEntity.ok().build();

@@ -9,11 +9,11 @@ import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
-import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
+import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -28,10 +28,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class BidHistoryServiceTest extends ServiceTest {
+class ReceiptServiceTest extends ServiceTest {
 
     @Nested
-    class getBidHistory_메서드는 {
+    class getReceiptInfo_메서드는 {
 
         static Stream<Arguments> provideMembersForSuccess() {
             Member seller = MemberFixture.createSellerWithDefaultPoint();  // 소유자
@@ -51,34 +51,34 @@ class BidHistoryServiceTest extends ServiceTest {
             Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
             Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
-            BidHistory bidHistory = BidHistory.builder()
+            Receipt receipt = Receipt.builder()
                     .id(1L)
                     .productName("멋진 상품")
                     .price(1000000)
                     .quantity(1)
-                    .bidStatus(BidStatus.PURCHASED)
+                    .receiptStatus(ReceiptStatus.PURCHASED)
                     .auctionId(1L)
                     .sellerId(seller.getId())
                     .buyerId(buyer.getId())
                     .createdAt(now)
                     .updatedAt(now)
                     .build();
-            bidHistoryRepository.save(bidHistory);
+            receiptRepository.save(receipt);
 
             // when
-            BidHistoryInfo bidHistoryInfo = bidHistoryService.getBidHistoryInfo(
+            ReceiptInfo receiptInfo = receiptService.getReceiptInfo(
                     new SignInInfo(seller.getId(), Role.SELLER), 1L);
 
             // then
             assertAll(
-                    () -> assertThat(bidHistoryInfo.auctionId()).isEqualTo(1L),
-                    () -> assertThat(bidHistoryInfo.productName()).isEqualTo("멋진 상품"),
-                    () -> assertThat(bidHistoryInfo.price()).isEqualTo(1000000),
-                    () -> assertThat(bidHistoryInfo.quantity()).isEqualTo(1),
-                    () -> assertThat(bidHistoryInfo.bidStatus()).isEqualTo(BidStatus.PURCHASED),
-                    () -> assertThat(bidHistoryInfo.auctionId()).isEqualTo(1L),
-                    () -> assertThat(bidHistoryInfo.sellerId()).isEqualTo(seller.getId()),
-                    () -> assertThat(bidHistoryInfo.buyerId()).isEqualTo(buyer.getId())
+                    () -> assertThat(receiptInfo.auctionId()).isEqualTo(1L),
+                    () -> assertThat(receiptInfo.productName()).isEqualTo("멋진 상품"),
+                    () -> assertThat(receiptInfo.price()).isEqualTo(1000000),
+                    () -> assertThat(receiptInfo.quantity()).isEqualTo(1),
+                    () -> assertThat(receiptInfo.receiptStatus()).isEqualTo(ReceiptStatus.PURCHASED),
+                    () -> assertThat(receiptInfo.auctionId()).isEqualTo(1L),
+                    () -> assertThat(receiptInfo.sellerId()).isEqualTo(seller.getId()),
+                    () -> assertThat(receiptInfo.buyerId()).isEqualTo(buyer.getId())
             );
         }
 
@@ -86,14 +86,14 @@ class BidHistoryServiceTest extends ServiceTest {
         void 존재하지않는_거래내역을_조회할때_예외가_발생한다() {
             // given
             Member member = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
-            long bidHistoryId = 1L;
+            long receiptId = 1L;
 
             // expect
             assertThatThrownBy(
-                    () -> bidHistoryService.getBidHistoryInfo(new SignInInfo(member.getId(), Role.BUYER), bidHistoryId))
+                    () -> receiptService.getReceiptInfo(new SignInInfo(member.getId(), Role.BUYER), receiptId))
                     .isInstanceOf(NotFoundException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.B000));
+                            ErrorCode.R000));
         }
 
         @Test
@@ -105,18 +105,18 @@ class BidHistoryServiceTest extends ServiceTest {
                     .build();  // 소유자
             SignInInfo nonOwner = new SignInInfo(3L, Role.BUYER);
 
-            BidHistory bidHistory = BidHistory.builder()
+            Receipt receipt = Receipt.builder()
                     .id(1L)
                     .sellerId(seller.getId())
                     .buyerId(buyer.getId())
                     .build();
-            bidHistoryRepository.save(bidHistory);
+            receiptRepository.save(receipt);
 
             // expect
-            assertThatThrownBy(() -> bidHistoryService.getBidHistoryInfo(nonOwner, 1L))
+            assertThatThrownBy(() -> receiptService.getReceiptInfo(nonOwner, 1L))
                     .isInstanceOf(UnauthorizedException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                            ErrorCode.B001));
+                            ErrorCode.R001));
         }
     }
 
@@ -134,15 +134,15 @@ class BidHistoryServiceTest extends ServiceTest {
                 Member buyer = Member.builder().id(2L).signInId("구매자").password("password00").role(Role.BUYER)
                         .build();
 
-                BidHistory bidHistory = BidHistory.builder()
+                Receipt receipt = Receipt.builder()
                         .id(1L)
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .build();
-                bidHistoryRepository.save(bidHistory);
+                receiptRepository.save(receipt);
 
                 // when
-                List<BuyerReceiptSimpleInfo> buyerReceiptSimpleInfos = bidHistoryService.getBuyerReceiptSimpleInfos(
+                List<BuyerReceiptSimpleInfo> buyerReceiptSimpleInfos = receiptService.getBuyerReceiptSimpleInfos(
                         new SignInInfo(buyer.getId(), Role.BUYER),
                         new BuyerReceiptSearchCondition(5)
                 );
@@ -169,15 +169,15 @@ class BidHistoryServiceTest extends ServiceTest {
                 Member buyer = Member.builder().id(2L).signInId("구매자").password("password00").role(Role.BUYER)
                         .build();
 
-                BidHistory bidHistory = BidHistory.builder()
+                Receipt receipt = Receipt.builder()
                         .id(1L)
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .build();
-                bidHistoryRepository.save(bidHistory);
+                receiptRepository.save(receipt);
 
                 // when
-                List<SellerReceiptSimpleInfo> sellerReceiptSimpleInfos = bidHistoryService.getSellerReceiptSimpleInfos(
+                List<SellerReceiptSimpleInfo> sellerReceiptSimpleInfos = receiptService.getSellerReceiptSimpleInfos(
                         new SignInInfo(seller.getId(), Role.SELLER),
                         new SellerReceiptSearchCondition(5)
                 );

@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.payment.dto;
 
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import lombok.Builder;
 
 /**
@@ -8,7 +8,7 @@ import lombok.Builder;
  *
  * @param id          거내 내역 식별자입니다.
  * @param auctionId   구매한 경매의 식별자입니다.
- * @param type        거래 타입 {@link BidStatus}
+ * @param type        거래 타입 {@link ReceiptStatus}
  * @param productName 상품명
  * @param quantity    구매 수량
  * @param price       구매 가격
@@ -17,7 +17,7 @@ import lombok.Builder;
 public record BuyerReceiptSimpleInfo(
         long id,
         long auctionId,
-        BidStatus type,
+        ReceiptStatus type,
         String productName,
         long quantity,
         long price

@@ -767,14 +767,14 @@ Content-Length: 330
   "id" : 1,
   "title" : "쓸만한 경매품 1",
   "price" : 2000,
-  "startedAt" : "2024-08-20T19:33:22.862623",
-  "finishedAt" : "2024-08-20T20:03:22.862627"
+  "startedAt" : "2024-08-20T21:25:13.115927",
+  "finishedAt" : "2024-08-20T21:55:13.115934"
 }, {
   "id" : 2,
   "title" : "쓸만한 경매품 2",
   "price" : 4000,
-  "startedAt" : "2024-08-20T19:33:22.862641",
-  "finishedAt" : "2024-08-20T20:03:22.862643"
+  "startedAt" : "2024-08-20T21:25:13.115953",
+  "finishedAt" : "2024-08-20T21:55:13.115955"
 } ]</code></pre>
 </div>
 </div>
@@ -1244,7 +1244,7 @@ Content-Length: 369
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /auctions HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 338
+Content-Length: 340
 Host: localhost:8080
 Cookie: JSESSIONID=sessionId
 
@@ -1258,8 +1258,8 @@ Cookie: JSESSIONID=sessionId
     "variationWidth" : 100
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-20T20:33:23.08545",
-  "finishedAt" : "2024-08-20T21:33:23.08545",
+  "startedAt" : "2024-08-20T22:25:13.359505",
+  "finishedAt" : "2024-08-20T23:25:13.359505",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1424,8 +1424,8 @@ Cookie: JSESSIONID=sessionId
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-20T20:33:23.068311",
-  "finishedAt" : "2024-08-20T21:33:23.068311",
+  "startedAt" : "2024-08-20T22:25:13.341927",
+  "finishedAt" : "2024-08-20T23:25:13.341927",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1657,7 +1657,7 @@ Cookie: JSESSIONID=sessionId
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 502
+Content-Length: 501
 
 [ {
   "id" : 1,
@@ -1666,8 +1666,8 @@ Content-Length: 502
   "currentPrice" : 1500,
   "totalStock" : 100,
   "currentStock" : 30,
-  "startedAt" : "2024-08-20T19:33:23.032832",
-  "finishedAt" : "2024-08-20T20:03:23.032835"
+  "startedAt" : "2024-08-20T21:25:13.302692",
+  "finishedAt" : "2024-08-20T21:55:13.302701"
 }, {
   "id" : 2,
   "title" : "내가 판매하는 경매품 2",
@@ -1675,8 +1675,8 @@ Content-Length: 502
   "currentPrice" : 3500,
   "totalStock" : 200,
   "currentStock" : 60,
-  "startedAt" : "2024-08-20T19:33:23.032851",
-  "finishedAt" : "2024-08-20T20:03:23.032852"
+  "startedAt" : "2024-08-20T21:25:13.302718",
+  "finishedAt" : "2024-08-20T21:55:13.30272"
 } ]</code></pre>
 </div>
 </div>
@@ -1853,8 +1853,8 @@ Content-Length: 420
     "variationWidth" : 10
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-20T19:33:23.001273",
-  "finishedAt" : "2024-08-20T20:33:23.001281",
+  "startedAt" : "2024-08-20T21:25:13.264965",
+  "finishedAt" : "2024-08-20T22:25:13.264974",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2052,8 +2052,8 @@ Content-Length: 422
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-20T19:33:23.016925",
-  "finishedAt" : "2024-08-20T20:33:23.016929",
+  "startedAt" : "2024-08-20T21:25:13.284694",
+  "finishedAt" : "2024-08-20T22:25:13.284699",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2228,7 +2228,7 @@ Content-Length: 422
 <h4 id="_경매_입찰_http_request"><a class="link" href="#_경매_입찰_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /auctions/1/bids HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /auctions/1/purchase HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 40
 Host: localhost:8080
@@ -2273,7 +2273,7 @@ Cookie: JSESSIONID=sessionId
 <div class="sect3">
 <h4 id="_경매_입찰_path_parameters"><a class="link" href="#_경매_입찰_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /auctions/{auctionId}/bids</caption>
+<caption class="title">Table 1. /auctions/{auctionId}/purchase</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2336,7 +2336,7 @@ Cookie: JSESSIONID=sessionId
 <h4 id="_경매_환불_http_request"><a class="link" href="#_경매_환불_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /auctions/bids/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /receipts/1/refund HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Host: localhost:8080
@@ -2376,7 +2376,7 @@ Cookie: JSESSIONID=sessionId</code></pre>
 <div class="sect3">
 <h4 id="_경매_환불_path_parameters"><a class="link" href="#_경매_환불_path_parameters">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /auctions/bids/{receiptId}</caption>
+<caption class="title">Table 1. /receipts/{receiptId}/refund</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2756,19 +2756,19 @@ Cookie: JSESSIONID=sessionId</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 266
+Content-Length: 267
 
 {
-  "bidHistoryId" : 1,
+  "receiptId" : 1,
   "productName" : "상품명",
   "price" : 1000,
   "quantity" : 1,
-  "bidStatus" : "PURCHASED",
+  "receiptStatus" : "PURCHASED",
   "auctionId" : 1,
   "sellerId" : 1,
   "buyerId" : 2,
-  "createdAt" : "2024-08-20T19:33:22.940112",
-  "updatedAt" : "2024-08-20T20:33:22.940122"
+  "createdAt" : "2024-08-20T21:25:13.180795",
+  "updatedAt" : "2024-08-20T22:25:13.180801"
 }</code></pre>
 </div>
 </div>
@@ -2837,7 +2837,7 @@ Content-Length: 266
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bidHistoryId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receiptId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -2865,7 +2865,7 @@ Content-Length: 266
 <td class="tableblock halign-left valign-top"><p class="tableblock">구매 수량</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bidStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receiptStatus</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -3042,16 +3042,16 @@ Content-Length: 266
 <td class="tableblock halign-left valign-top"><p class="tableblock">경매 입찰 요청 시, 요청 수량이 1 미만일 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>B000</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 조회 시, 입찰 내역을 찾을 수 없을 경우 예외가 발생합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>R000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 조회 시, 거래 내역을 찾을 수 없을 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>B001</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">입찰 내역 조회 시, 사용자가 해당 거래의 구매자 또는 판매자가 아닌 경우 예외가 발생합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>R001</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 조회 시, 사용자가 해당 거래의 구매자 또는 판매자가 아닌 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>B002</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">환불 시, 이미 환불된 입찰 내역일 경우 예외가 발생합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>R002</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">환불 시, 이미 환불된 거래 내역일 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>M000</code></p></td>
@@ -3099,19 +3099,19 @@ Content-Length: 266
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>P000</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">거래 시, 로그인한 사용자가 구매자가 아닌 경우 예외가 발생합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매 시, 로그인한 사용자가 구매자가 아닌 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>P001</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">입찰 시, 사용자의 포인트가 부족한 경우 예외가 발생합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매 시, 사용자의 포인트가 부족한 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>P002</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 조회 시, 입찰 내역을 찾을 수 없을 경우 예외가 발생합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 조회 시, 거래 내역을 찾을 수 없을 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>P004</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">환불 시, 요청한 사용자가 환불할 입찰의 구매자가 아닌 경우 예외가 발생합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">환불 시, 요청한 사용자가 환불할 거래의 구매자가 아닌 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>P005</code></p></td>
