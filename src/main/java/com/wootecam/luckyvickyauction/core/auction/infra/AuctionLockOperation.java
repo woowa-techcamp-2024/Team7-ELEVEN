@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.infra;
 
+import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,18 +11,20 @@ import org.springframework.stereotype.Repository;
 @AllArgsConstructor
 public class AuctionLockOperation {
     private static final Logger log = LoggerFactory.getLogger(AuctionLockOperation.class);
-    private static final String key = "stock:lock";
+    private static final String KEY_SUFFIX = "stock:lock";
     private static final int LOCK_RETRY_DURATION = 50;
+    private static final int LOCK_EXPIRE_TIME = 5;
 
     private final RedisTemplate<String, Long> redisOperations;
 
-    private static String getKeyName(Long keyPrefix) {
-        return keyPrefix.toString() + ":" + key;
+    private static String getKeyName(long keyPrefix) {
+        return new StringBuilder().append(keyPrefix).append(":").append(KEY_SUFFIX).toString();
     }
 
     public boolean lock(long auctionId) {
-        String key = getKeyName(auctionId);  // 1:auction:key
-        Boolean success = redisOperations.opsForValue().setIfAbsent(key, 1L);
+        String key = getKeyName(auctionId);
+        Boolean success = redisOperations.opsForValue().setIfAbsent(key, 1L, LOCK_EXPIRE_TIME, TimeUnit.SECONDS);
+
         return success != null && success;
     }
 
