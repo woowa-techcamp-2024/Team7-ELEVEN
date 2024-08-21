@@ -1,6 +1,5 @@
 package com.wootecam.luckyvickyauction.core.payment.service;
 
-import com.wootecam.luckyvickyauction.core.auction.infra.AuctionLockOperation;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
@@ -26,20 +25,13 @@ public class PaymentService {
     private final MemberRepository memberRepository;
     private final ReceiptRepository receiptRepository;
     private final Auctioneer auctioneer;
-    private final AuctionLockOperation auctionLockOperation;
 
     /**
      * 1. 구매자 확인 <br> 2. 구매자 포인트를 감소 <br> 3. 판매자에게 포인트 지급 <br> 4. 구매 요청 <br> - 실패하면 -> 예외 발생 및 구매자와 판매자 포인트 롤백 <br> -
      * 성공하면 -> Receipt 저장 및 구매자, 판매자 업데이트 적용
      */
     public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, LocalDateTime requestTime) {
-        auctionLockOperation.lockLimitTry(auctionId, 30);
-
-        try {
-            auctioneer.process(buyerInfo, price, auctionId, quantity, requestTime);
-        } finally {
-            auctionLockOperation.unLock(auctionId);
-        }
+        auctioneer.process(buyerInfo, price, auctionId, quantity, requestTime);
     }
 
     private Member findMemberObject(Long id) {
