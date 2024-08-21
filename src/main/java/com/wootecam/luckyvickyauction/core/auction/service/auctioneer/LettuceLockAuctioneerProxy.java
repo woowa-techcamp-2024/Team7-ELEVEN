@@ -5,10 +5,8 @@ import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-@Primary
 @Service
 @RequiredArgsConstructor
 public class LettuceLockAuctioneerProxy implements Auctioneer {

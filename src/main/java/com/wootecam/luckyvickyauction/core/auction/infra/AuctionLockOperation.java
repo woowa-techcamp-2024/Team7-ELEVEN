@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @AllArgsConstructor
 public class AuctionLockOperation {
     private static final Logger log = LoggerFactory.getLogger(AuctionLockOperation.class);
-    private static final String KEY_SUFFIX = "stock:lock";
+    private static final String KEY_SUFFIX = "auction:lock";
     private static final int LOCK_RETRY_DURATION = 50;
     private static final int LOCK_EXPIRE_TIME = 5;
 
