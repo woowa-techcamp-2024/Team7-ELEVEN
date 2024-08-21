@@ -11,21 +11,22 @@ import org.springframework.stereotype.Repository;
 public class AuctionLockOperation {
     private static final Logger log = LoggerFactory.getLogger(AuctionLockOperation.class);
     private static final String key = "stock:lock";
+    private static final int LOCK_RETRY_DURATION = 50;
 
     private final RedisTemplate<String, Long> redisOperations;
 
-    private static String getKey(Long keyPrefix) {
+    private static String getKeyName(Long keyPrefix) {
         return keyPrefix.toString() + ":" + key;
     }
 
     public boolean lock(long auctionId) {
-        String key = getKey(auctionId);
+        String key = getKeyName(auctionId);  // 1:auction:key
         Boolean success = redisOperations.opsForValue().setIfAbsent(key, 1L);
         return success != null && success;
     }
 
     public void unLock(long auctionId) {
-        String key = getKey(auctionId);
+        String key = getKeyName(auctionId);
         redisOperations.delete(key);
     }
 
@@ -37,7 +38,7 @@ public class AuctionLockOperation {
             }
 
             try {
-                Thread.sleep(50);
+                Thread.sleep(LOCK_RETRY_DURATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
