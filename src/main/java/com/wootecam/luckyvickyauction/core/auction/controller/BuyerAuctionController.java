@@ -45,10 +45,10 @@ public class BuyerAuctionController {
     @BuyerOnly
     @PostMapping("/auctions/{auctionId}/purchase")
     public ResponseEntity<Void> submitAuction(@Login SignInInfo signInInfo,
+                                              @CurrentTime LocalDateTime now,
                                               @PathVariable(name = "auctionId") Long auctionId,
                                               @RequestBody PurchaseRequest purchaseRequest) {
-        paymentService.process(signInInfo, purchaseRequest.price(), auctionId, purchaseRequest.quantity(),
-                LocalDateTime.now());
+        paymentService.process(signInInfo, purchaseRequest.price(), auctionId, purchaseRequest.quantity(), now);
         return ResponseEntity.ok().build();
     }
 
