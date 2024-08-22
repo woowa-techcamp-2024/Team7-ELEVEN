@@ -13,7 +13,7 @@ public class Member {
     private String signInId;
     private String password;
     private Role role;
-    protected Point point;
+    private Point point;
 
     private static final int MINIMUM_ID_LENGTH = 2;
     private static final int MAXIMUM_ID_LENGTH = 20;

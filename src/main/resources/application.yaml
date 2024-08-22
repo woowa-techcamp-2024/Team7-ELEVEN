@@ -11,6 +11,11 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     open-in-view: off
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
 
   data:
     redis:
@@ -31,7 +36,8 @@ server:
     mbeanregistry:
       enabled: true
 
-
 logging:
   level:
-    root: debug
+    org:
+      hibernate:
+        SQL: debug
