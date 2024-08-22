@@ -11,6 +11,9 @@ import lombok.Getter;
 public class Auction {
 
     private static final int MINIMUM_STOCK_COUNT = 1;
+    private static final int DURATION_ONE_MINUTE = 1;
+    private static final int DURATION_FIVE_MINUTE = 5;
+    private static final int DURATION_TEN_MINUTE = 10;
 
     private Long id;
     private final Long sellerId;
@@ -42,7 +45,8 @@ public class Auction {
             LocalDateTime finishedAt,
             boolean isShowStock
     ) {
-        validateDurationTime(startedAt, finishedAt);
+        validateAuctionTime(startedAt, finishedAt);
+        validateVariationDuration(variationDuration, Duration.between(startedAt, finishedAt));
         validateMinimumPrice(startedAt, finishedAt, variationDuration, originPrice, pricePolicy);
 
         this.id = id;
@@ -60,7 +64,7 @@ public class Auction {
         this.isShowStock = isShowStock;
     }
 
-    private void validateDurationTime(LocalDateTime startedAt, LocalDateTime finishedAt) {
+    private void validateAuctionTime(LocalDateTime startedAt, LocalDateTime finishedAt) {
         Duration diff = Duration.between(startedAt, finishedAt);
         long diffNanos = diff.toNanos();
         long tenMinutesInNanos = 10L * 60 * 1_000_000_000; // 10분을 나노초로 변환
@@ -72,13 +76,34 @@ public class Auction {
         }
     }
 
+    private void validateVariationDuration(Duration variationDuration, Duration auctionDuration) {
+        if (!isAllowedDuration(variationDuration)) {
+            String message = String.format("경매 할인 주기 시간은 %d, %d, %d만 선택할 수 있습니다.",
+                    DURATION_ONE_MINUTE,
+                    DURATION_FIVE_MINUTE,
+                    DURATION_TEN_MINUTE
+            );
+            throw new BadRequestException(message, ErrorCode.A028);
+        }
+
+        if (auctionDuration.minus(variationDuration).isZero()
+                || auctionDuration.minus(variationDuration).isNegative()) {
+            throw new BadRequestException("경매 할인 주기 시간은 경매 지속 시간보다 작아야 합니다.", ErrorCode.A029);
+        }
+    }
+
+    private boolean isAllowedDuration(Duration duration) {
+        return duration.equals(Duration.ofMinutes(DURATION_ONE_MINUTE))
+                || duration.equals(Duration.ofMinutes(DURATION_FIVE_MINUTE))
+                || duration.equals(Duration.ofMinutes(DURATION_TEN_MINUTE));
+    }
+
     private void validateMinimumPrice(LocalDateTime startedAt, LocalDateTime finishedAt, Duration variationDuration,
                                       long originPrice, PricePolicy pricePolicy) {
         Duration totalDuration = Duration.between(startedAt, finishedAt);
         long variationCount = totalDuration.dividedBy(variationDuration) - 1;
-
-        // 현재는 0원이 minimumPrice 추후 필드로 추가될 수 있음
         long discountedPrice = pricePolicy.calculatePriceAtVariation(originPrice, variationCount);
+
         if (discountedPrice <= 0) {
             String message = String.format("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: %d, 할인횟수: %d, 모든 할인 적용 후 가격: %d",
                     originPrice, variationCount, discountedPrice);

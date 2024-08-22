@@ -38,4 +38,10 @@ public class AuthController {
         SignInResponseInfo signInResponseInfo = new SignInResponseInfo(signInInfo.role());
         return ResponseEntity.ok(signInResponseInfo);
     }
+
+    @PostMapping("/signout")
+    public ResponseEntity<Void> signout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok().build();
+    }
 }

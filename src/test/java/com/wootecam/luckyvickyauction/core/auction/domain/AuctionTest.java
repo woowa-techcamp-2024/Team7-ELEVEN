@@ -235,6 +235,79 @@ class AuctionTest {
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A021);
             }
         }
+
+        @Nested
+        class 만약_경매_할인_주기_시간이_경매_지속_시간보다_크거나_같다면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                int originPrice = 10000;
+                int stock = 999999;
+                int maximumPurchaseLimitCount = 10;
+
+                int variationWidth = 10000;
+                Duration varitationDuration = Duration.ofMinutes(10L);
+                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+                LocalDateTime now = LocalDateTime.now();
+
+                // when & then
+                assertThatThrownBy(() ->
+                        Auction.builder()
+                                .sellerId(1L)
+                                .productName("상품이름")
+                                .originPrice(originPrice)
+                                .currentPrice(originPrice)
+                                .originStock(stock)
+                                .currentStock(stock)
+                                .pricePolicy(pricePolicy)
+                                .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
+                                .variationDuration(varitationDuration)
+                                .startedAt(now.plusMinutes(10L))
+                                .finishedAt(now.plusMinutes(20L))
+                                .isShowStock(true)
+                                .build())
+                        .isInstanceOf(BadRequestException.class)
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A029);
+            }
+        }
+
+        @Nested
+        class 만약_경매_할인_주기_시간이_1분_5분_10분이_아니라면 {
+
+            @ParameterizedTest
+            @ValueSource(ints = {0, 2, 3, 4, 6, 7, 8, 9, 11})
+            void 예외가_발생한다(int invalidVariationDuration) {
+                // given
+                int originPrice = 10000;
+                int stock = 999999;
+                int maximumPurchaseLimitCount = 10;
+
+                int variationWidth = 10000;
+                Duration varitationDuration = Duration.ofMinutes(invalidVariationDuration);
+                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+                LocalDateTime now = LocalDateTime.now();
+
+                // when & then
+                assertThatThrownBy(() ->
+                        Auction.builder()
+                                .sellerId(1L)
+                                .productName("상품이름")
+                                .originPrice(originPrice)
+                                .currentPrice(originPrice)
+                                .originStock(stock)
+                                .currentStock(stock)
+                                .pricePolicy(pricePolicy)
+                                .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
+                                .variationDuration(varitationDuration)
+                                .startedAt(now.plusMinutes(10L))
+                                .finishedAt(now.plusMinutes(70L))
+                                .isShowStock(true)
+                                .build())
+                        .isInstanceOf(BadRequestException.class)
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+            }
+        }
     }
 
     @Nested
