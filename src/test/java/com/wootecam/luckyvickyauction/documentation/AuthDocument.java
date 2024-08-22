@@ -4,15 +4,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInRequestInfo;
 import com.wootecam.luckyvickyauction.core.member.controller.dto.SignUpRequestInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -77,6 +80,22 @@ public class AuthDocument extends DocumentationTest {
                             )
                     ))
                     .statusCode(HttpStatus.OK.value());
+        }
+    }
+
+    @Nested
+    class 세션_로그아웃 {
+
+        @Test
+        void 로그아웃을_성공하면_200응답을_반환한다() throws Exception {
+            SignInInfo sellerInfo = new SignInInfo(1L, Role.SELLER);
+            given(authenticationContext.getPrincipal()).willReturn(sellerInfo);
+
+            mockMvc.perform(post("/auth/signout")
+                            .cookie(new Cookie("JSESSIONID", "sessionId"))
+                            .sessionAttr("signInMember", sellerInfo))
+                    .andDo(document("auth/signout/success"))
+                    .andExpect(status().isOk());
         }
     }
 }
