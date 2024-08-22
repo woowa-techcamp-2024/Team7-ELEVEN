@@ -13,6 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set Timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: "Asia/Seoul"
+          timezoneMacos: "Asia/Seoul"
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
