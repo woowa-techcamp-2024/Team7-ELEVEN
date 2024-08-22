@@ -1,5 +1,8 @@
 package com.wootecam.luckyvickyauction.core.auction.dto;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -8,7 +11,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 
 /**
- * 구매자가 조회할 수 있는 경매 정보 - isShowStock에 따라서 stock 노출 여부가 결정됩니다
+ * 구매자가 조회할 수 있는 경매 정보 - isShowStock에 따라서 currentStock 노출 여부가 결정됩니다
  */
 @Builder
 public record BuyerAuctionInfo(
@@ -17,7 +20,10 @@ public record BuyerAuctionInfo(
         String productName,
         long originPrice,
         long currentPrice,
-        Long stock,
+        @JsonInclude(NON_NULL)
+        Long originStock,
+        @JsonInclude(NON_NULL)
+        Long currentStock,
         long maximumPurchaseLimitCount,
         PricePolicy pricePolicy,
         Duration variationDuration,

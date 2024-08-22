@@ -7,4 +7,4 @@ operation::auth/signup/success[snippets='http-request,http-response,request-fiel
 
 === 로그인
 
-operation::auth/signin/success[snippets='http-request,http-response,request-fields']
+operation::auth/signin/success[snippets='http-request,http-response,request-fields,response-fields']
