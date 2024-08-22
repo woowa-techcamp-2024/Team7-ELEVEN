@@ -16,12 +16,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class SellerReceiptSelectConditionTest {
 
     @Test
-    void 정상적인_조건이면_생성아_완료된다() {
+    void 정상적인_조건이면_생성이_완료된다() {
         // given
         int size = 10;
+        int offset = 10;
 
         // when
-        SellerReceiptSearchCondition sellerReceiptSearchCondition = new SellerReceiptSearchCondition(size);
+        SellerReceiptSearchCondition sellerReceiptSearchCondition = new SellerReceiptSearchCondition(size, offset);
 
         // then
         assertAll(
@@ -34,7 +35,7 @@ public class SellerReceiptSelectConditionTest {
     @ValueSource(ints = {0, 101})
     public void size가_1미만이거나_100초과인_경우_예외가_발생한다(int size) {
 
-        assertThatThrownBy(() -> new SellerReceiptSearchCondition(size))
+        assertThatThrownBy(() -> new SellerReceiptSearchCondition(size, 10))
                 .isInstanceOf(BadRequestException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.G001);
     }
