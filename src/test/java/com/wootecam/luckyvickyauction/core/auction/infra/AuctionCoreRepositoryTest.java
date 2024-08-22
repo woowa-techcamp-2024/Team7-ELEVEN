@@ -210,7 +210,7 @@ class AuctionCoreRepositoryTest extends RepositoryTest {
             assertThat(auctions).hasSize(expectedSize);
 
             Auction firstAuction = auctions.get(0);
-            long expectedSellerId = offset + 1;
+            long expectedSellerId = 10 - offset;
             assertAll(
                     () -> assertThat(firstAuction.getSellerId()).isEqualTo(expectedSellerId),
                     () -> assertThat(firstAuction.getProductName()).isEqualTo("productName" + expectedSellerId),
