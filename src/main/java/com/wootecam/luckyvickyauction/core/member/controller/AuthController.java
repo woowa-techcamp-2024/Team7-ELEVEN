@@ -1,6 +1,7 @@
 package com.wootecam.luckyvickyauction.core.member.controller;
 
 import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInRequestInfo;
+import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInResponseInfo;
 import com.wootecam.luckyvickyauction.core.member.controller.dto.SignUpRequestInfo;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
@@ -30,11 +31,11 @@ public class AuthController {
 
     // 사용자는 로그인을 한다.
     @PostMapping("/signin")
-    public ResponseEntity<Void> signin(@RequestBody SignInRequestInfo request, HttpSession session) {
+    public ResponseEntity<SignInResponseInfo> signin(@RequestBody SignInRequestInfo request, HttpSession session) {
         SignInInfo signInInfo = memberService.signIn(request);
         session.setAttribute("signInMember", signInInfo);
 
-        return ResponseEntity.ok()
-                .build();
+        SignInResponseInfo signInResponseInfo = new SignInResponseInfo(signInInfo.role());
+        return ResponseEntity.ok(signInResponseInfo);
     }
 }
