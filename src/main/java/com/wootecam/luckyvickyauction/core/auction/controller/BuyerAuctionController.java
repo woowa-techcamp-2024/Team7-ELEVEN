@@ -5,6 +5,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
+import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
 import com.wootecam.luckyvickyauction.core.member.controller.BuyerOnly;
 import com.wootecam.luckyvickyauction.core.member.controller.Login;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
@@ -26,6 +27,7 @@ public class BuyerAuctionController {
 
     private final AuctionService auctionService;
     private final PaymentService paymentService;
+    private final Auctioneer auctioneer;
 
     // 사용자는 경매 목록을 조회한다.
     @GetMapping("/auctions")
@@ -48,7 +50,7 @@ public class BuyerAuctionController {
                                               @CurrentTime LocalDateTime now,
                                               @PathVariable(name = "auctionId") Long auctionId,
                                               @RequestBody PurchaseRequest purchaseRequest) {
-        paymentService.process(signInInfo, purchaseRequest.price(), auctionId, purchaseRequest.quantity(), now);
+        auctioneer.process(signInInfo, purchaseRequest.price(), auctionId, purchaseRequest.quantity(), now);
         return ResponseEntity.ok().build();
     }
 

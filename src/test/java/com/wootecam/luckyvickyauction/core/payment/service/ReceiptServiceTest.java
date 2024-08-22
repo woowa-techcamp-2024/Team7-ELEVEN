@@ -144,7 +144,7 @@ class ReceiptServiceTest extends ServiceTest {
                 // when
                 List<BuyerReceiptSimpleInfo> buyerReceiptSimpleInfos = receiptService.getBuyerReceiptSimpleInfos(
                         new SignInInfo(buyer.getId(), Role.BUYER),
-                        new BuyerReceiptSearchCondition(5)
+                        new BuyerReceiptSearchCondition(5, 0)
                 );
 
                 // then
@@ -179,7 +179,7 @@ class ReceiptServiceTest extends ServiceTest {
                 // when
                 List<SellerReceiptSimpleInfo> sellerReceiptSimpleInfos = receiptService.getSellerReceiptSimpleInfos(
                         new SignInInfo(seller.getId(), Role.SELLER),
-                        new SellerReceiptSearchCondition(5)
+                        new SellerReceiptSearchCondition(5, 0)
                 );
 
                 // then

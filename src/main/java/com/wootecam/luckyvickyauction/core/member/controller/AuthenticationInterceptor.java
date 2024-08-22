@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -25,8 +26,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
             throws Exception {
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        if (CorsUtils.isPreFlightRequest(request)) {
+            return true;
+        }
 
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
         if (isPublicPath(handlerMethod)) {
             return true;
         }

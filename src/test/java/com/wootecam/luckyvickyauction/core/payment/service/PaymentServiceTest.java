@@ -67,7 +67,7 @@ class PaymentServiceTest extends ServiceTest {
                 Auction savedAuction = auctionRepository.save(runningAuction);
 
                 // when
-                paymentService.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L, savedAuction.getId(), 1L,
+                auctioneer.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L, savedAuction.getId(), 1L,
                         now.minusMinutes(30));
 
                 // then
@@ -121,7 +121,7 @@ class PaymentServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(
-                        () -> paymentService.process(new SignInInfo(savedBuyer.getId() + 1L, Role.BUYER), 10000L,
+                        () -> auctioneer.process(new SignInInfo(savedBuyer.getId() + 1L, Role.BUYER), 10000L,
                                 savedAuction.getId(), 1L, now.minusMinutes(30)))
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("사용자를 찾을 수 없습니다. id=" + (savedBuyer.getId() + 1L))
@@ -168,7 +168,7 @@ class PaymentServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(
-                        () -> paymentService.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L,
+                        () -> auctioneer.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L,
                                 savedAuction.getId(), 1L, now.minusMinutes(30)))
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("사용자를 찾을 수 없습니다. id=" + runningAuction.getSellerId())
@@ -215,7 +215,7 @@ class PaymentServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(
-                        () -> paymentService.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L,
+                        () -> auctioneer.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L,
                                 savedAuction.getId(), 1L, now.minusMinutes(30)))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d",

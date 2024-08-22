@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.documentation;
 
+import static com.wootecam.luckyvickyauction.documentation.DocumentFormatGenerator.getAttribute;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -122,7 +123,10 @@ class BuyerAuctionDocument extends DocumentationTest {
                                     fieldWithPath("productName").description("상품 이름"),
                                     fieldWithPath("originPrice").description("상품 원가"),
                                     fieldWithPath("currentPrice").description("현재 가격"),
-                                    fieldWithPath("stock").description("현재 재고"),
+                                    fieldWithPath("originStock").description("원래 재고").attributes(
+                                            getAttribute("format", "재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨")),
+                                    fieldWithPath("currentStock").description("현재 재고").attributes(
+                                            getAttribute("format", "재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨")),
                                     fieldWithPath("maximumPurchaseLimitCount").description("최대 구매 수량 제한"),
                                     fieldWithPath("pricePolicy").description("가격 정책"),
                                     fieldWithPath("pricePolicy.type").description("가격 정책 타입"),
@@ -160,7 +164,10 @@ class BuyerAuctionDocument extends DocumentationTest {
                                     fieldWithPath("productName").description("상품 이름"),
                                     fieldWithPath("originPrice").description("상품 원가"),
                                     fieldWithPath("currentPrice").description("현재 가격"),
-                                    fieldWithPath("stock").description("현재 재고"),
+                                    fieldWithPath("originStock").description("원래 재고").attributes(
+                                            getAttribute("format", "재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨")),
+                                    fieldWithPath("currentStock").description("현재 재고").attributes(
+                                            getAttribute("format", "재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨")),
                                     fieldWithPath("maximumPurchaseLimitCount").description("최대 구매 수량 제한"),
                                     fieldWithPath("pricePolicy").description("가격 정책"),
                                     fieldWithPath("pricePolicy.type").description("가격 정책 타입"),
@@ -182,7 +189,7 @@ class BuyerAuctionDocument extends DocumentationTest {
             String auctionId = "1";
             PurchaseRequest purchaseRequest = new PurchaseRequest(10000L, 20L);
             SignInInfo buyerInfo = new SignInInfo(1L, Role.BUYER);
-            willDoNothing().given(paymentService)
+            willDoNothing().given(auctioneer)
                     .process(any(SignInInfo.class), anyLong(), anyLong(), anyLong(), any(LocalDateTime.class));
             given(authenticationContext.getPrincipal()).willReturn(buyerInfo);
 

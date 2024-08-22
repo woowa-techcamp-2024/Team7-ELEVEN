@@ -28,7 +28,8 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             // given
             Long buyerId = 1L;
             int size = 100;
-            var condition = new BuyerReceiptSearchCondition(size);
+            int offset = 0;
+            var condition = new BuyerReceiptSearchCondition(size, offset);
 
             for (int i = 0; i < size + 1; i++) {
                 repository.save(ReceiptEntity.builder()
@@ -61,7 +62,8 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             Long buyerId = 1L;
             Long otherBuyerId = 2L;
             int size = 100;
-            var condition = new BuyerReceiptSearchCondition(size);
+            int offset = 10;
+            var condition = new BuyerReceiptSearchCondition(size, offset);
 
             repository.save(ReceiptEntity.builder()
                     .productName("상품1")
@@ -104,7 +106,8 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             // given
             Long sellerId = 1L;
             int size = 100;
-            var condition = new SellerReceiptSearchCondition(size);
+            int offset = 0;
+            var condition = new SellerReceiptSearchCondition(size, offset);
 
             for (int i = 0; i < size + 1; i++) {
                 repository.save(ReceiptEntity.builder()
@@ -133,7 +136,8 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             Long sellerId = 1L;
             Long otherSellerId = 2L;
             int size = 100;
-            var condition = new SellerReceiptSearchCondition(size);
+            int offset = 0;
+            var condition = new SellerReceiptSearchCondition(size, offset);
 
             repository.save(ReceiptEntity.builder()
                     .productName("상품1")
