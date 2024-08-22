@@ -3,9 +3,9 @@ package com.wootecam.luckyvickyauction.core.member.controller;
 import com.wootecam.luckyvickyauction.core.member.domain.AuthenticationContext;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.global.exception.AuthenticationException;
 import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -38,7 +38,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession();
         Object attribute = session.getAttribute("signInMember");
         if (Objects.isNull(attribute)) {
-            throw new NotFoundException("세션에 사용자가 존재하지 않습니다.", ErrorCode.AU00);
+            throw new AuthenticationException("세션에 사용자가 존재하지 않습니다.", ErrorCode.AU00);
         }
 
         SignInInfo signInInfo = (SignInInfo) attribute;

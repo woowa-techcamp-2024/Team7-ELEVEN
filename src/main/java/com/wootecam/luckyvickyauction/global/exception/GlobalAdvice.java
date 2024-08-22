@@ -13,6 +13,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalAdvice {
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthentication(final AuthenticationException e) {
+        log.warn("ERROR CODE {} : {}", e.getErrorCode(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.of(e.getMessage(), e.getErrorCode().name()));
+    }
+
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<ErrorResponse> handleAuthorization(final AuthorizationException e) {
         log.warn("ERROR CODE {} : {}", e.getErrorCode(), e.getMessage());
