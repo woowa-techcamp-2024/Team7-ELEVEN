@@ -66,12 +66,12 @@ public class Auction {
 
     private void validateAuctionTime(LocalDateTime startedAt, LocalDateTime finishedAt) {
         Duration diff = Duration.between(startedAt, finishedAt);
-        long diffNanos = diff.toNanos();
-        long tenMinutesInNanos = 10L * 60 * 1_000_000_000; // 10분을 나노초로 변환
+        long diffNanos = diff.toMillis();
+        long tenMinutesInNanos = 10L * 60 * 1_000; // 10분을 나노초로 변환
 
         if (!(diffNanos % tenMinutesInNanos == 0 && diffNanos / tenMinutesInNanos <= 6)) {
             String message = String.format("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: %.9f분",
-                    diffNanos / (60.0 * 1_000_000_000));
+                    diffNanos / (60.0 * 1_000));
             throw new BadRequestException(message, ErrorCode.A007);
         }
     }
