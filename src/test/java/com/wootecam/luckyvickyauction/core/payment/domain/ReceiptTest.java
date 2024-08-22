@@ -5,45 +5,45 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
-class BidHistoryTest {
+class ReceiptTest {
 
     @Test
     void 성공적으로_환불_표시를_한다() {
         // given
-        ZonedDateTime now = ZonedDateTime.now();
-        BidHistory refundBidHistory = BidHistory.builder()
+        LocalDateTime now = LocalDateTime.now();
+        Receipt refundReceipt = Receipt.builder()
                 .id(1L)
                 .auctionId(1L)
                 .productName("test")
                 .price(100L)
                 .quantity(1L)
-                .bidStatus(BidStatus.BID)
+                .receiptStatus(ReceiptStatus.PURCHASED)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
 
         // when
-        refundBidHistory.markAsRefund();
+        refundReceipt.markAsRefund();
 
         // then
-        assertThat(refundBidHistory.getBidStatus()).isEqualTo(BidStatus.REFUND);
+        assertThat(refundReceipt.getReceiptStatus()).isEqualTo(ReceiptStatus.REFUND);
     }
 
     @Test
     void 이미_환불된_경매에_환불_표시를_하면_예외가_발생한다() {
         // given
-        BidHistory refundBidHistory = BidHistory.builder()
-                .bidStatus(BidStatus.REFUND)
+        Receipt refundReceipt = Receipt.builder()
+                .receiptStatus(ReceiptStatus.REFUND)
                 .build();
 
         // expect
-        assertThatThrownBy(() -> refundBidHistory.markAsRefund())
+        assertThatThrownBy(refundReceipt::markAsRefund)
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("이미 환불된 입찰 내역입니다.")
-                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.B005));
+                .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.R002));
 
     }
 }

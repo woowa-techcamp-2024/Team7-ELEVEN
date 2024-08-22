@@ -7,7 +7,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
 import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +23,7 @@ abstract public class MapperAuctionTest {
         @Test
         void 도메인_엔티티로_변환하면_정보가_동일하다() {
             // given
-            ZonedDateTime now = ZonedDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
             AuctionEntity entity = AuctionEntity.builder()
                     .id(1L)
                     .sellerId(2L)
@@ -69,7 +69,7 @@ abstract public class MapperAuctionTest {
         @Test
         void 영속성_엔티티로_변환하면_정보가_동일하다() {
             // given
-            ZonedDateTime now = ZonedDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
             Auction auction = Auction.builder()
                     .id(1L)
                     .sellerId(2L)

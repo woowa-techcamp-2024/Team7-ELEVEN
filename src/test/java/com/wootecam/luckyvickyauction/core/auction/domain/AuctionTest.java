@@ -7,10 +7,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException
 import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.Duration;
-import java.time.ZonedDateTime;
-import org.junit.jupiter.api.DisplayName;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,8 +27,8 @@ class AuctionTest {
             void 하락하는_가격의_최소값이_0원_이하가_되지_않는_경우_경매가_정상_생성된다() {
                 // given
                 ConstantPricePolicy pricePolicy = new ConstantPricePolicy(100);
-                ZonedDateTime startedAt = ZonedDateTime.now();
-                ZonedDateTime finishedAt = startedAt.plusMinutes(30);
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(30);
                 Duration variationDuration = Duration.ofMinutes(10);
                 long initialPrice = 1000L;
 
@@ -62,7 +60,7 @@ class AuctionTest {
                 int variationWidth = 10000;
                 Duration varitationDuration = Duration.ofMinutes(1L);
                 PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
 
                 // when & then
                 assertThatThrownBy(() ->
@@ -81,15 +79,15 @@ class AuctionTest {
                                 .isShowStock(true)
                                 .build())
                         .isInstanceOf(BadRequestException.class)
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A009);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A008);
             }
 
             @Test
             void 경매_진행_중_가격이_0원_이하가_되는_경우_예외가_발생한다() {
                 // given
                 ConstantPricePolicy pricePolicy = new ConstantPricePolicy(100);
-                ZonedDateTime startedAt = ZonedDateTime.now();
-                ZonedDateTime finishedAt = startedAt.plusMinutes(60);
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(60);
                 Duration variationDuration = Duration.ofMinutes(10);
                 long initialPrice = 500;
 
@@ -111,7 +109,7 @@ class AuctionTest {
                                 .build())
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("경매 진행 중 가격이 0원 이하가 됩니다. 초기 가격: 500, 할인횟수: 5, 모든 할인 적용 후 가격: 0")
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A021);
             }
 
             @ParameterizedTest
@@ -125,8 +123,8 @@ class AuctionTest {
                     long initialPrice, long durationMinutes, long variationMinutes, boolean shouldPass) {
                 // given
                 ConstantPricePolicy pricePolicy = new ConstantPricePolicy(100);
-                ZonedDateTime startedAt = ZonedDateTime.now();
-                ZonedDateTime finishedAt = startedAt.plusMinutes(durationMinutes);
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(durationMinutes);
                 Duration variationDuration = Duration.ofMinutes(variationMinutes);
 
                 // expect
@@ -169,7 +167,7 @@ class AuctionTest {
                                 initialPrice,
                                 durationMinutes / variationMinutes - 1,
                                 initialPrice - (durationMinutes / variationMinutes - 1) * 100))
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A021);
             }
         }
 
@@ -180,8 +178,8 @@ class AuctionTest {
             void 하락하는_가격의_최소값이_0원_이하가_되지_않는_경우_경매가_정상_생성된다() {
                 // given
                 PercentagePricePolicy pricePolicy = new PercentagePricePolicy(50.0);
-                ZonedDateTime startedAt = ZonedDateTime.now();
-                ZonedDateTime finishedAt = startedAt.plusMinutes(10);
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(10);
                 Duration variationDuration = Duration.ofMinutes(1);
                 long initialPrice = 512;
 
@@ -207,8 +205,8 @@ class AuctionTest {
             void validate메소드는_경매_진행_중_가격이_0원_이하가_되는_경우_예외가_발생한다() {
                 // given
                 PercentagePricePolicy pricePolicy = new PercentagePricePolicy(50.0);
-                ZonedDateTime startedAt = ZonedDateTime.now();
-                ZonedDateTime finishedAt = startedAt.plusMinutes(10);
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(10);
                 Duration variationDuration = Duration.ofMinutes(1);
                 long initialPrice = 256;
 
@@ -234,176 +232,8 @@ class AuctionTest {
                                 initialPrice,
                                 9,
                                 0))
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A021);
             }
-        }
-    }
-
-    @Nested
-    public class updateShowStock_메소드는 {
-
-        @Test
-        public void 동일한_판매자는_현재_경매의_가격_노출_정책을_변경할_수_있다() {
-            // given
-            Auction auction = AuctionFixture.createWaitingAuction();
-
-            // when
-            auction.updateShowStock(false, auction.getSellerId());
-
-            // then
-            assertThat(auction.isShowStock()).isFalse();
-        }
-
-        @Test
-        public void 동일한_판매자가_아닌_경우_가격_노출_정책을_변경할_수_없다() {
-            // given
-            Auction auction = AuctionFixture.createWaitingAuction();
-            Long requestSellerId = 2L;
-
-            // when & then
-            assertThatThrownBy(() -> auction.updateShowStock(false, requestSellerId))
-                    .isInstanceOf(UnauthorizedException.class)
-                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A015);
-        }
-
-        @ParameterizedTest
-        @ValueSource(booleans = {true, false})
-        @DisplayName("가격 노출 정책이 null인 경우 변경이 반영되지 않는다.")
-        public void updateShowStockWhenShowStockIsNull(boolean isShowStock) {
-            // given
-            ZonedDateTime now = ZonedDateTime.now();
-            Auction auction = Auction.builder()
-                    .sellerId(1L)
-                    .productName("상품이름")
-                    .originPrice(10000)
-                    .currentPrice(10000)
-                    .originStock(999999)
-                    .currentStock(999999)
-                    .pricePolicy(new ConstantPricePolicy(1000))
-                    .maximumPurchaseLimitCount(10)
-                    .variationDuration(Duration.ofMinutes(10L))
-                    .startedAt(now.plusHours(1L))
-                    .finishedAt(now.plusHours(2L))
-                    .isShowStock(isShowStock)
-                    .build();
-
-            Long requestSellerId = 1L;
-
-            // when
-            auction.updateShowStock(null, requestSellerId);
-
-            // then
-            assertThat(auction.isShowStock()).isEqualTo(isShowStock);
-        }
-    }
-
-    @Test
-    public void updatePricePolicy_메소드는_경매의_가격_정책을_변경한다() {
-        // given
-        long sellerId = 1L;
-        ZonedDateTime now = ZonedDateTime.now();
-        Auction auction = Auction.builder()
-                .sellerId(sellerId)
-                .productName("상품이름")
-                .originPrice(10000)
-                .currentPrice(10000)
-                .originStock(999999)
-                .currentStock(999999)
-                .pricePolicy(new ConstantPricePolicy(1000))
-                .maximumPurchaseLimitCount(10)
-                .variationDuration(Duration.ofMinutes(10L))
-                .startedAt(now.minusHours(1L))
-                .finishedAt(now)
-                .isShowStock(true)
-                .build();
-
-        PricePolicy newPricePolicy = PricePolicy.createPercentagePricePolicy(7);
-
-        // when
-        auction.updatePricePolicy(newPricePolicy, sellerId);
-
-        // then
-        assertThat(auction.getPricePolicy()).isEqualTo(newPricePolicy);
-    }
-
-    @Test
-    public void updatePricePolicy_메소드는_가격정책이_null이라면_변경이_무시된다() {
-        // given
-        long sellerId = 1L;
-        ZonedDateTime now = ZonedDateTime.now();
-        Auction auction = Auction.builder()
-                .sellerId(sellerId)
-                .productName("상품이름")
-                .originPrice(10000)
-                .originStock(999999)
-                .currentStock(999999)
-                .pricePolicy(new ConstantPricePolicy(1000))
-                .maximumPurchaseLimitCount(10)
-                .variationDuration(Duration.ofMinutes(10L))
-                .startedAt(now.minusHours(1L))
-                .finishedAt(now)
-                .isShowStock(true)
-                .build();
-
-        // when
-        auction.updatePricePolicy(null, sellerId);
-
-        // then
-        assertThat(auction.getPricePolicy()).isNotNull();
-    }
-
-    @Nested
-    class changeStock_메소드는 {
-
-        @Test
-        void 변경할_재고가_1개_이상이라면_정상적으로_재고가_변경된다() {
-            // given
-            Auction auction = AuctionFixture.createWaitingAuction();
-
-            // when
-            auction.changeStock(1L, ZonedDateTime.now(), auction.getSellerId());
-
-            // then
-            assertThat(auction.getCurrentStock()).isEqualTo(1L);
-        }
-
-        @Test
-        void 변경할_경매가_준비상태가_아니라면_예외가_발생한다() {
-            // given
-            Auction auction = AuctionFixture.createRunningAuction();
-            ZonedDateTime now = ZonedDateTime.now();
-
-            // expect
-            assertThatThrownBy(() -> auction.changeStock(20, now, auction.getSellerId()))
-                    .isInstanceOf(BadRequestException.class)
-                    .hasMessage(
-                            String.format("시작 전인 경매의 재고만 수정할 수 있습니다. 시작시간=%s, 요청시간=%s", auction.getStartedAt(), now))
-                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A021);
-        }
-
-        @Test
-        void 자신이_등록한_경매가_아니라면_예외가_발생한다() {
-            // given
-            Auction auction = AuctionFixture.createWaitingAuction();
-            ZonedDateTime now = ZonedDateTime.now();
-
-            // expect
-            assertThatThrownBy(() -> auction.changeStock(0, now, auction.getSellerId() + 1L))
-                    .isInstanceOf(UnauthorizedException.class)
-                    .hasMessage("자신이 등록한 경매만 수정할 수 있습니다.")
-                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A018);
-        }
-
-        @Test
-        void 변경할_재고가_1개_미만이면_예외가_발생한다() {
-            // given
-            Auction auction = AuctionFixture.createWaitingAuction();
-
-            // expect
-            assertThatThrownBy(() -> auction.changeStock(0, ZonedDateTime.now(), auction.getSellerId()))
-                    .isInstanceOf(BadRequestException.class)
-                    .hasMessage("변경 할 재고는 1개 이상이어야 합니다. inputStock=0")
-                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A019);
         }
     }
 
@@ -418,7 +248,7 @@ class AuctionTest {
                 // given
                 long originStock = 999999L;
                 long currentStock = 999998L;
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("상품이름")
@@ -450,7 +280,7 @@ class AuctionTest {
                 // given
                 long originStock = 999999L;
                 long currentStock = 0L;
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("상품이름")
@@ -469,9 +299,9 @@ class AuctionTest {
                 // expect
                 assertThatThrownBy(() -> auction.refundStock(-1L))
                         .isInstanceOf(BadRequestException.class)
-                        .hasMessage("변경할 재고는 1보다 작을 수 없습니다. inputStock=-1")
+                        .hasMessage("환불할 재고는 1보다 작을 수 없습니다. inputStock=-1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.A022));
+                                ErrorCode.A015));
             }
         }
 
@@ -483,7 +313,7 @@ class AuctionTest {
                 // given
                 long originStock = 999999L;
                 long currentStock = 999999L;
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("상품이름")
@@ -502,9 +332,9 @@ class AuctionTest {
                 // expect
                 assertThatThrownBy(() -> auction.refundStock(1L))
                         .isInstanceOf(BadRequestException.class)
-                        .hasMessage("변경 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=1")
+                        .hasMessage("환불 후 재고는 원래 재고보다 많을 수 없습니다. inputStock=1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.A023));
+                                ErrorCode.A016));
             }
         }
     }
@@ -521,10 +351,10 @@ class AuctionTest {
                 Auction auction = AuctionFixture.createWaitingAuction();
 
                 // expect
-                assertThatThrownBy(() -> auction.submit(2000, 10, ZonedDateTime.now()))
+                assertThatThrownBy(() -> auction.submit(2000, 10, LocalDateTime.now()))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + AuctionStatus.WAITING)
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A016);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A013);
             }
         }
 
@@ -534,7 +364,7 @@ class AuctionTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -549,13 +379,13 @@ class AuctionTest {
                         .finishedAt(now.plusMinutes(30))
                         .isShowStock(true)
                         .build();
-                ZonedDateTime requestTime = now.minusMinutes(30).plusMinutes(33);
+                LocalDateTime requestTime = now.minusMinutes(30).plusMinutes(33);
 
                 // expect
                 assertThatThrownBy(() -> auction.submit(7001L, 10, requestTime))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d", 7000L, 7001L))
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A029);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A022);
             }
         }
 
@@ -566,7 +396,7 @@ class AuctionTest {
             @ValueSource(longs = {0L, 31L, 101L})
             void 예외가_발생한다(long requestQuantity) {
                 // given
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -587,7 +417,7 @@ class AuctionTest {
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(String.format("해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d",
                                 auction.getCurrentStock(), requestQuantity, auction.getMaximumPurchaseLimitCount()))
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A014);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A012);
             }
         }
 
@@ -597,7 +427,7 @@ class AuctionTest {
             @Test
             void 상품의_현재_재고가_차감된다() {
                 // given
-                ZonedDateTime now = ZonedDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -612,7 +442,7 @@ class AuctionTest {
                         .finishedAt(now.plusMinutes(30))
                         .isShowStock(true)
                         .build();
-                ZonedDateTime requestTime = now.minusMinutes(30).plusMinutes(33);
+                LocalDateTime requestTime = now.minusMinutes(30).plusMinutes(33);
 
                 // when
                 auction.submit(7000L, 10, requestTime);

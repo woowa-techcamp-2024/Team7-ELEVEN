@@ -1,11 +1,11 @@
 package com.wootecam.luckyvickyauction.core.auction.dto;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 /**
  * 판매자 경매 목록 조회시 사용되는 Auction 정보입니다.
  *
- * @param id           경매 식별자
+ * @param id           경매 ID
  * @param title        경매 노출 제목
  * @param originPrice  원가
  * @param currentPrice 현재 가격
@@ -21,7 +21,7 @@ public record SellerAuctionSimpleInfo(
         long currentPrice,
         long totalStock,
         long currentStock,
-        ZonedDateTime startedAt,
-        ZonedDateTime finishedAt
+        LocalDateTime startedAt,
+        LocalDateTime finishedAt
 ) {
 }

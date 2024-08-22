@@ -19,7 +19,7 @@ class PercentagePricePolicyTest {
         assertThatThrownBy(() -> new PercentagePricePolicy(discountRate))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(String.format("할인율은 0%% 초과 50%% 이하여야 합니다. 할인율: %f%%", discountRate))
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A010);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A009);
     }
 
     @ParameterizedTest
@@ -37,7 +37,7 @@ class PercentagePricePolicyTest {
         assertThatThrownBy(() -> new PercentagePricePolicy(invalidRate))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(message)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A010);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A009);
     }
 
     @Test

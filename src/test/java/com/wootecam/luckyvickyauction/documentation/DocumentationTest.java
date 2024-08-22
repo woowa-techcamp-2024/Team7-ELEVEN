@@ -5,15 +5,16 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wootecam.luckyvickyauction.core.auction.controller.BuyerAuctionController;
+import com.wootecam.luckyvickyauction.core.auction.controller.CurrentTimeArgumentResolver;
 import com.wootecam.luckyvickyauction.core.auction.controller.SellerAuctionController;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.controller.AuthController;
 import com.wootecam.luckyvickyauction.core.member.domain.AuthenticationContext;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
 import com.wootecam.luckyvickyauction.core.payment.controller.PaymentController;
-import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import com.wootecam.luckyvickyauction.core.payment.controller.ReceiptController;
-import com.wootecam.luckyvickyauction.core.payment.service.BidHistoryService;
+import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
+import com.wootecam.luckyvickyauction.core.payment.service.ReceiptService;
 import com.wootecam.luckyvickyauction.documentation.errorcode.FakeErrorCodeController;
 import com.wootecam.luckyvickyauction.global.config.JsonConfig;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -55,6 +56,7 @@ public class DocumentationTest {
 
     @Autowired
     protected MockMvc mockMvc;
+
     @Autowired
     protected ObjectMapper objectMapper;
 
@@ -63,14 +65,18 @@ public class DocumentationTest {
 
     @MockBean
     protected AuctionService auctionService;
+
     @MockBean
     protected PaymentService paymentService;
 
     @MockBean
-    protected BidHistoryService bidHistoryService;
+    protected ReceiptService receiptService;
 
     @MockBean
     protected AuthenticationContext authenticationContext;
+
+    @MockBean
+    protected CurrentTimeArgumentResolver currentTimeArgumentResolver;
 
     @BeforeEach
     void setUp(final WebApplicationContext webApplicationContext,

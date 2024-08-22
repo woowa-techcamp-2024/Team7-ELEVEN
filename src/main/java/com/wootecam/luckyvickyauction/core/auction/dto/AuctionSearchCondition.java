@@ -1,5 +1,8 @@
 package com.wootecam.luckyvickyauction.core.auction.dto;
 
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+
 // 조회할때 조건
 public record AuctionSearchCondition(
         int offset,
@@ -11,7 +14,8 @@ public record AuctionSearchCondition(
 
     private void validateSizeBetween(int from, int to, int size) {
         if (size < from || size > to) {
-            throw new IllegalArgumentException("size는 " + from + "보다 크거나 같고 " + to + "보다 작거나 같아야 합니다.");
+            throw new BadRequestException("size는 " + from + " 이상 " + to + " 이하의 값이어야 합니다. 현재요청: " + size,
+                    ErrorCode.G001);
         }
     }
 }

@@ -3,14 +3,14 @@ package com.wootecam.luckyvickyauction.core.payment.domain;
 import lombok.Getter;
 
 @Getter
-public enum BidStatus {
+public enum ReceiptStatus {
 
-    BID("입찰"),
-    REFUND("환불");
+    PURCHASED("구매완료"),
+    REFUND("환불완료");
 
     private final String description;
 
-    BidStatus(String description) {
+    ReceiptStatus(String description) {
         this.description = description;
     }
 }

@@ -11,26 +11,17 @@ import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.entity.MemberEntity;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
-import com.wootecam.luckyvickyauction.core.payment.dto.BidHistoryInfo;
+import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
+import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-/**
- * 현재 재고는 currentStock을 담아 놓았습니다
- */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Mapper {
 
-    /**
-     * Auction을 AuctionInfo로 변환 - 재고의 경우에는 currentStock을 담아 놓았습니다
-     *
-     * @param auction
-     * @return
-     */
     public static AuctionInfo convertToAuctionInfo(Auction auction) {
         return AuctionInfo.builder()
                 .auctionId(auction.getId())
@@ -40,31 +31,29 @@ public final class Mapper {
                 .currentPrice(auction.getCurrentPrice())
                 .stock(auction.getCurrentStock())
                 .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
+                .pricePolicy(auction.getPricePolicy())
+                .variationDuration(auction.getVariationDuration())
+                .startedAt(auction.getStartedAt())
+                .finishedAt(auction.getFinishedAt())
                 .isShowStock(auction.isShowStock())
                 .build();
     }
 
-    public static BidHistoryInfo convertToBidHistoryInfo(BidHistory bidHistory) {
-        return BidHistoryInfo.builder()
-                .bidHistoryId(bidHistory.getId())
-                .productName(bidHistory.getProductName())
-                .price(bidHistory.getPrice())
-                .quantity(bidHistory.getQuantity())
-                .bidStatus(bidHistory.getBidStatus())
-                .auctionId(bidHistory.getAuctionId())
-                .sellerId(bidHistory.getSellerId())
-                .buyerId(bidHistory.getBuyerId())
-                .createdAt(bidHistory.getCreatedAt())
-                .updatedAt(bidHistory.getUpdatedAt())
+    public static ReceiptInfo convertToReceiptInfo(Receipt receipt) {
+        return ReceiptInfo.builder()
+                .receiptId(receipt.getId())
+                .productName(receipt.getProductName())
+                .price(receipt.getPrice())
+                .quantity(receipt.getQuantity())
+                .receiptStatus(receipt.getReceiptStatus())
+                .auctionId(receipt.getAuctionId())
+                .sellerId(receipt.getSellerId())
+                .buyerId(receipt.getBuyerId())
+                .createdAt(receipt.getCreatedAt())
+                .updatedAt(receipt.getUpdatedAt())
                 .build();
     }
 
-    /**
-     * Auction을 BuyerAuctionInfo로 변환 <br> - stock 노출 여부를 확인하여 노출 여부에 따라 stock을 노출하거나 노출하지 않습니다.
-     *
-     * @param auction
-     * @return
-     */
     public static BuyerAuctionInfo convertToBuyerAuctionInfo(Auction auction) {
         Long stock = auction.isShowStock() ? auction.getCurrentStock() : null;
 
@@ -106,22 +95,22 @@ public final class Mapper {
                 .build();
     }
 
-    public static BuyerReceiptSimpleInfo convertToBuyerReceiptSimpleInfo(BidHistory history) {
+    public static BuyerReceiptSimpleInfo convertToBuyerReceiptSimpleInfo(Receipt history) {
         return BuyerReceiptSimpleInfo.builder()
                 .id(history.getId())
                 .auctionId(history.getAuctionId())
-                .type(history.getBidStatus())
+                .type(history.getReceiptStatus())
                 .productName(history.getProductName())
                 .price(history.getPrice())
                 .quantity(history.getQuantity())
                 .build();
     }
 
-    public static SellerReceiptSimpleInfo convertToSellerReceiptSimpleInfo(BidHistory history) {
+    public static SellerReceiptSimpleInfo convertToSellerReceiptSimpleInfo(Receipt history) {
         return SellerReceiptSimpleInfo.builder()
                 .id(history.getId())
                 .auctionId(history.getAuctionId())
-                .type(history.getBidStatus())
+                .type(history.getReceiptStatus())
                 .productName(history.getProductName())
                 .price(history.getPrice())
                 .quantity(history.getQuantity())
@@ -151,13 +140,13 @@ public final class Mapper {
         );
     }
 
-    public static BidHistory convertToReceipt(ReceiptEntity receiptEntity) {
-        return BidHistory.builder()
+    public static Receipt convertToReceipt(ReceiptEntity receiptEntity) {
+        return Receipt.builder()
                 .id(receiptEntity.getId())
                 .productName(receiptEntity.getProductName())
                 .price(receiptEntity.getPrice())
                 .quantity(receiptEntity.getQuantity())
-                .bidStatus(receiptEntity.getBidStatus())
+                .receiptStatus(receiptEntity.getReceiptStatus())
                 .auctionId(receiptEntity.getAuctionId())
                 .sellerId(receiptEntity.getSellerId())
                 .buyerId(receiptEntity.getBuyerId())
@@ -222,18 +211,18 @@ public final class Mapper {
                 .build();
     }
 
-    public static ReceiptEntity convertToReceiptEntity(BidHistory bidHistory) {
+    public static ReceiptEntity convertToReceiptEntity(Receipt receipt) {
         return ReceiptEntity.builder()
-                .id(bidHistory.getId())
-                .productName(bidHistory.getProductName())
-                .price(bidHistory.getPrice())
-                .quantity(bidHistory.getQuantity())
-                .bidStatus(bidHistory.getBidStatus())
-                .auctionId(bidHistory.getAuctionId())
-                .sellerId(bidHistory.getSellerId())
-                .buyerId(bidHistory.getBuyerId())
-                .createdAt(bidHistory.getCreatedAt())
-                .updatedAt(bidHistory.getUpdatedAt())
+                .id(receipt.getId())
+                .productName(receipt.getProductName())
+                .price(receipt.getPrice())
+                .quantity(receipt.getQuantity())
+                .receiptStatus(receipt.getReceiptStatus())
+                .auctionId(receipt.getAuctionId())
+                .sellerId(receipt.getSellerId())
+                .buyerId(receipt.getBuyerId())
+                .createdAt(receipt.getCreatedAt())
+                .updatedAt(receipt.getUpdatedAt())
                 .build();
     }
 }

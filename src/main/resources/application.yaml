@@ -10,7 +10,8 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-
+    open-in-view: off
+    
 management:
   server:
     port: 8081

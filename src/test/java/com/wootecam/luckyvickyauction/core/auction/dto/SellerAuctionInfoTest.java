@@ -9,7 +9,7 @@ import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,23 +20,23 @@ public class SellerAuctionInfoTest {
     static Stream<Arguments> auctionInfoDtoArguments() {
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.",
-                        ErrorCode.A001, 1L, "", 10000, 10000, 10, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true),
+                        ErrorCode.A001, 1L, "", 10000, 10000, 10, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        LocalDateTime.now(), true),
                 Arguments.of("상품 원가는 0보다 커야 합니다. 상품 원가: 0",
-                        ErrorCode.A002, 1L, "상품이름", 0, 10000, 10, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true),
+                        ErrorCode.A002, 1L, "상품이름", 0, 10000, 10, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        LocalDateTime.now(), true),
                 Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0",
-                        ErrorCode.A013, 1L, "상품이름", 10000, 0, 10, 10, 10, Duration.ofMinutes(1L), ZonedDateTime.now(),
-                        ZonedDateTime.now(), true),
+                        ErrorCode.A011, 1L, "상품이름", 10000, 0, 10, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        LocalDateTime.now(), true),
                 Arguments.of("원래 재고는 0 이하일 수 없습니다. 재고: 0",
                         ErrorCode.A000, 1L, "상품이름", 10000, 10000, 0, 10, 10, Duration.ofMinutes(1L),
-                        ZonedDateTime.now(), ZonedDateTime.now(), true),
+                        LocalDateTime.now(), LocalDateTime.now(), true),
                 Arguments.of("현재 재고는 0보다 작을 수 없습니다. 재고: -1",
                         ErrorCode.A000, 1L, "상품이름", 10000, 10000, 10, -1, 10, Duration.ofMinutes(1L),
-                        ZonedDateTime.now(), ZonedDateTime.now(), true),
+                        LocalDateTime.now(), LocalDateTime.now(), true),
                 Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0",
                         ErrorCode.A003, 1L, "상품이름", 10000, 10000, 10, 10, 0, Duration.ofMinutes(1L),
-                        ZonedDateTime.now(), ZonedDateTime.now(), true)
+                        LocalDateTime.now(), LocalDateTime.now(), true)
         );
     }
 
@@ -55,8 +55,8 @@ public class SellerAuctionInfoTest {
         Duration varitationDuration = Duration.ofMinutes(1L);  // 변동 시간 단위
         PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-        ZonedDateTime startedAt = ZonedDateTime.now().minusHours(1L);
-        ZonedDateTime finishedAt = ZonedDateTime.now();
+        LocalDateTime startedAt = LocalDateTime.now().minusHours(1L);
+        LocalDateTime finishedAt = LocalDateTime.now();
 
         // when
         SellerAuctionInfo sellerAuctionInfo = new SellerAuctionInfo(auctionId, productName, originPrice,
@@ -92,8 +92,8 @@ public class SellerAuctionInfoTest {
             long currentStock,
             int maximumPurchaseLimitCount,
             Duration variationDuration,
-            ZonedDateTime startedAt,
-            ZonedDateTime finishedAt,
+            LocalDateTime startedAt,
+            LocalDateTime finishedAt,
             boolean isShowStock
     ) {
         // expect

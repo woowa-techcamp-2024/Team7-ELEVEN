@@ -24,35 +24,10 @@ import org.springframework.restdocs.payload.JsonFieldType;
 public class AuthDocument extends DocumentationTest {
 
     @Nested
-    class 세션_로그인 {
-
-        @Test
-        void 로그인에_성공하면_세션에_로그인한_사용자_정보가_담긴다() {
-            SignInRequestInfo signInRequestInfo = new SignInRequestInfo("userId", "password");
-            SignInInfo signInInfo = new SignInInfo(1L, Role.SELLER);
-            given(memberService.signIn(any())).willReturn(signInInfo);
-
-            docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(signInRequestInfo)
-                    .when().post("/auth/signin")
-                    .then().log().all()
-                    .apply(document("auth/signin/success",
-                            requestFields(
-                                    fieldWithPath("signInId").type(JsonFieldType.STRING)
-                                            .description("사용자가 입력한 아이디"),
-                                    fieldWithPath("password").type(JsonFieldType.STRING)
-                                            .description("사용자가 입력한 패스워드")
-                            )
-                    ))
-                    .statusCode(HttpStatus.OK.value());
-        }
-    }
-
-    @Nested
     class 회원가입 {
 
         @Test
-        void 회원가입을_성공하면_OK_응답을_받는다() {
+        void 회원가입을_성공하면_200_응답을_받는다() {
             SignUpRequestInfo signUpRequestInfo = new SignUpRequestInfo("userId", "password1234", "BUYER");
             willDoNothing().given(memberService).signUp(any(SignUpRequestInfo.class));
 
@@ -73,6 +48,30 @@ public class AuthDocument extends DocumentationTest {
                     ))
                     .statusCode(HttpStatus.OK.value());
         }
+    }
 
+    @Nested
+    class 세션_로그인 {
+
+        @Test
+        void 로그인에_성공하면_200_응답을_받는다() {
+            SignInRequestInfo signInRequestInfo = new SignInRequestInfo("userId", "password");
+            SignInInfo signInInfo = new SignInInfo(1L, Role.SELLER);
+            given(memberService.signIn(any())).willReturn(signInInfo);
+
+            docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(signInRequestInfo)
+                    .when().post("/auth/signin")
+                    .then().log().all()
+                    .apply(document("auth/signin/success",
+                            requestFields(
+                                    fieldWithPath("signInId").type(JsonFieldType.STRING)
+                                            .description("사용자가 입력한 아이디"),
+                                    fieldWithPath("password").type(JsonFieldType.STRING)
+                                            .description("사용자가 입력한 패스워드")
+                            )
+                    ))
+                    .statusCode(HttpStatus.OK.value());
+        }
     }
 }

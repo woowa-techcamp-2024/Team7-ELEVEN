@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.global.config;
 
+import com.wootecam.luckyvickyauction.core.auction.controller.CurrentTimeArgumentResolver;
 import com.wootecam.luckyvickyauction.core.member.controller.AuthenticationArgumentResolver;
 import com.wootecam.luckyvickyauction.core.member.controller.AuthenticationInterceptor;
 import java.util.List;
@@ -15,6 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final AuthenticationInterceptor authenticationInterceptor;
     private final AuthenticationArgumentResolver authenticationArgumentResolver;
+    private final CurrentTimeArgumentResolver currentTimeArgumentResolver;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -25,5 +27,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(authenticationArgumentResolver);
+        resolvers.add(currentTimeArgumentResolver);
     }
 }

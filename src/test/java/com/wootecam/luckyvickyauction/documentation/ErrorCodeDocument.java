@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public class ErrorCodeDocument extends DocumentationTest {
 
     @Test
-    void 에러_코드를_반환한다() {
+    void 에러_코드_생성() {
         ErrorCodeFieldsSnippet errorCodeFieldsSnippet = new ErrorCodeFieldsSnippet("error-code", "error-code-template");
 
         docsGiven.when().get("/test/error-code")

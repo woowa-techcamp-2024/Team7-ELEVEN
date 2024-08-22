@@ -3,10 +3,10 @@ package com.wootecam.luckyvickyauction.global.util;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
+import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -29,13 +29,13 @@ abstract class MapperReceiptTest {
                     .quantity(1L)
                     .sellerId(3L)
                     .buyerId(4L)
-                    .bidStatus(BidStatus.BID)
-                    .updatedAt(ZonedDateTime.now())
-                    .createdAt(ZonedDateTime.now().plusHours(1))
+                    .receiptStatus(ReceiptStatus.PURCHASED)
+                    .updatedAt(LocalDateTime.now())
+                    .createdAt(LocalDateTime.now().plusHours(1))
                     .build();
 
             // when
-            BidHistory domainEntity = Mapper.convertToReceipt(entity);
+            Receipt domainEntity = Mapper.convertToReceipt(entity);
 
             // then
             assertAll(
@@ -46,7 +46,7 @@ abstract class MapperReceiptTest {
                     () -> assertEquals(entity.getQuantity(), domainEntity.getQuantity()),
                     () -> assertEquals(entity.getSellerId(), domainEntity.getSellerId()),
                     () -> assertEquals(entity.getBuyerId(), domainEntity.getBuyerId()),
-                    () -> assertEquals(entity.getBidStatus(), domainEntity.getBidStatus()),
+                    () -> assertEquals(entity.getReceiptStatus(), domainEntity.getReceiptStatus()),
                     () -> assertEquals(entity.getCreatedAt(), domainEntity.getCreatedAt()),
                     () -> assertEquals(entity.getUpdatedAt(), domainEntity.getUpdatedAt())
             );
@@ -59,7 +59,7 @@ abstract class MapperReceiptTest {
         @Test
         void 정보가_동일하다() {
             // given
-            BidHistory domainEntity = BidHistory.builder()
+            Receipt domainEntity = Receipt.builder()
                     .id(1L)
                     .auctionId(2L)
                     .productName("상품 이름")
@@ -67,9 +67,9 @@ abstract class MapperReceiptTest {
                     .quantity(1L)
                     .sellerId(3L)
                     .buyerId(4L)
-                    .bidStatus(BidStatus.BID)
-                    .updatedAt(ZonedDateTime.now())
-                    .createdAt(ZonedDateTime.now().plusHours(1))
+                    .receiptStatus(ReceiptStatus.PURCHASED)
+                    .updatedAt(LocalDateTime.now())
+                    .createdAt(LocalDateTime.now().plusHours(1))
                     .build();
 
             // when
@@ -84,7 +84,7 @@ abstract class MapperReceiptTest {
                     () -> assertEquals(domainEntity.getQuantity(), entity.getQuantity()),
                     () -> assertEquals(domainEntity.getSellerId(), entity.getSellerId()),
                     () -> assertEquals(domainEntity.getBuyerId(), entity.getBuyerId()),
-                    () -> assertEquals(domainEntity.getBidStatus(), entity.getBidStatus()),
+                    () -> assertEquals(domainEntity.getReceiptStatus(), entity.getReceiptStatus()),
                     () -> assertEquals(domainEntity.getCreatedAt(), entity.getCreatedAt()),
                     () -> assertEquals(domainEntity.getUpdatedAt(), entity.getUpdatedAt())
             );

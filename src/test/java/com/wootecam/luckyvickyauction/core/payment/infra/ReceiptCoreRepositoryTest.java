@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.context.RepositoryTest;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidStatus;
-import java.time.ZonedDateTime;
+import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
+import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +22,22 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
         @Test
         void 거래내역의_id로_거래내역을_조회한다() {
             // given
-            BidHistory bidHistory = BidHistory.builder()
+            Receipt receipt = Receipt.builder()
                     .id(1L)
                     .productName("상품 이름")
                     .price(1000L)
                     .quantity(1L)
-                    .bidStatus(BidStatus.BID)
+                    .receiptStatus(ReceiptStatus.PURCHASED)
                     .auctionId(1L)
                     .sellerId(1L)
                     .buyerId(2L)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build();
-            BidHistory saved = receiptCoreRepository.save(bidHistory);
+            Receipt saved = receiptCoreRepository.save(receipt);
 
             // when
-            BidHistory found = receiptCoreRepository.findById(saved.getId()).get();
+            Receipt found = receiptCoreRepository.findById(saved.getId()).get();
 
             // then
             assertAll(
@@ -45,7 +45,7 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
                     () -> assertThat(found.getProductName()).isEqualTo(saved.getProductName()),
                     () -> assertThat(found.getPrice()).isEqualTo(saved.getPrice()),
                     () -> assertThat(found.getQuantity()).isEqualTo(saved.getQuantity()),
-                    () -> assertThat(found.getBidStatus()).isEqualTo(saved.getBidStatus()),
+                    () -> assertThat(found.getReceiptStatus()).isEqualTo(saved.getReceiptStatus()),
                     () -> assertThat(found.getAuctionId()).isEqualTo(saved.getAuctionId()),
                     () -> assertThat(found.getSellerId()).isEqualTo(saved.getSellerId()),
                     () -> assertThat(found.getBuyerId()).isEqualTo(saved.getBuyerId()),
@@ -73,59 +73,59 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
         @Test
         void 거래내역을_저장한다() {
             // given
-            BidHistory bidHistory = BidHistory.builder()
+            Receipt receipt = Receipt.builder()
                     .productName("상품 이름")
                     .price(1000L)
                     .quantity(1L)
-                    .bidStatus(BidStatus.BID)
+                    .receiptStatus(ReceiptStatus.PURCHASED)
                     .auctionId(1L)
                     .sellerId(1L)
                     .buyerId(2L)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build();
 
             // when
-            BidHistory saved = receiptCoreRepository.save(bidHistory);
+            Receipt saved = receiptCoreRepository.save(receipt);
 
             // then
             assertAll(
-                    () -> assertThat(saved.getProductName()).isEqualTo(bidHistory.getProductName()),
-                    () -> assertThat(saved.getPrice()).isEqualTo(bidHistory.getPrice()),
-                    () -> assertThat(saved.getQuantity()).isEqualTo(bidHistory.getQuantity()),
-                    () -> assertThat(saved.getBidStatus()).isEqualTo(bidHistory.getBidStatus()),
-                    () -> assertThat(saved.getAuctionId()).isEqualTo(bidHistory.getAuctionId()),
-                    () -> assertThat(saved.getSellerId()).isEqualTo(bidHistory.getSellerId()),
-                    () -> assertThat(saved.getBuyerId()).isEqualTo(bidHistory.getBuyerId()),
-                    () -> assertThat(saved.getCreatedAt()).isEqualTo(bidHistory.getCreatedAt()),
-                    () -> assertThat(saved.getUpdatedAt()).isEqualTo(bidHistory.getUpdatedAt())
+                    () -> assertThat(saved.getProductName()).isEqualTo(receipt.getProductName()),
+                    () -> assertThat(saved.getPrice()).isEqualTo(receipt.getPrice()),
+                    () -> assertThat(saved.getQuantity()).isEqualTo(receipt.getQuantity()),
+                    () -> assertThat(saved.getReceiptStatus()).isEqualTo(receipt.getReceiptStatus()),
+                    () -> assertThat(saved.getAuctionId()).isEqualTo(receipt.getAuctionId()),
+                    () -> assertThat(saved.getSellerId()).isEqualTo(receipt.getSellerId()),
+                    () -> assertThat(saved.getBuyerId()).isEqualTo(receipt.getBuyerId()),
+                    () -> assertThat(saved.getCreatedAt()).isEqualTo(receipt.getCreatedAt()),
+                    () -> assertThat(saved.getUpdatedAt()).isEqualTo(receipt.getUpdatedAt())
             );
         }
 
         @Test
         void 이미_존재하는_id면_거래내역을_수정한다() {
             // given
-            BidHistory bidHistory = BidHistory.builder()
+            Receipt receipt = Receipt.builder()
                     .id(1L)
                     .productName("상품 이름")
                     .price(1000L)
                     .quantity(1L)
-                    .bidStatus(BidStatus.BID)
+                    .receiptStatus(ReceiptStatus.PURCHASED)
                     .auctionId(1L)
                     .sellerId(1L)
                     .buyerId(2L)
-                    .createdAt(ZonedDateTime.now())
-                    .updatedAt(ZonedDateTime.now())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build();
-            receiptCoreRepository.save(bidHistory);
+            receiptCoreRepository.save(receipt);
 
             // when
-            bidHistory.markAsRefund();
-            BidHistory saved = receiptCoreRepository.save(bidHistory);
+            receipt.markAsRefund();
+            Receipt saved = receiptCoreRepository.save(receipt);
 
             // then
-            BidHistory savedBidHistory = receiptCoreRepository.findById(saved.getId()).get();
-            assertThat(savedBidHistory.getBidStatus()).isEqualTo(BidStatus.REFUND);
+            Receipt savedReceipt = receiptCoreRepository.findById(saved.getId()).get();
+            assertThat(savedReceipt.getReceiptStatus()).isEqualTo(ReceiptStatus.REFUND);
         }
     }
 }

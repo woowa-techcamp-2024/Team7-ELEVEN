@@ -456,10 +456,50 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#Auth">사용자 가입 및 로그인</a>
+<li><a href="#Auth">사용자 가입 및 로그인(비로그인 가능)</a>
 <ul class="sectlevel2">
 <li><a href="#_회원가입">회원가입</a></li>
 <li><a href="#_로그인">로그인</a></li>
+</ul>
+</li>
+<li><a href="#paymentPoint">포인트(구매자, 판매자 권한 필요)</a>
+<ul class="sectlevel2">
+<li><a href="#_포인트_충전">포인트 충전</a></li>
+</ul>
+</li>
+<li><a href="#memberAuctions">경매: 사용자(비로그인도 조회 가능)</a>
+<ul class="sectlevel2">
+<li><a href="#_경매_목록_조회">경매 목록 조회</a></li>
+<li><a href="#_경매_상세_조회고정_할인_정책_조회">경매 상세 조회(고정 할인 정책 조회)</a></li>
+<li><a href="#_경매_상세_조회퍼센트_할인_정책_조회">경매 상세 조회(퍼센트 할인 정책 조회)</a></li>
+</ul>
+</li>
+<li><a href="#sellerAuction">경매: 판매자(판매자 권한 필요)</a>
+<ul class="sectlevel2">
+<li><a href="#_경매_등록고정_할인_정책">경매 등록(고정 할인 정책)</a></li>
+<li><a href="#_경매_등록퍼센트_할인_정책">경매 등록(퍼센트 할인 정책)</a></li>
+<li><a href="#_경매_등록_취소">경매 등록 취소</a></li>
+<li><a href="#_경매_목록_조회_2">경매 목록 조회</a></li>
+<li><a href="#_경매_상세_조회고정_할인_정책_조회_2">경매 상세 조회(고정 할인 정책 조회)</a></li>
+<li><a href="#_경매_상세_조회퍼센트_할인_정책_조회_2">경매 상세 조회(퍼센트 할인 정책 조회)</a></li>
+</ul>
+</li>
+<li><a href="#buyerAuction">경매: 구매자(구매자 권한 필요)</a>
+<ul class="sectlevel2">
+<li><a href="#_경매_입찰">경매 입찰</a></li>
+<li><a href="#_경매_환불">경매 환불</a></li>
+</ul>
+</li>
+<li><a href="#Receipts">거래 이력</a>
+<ul class="sectlevel2">
+<li><a href="#_구매자_거래_목록_조회구매자_권한_필요">구매자 거래 목록 조회(구매자 권한 필요)</a></li>
+<li><a href="#_판매자_거래_목록_조회판매자_권한_필요">판매자 거래 목록 조회(판매자 권한 필요)</a></li>
+<li><a href="#_거래_상세_조회판매자_구매자_권한_필요">거래 상세 조회(판매자, 구매자 권한 필요)</a></li>
+</ul>
+</li>
+<li><a href="#error-code">에러 코드</a>
+<ul class="sectlevel2">
+<li><a href="#error-code_error_code">Error code</a></li>
 </ul>
 </li>
 </ul>
@@ -467,12 +507,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="Auth"><a class="link" href="#Auth">사용자 가입 및 로그인</a></h2>
+<h2 id="Auth"><a class="link" href="#Auth">사용자 가입 및 로그인(비로그인 가능)</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_회원가입"><a class="link" href="#_회원가입">회원가입</a></h3>
 <div class="sect3">
-  <h4 id="_회원가입_http_request"><a class="link" href="#_회원가입_http_request">HTTP request</a></h4>
+<h4 id="_회원가입_http_request"><a class="link" href="#_회원가입_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /auth/signup HTTP/1.1
@@ -490,7 +530,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-  <h4 id="_회원가입_http_response"><a class="link" href="#_회원가입_http_response">HTTP response</a></h4>
+<h4 id="_회원가입_http_response"><a class="link" href="#_회원가입_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
@@ -498,7 +538,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-  <h4 id="_회원가입_request_fields"><a class="link" href="#_회원가입_request_fields">Request fields</a></h4>
+<h4 id="_회원가입_request_fields"><a class="link" href="#_회원가입_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -518,36 +558,36 @@ Host: localhost:8080
 </thead>
 <tbody>
 <tr>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>signUpId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>signUpId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">회원가입을 진행할 아이디</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원가입을 진행할 아이디</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">회원가입을 진행할 패스워드</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원가입을 진행할 패스워드</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>userRole</code></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">거래 권한 설정 (구매자 또는 판매자)</p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">BUYER or SELLER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userRole</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 권한 설정 (구매자 또는 판매자)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BUYER or SELLER</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-  <div class="sect2">
-    <h3 id="_로그인"><a class="link" href="#_로그인">로그인</a></h3>
-    <div class="sect3">
-      <h4 id="_로그인_http_request"><a class="link" href="#_로그인_http_request">HTTP request</a></h4>
-      <div class="listingblock">
-        <div class="content">
+<div class="sect2">
+<h3 id="_로그인"><a class="link" href="#_로그인">로그인</a></h3>
+<div class="sect3">
+<h4 id="_로그인_http_request"><a class="link" href="#_로그인_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /auth/signin HTTP/1.1
 Content-Type: application/json
 Content-Type: application/json
@@ -560,64 +600,2565 @@ Host: localhost:8080
 }</code></pre>
 </div>
 </div>
-    </div>
-    <div class="sect3">
-      <h4 id="_로그인_http_response"><a class="link" href="#_로그인_http_response">HTTP response</a></h4>
-      <div class="listingblock">
-        <div class="content">
-          <pre class="highlightjs highlight nowrap"><code class="language-http hljs"
-                                                          data-lang="http">HTTP/1.1 200 OK</code></pre>
-        </div>
-      </div>
-    </div>
-    <div class="sect3">
-      <h4 id="_로그인_request_fields"><a class="link" href="#_로그인_request_fields">Request fields</a></h4>
+</div>
+<div class="sect3">
+<h4 id="_로그인_http_response"><a class="link" href="#_로그인_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_로그인_request_fields"><a class="link" href="#_로그인_request_fields">Request fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-  <col style="width: 20%;">
-  <col style="width: 20%;">
-  <col style="width: 20%;">
-  <col style="width: 20%;">
-  <col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
 </colgroup>
 <thead>
 <tr>
-  <th class="tableblock halign-left valign-top">필드명</th>
-  <th class="tableblock halign-left valign-top">타입</th>
-  <th class="tableblock halign-left valign-top">필수값</th>
-  <th class="tableblock halign-left valign-top">설명</th>
-  <th class="tableblock halign-left valign-top">제약사항</th>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제약사항</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>signInId</code></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">사용자가 입력한 아이디</p></td>
-  <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>signInId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자가 입력한 아이디</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">사용자가 입력한 패스워드</p></td>
-  <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자가 입력한 패스워드</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
 </div>
-    <div class="paragraph">
-      <p>Unresolved directive in index.adoc - include::errorCode.adoc[]</p>
-    </div>
-  </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="paymentPoint"><a class="link" href="#paymentPoint">포인트(구매자, 판매자 권한 필요)</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_포인트_충전"><a class="link" href="#_포인트_충전">포인트 충전</a></h3>
+<div class="sect3">
+<h4 id="_포인트_충전_http_request"><a class="link" href="#_포인트_충전_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /payments/points/charge HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Content-Length: 22
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId
+
+{
+  "amount" : 10000
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_포인트_충전_http_response"><a class="link" href="#_포인트_충전_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_포인트_충전_request_cookies"><a class="link" href="#_포인트_충전_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_포인트_충전_request_fields"><a class="link" href="#_포인트_충전_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제약사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>amount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">충전할 포인트 금액</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Long.MAX_VALUE까지 충전 가능</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="memberAuctions"><a class="link" href="#memberAuctions">경매: 사용자(비로그인도 조회 가능)</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_경매_목록_조회"><a class="link" href="#_경매_목록_조회">경매 목록 조회</a></h3>
+<div class="sect3">
+<h4 id="_경매_목록_조회_http_request"><a class="link" href="#_경매_목록_조회_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /auctions HTTP/1.1
+Content-Type: application/json
+Content-Type: application/json
+Content-Length: 32
+Host: localhost:8080
+
+{
+  "offset" : 0,
+  "size" : 2
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_목록_조회_http_response"><a class="link" href="#_경매_목록_조회_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 330
+
+[ {
+  "id" : 1,
+  "title" : "쓸만한 경매품 1",
+  "price" : 2000,
+  "startedAt" : "2024-08-20T21:25:13.115927",
+  "finishedAt" : "2024-08-20T21:55:13.115934"
+}, {
+  "id" : 2,
+  "title" : "쓸만한 경매품 2",
+  "price" : 4000,
+  "startedAt" : "2024-08-20T21:25:13.115953",
+  "finishedAt" : "2024-08-20T21:55:13.115955"
+} ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_목록_조회_request_fields"><a class="link" href="#_경매_목록_조회_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제약사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>offset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회를 시작할 순서</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 페이지 크기</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소: 1 ~ 최대: 100</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_목록_조회_response_fields"><a class="link" href="#_경매_목록_조회_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 상품 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 상품 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].price</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 상품 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].startedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].finishedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 종료 시간</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_경매_상세_조회고정_할인_정책_조회"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회">경매 상세 조회(고정 할인 정책 조회)</a></h3>
+<div class="sect3">
+<h4 id="_경매_상세_조회고정_할인_정책_조회_http_request"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /auctions/1 HTTP/1.1
+Content-Type: application/json
+Content-Type: application/json
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회고정_할인_정책_조회_http_response"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 367
+
+{
+  "auctionId" : 1,
+  "sellerId" : 2,
+  "productName" : "테스트 상품",
+  "originPrice" : 10000,
+  "currentPrice" : 5000,
+  "stock" : 100,
+  "maximumPurchaseLimitCount" : 10,
+  "pricePolicy" : {
+    "type" : "CONSTANT",
+    "variationWidth" : 10
+  },
+  "variationDuration" : "PT1M",
+  "startedAt" : "2024-08-15T14:18:00",
+  "finishedAt" : "2024-08-15T15:18:00"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회고정_할인_정책_조회_path_parameters"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /auctions/{auctionId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상세 조회 할 경매의 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회고정_할인_정책_조회_response_fields"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sellerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">판매자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 원가</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 재고</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maximumPurchaseLimitCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 구매 수량 제한</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.variationWidth</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">절대 변동 폭</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>variationDuration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 변동 주기</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>finishedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 종료 시간</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_경매_상세_조회퍼센트_할인_정책_조회"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회">경매 상세 조회(퍼센트 할인 정책 조회)</a></h3>
+<div class="sect3">
+<h4 id="_경매_상세_조회퍼센트_할인_정책_조회_http_request"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /auctions/1 HTTP/1.1
+Content-Type: application/json
+Content-Type: application/json
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회퍼센트_할인_정책_조회_http_response"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 369
+
+{
+  "auctionId" : 1,
+  "sellerId" : 2,
+  "productName" : "테스트 상품",
+  "originPrice" : 10000,
+  "currentPrice" : 5000,
+  "stock" : 100,
+  "maximumPurchaseLimitCount" : 10,
+  "pricePolicy" : {
+    "type" : "PERCENTAGE",
+    "discountRate" : 10.0
+  },
+  "variationDuration" : "PT1M",
+  "startedAt" : "2024-08-15T14:18:00",
+  "finishedAt" : "2024-08-15T15:18:00"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회퍼센트_할인_정책_조회_path_parameters"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /auctions/{auctionId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상세 조회 할 경매의 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회퍼센트_할인_정책_조회_response_fields"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sellerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">판매자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 원가</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 재고</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maximumPurchaseLimitCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 구매 수량 제한</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.discountRate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 변동 할인율</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>variationDuration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 변동 주기</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>finishedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 종료 시간</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sellerAuction"><a class="link" href="#sellerAuction">경매: 판매자(판매자 권한 필요)</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_경매_등록고정_할인_정책"><a class="link" href="#_경매_등록고정_할인_정책">경매 등록(고정 할인 정책)</a></h3>
+<div class="sect3">
+<h4 id="_경매_등록고정_할인_정책_http_request"><a class="link" href="#_경매_등록고정_할인_정책_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /auctions HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 340
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId
+
+{
+  "productName" : "productName",
+  "originPrice" : 10000,
+  "stock" : 100,
+  "maximumPurchaseLimitCount" : 10,
+  "pricePolicy" : {
+    "type" : "CONSTANT",
+    "variationWidth" : 100
+  },
+  "variationDuration" : "PT10M",
+  "startedAt" : "2024-08-20T22:25:13.359505",
+  "finishedAt" : "2024-08-20T23:25:13.359505",
+  "isShowStock" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_등록고정_할인_정책_http_response"><a class="link" href="#_경매_등록고정_할인_정책_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_등록고정_할인_정책_request_cookies"><a class="link" href="#_경매_등록고정_할인_정책_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_등록고정_할인_정책_request_fields"><a class="link" href="#_경매_등록고정_할인_정책_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제약사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 원가</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 재고</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maximumPurchaseLimitCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 구매 제한 수량</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책 타입</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.variationWidth</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">절대 가격 정책시 가격 절대 변동폭</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>variationDuration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 기간</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isShowStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재고 노출 여부</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 시작 시간</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>finishedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 종료 시간</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isShowStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재고 노출 여부</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_경매_등록퍼센트_할인_정책"><a class="link" href="#_경매_등록퍼센트_할인_정책">경매 등록(퍼센트 할인 정책)</a></h3>
+<div class="sect3">
+<h4 id="_경매_등록퍼센트_할인_정책_http_request"><a class="link" href="#_경매_등록퍼센트_할인_정책_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /auctions HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 341
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId
+
+{
+  "productName" : "productName",
+  "originPrice" : 10000,
+  "stock" : 100,
+  "maximumPurchaseLimitCount" : 10,
+  "pricePolicy" : {
+    "type" : "PERCENTAGE",
+    "discountRate" : 10.0
+  },
+  "variationDuration" : "PT10M",
+  "startedAt" : "2024-08-20T22:25:13.341927",
+  "finishedAt" : "2024-08-20T23:25:13.341927",
+  "isShowStock" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_등록퍼센트_할인_정책_http_response"><a class="link" href="#_경매_등록퍼센트_할인_정책_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_등록퍼센트_할인_정책_request_cookies"><a class="link" href="#_경매_등록퍼센트_할인_정책_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_등록퍼센트_할인_정책_request_fields"><a class="link" href="#_경매_등록퍼센트_할인_정책_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제약사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 원가</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 재고</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maximumPurchaseLimitCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 구매 제한 수량</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책 타입</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.discountRate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">퍼센트 가격 정책시 가격 할인율</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>variationDuration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 기간</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isShowStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재고 노출 여부</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 시작 시간</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>finishedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 종료 시간</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isShowStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재고 노출 여부</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_경매_등록_취소"><a class="link" href="#_경매_등록_취소">경매 등록 취소</a></h3>
+<div class="sect3">
+<h4 id="_경매_등록_취소_http_request"><a class="link" href="#_경매_등록_취소_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /auctions/1 HTTP/1.1
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_등록_취소_http_response"><a class="link" href="#_경매_등록_취소_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_등록_취소_request_cookies"><a class="link" href="#_경매_등록_취소_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_등록_취소_path_parameters"><a class="link" href="#_경매_등록_취소_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /auctions/{auctionId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">취소할 경매 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_경매_목록_조회_2"><a class="link" href="#_경매_목록_조회_2">경매 목록 조회</a></h3>
+<div class="sect3">
+<h4 id="_경매_목록_조회_2_http_request"><a class="link" href="#_경매_목록_조회_2_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /auctions/seller HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 33
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId
+
+{
+  "offset" : 10,
+  "size" : 2
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_목록_조회_2_http_response"><a class="link" href="#_경매_목록_조회_2_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 501
+
+[ {
+  "id" : 1,
+  "title" : "내가 판매하는 경매품 1",
+  "originPrice" : 2000,
+  "currentPrice" : 1500,
+  "totalStock" : 100,
+  "currentStock" : 30,
+  "startedAt" : "2024-08-20T21:25:13.302692",
+  "finishedAt" : "2024-08-20T21:55:13.302701"
+}, {
+  "id" : 2,
+  "title" : "내가 판매하는 경매품 2",
+  "originPrice" : 4000,
+  "currentPrice" : 3500,
+  "totalStock" : 200,
+  "currentStock" : 60,
+  "startedAt" : "2024-08-20T21:25:13.302718",
+  "finishedAt" : "2024-08-20T21:55:13.30272"
+} ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_목록_조회_2_request_cookies"><a class="link" href="#_경매_목록_조회_2_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_목록_조회_2_request_fields"><a class="link" href="#_경매_목록_조회_2_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제약사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>offset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회를 시작할 순서</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 페이지 크기</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소: 1 ~ 최대: 100</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_목록_조회_2_response_fields"><a class="link" href="#_경매_목록_조회_2_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 노출 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].originPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 원가</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].currentPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].totalStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 재고</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].currentStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 남은 재고</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].startedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].finishedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 종료 시간</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_경매_상세_조회고정_할인_정책_조회_2"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회_2">경매 상세 조회(고정 할인 정책 조회)</a></h3>
+<div class="sect3">
+<h4 id="_경매_상세_조회고정_할인_정책_조회_2_http_request"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회_2_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /auctions/1/seller HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회고정_할인_정책_조회_2_http_response"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회_2_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 420
+
+{
+  "auctionId" : 1,
+  "productName" : "쓸만한 경매품",
+  "originPrice" : 10000,
+  "currentPrice" : 8000,
+  "originStock" : 100,
+  "currentStock" : 50,
+  "maximumPurchaseLimitCount" : 10,
+  "pricePolicy" : {
+    "type" : "CONSTANT",
+    "variationWidth" : 10
+  },
+  "variationDuration" : "PT10M",
+  "startedAt" : "2024-08-20T21:25:13.264965",
+  "finishedAt" : "2024-08-20T22:25:13.264974",
+  "isShowStock" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회고정_할인_정책_조회_2_request_cookies"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회_2_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회고정_할인_정책_조회_2_path_parameters"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회_2_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /auctions/{auctionId}/seller</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 경매 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회고정_할인_정책_조회_2_response_fields"><a class="link" href="#_경매_상세_조회고정_할인_정책_조회_2_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 원가</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">원래 재고</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 재고</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maximumPurchaseLimitCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 구매 수량 제한</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.variationWidth</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 변동 폭(고정 할인 정책)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>variationDuration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 변동 주기(분)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>finishedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 종료 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isShowStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재고 표시 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_경매_상세_조회퍼센트_할인_정책_조회_2"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회_2">경매 상세 조회(퍼센트 할인 정책 조회)</a></h3>
+<div class="sect3">
+<h4 id="_경매_상세_조회퍼센트_할인_정책_조회_2_http_request"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회_2_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /auctions/1/seller HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회퍼센트_할인_정책_조회_2_http_response"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회_2_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 422
+
+{
+  "auctionId" : 1,
+  "productName" : "쓸만한 경매품",
+  "originPrice" : 10000,
+  "currentPrice" : 8000,
+  "originStock" : 100,
+  "currentStock" : 50,
+  "maximumPurchaseLimitCount" : 10,
+  "pricePolicy" : {
+    "type" : "PERCENTAGE",
+    "discountRate" : 10.0
+  },
+  "variationDuration" : "PT10M",
+  "startedAt" : "2024-08-20T21:25:13.284694",
+  "finishedAt" : "2024-08-20T22:25:13.284699",
+  "isShowStock" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회퍼센트_할인_정책_조회_2_request_cookies"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회_2_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회퍼센트_할인_정책_조회_2_path_parameters"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회_2_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /auctions/{auctionId}/seller</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 경매 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_상세_조회퍼센트_할인_정책_조회_2_response_fields"><a class="link" href="#_경매_상세_조회퍼센트_할인_정책_조회_2_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 원가</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">원래 재고</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 재고</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maximumPurchaseLimitCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 구매 수량 제한</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pricePolicy.discountRate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 변동 폭(퍼센트 할인 정책)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>variationDuration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 변동 주기(분)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>finishedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 종료 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isShowStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재고 표시 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="buyerAuction"><a class="link" href="#buyerAuction">경매: 구매자(구매자 권한 필요)</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_경매_입찰"><a class="link" href="#_경매_입찰">경매 입찰</a></h3>
+<div class="sect3">
+<h4 id="_경매_입찰_http_request"><a class="link" href="#_경매_입찰_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /auctions/1/purchase HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 40
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId
+
+{
+  "price" : 10000,
+  "quantity" : 20
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_입찰_http_response"><a class="link" href="#_경매_입찰_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_입찰_request_cookies"><a class="link" href="#_경매_입찰_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_입찰_path_parameters"><a class="link" href="#_경매_입찰_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /auctions/{auctionId}/purchase</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">입찰한 경매의 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_입찰_request_fields"><a class="link" href="#_경매_입찰_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제약사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>price</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">입찰을 희망하는 가격</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quantity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">입찰을 희망하는 수량</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_경매_환불"><a class="link" href="#_경매_환불">경매 환불</a></h3>
+<div class="sect3">
+<h4 id="_경매_환불_http_request"><a class="link" href="#_경매_환불_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /receipts/1/refund HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_환불_http_response"><a class="link" href="#_경매_환불_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_경매_환불_request_cookies"><a class="link" href="#_경매_환불_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_경매_환불_path_parameters"><a class="link" href="#_경매_환불_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /receipts/{receiptId}/refund</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receiptId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">환불할 경매의 영수증 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Receipts"><a class="link" href="#Receipts">거래 이력</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_구매자_거래_목록_조회구매자_권한_필요"><a class="link" href="#_구매자_거래_목록_조회구매자_권한_필요">구매자 거래 목록 조회(구매자 권한 필요)</a></h3>
+<div class="sect3">
+<h4 id="_구매자_거래_목록_조회구매자_권한_필요_http_request"><a class="link" href="#_구매자_거래_목록_조회구매자_권한_필요_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /receipts/buyer HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 16
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId
+
+{
+  "size" : 3
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_구매자_거래_목록_조회구매자_권한_필요_http_response"><a class="link" href="#_구매자_거래_목록_조회구매자_권한_필요_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 425
+
+[ {
+  "id" : 1,
+  "auctionId" : 1,
+  "type" : "PURCHASED",
+  "productName" : "내가 구매한 상품1",
+  "quantity" : 10,
+  "price" : 1000
+}, {
+  "id" : 2,
+  "auctionId" : 2,
+  "type" : "REFUND",
+  "productName" : "내가 구매한 상품2",
+  "quantity" : 20,
+  "price" : 2000
+}, {
+  "id" : 3,
+  "auctionId" : 3,
+  "type" : "PURCHASED",
+  "productName" : "내가 구매한 상품3",
+  "quantity" : 30,
+  "price" : 3000
+} ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_구매자_거래_목록_조회구매자_권한_필요_request_cookies"><a class="link" href="#_구매자_거래_목록_조회구매자_권한_필요_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_구매자_거래_목록_조회구매자_권한_필요_request_fields"><a class="link" href="#_구매자_거래_목록_조회구매자_권한_필요_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제약사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 거래 내역의 개수</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소:1 ~ 최대:100</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_구매자_거래_목록_조회구매자_권한_필요_response_fields"><a class="link" href="#_구매자_거래_목록_조회구매자_권한_필요_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매한 경매의 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 타입 (구매완료, 환불완료)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].productName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].quantity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매 수량</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].price</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매 가격</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_판매자_거래_목록_조회판매자_권한_필요"><a class="link" href="#_판매자_거래_목록_조회판매자_권한_필요">판매자 거래 목록 조회(판매자 권한 필요)</a></h3>
+<div class="sect3">
+<h4 id="_판매자_거래_목록_조회판매자_권한_필요_http_request"><a class="link" href="#_판매자_거래_목록_조회판매자_권한_필요_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /receipts/seller HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 16
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId
+
+{
+  "size" : 3
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_판매자_거래_목록_조회판매자_권한_필요_http_response"><a class="link" href="#_판매자_거래_목록_조회판매자_권한_필요_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 422
+
+[ {
+  "id" : 1,
+  "auctionId" : 1,
+  "type" : "REFUND",
+  "productName" : "내가 판매한 상품1",
+  "price" : 1000,
+  "quantity" : 10
+}, {
+  "id" : 2,
+  "auctionId" : 2,
+  "type" : "PURCHASED",
+  "productName" : "내가 판매한 상품2",
+  "price" : 2000,
+  "quantity" : 20
+}, {
+  "id" : 3,
+  "auctionId" : 3,
+  "type" : "REFUND",
+  "productName" : "내가 판매한 상품3",
+  "price" : 3000,
+  "quantity" : 30
+} ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_판매자_거래_목록_조회판매자_권한_필요_request_cookies"><a class="link" href="#_판매자_거래_목록_조회판매자_권한_필요_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_판매자_거래_목록_조회판매자_권한_필요_request_fields"><a class="link" href="#_판매자_거래_목록_조회판매자_권한_필요_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제약사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 거래 내역의 개수</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소:1 ~ 최대:100</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_판매자_거래_목록_조회판매자_권한_필요_response_fields"><a class="link" href="#_판매자_거래_목록_조회판매자_권한_필요_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매한 경매의 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 타입 (구매완료, 환불완료)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].productName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].quantity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매 수량</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].price</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매 가격</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_거래_상세_조회판매자_구매자_권한_필요"><a class="link" href="#_거래_상세_조회판매자_구매자_권한_필요">거래 상세 조회(판매자, 구매자 권한 필요)</a></h3>
+<div class="sect3">
+<h4 id="_거래_상세_조회판매자_구매자_권한_필요_http_request"><a class="link" href="#_거래_상세_조회판매자_구매자_권한_필요_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /receipts/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+Cookie: JSESSIONID=sessionId</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_거래_상세_조회판매자_구매자_권한_필요_http_response"><a class="link" href="#_거래_상세_조회판매자_구매자_권한_필요_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 267
+
+{
+  "receiptId" : 1,
+  "productName" : "상품명",
+  "price" : 1000,
+  "quantity" : 1,
+  "receiptStatus" : "PURCHASED",
+  "auctionId" : 1,
+  "sellerId" : 1,
+  "buyerId" : 2,
+  "createdAt" : "2024-08-20T21:25:13.180795",
+  "updatedAt" : "2024-08-20T22:25:13.180801"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_거래_상세_조회판매자_구매자_권한_필요_request_cookies"><a class="link" href="#_거래_상세_조회판매자_구매자_권한_필요_request_cookies">Request cookies</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_거래_상세_조회판매자_구매자_권한_필요_path_parameters"><a class="link" href="#_거래_상세_조회판매자_구매자_권한_필요_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /receipts/{receiptId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receiptId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 거래내역 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_거래_상세_조회판매자_구매자_권한_필요_response_fields"><a class="link" href="#_거래_상세_조회판매자_구매자_권한_필요_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receiptId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>price</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quantity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매 수량</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receiptStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">입찰 상태 (구매완료, 환불완료)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auctionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sellerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">판매자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>buyerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 입찰 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>updatedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 마지막 수정 시간</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="error-code"><a class="link" href="#error-code">에러 코드</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="error-code_error_code"><a class="link" href="#error-code_error_code">Error code</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">코드</th>
+<th class="tableblock halign-left valign-top">코드명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 재고는 인당 구매 수량보다 작을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A001</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름은 비어있을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A002</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 원가는 0과 같거나 작을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A003</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 구매 수량 제한은 0과 같거나 작을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A004</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 변동폭은 0과 같거나 작을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A005</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변동 시간 단위는 0과 같거나 작을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A006</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매의 시작 시간은 종료 시간보다 클 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A007</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 생성 시, 경매 지속시간은 10, 20, 30, 40, 50, 60분이 아닌 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A008</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 가격 변동폭은 경매 가격보다 낮아야 합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A009</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 생성 시, 할인율이 0퍼센트 미만이거나 50 퍼센트를 초과한 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A010</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매ID를 기준으로 경매를 찾으려고 했지만 찾을 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A011</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 정보 생성 시, 현재 가격은 0과 같거나 작을 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A012</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 수량만큼 경매 상품 구입이 불가능 할 때 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A013</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">진행 중이지 않은 경매를 입찰하려고 할 때, 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A014</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 생성 시, 경매 시작 시간이 현재 시간보다 이른 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A015</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">환불로 인한 재고 변경 시, 추가 및 삭제하는 재고량이 1 미만일 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A016</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">환불로 인한 재고 변경 시, 변경 후의 재고가 원래 재고보다 많을 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A017</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 취소 시, 사용자 역할이 판매자가 아닌 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A018</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 취소 시, 경매를 생성한 판매자와 경매 취소 요청 사용자가 다를 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A019</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 취소 시, 경매가 준비중인 상태가 아닐때 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A020</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 상세 조회 시, 요청한 판매자가 경매의 판매자가 아닐 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A021</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 생성 시, 가격 변동 정책이 적용된 경매에서 최대 할인가를 적용했을떄 최소 가격 이하로 떨어지는 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A022</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 입찰 진행 시, 현재 상품의 가격과 사용자가 구매 요청한 가격이 다를때 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A023</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가격 정책 객체를 JSON으로 변환 시, 변환이 불가능할 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A024</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON을 가격 정책 객체로 변환 시, 타입이 올바르지 않을 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A025</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON을 가격 정책 객체로 변환 시, 변환이 불가능할 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A026</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 입찰 요청 시, 요청 가격이 0보다 작으면 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A027</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 입찰 요청 시, 요청 수량이 1 미만일 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>R000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 조회 시, 거래 내역을 찾을 수 없을 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>R001</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 조회 시, 사용자가 해당 거래의 구매자 또는 판매자가 아닌 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>R002</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">환불 시, 이미 환불된 거래 내역일 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인(회원가입) 시, 이미 존재하는 회원 아이디로 로그인을 시도한 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M001</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인(회원가입) 시, 사용자의 역할(구매자, 판매자)를 찾을 수 없는 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M002</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자 조회 시, 사용자를 찾을 수 없는 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M003</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 시, 입력 패스워드와 실제 패스워드가 다른 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M004</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시, 사용자 아이디가 비어있는 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M005</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시, 사용자 아이디가 글자수 제한 정책에 맞지 않으면 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M006</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시, 비밀번호가 빈칸 또는 공백인 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M007</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시, 비밀번호는 8자 이상 20자 이하가 아닌 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M008</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시, 비밀번호에 숫자가 포함되어 있지 않은 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M009</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시, 비밀번호에 알파벳 소문자가 포함되어 있지 않은 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>M010</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시, 비밀번호에 영문자와 숫자 외에 다른 문자가 포함되어 있는 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>P000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매 시, 로그인한 사용자가 구매자가 아닌 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>P001</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구매 시, 사용자의 포인트가 부족한 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>P002</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 조회 시, 거래 내역을 찾을 수 없을 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>P004</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">환불 시, 요청한 사용자가 환불할 거래의 구매자가 아닌 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>P005</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포인트 충전 시, 충전할 포인트가 0보다 작을 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>P006</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포인트 충전 시, 충전 후 포인트가 Long 최대값을 초과할 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AU00</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API 요청 시, 비로그인 사용자가 허락되지 않은 엔드포인트에 접근 할 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AU01</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API 요청 시, 판매자가 아닌 사람이 판매자만 접근할 수 있는 엔드포인트에 접근 할 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AU02</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API 요청 시, 구매자가 아닌 사람이 구매자만 접근할 수 있는 엔드포인트에 접근 할 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AU03</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API 요청 시, Roles에 명시된 권한을 하나라도 갖지 않은 사용자가 엔드포인트에 접근 할 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DTO 생성 시, 필드의 값이 NULL인 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G001</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">목록 조회시, 과도한 데이터를 조회할 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SERVER_ERROR</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서버에서 예기치 못한 예외가 발생한 경우</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-  Last updated 2024-08-18 00:29:35 +0900
+Last updated 2024-08-20 17:53:19 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

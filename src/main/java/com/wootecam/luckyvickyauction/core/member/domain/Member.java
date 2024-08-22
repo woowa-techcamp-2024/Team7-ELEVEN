@@ -75,11 +75,9 @@ public class Member {
     }
 
     private void validateSignInId(String signInId) {
-        // validate not blank
         if (signInId == null || signInId.isBlank()) {
             throw new BadRequestException(ERROR_ID_IS_BLANK, ErrorCode.M004);
         }
-        // validate length
         if (signInId.length() < MINIMUM_ID_LENGTH || MAXIMUM_ID_LENGTH < signInId.length()) {
             throw new BadRequestException(
                     String.format(ERROR_SIGN_IN_ID_LENGTH, MINIMUM_ID_LENGTH, MAXIMUM_ID_LENGTH, signInId.length()),

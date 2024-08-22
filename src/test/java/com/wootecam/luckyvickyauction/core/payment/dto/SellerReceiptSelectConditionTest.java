@@ -18,15 +18,13 @@ public class SellerReceiptSelectConditionTest {
     @Test
     void 정상적인_조건이면_생성아_완료된다() {
         // given
-        Long sellerId = 1L;
         int size = 10;
 
         // when
-        SellerReceiptSearchCondition sellerReceiptSearchCondition = new SellerReceiptSearchCondition(sellerId, size);
+        SellerReceiptSearchCondition sellerReceiptSearchCondition = new SellerReceiptSearchCondition(size);
 
         // then
         assertAll(
-                () -> assertThat(sellerReceiptSearchCondition.sellerId()).isEqualTo(sellerId),
                 () -> assertThat(sellerReceiptSearchCondition.size()).isEqualTo(size)
         );
     }
@@ -36,7 +34,7 @@ public class SellerReceiptSelectConditionTest {
     @ValueSource(ints = {0, 101})
     public void size가_1미만이거나_100초과인_경우_예외가_발생한다(int size) {
 
-        assertThatThrownBy(() -> new SellerReceiptSearchCondition(1L, size))
+        assertThatThrownBy(() -> new SellerReceiptSearchCondition(size))
                 .isInstanceOf(BadRequestException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.G001);
     }

@@ -30,18 +30,23 @@ public class AuctionCoreRepository implements AuctionRepository {
         return auction.map(Mapper::convertToAuction);
     }
 
-    @Override
     public void deleteById(long id) {
-
+        auctionJpaRepository.deleteById(id);
     }
 
     @Override
     public List<Auction> findAllBy(AuctionSearchCondition condition) {
-        return List.of();
+        List<AuctionEntity> entities = auctionJpaRepository.findAllBy(condition);
+        return entities.stream()
+                .map(Mapper::convertToAuction)
+                .toList();
     }
 
     @Override
     public List<Auction> findAllBy(SellerAuctionSearchCondition condition) {
-        return List.of();
+        List<AuctionEntity> entities = auctionJpaRepository.findAllBy(condition);
+        return entities.stream()
+                .map(Mapper::convertToAuction)
+                .toList();
     }
 }

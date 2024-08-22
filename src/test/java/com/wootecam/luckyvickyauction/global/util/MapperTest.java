@@ -9,11 +9,12 @@ import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
-import com.wootecam.luckyvickyauction.core.payment.domain.BidHistory;
+import com.wootecam.luckyvickyauction.core.member.domain.Point;
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -22,10 +23,22 @@ class MapperTest {
     @Test
     public void 거래내역_entity를_BuyerReceiptSimpleInfo으로_변환하면_도메인의_정보가_동일하게_전달된다() {
         // given
-        Member buyer = MemberFixture.createBuyerWithDefaultPoint();
-        Member seller = MemberFixture.createSellerWithDefaultPoint();
+        Member buyer = Member.builder()
+                .id(1L)
+                .signInId("buyerId")
+                .password("password00")
+                .role(Role.BUYER)
+                .point(new Point(1000L))
+                .build();
+        Member seller = Member.builder()
+                .id(2L)
+                .signInId("sellerId")
+                .password("password00")
+                .role(Role.SELLER)
+                .point(new Point(1000L))
+                .build();
 
-        BidHistory history = BidHistory.builder()
+        Receipt history = Receipt.builder()
                 .id(1L)
                 .auctionId(232L)
                 .productName("상품 이름")
@@ -41,7 +54,7 @@ class MapperTest {
         // then
         assertAll(
                 () -> assertEquals(history.getId(), dto.id()),
-                () -> assertThat(history.getBidStatus()).isEqualTo(dto.type()),
+                () -> assertThat(history.getReceiptStatus()).isEqualTo(dto.type()),
                 () -> assertEquals(history.getAuctionId(), dto.auctionId()),
                 () -> assertEquals(history.getQuantity(), dto.quantity()),
                 () -> assertEquals(history.getPrice(), dto.price())
@@ -51,7 +64,7 @@ class MapperTest {
     @Test
     public void 경매_entity를_BuyerAuctionSimpleInfo로_변환하면_도메인의_정보가_동일하게_전달된다() {
         // given
-        ZonedDateTime now = ZonedDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
         Auction auction = Auction.builder()
                 .id(1L)
                 .sellerId(1L)
@@ -84,7 +97,7 @@ class MapperTest {
     @Test
     public void 경매_entity를_SellerAuctionSimpleInfo로_변환하면_도메인의_정보가_동일하게_전달된다() {
         // given
-        ZonedDateTime now = ZonedDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
         Auction auction = Auction.builder()
                 .id(1L)
                 .sellerId(1L)
