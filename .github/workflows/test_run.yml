@@ -20,22 +20,5 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
       - name: Run tests
         run: ./gradlew test --no-daemon
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: test-results
-          path: build/test-results/test
-
-      - name: Upload test reports
-        uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: test-reports
-          path: build/reports/tests/test
