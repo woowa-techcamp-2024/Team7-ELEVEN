@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
 import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInRequestInfo;
@@ -69,6 +70,10 @@ public class AuthDocument extends DocumentationTest {
                                             .description("사용자가 입력한 아이디"),
                                     fieldWithPath("password").type(JsonFieldType.STRING)
                                             .description("사용자가 입력한 패스워드")
+                            ),
+                            responseFields(
+                                    fieldWithPath("role").type(JsonFieldType.STRING)
+                                            .description("사용자의 거래 권한 (구매자 또는 판매자)")
                             )
                     ))
                     .statusCode(HttpStatus.OK.value());

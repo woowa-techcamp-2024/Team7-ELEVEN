@@ -605,7 +605,13 @@ Host: localhost:8080
 <h4 id="_로그인_http_response"><a class="link" href="#_로그인_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 23
+
+{
+  "role" : "SELLER"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -642,6 +648,36 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사용자가 입력한 패스워드</p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_로그인_response_fields"><a class="link" href="#_로그인_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>role</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자의 거래 권한 (구매자 또는 판매자)</p></td>
 </tr>
 </tbody>
 </table>
@@ -767,14 +803,14 @@ Content-Length: 330
   "id" : 1,
   "title" : "쓸만한 경매품 1",
   "price" : 2000,
-  "startedAt" : "2024-08-20T21:25:13.115927",
-  "finishedAt" : "2024-08-20T21:55:13.115934"
+  "startedAt" : "2024-08-22T10:25:21.109182",
+  "finishedAt" : "2024-08-22T10:55:21.109202"
 }, {
   "id" : 2,
   "title" : "쓸만한 경매품 2",
   "price" : 4000,
-  "startedAt" : "2024-08-20T21:25:13.115953",
-  "finishedAt" : "2024-08-20T21:55:13.115955"
+  "startedAt" : "2024-08-22T10:25:21.109261",
+  "finishedAt" : "2024-08-22T10:55:21.109266"
 } ]</code></pre>
 </div>
 </div>
@@ -1258,8 +1294,8 @@ Cookie: JSESSIONID=sessionId
     "variationWidth" : 100
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-20T22:25:13.359505",
-  "finishedAt" : "2024-08-20T23:25:13.359505",
+  "startedAt" : "2024-08-22T11:25:21.587689",
+  "finishedAt" : "2024-08-22T12:25:21.587689",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1424,8 +1460,8 @@ Cookie: JSESSIONID=sessionId
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-20T22:25:13.341927",
-  "finishedAt" : "2024-08-20T23:25:13.341927",
+  "startedAt" : "2024-08-22T11:25:21.547398",
+  "finishedAt" : "2024-08-22T12:25:21.547398",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1657,7 +1693,7 @@ Cookie: JSESSIONID=sessionId
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 501
+Content-Length: 502
 
 [ {
   "id" : 1,
@@ -1666,8 +1702,8 @@ Content-Length: 501
   "currentPrice" : 1500,
   "totalStock" : 100,
   "currentStock" : 30,
-  "startedAt" : "2024-08-20T21:25:13.302692",
-  "finishedAt" : "2024-08-20T21:55:13.302701"
+  "startedAt" : "2024-08-22T10:25:21.463633",
+  "finishedAt" : "2024-08-22T10:55:21.463664"
 }, {
   "id" : 2,
   "title" : "내가 판매하는 경매품 2",
@@ -1675,8 +1711,8 @@ Content-Length: 501
   "currentPrice" : 3500,
   "totalStock" : 200,
   "currentStock" : 60,
-  "startedAt" : "2024-08-20T21:25:13.302718",
-  "finishedAt" : "2024-08-20T21:55:13.30272"
+  "startedAt" : "2024-08-22T10:25:21.463766",
+  "finishedAt" : "2024-08-22T10:55:21.463772"
 } ]</code></pre>
 </div>
 </div>
@@ -1853,8 +1889,8 @@ Content-Length: 420
     "variationWidth" : 10
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-20T21:25:13.264965",
-  "finishedAt" : "2024-08-20T22:25:13.264974",
+  "startedAt" : "2024-08-22T10:25:21.386677",
+  "finishedAt" : "2024-08-22T11:25:21.386694",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2037,7 +2073,7 @@ Cookie: JSESSIONID=sessionId</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 422
+Content-Length: 420
 
 {
   "auctionId" : 1,
@@ -2052,8 +2088,8 @@ Content-Length: 422
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-20T21:25:13.284694",
-  "finishedAt" : "2024-08-20T22:25:13.284699",
+  "startedAt" : "2024-08-22T10:25:21.4263",
+  "finishedAt" : "2024-08-22T11:25:21.426308",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2767,8 +2803,8 @@ Content-Length: 267
   "auctionId" : 1,
   "sellerId" : 1,
   "buyerId" : 2,
-  "createdAt" : "2024-08-20T21:25:13.180795",
-  "updatedAt" : "2024-08-20T22:25:13.180801"
+  "createdAt" : "2024-08-22T10:25:21.234861",
+  "updatedAt" : "2024-08-22T11:25:21.234874"
 }</code></pre>
 </div>
 </div>
@@ -3158,7 +3194,7 @@ Content-Length: 267
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-20 17:53:19 +0900
+Last updated 2024-08-20 18:59:39 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
