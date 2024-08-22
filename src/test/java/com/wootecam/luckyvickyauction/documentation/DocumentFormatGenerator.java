@@ -6,7 +6,7 @@ import org.springframework.restdocs.snippet.Attributes;
 
 public class DocumentFormatGenerator {
 
-    public static Attributes.Attribute getConstraints(final String key, final String value) {
+    public static Attributes.Attribute getAttribute(final String key, final String value) {
         return key(key).value(value);
     }
 }

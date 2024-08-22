@@ -803,14 +803,14 @@ Content-Length: 330
   "id" : 1,
   "title" : "쓸만한 경매품 1",
   "price" : 2000,
-  "startedAt" : "2024-08-22T10:25:21.109182",
-  "finishedAt" : "2024-08-22T10:55:21.109202"
+  "startedAt" : "2024-08-22T11:08:56.156869",
+  "finishedAt" : "2024-08-22T11:38:56.156875"
 }, {
   "id" : 2,
   "title" : "쓸만한 경매품 2",
   "price" : 4000,
-  "startedAt" : "2024-08-22T10:25:21.109261",
-  "finishedAt" : "2024-08-22T10:55:21.109266"
+  "startedAt" : "2024-08-22T11:08:56.156895",
+  "finishedAt" : "2024-08-22T11:38:56.156897"
 } ]</code></pre>
 </div>
 </div>
@@ -931,7 +931,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 367
+Content-Length: 397
 
 {
   "auctionId" : 1,
@@ -939,7 +939,8 @@ Content-Length: 367
   "productName" : "테스트 상품",
   "originPrice" : 10000,
   "currentPrice" : 5000,
-  "stock" : 100,
+  "originStock" : 100,
+  "currentStock" : 100,
   "maximumPurchaseLimitCount" : 10,
   "pricePolicy" : {
     "type" : "CONSTANT",
@@ -1030,10 +1031,17 @@ Content-Length: 367
 <td class="tableblock halign-left valign-top"><p class="tableblock">현재 가격</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originStock</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">원래 재고</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">현재 재고</p></td>
 </tr>
 <tr>
@@ -1109,7 +1117,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 369
+Content-Length: 399
 
 {
   "auctionId" : 1,
@@ -1117,7 +1125,8 @@ Content-Length: 369
   "productName" : "테스트 상품",
   "originPrice" : 10000,
   "currentPrice" : 5000,
-  "stock" : 100,
+  "originStock" : 100,
+  "currentStock" : 100,
   "maximumPurchaseLimitCount" : 10,
   "pricePolicy" : {
     "type" : "PERCENTAGE",
@@ -1208,10 +1217,17 @@ Content-Length: 369
 <td class="tableblock halign-left valign-top"><p class="tableblock">현재 가격</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>originStock</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">원래 재고</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>currentStock</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">현재 재고</p></td>
 </tr>
 <tr>
@@ -1294,8 +1310,8 @@ Cookie: JSESSIONID=sessionId
     "variationWidth" : 100
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-22T11:25:21.587689",
-  "finishedAt" : "2024-08-22T12:25:21.587689",
+  "startedAt" : "2024-08-22T12:08:56.374419",
+  "finishedAt" : "2024-08-22T13:08:56.374419",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1460,8 +1476,8 @@ Cookie: JSESSIONID=sessionId
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-22T11:25:21.547398",
-  "finishedAt" : "2024-08-22T12:25:21.547398",
+  "startedAt" : "2024-08-22T12:08:56.355467",
+  "finishedAt" : "2024-08-22T13:08:56.355467",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1702,8 +1718,8 @@ Content-Length: 502
   "currentPrice" : 1500,
   "totalStock" : 100,
   "currentStock" : 30,
-  "startedAt" : "2024-08-22T10:25:21.463633",
-  "finishedAt" : "2024-08-22T10:55:21.463664"
+  "startedAt" : "2024-08-22T11:08:56.318692",
+  "finishedAt" : "2024-08-22T11:38:56.318699"
 }, {
   "id" : 2,
   "title" : "내가 판매하는 경매품 2",
@@ -1711,8 +1727,8 @@ Content-Length: 502
   "currentPrice" : 3500,
   "totalStock" : 200,
   "currentStock" : 60,
-  "startedAt" : "2024-08-22T10:25:21.463766",
-  "finishedAt" : "2024-08-22T10:55:21.463772"
+  "startedAt" : "2024-08-22T11:08:56.318716",
+  "finishedAt" : "2024-08-22T11:38:56.318718"
 } ]</code></pre>
 </div>
 </div>
@@ -1889,8 +1905,8 @@ Content-Length: 420
     "variationWidth" : 10
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-22T10:25:21.386677",
-  "finishedAt" : "2024-08-22T11:25:21.386694",
+  "startedAt" : "2024-08-22T11:08:56.283154",
+  "finishedAt" : "2024-08-22T12:08:56.283158",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2073,7 +2089,7 @@ Cookie: JSESSIONID=sessionId</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 420
+Content-Length: 421
 
 {
   "auctionId" : 1,
@@ -2088,8 +2104,8 @@ Content-Length: 420
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-22T10:25:21.4263",
-  "finishedAt" : "2024-08-22T11:25:21.426308",
+  "startedAt" : "2024-08-22T11:08:56.29999",
+  "finishedAt" : "2024-08-22T12:08:56.299998",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2803,8 +2819,8 @@ Content-Length: 267
   "auctionId" : 1,
   "sellerId" : 1,
   "buyerId" : 2,
-  "createdAt" : "2024-08-22T10:25:21.234861",
-  "updatedAt" : "2024-08-22T11:25:21.234874"
+  "createdAt" : "2024-08-22T11:08:56.227099",
+  "updatedAt" : "2024-08-22T12:08:56.227104"
 }</code></pre>
 </div>
 </div>
@@ -3194,7 +3210,7 @@ Content-Length: 267
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-20 18:59:39 +0900
+Last updated 2024-08-20 17:53:19 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

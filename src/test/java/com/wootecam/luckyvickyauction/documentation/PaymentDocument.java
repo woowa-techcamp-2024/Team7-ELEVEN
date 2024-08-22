@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.documentation;
 
-import static com.wootecam.luckyvickyauction.documentation.DocumentFormatGenerator.getConstraints;
+import static com.wootecam.luckyvickyauction.documentation.DocumentFormatGenerator.getAttribute;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -42,7 +42,7 @@ class PaymentDocument extends DocumentationTest {
                         ),
                         requestFields(
                                 fieldWithPath("amount").type(JsonFieldType.NUMBER).description("충전할 포인트 금액")
-                                        .attributes(getConstraints("constraints", "Long.MAX_VALUE까지 충전 가능"))
+                                        .attributes(getAttribute("constraints", "Long.MAX_VALUE까지 충전 가능"))
                         )
                 ))
                 .andExpect(status().isOk());
