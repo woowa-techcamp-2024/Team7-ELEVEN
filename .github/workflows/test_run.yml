@@ -21,4 +21,4 @@ jobs:
           cache: gradle
 
       - name: Run tests
-        run: ./gradlew test --no-daemon
+        run: ./gradlew clean test
