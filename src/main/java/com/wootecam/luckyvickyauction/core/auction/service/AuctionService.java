@@ -16,7 +16,7 @@ import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,13 +59,13 @@ public class AuctionService {
     @Transactional
     public void cancelAuction(SignInInfo signInInfo, CancelAuctionCommand command) {
         if (!signInInfo.isType(Role.SELLER)) {
-            throw new UnauthorizedException("판매자만 경매를 취소할 수 있습니다.", ErrorCode.A017);
+            throw new AuthorizationException("판매자만 경매를 취소할 수 있습니다.", ErrorCode.A017);
         }
 
         Auction auction = findAuctionObject(command.auctionId());
 
         if (!auction.isSeller(signInInfo.id())) {
-            throw new UnauthorizedException("자신이 등록한 경매만 취소할 수 있습니다.", ErrorCode.A018);
+            throw new AuthorizationException("자신이 등록한 경매만 취소할 수 있습니다.", ErrorCode.A018);
         }
         if (!auction.currentStatus(command.requestTime()).isWaiting()) {
             String message = String.format("시작 전인 경매만 취소할 수 있습니다. 시작시간=%s, 요청시간=%s", auction.getStartedAt(),
@@ -141,7 +141,7 @@ public class AuctionService {
         Auction auction = findAuctionObject(auctionId);
 
         if (!auction.isSeller(sellerInfo.id())) {
-            throw new UnauthorizedException("판매자는 자신이 등록한 경매만 조회할 수 있습니다.", ErrorCode.A020);
+            throw new AuthorizationException("판매자는 자신이 등록한 경매만 조회할 수 있습니다.", ErrorCode.A020);
         }
 
         return Mapper.convertToSellerAuctionInfo(auction);

@@ -18,7 +18,7 @@ import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondit
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -114,7 +114,7 @@ class ReceiptServiceTest extends ServiceTest {
 
             // expect
             assertThatThrownBy(() -> receiptService.getReceiptInfo(nonOwner, 1L))
-                    .isInstanceOf(UnauthorizedException.class)
+                    .isInstanceOf(AuthorizationException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.R001));
         }

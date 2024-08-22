@@ -10,7 +10,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,14 +33,14 @@ public class PaymentService {
     @Transactional
     public void refund(SignInInfo buyerInfo, long receiptId) {
         if (!buyerInfo.isType(Role.BUYER)) {
-            throw new UnauthorizedException("구매자만 환불을 할 수 있습니다.", ErrorCode.P000);
+            throw new AuthorizationException("구매자만 환불을 할 수 있습니다.", ErrorCode.P000);
         }
 
         Receipt refundTargetReceipt = findRefundTargetReceipt(receiptId);
         refundTargetReceipt.markAsRefund();
 
         if (!(buyerInfo.id() == refundTargetReceipt.getBuyerId())) {
-            throw new UnauthorizedException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
+            throw new AuthorizationException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
         }
 
         // 사용자 포인트 변경

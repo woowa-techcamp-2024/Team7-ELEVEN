@@ -5,7 +5,7 @@ import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -63,13 +63,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private void authorizeSeller(SignInInfo signInInfo, SellerOnly sellerAnnotation) {
         if (Objects.nonNull(sellerAnnotation) && !signInInfo.isType(Role.SELLER)) {
-            throw new UnauthorizedException("판매자만 요청할 수 있는 경로(API) 입니다.", ErrorCode.AU01);
+            throw new AuthorizationException("판매자만 요청할 수 있는 경로(API) 입니다.", ErrorCode.AU01);
         }
     }
 
     private void authorizeBuyer(SignInInfo signInInfo, BuyerOnly buyerAnnotation) {
         if (Objects.nonNull(buyerAnnotation) && !signInInfo.isType(Role.BUYER)) {
-            throw new UnauthorizedException("구매자만 요청할 수 있는 경로(API) 입니다.", ErrorCode.AU02);
+            throw new AuthorizationException("구매자만 요청할 수 있는 경로(API) 입니다.", ErrorCode.AU02);
         }
     }
 
@@ -80,7 +80,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
             if (!hasPermission) {
                 String message = String.format("해당 사용자는 이 경로(API)에 접근할 권한이 없습니다. 사용자 권한: %s", signInInfo.role());
-                throw new UnauthorizedException(message, ErrorCode.AU03);
+                throw new AuthorizationException(message, ErrorCode.AU03);
             }
         }
     }

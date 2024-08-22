@@ -21,7 +21,7 @@ import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -419,7 +419,7 @@ class AuctionServiceTest extends ServiceTest {
                 // expect
                 AssertionsForClassTypes.assertThatThrownBy(
                                 () -> auctionService.getSellerAuction(signInInfo, auction.getId()))
-                        .isInstanceOf(UnauthorizedException.class)
+                        .isInstanceOf(AuthorizationException.class)
                         .hasMessage("판매자는 자신이 등록한 경매만 조회할 수 있습니다.")
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A020);
             }
@@ -461,7 +461,7 @@ class AuctionServiceTest extends ServiceTest {
             // expect
             assertThatThrownBy(
                     () -> auctionService.cancelAuction(signInInfo, command))
-                    .isInstanceOf(UnauthorizedException.class)
+                    .isInstanceOf(AuthorizationException.class)
                     .hasMessage("판매자만 경매를 취소할 수 있습니다.")
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.A017));
@@ -478,7 +478,7 @@ class AuctionServiceTest extends ServiceTest {
             // expect
             assertThatThrownBy(
                     () -> auctionService.cancelAuction(signInInfo, command))
-                    .isInstanceOf(UnauthorizedException.class)
+                    .isInstanceOf(AuthorizationException.class)
                     .hasMessage("자신이 등록한 경매만 취소할 수 있습니다.")
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.A018));

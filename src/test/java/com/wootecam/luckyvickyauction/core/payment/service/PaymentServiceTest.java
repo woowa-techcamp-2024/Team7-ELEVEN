@@ -18,7 +18,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
+import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
@@ -301,7 +301,7 @@ class PaymentServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(() -> paymentService.refund(new SignInInfo(seller.getId(), Role.SELLER), 1L))
-                        .isInstanceOf(UnauthorizedException.class)
+                        .isInstanceOf(AuthorizationException.class)
                         .hasMessage("구매자만 환불을 할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.P000));
@@ -402,7 +402,7 @@ class PaymentServiceTest extends ServiceTest {
 
                 assertThatThrownBy(
                         () -> paymentService.refund(new SignInInfo(unPurchasedBuyer.getId(), Role.BUYER), 1L))
-                        .isInstanceOf(UnauthorizedException.class)
+                        .isInstanceOf(AuthorizationException.class)
                         .hasMessage("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.P004));
