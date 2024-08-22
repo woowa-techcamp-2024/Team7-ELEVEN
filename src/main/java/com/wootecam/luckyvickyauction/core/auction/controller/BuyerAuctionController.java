@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,7 +32,9 @@ public class BuyerAuctionController {
 
     // 사용자는 경매 목록을 조회한다.
     @GetMapping("/auctions")
-    public ResponseEntity<List<BuyerAuctionSimpleInfo>> getAuctions(@RequestBody AuctionSearchCondition condition) {
+    public ResponseEntity<List<BuyerAuctionSimpleInfo>> getAuctions(@RequestParam(name = "offset") int offset,
+                                                                    @RequestParam(name = "size") int size) {
+        AuctionSearchCondition condition = new AuctionSearchCondition(offset, size);
         List<BuyerAuctionSimpleInfo> infos = auctionService.getBuyerAuctionSimpleInfos(condition);
         return ResponseEntity.ok(infos);
     }

@@ -1,7 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
 import com.wootecam.luckyvickyauction.core.auction.controller.dto.CreateAuctionRequest;
-import com.wootecam.luckyvickyauction.core.auction.controller.dto.SellerAuctionSearchRequest;
 import com.wootecam.luckyvickyauction.core.auction.dto.CancelAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.CreateAuctionCommand;
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -62,11 +62,9 @@ public class SellerAuctionController {
     @SellerOnly
     @GetMapping("/seller")
     public ResponseEntity<List<SellerAuctionSimpleInfo>> getSellerAuctions(@Login SignInInfo sellerInfo,
-                                                                           @RequestBody SellerAuctionSearchRequest request) {
-        SellerAuctionSearchCondition condition = new SellerAuctionSearchCondition(
-                sellerInfo.id(),
-                request.offset(),
-                request.size());
+                                                                           @RequestParam(name = "offset") int offset,
+                                                                           @RequestParam(name = "size") int size) {
+        SellerAuctionSearchCondition condition = new SellerAuctionSearchCondition(sellerInfo.id(), offset, size);
         List<SellerAuctionSimpleInfo> infos = auctionService.getSellerAuctionSimpleInfos(condition);
         return ResponseEntity.ok(infos);
     }

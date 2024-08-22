@@ -18,12 +18,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.wootecam.luckyvickyauction.core.auction.controller.dto.PurchaseRequest;
 import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
-import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.fixture.BuyerAuctionInfoFixture;
@@ -49,20 +49,17 @@ class BuyerAuctionDocument extends DocumentationTest {
 
         @Test
         void 경매_조회_조건을_전달하면_성공적으로_경매_목록을_반환한다() {
-            AuctionSearchCondition condition = new AuctionSearchCondition(0, 2);
             List<BuyerAuctionSimpleInfo> infos = buyerAuctionSimpleInfosSample();
             given(auctionService.getBuyerAuctionSimpleInfos(any())).willReturn(infos);
 
             docsGiven.contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(condition)
+                    .queryParams("offset", 0, "size", 2)
                     .when().get("/auctions")
                     .then().log().all()
                     .apply(document("memberAuctions/findAllBuyerAuctions/success",
-                            requestFields(
-                                    fieldWithPath("offset").type(JsonFieldType.NUMBER)
-                                            .description("조회를 시작할 순서"),
-                                    fieldWithPath("size").type(JsonFieldType.NUMBER)
-                                            .description("조회할 페이지 크기")
+                            queryParameters(
+                                    parameterWithName("offset").description("조회를 시작할 순서"),
+                                    parameterWithName("size").description("조회할 페이지 크기")
                                             .attributes(key("constraints").value("최소: 1 ~ 최대: 100"))
                             ),
                             responseFields(

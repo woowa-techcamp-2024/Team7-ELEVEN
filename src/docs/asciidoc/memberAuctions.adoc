@@ -3,7 +3,7 @@
 
 === 경매 목록 조회
 
-operation::memberAuctions/findAllBuyerAuctions/success[snippets='http-request,http-response,request-fields,response-fields']
+operation::memberAuctions/findAllBuyerAuctions/success[snippets='http-request,http-response,query-parameters,response-fields']
 
 === 경매 상세 조회(고정 할인 정책 조회)
 

@@ -8,9 +8,9 @@ import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
+import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class ReceiptService {
                 .orElseThrow(() -> new NotFoundException("거래 내역을 찾을 수 없습니다. id=" + receiptId, ErrorCode.R000));
 
         if (!receipt.isOwnedBy(memberInfo.id())) {
-            throw new UnauthorizedException("자신이 판매한 거래 내역 혹은 구매한 거래 내역만 조회할 수 있습니다.", ErrorCode.R001);
+            throw new AuthorizationException("자신이 판매한 거래 내역 혹은 구매한 거래 내역만 조회할 수 있습니다.", ErrorCode.R001);
         }
 
         return Mapper.convertToReceiptInfo(receipt);

@@ -16,9 +16,9 @@ import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptInfo;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
+import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
-import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -114,7 +114,7 @@ class ReceiptServiceTest extends ServiceTest {
 
             // expect
             assertThatThrownBy(() -> receiptService.getReceiptInfo(nonOwner, 1L))
-                    .isInstanceOf(UnauthorizedException.class)
+                    .isInstanceOf(AuthorizationException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.R001));
         }
@@ -144,7 +144,7 @@ class ReceiptServiceTest extends ServiceTest {
                 // when
                 List<BuyerReceiptSimpleInfo> buyerReceiptSimpleInfos = receiptService.getBuyerReceiptSimpleInfos(
                         new SignInInfo(buyer.getId(), Role.BUYER),
-                        new BuyerReceiptSearchCondition(5, 0)
+                        new BuyerReceiptSearchCondition(0, 5)
                 );
 
                 // then
@@ -179,7 +179,7 @@ class ReceiptServiceTest extends ServiceTest {
                 // when
                 List<SellerReceiptSimpleInfo> sellerReceiptSimpleInfos = receiptService.getSellerReceiptSimpleInfos(
                         new SignInInfo(seller.getId(), Role.SELLER),
-                        new SellerReceiptSearchCondition(5, 0)
+                        new SellerReceiptSearchCondition(0, 5)
                 );
 
                 // then
