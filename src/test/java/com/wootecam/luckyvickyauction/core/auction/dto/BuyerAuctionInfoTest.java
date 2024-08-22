@@ -22,16 +22,19 @@ public class BuyerAuctionInfoTest {
     static Stream<Arguments> auctionInfoDtoArguments() {
         return Stream.of(
                 Arguments.of("상품 이름은 비어있을 수 없습니다.",
-                        ErrorCode.A001, 1L, 1L, "", 10000, 10000, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        ErrorCode.A001, 1L, 1L, "", 10000, 10000, 10000, 10, 10, Duration.ofMinutes(1L),
+                        LocalDateTime.now(),
                         LocalDateTime.now()),
                 Arguments.of("상품 원가는 0보다 커야 합니다. 상품 원가: 0",
-                        ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        ErrorCode.A002, 1L, 1L, "상품이름", 0, 10000, 10000, 10, 10, Duration.ofMinutes(1L),
+                        LocalDateTime.now(),
                         LocalDateTime.now()),
                 Arguments.of("현재 가격은 0보다 커야 합니다. 현재 가격: 0",
-                        ErrorCode.A011, 1L, 1L, "상품이름", 10000, 0, 10, 10, Duration.ofMinutes(1L), LocalDateTime.now(),
+                        ErrorCode.A011, 1L, 1L, "상품이름", 10000, 0, 10000, 10, 10, Duration.ofMinutes(1L),
+                        LocalDateTime.now(),
                         LocalDateTime.now()),
                 Arguments.of("최대 구매 수량 제한은 0보다 커야 합니다. 최대 구매 수량 제한: 0",
-                        ErrorCode.A003, 1L, 1L, "상품이름", 10000, 10000, 10, 0, Duration.ofMinutes(1L),
+                        ErrorCode.A003, 1L, 1L, "상품이름", 10000, 10000, 10000, 10, 0, Duration.ofMinutes(1L),
                         LocalDateTime.now(), LocalDateTime.now())
         );
     }
@@ -44,7 +47,8 @@ public class BuyerAuctionInfoTest {
         String productName = "상품이름";
         long originPrice = 10000;
         long currentPrice = 10000;
-        long stock = 10;
+        long originStock = 10;
+        long currentStock = 10;
         int maximumPurchaseLimitCount = 10;
 
         int variationWidth = 1000;
@@ -56,7 +60,7 @@ public class BuyerAuctionInfoTest {
 
         // when
         BuyerAuctionInfo buyerAuctionInfo = new BuyerAuctionInfo(auctionId, sellerId, productName, originPrice,
-                currentPrice, stock,
+                currentPrice, originStock, currentStock,
                 maximumPurchaseLimitCount, pricePolicy, varitationDuration, startedAt, finishedAt);
 
         // then
@@ -66,7 +70,8 @@ public class BuyerAuctionInfoTest {
                 () -> assertThat(buyerAuctionInfo.productName()).isEqualTo(productName),
                 () -> assertThat(buyerAuctionInfo.originPrice()).isEqualTo(originPrice),
                 () -> assertThat(buyerAuctionInfo.currentPrice()).isEqualTo(currentPrice),
-                () -> assertThat(buyerAuctionInfo.stock()).isEqualTo(stock),
+                () -> assertThat(buyerAuctionInfo.originStock()).isEqualTo(originStock),
+                () -> assertThat(buyerAuctionInfo.currentStock()).isEqualTo(currentStock),
                 () -> assertThat(buyerAuctionInfo.maximumPurchaseLimitCount()).isEqualTo(maximumPurchaseLimitCount),
                 () -> assertThat(buyerAuctionInfo.pricePolicy()).isEqualTo(pricePolicy),
                 () -> assertThat(buyerAuctionInfo.variationDuration()).isEqualTo(varitationDuration),
@@ -112,7 +117,7 @@ public class BuyerAuctionInfoTest {
         BuyerAuctionInfo buyerAuctionInfo = Mapper.convertToBuyerAuctionInfo(auction);
 
         // then
-        assertThat(buyerAuctionInfo.stock()).isEqualTo(null);
+        assertThat(buyerAuctionInfo.currentStock()).isEqualTo(null);
     }
 
     @ParameterizedTest
@@ -125,7 +130,8 @@ public class BuyerAuctionInfoTest {
             String productName,
             long originPrice,
             long currentPrice,
-            long stock,
+            long originStock,
+            long currentStock,
             int maximumPurchaseLimitCount,
             Duration variationDuration,
             LocalDateTime startedAt,
@@ -138,7 +144,8 @@ public class BuyerAuctionInfoTest {
                 .productName(productName)
                 .originPrice(originPrice)
                 .currentPrice(currentPrice)
-                .stock(stock)
+                .originStock(originStock)
+                .currentStock(currentStock)
                 .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
                 .pricePolicy(PricePolicy.createConstantPricePolicy(1000))
                 .variationDuration(variationDuration)
