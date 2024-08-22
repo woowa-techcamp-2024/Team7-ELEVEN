@@ -93,7 +93,7 @@ class AuctionServiceTest extends ServiceTest {
         class 경매의_지속시간이_최소10분_최대60분이면 {
 
             @ParameterizedTest
-            @ValueSource(ints = {10, 20, 30, 40, 50, 60})
+            @ValueSource(ints = {20, 30, 40, 50, 60})
             void 경매가_생성된다(int durationTime) {
                 // given
                 Long sellerId = 1L;

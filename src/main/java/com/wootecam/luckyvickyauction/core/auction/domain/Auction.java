@@ -46,7 +46,7 @@ public class Auction {
             boolean isShowStock
     ) {
         validateAuctionTime(startedAt, finishedAt);
-        validateVariationDuration(variationDuration, Duration.between(finishedAt, startedAt));
+        validateVariationDuration(variationDuration, Duration.between(startedAt, finishedAt));
         validateMinimumPrice(startedAt, finishedAt, variationDuration, originPrice, pricePolicy);
 
         this.id = id;
