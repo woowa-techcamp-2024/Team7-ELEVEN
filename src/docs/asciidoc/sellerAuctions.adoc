@@ -15,7 +15,7 @@ operation::sellerAuctions/delete/success[snippets='http-request,http-response,re
 
 === 경매 목록 조회
 
-operation::sellerAuctions/findAll/success[snippets='http-request,http-response,request-cookies,request-fields,response-fields']
+operation::sellerAuctions/findAll/success[snippets='http-request,http-response,request-cookies,query-parameters,response-fields']
 
 === 경매 상세 조회(고정 할인 정책 조회)
 

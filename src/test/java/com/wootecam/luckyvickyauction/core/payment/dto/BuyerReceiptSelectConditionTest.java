@@ -35,7 +35,7 @@ class BuyerReceiptSelectConditionTest {
     @ValueSource(ints = {0, 101})
     public void size가_1미만이거나_100초과인_경우_예외가_발생한다(int size) {
 
-        assertThatThrownBy(() -> new BuyerReceiptSearchCondition(size, 10))
+        assertThatThrownBy(() -> new BuyerReceiptSearchCondition(10, size))
                 .isInstanceOf(BadRequestException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.G001);
     }

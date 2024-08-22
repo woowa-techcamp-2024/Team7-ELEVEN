@@ -9,8 +9,8 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
  * @param size 조회할 거래 내역의 개수 (default: 10) (Min: 1, Max: 100)
  */
 public record BuyerReceiptSearchCondition(
-        int size,
-        int offset
+        int offset,
+        int size
 ) {
 
     public BuyerReceiptSearchCondition {

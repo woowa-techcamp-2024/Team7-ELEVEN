@@ -17,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,7 +32,9 @@ public class ReceiptController {
     @BuyerOnly
     @GetMapping("/buyer")
     public ResponseEntity<List<BuyerReceiptSimpleInfo>> getReceipts(@Login SignInInfo buyerInfo,
-                                                                    @RequestBody BuyerReceiptSearchCondition condition) {
+                                                                    @RequestParam(name = "offset") int offset,
+                                                                    @RequestParam(name = "size") int size) {
+        BuyerReceiptSearchCondition condition = new BuyerReceiptSearchCondition(offset, size);
         List<BuyerReceiptSimpleInfo> infos = receiptService.getBuyerReceiptSimpleInfos(buyerInfo, condition);
         return ResponseEntity.ok(infos);
     }
@@ -41,7 +43,9 @@ public class ReceiptController {
     @SellerOnly
     @GetMapping("/seller")
     public ResponseEntity<List<SellerReceiptSimpleInfo>> getSellerReceipts(@Login SignInInfo sellerInfo,
-                                                                           @RequestBody SellerReceiptSearchCondition condition) {
+                                                                           @RequestParam(name = "offset") int offset,
+                                                                           @RequestParam(name = "size") int size) {
+        SellerReceiptSearchCondition condition = new SellerReceiptSearchCondition(offset, size);
         List<SellerReceiptSimpleInfo> infos = receiptService.getSellerReceiptSimpleInfos(sellerInfo, condition);
         return ResponseEntity.ok(infos);
     }
