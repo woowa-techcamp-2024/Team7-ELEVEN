@@ -17,6 +17,20 @@ spring:
       port: 6379
       password: 1q2w3e
       host: localhost
+    
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: 'prometheus'
+
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
+
 
 logging:
   level:
