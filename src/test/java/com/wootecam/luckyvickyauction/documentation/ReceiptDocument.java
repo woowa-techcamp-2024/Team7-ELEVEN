@@ -40,7 +40,7 @@ public class ReceiptDocument extends DocumentationTest {
 
         @Test
         void 구매자는_정상적으로_거래목록을_확인한다() throws Exception {
-            BuyerReceiptSearchCondition condition = new BuyerReceiptSearchCondition(3);
+            BuyerReceiptSearchCondition condition = new BuyerReceiptSearchCondition(3, 10);
             List<BuyerReceiptSimpleInfo> buyerReceiptSimpleInfos = buyerReceiptSimpleInfosSample();
             SignInInfo buyerInfo = new SignInInfo(1L, Role.BUYER);
             given(receiptService.getBuyerReceiptSimpleInfos(buyerInfo, condition)).willReturn(
@@ -62,7 +62,9 @@ public class ReceiptDocument extends DocumentationTest {
                                     requestFields(
                                             fieldWithPath("size").type(JsonFieldType.NUMBER)
                                                     .description("조회할 거래 내역의 개수")
-                                                    .attributes(key("constraints").value("최소:1 ~ 최대:100"))
+                                                    .attributes(key("constraints").value("최소:1 ~ 최대:100")),
+                                            fieldWithPath("offset").type(JsonFieldType.NUMBER)
+                                                    .description("조회할 거래 내역의 시작 위치")
                                     ),
                                     responseFields(
                                             fieldWithPath("[].id").type(JsonFieldType.NUMBER)
@@ -103,7 +105,7 @@ public class ReceiptDocument extends DocumentationTest {
 
         @Test
         void 판매자는_정상적으로_거래목록을_확인한다() throws Exception {
-            SellerReceiptSearchCondition condition = new SellerReceiptSearchCondition(3);
+            SellerReceiptSearchCondition condition = new SellerReceiptSearchCondition(3, 10);
             List<SellerReceiptSimpleInfo> sellerReceiptSimpleInfos = sellerReceiptSimpleInfosSample();
             SignInInfo sellerInfo = new SignInInfo(1L, Role.SELLER);
             given(receiptService.getSellerReceiptSimpleInfos(sellerInfo, condition)).willReturn(
@@ -124,7 +126,9 @@ public class ReceiptDocument extends DocumentationTest {
                             requestFields(
                                     fieldWithPath("size").type(JsonFieldType.NUMBER)
                                             .description("조회할 거래 내역의 개수")
-                                            .attributes(key("constraints").value("최소:1 ~ 최대:100"))
+                                            .attributes(key("constraints").value("최소:1 ~ 최대:100")),
+                                    fieldWithPath("offset").type(JsonFieldType.NUMBER)
+                                            .description("조회할 거래 내역의 시작 위치")
                             ),
                             responseFields(
                                     fieldWithPath("[].id").type(JsonFieldType.NUMBER)
