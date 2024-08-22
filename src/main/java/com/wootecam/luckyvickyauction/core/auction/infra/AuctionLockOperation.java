@@ -47,6 +47,6 @@ public class AuctionLockOperation {
             }
         }
 
-        log.debug("Auction Lock을 획득했습니다. 경매번호: " + auctionId);
+        log.debug("레투스 락을 획득! 경매번호: " + auctionId);
     }
 }

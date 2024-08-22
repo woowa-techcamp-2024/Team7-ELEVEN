@@ -1,6 +1,5 @@
 package com.wootecam.luckyvickyauction.core.auction.service.auctioneer;
 
-import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RedissonLockAuctioneerProxy implements Auctioneer {
+public class RedissonLockAuctioneerProxy implements AuctioneerProxy {
 
     private final BasicAuctioneer basicAuctioneer;
     private final RedissonClient redissonClient;
@@ -27,7 +26,7 @@ public class RedissonLockAuctioneerProxy implements Auctioneer {
             if (!available) {
                 throw new IllegalStateException("TimeOut에 도달했습니다.");
             }
-            log.debug("레디슨 락 획득! {}", buyerInfo.id());
+            log.debug("레디슨 락 획득! 경매번호: {}", buyerInfo.id());
             basicAuctioneer.process(buyerInfo, price, auctionId, quantity, requestTime);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
