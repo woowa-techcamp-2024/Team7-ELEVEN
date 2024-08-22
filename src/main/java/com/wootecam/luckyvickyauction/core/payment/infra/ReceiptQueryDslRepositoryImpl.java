@@ -8,7 +8,6 @@ import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
-// TODO [추후 페이지네이션 구현] [writeAt: 2024/08/17/19:03] [writeBy: minseok-oh]
 @RequiredArgsConstructor
 public class ReceiptQueryDslRepositoryImpl implements ReceiptQueryDslRepository {
 
@@ -23,6 +22,7 @@ public class ReceiptQueryDslRepositoryImpl implements ReceiptQueryDslRepository 
                 .from(receipt)
                 .where(receipt.buyerId.eq(buyerId))
                 .limit(condition.size())
+                .offset(condition.offset())
                 .fetch();
     }
 
@@ -35,6 +35,7 @@ public class ReceiptQueryDslRepositoryImpl implements ReceiptQueryDslRepository 
                 .from(receipt)
                 .where(receipt.sellerId.eq(sellerId))
                 .limit(condition.size())
+                .offset(condition.offset())
                 .fetch();
     }
 }
