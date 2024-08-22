@@ -9,10 +9,10 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,10 +48,11 @@ public class ReceiptDocument extends DocumentationTest {
             given(authenticationContext.getPrincipal()).willReturn(buyerInfo);
 
             mockMvc.perform(get("/receipts/buyer")
+                            .queryParam("offset", "3")
+                            .queryParam("size", "10")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
-                            .sessionAttr("signInMember", buyerInfo)
-                            .content(objectMapper.writeValueAsString(condition)))
+                            .sessionAttr("signInMember", buyerInfo))
                     .andDo(
                             document("receipts/findAllBuyerReceipts/success",
                                     preprocessRequest(prettyPrint()),
@@ -59,12 +60,10 @@ public class ReceiptDocument extends DocumentationTest {
                                     requestCookies(
                                             cookieWithName("JSESSIONID").description("세션 ID")
                                     ),
-                                    requestFields(
-                                            fieldWithPath("size").type(JsonFieldType.NUMBER)
-                                                    .description("조회할 거래 내역의 개수")
-                                                    .attributes(key("constraints").value("최소:1 ~ 최대:100")),
-                                            fieldWithPath("offset").type(JsonFieldType.NUMBER)
-                                                    .description("조회할 거래 내역의 시작 위치")
+                                    queryParameters(
+                                            parameterWithName("offset").description("조회를 시작할 순서"),
+                                            parameterWithName("size").description("조회할 페이지 크기")
+                                                    .attributes(key("constraints").value("최소: 1 ~ 최대: 100"))
                                     ),
                                     responseFields(
                                             fieldWithPath("[].id").type(JsonFieldType.NUMBER)
@@ -113,22 +112,21 @@ public class ReceiptDocument extends DocumentationTest {
             given(authenticationContext.getPrincipal()).willReturn(sellerInfo);
 
             mockMvc.perform(get("/receipts/seller")
+                            .queryParam("offset", "3")
+                            .queryParam("size", "10")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
-                            .sessionAttr("signInMember", sellerInfo)
-                            .content(objectMapper.writeValueAsString(condition)))
+                            .sessionAttr("signInMember", sellerInfo))
                     .andDo(document("receipts/findAllSellerReceipts/success",
                             preprocessRequest(prettyPrint()),
                             preprocessResponse(prettyPrint()),
                             requestCookies(
                                     cookieWithName("JSESSIONID").description("세션 ID")
                             ),
-                            requestFields(
-                                    fieldWithPath("size").type(JsonFieldType.NUMBER)
-                                            .description("조회할 거래 내역의 개수")
-                                            .attributes(key("constraints").value("최소:1 ~ 최대:100")),
-                                    fieldWithPath("offset").type(JsonFieldType.NUMBER)
-                                            .description("조회할 거래 내역의 시작 위치")
+                            queryParameters(
+                                    parameterWithName("offset").description("조회를 시작할 순서"),
+                                    parameterWithName("size").description("조회할 페이지 크기")
+                                            .attributes(key("constraints").value("최소: 1 ~ 최대: 100"))
                             ),
                             responseFields(
                                     fieldWithPath("[].id").type(JsonFieldType.NUMBER)
