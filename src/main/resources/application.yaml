@@ -12,6 +12,8 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
 
 management:
+  server:
+    port: 8081
   endpoints:
     web:
       exposure:
