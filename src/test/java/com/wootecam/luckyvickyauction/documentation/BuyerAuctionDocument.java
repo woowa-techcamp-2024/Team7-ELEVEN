@@ -189,7 +189,7 @@ class BuyerAuctionDocument extends DocumentationTest {
             String auctionId = "1";
             PurchaseRequest purchaseRequest = new PurchaseRequest(10000L, 20L);
             SignInInfo buyerInfo = new SignInInfo(1L, Role.BUYER);
-            willDoNothing().given(paymentService)
+            willDoNothing().given(auctioneer)
                     .process(any(SignInInfo.class), anyLong(), anyLong(), anyLong(), any(LocalDateTime.class));
             given(authenticationContext.getPrincipal()).willReturn(buyerInfo);
 
