@@ -11,7 +11,8 @@ public class BuyerAuctionInfoFixture {
     private String productName = "테스트 상품";
     private long originPrice = 10000;
     private long currentPrice = 5000;
-    private Long stock = 100L;
+    private long originStock = 100L;
+    private Long currentStock = 100L;
     private long maximumPurchaseLimitCount = 10;
     private PricePolicy pricePolicy = PricePolicy.createPercentagePricePolicy(10);
     private Duration variationDuration = Duration.ofMinutes(1L);
@@ -47,8 +48,13 @@ public class BuyerAuctionInfoFixture {
         return this;
     }
 
-    public BuyerAuctionInfoFixture stock(Long stock) {
-        this.stock = stock;
+    public BuyerAuctionInfoFixture originStock(Long originStock) {
+        this.originStock = originStock;
+        return this;
+    }
+
+    public BuyerAuctionInfoFixture currentStock(Long currentStock) {
+        this.currentStock = currentStock;
         return this;
     }
 
@@ -84,7 +90,8 @@ public class BuyerAuctionInfoFixture {
                 productName,
                 originPrice,
                 currentPrice,
-                stock,
+                originStock,
+                currentStock,
                 maximumPurchaseLimitCount,
                 pricePolicy,
                 variationDuration,

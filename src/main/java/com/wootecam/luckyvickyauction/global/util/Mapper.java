@@ -55,7 +55,8 @@ public final class Mapper {
     }
 
     public static BuyerAuctionInfo convertToBuyerAuctionInfo(Auction auction) {
-        Long stock = auction.isShowStock() ? auction.getCurrentStock() : null;
+        Long currentStock = auction.isShowStock() ? auction.getCurrentStock() : null;
+        Long originStock = auction.isShowStock() ? auction.getOriginStock() : null;
 
         return BuyerAuctionInfo.builder()
                 .auctionId(auction.getId())
@@ -63,7 +64,8 @@ public final class Mapper {
                 .productName(auction.getProductName())
                 .originPrice(auction.getOriginPrice())
                 .currentPrice(auction.getCurrentPrice())
-                .stock(stock)
+                .originStock(originStock)
+                .currentStock(currentStock)
                 .maximumPurchaseLimitCount(auction.getMaximumPurchaseLimitCount())
                 .pricePolicy(auction.getPricePolicy())
                 .variationDuration(auction.getVariationDuration())
