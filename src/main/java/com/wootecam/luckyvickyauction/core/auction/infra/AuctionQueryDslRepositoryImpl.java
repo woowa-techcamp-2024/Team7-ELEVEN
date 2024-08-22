@@ -19,6 +19,7 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
         return query
                 .select(auction)
                 .from(auction)
+                .orderBy(auction.id.desc())
                 .limit(condition.size())
                 .offset(condition.offset())
                 .fetch();
@@ -31,6 +32,7 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
                 .select(auction)
                 .from(auction)
                 .where(auction.sellerId.eq(condition.sellerId()))
+                .orderBy(auction.id.desc())
                 .limit(condition.size())
                 .offset(condition.offset())
                 .fetch();
