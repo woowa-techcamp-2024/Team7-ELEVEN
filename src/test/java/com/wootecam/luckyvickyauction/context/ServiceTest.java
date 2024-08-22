@@ -2,6 +2,7 @@ package com.wootecam.luckyvickyauction.context;
 
 import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
+import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
@@ -29,6 +30,9 @@ public abstract class ServiceTest {
 
     @Autowired
     protected AuctionService auctionService;
+
+    @Autowired
+    protected Auctioneer auctioneer;
 
     @Autowired
     protected ReceiptRepository receiptRepository;

@@ -1,7 +1,6 @@
 package com.wootecam.luckyvickyauction.core.payment.service;
 
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
-import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
@@ -12,7 +11,6 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.exception.UnauthorizedException;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,15 +22,6 @@ public class PaymentService {
     private final AuctionService auctionService;
     private final MemberRepository memberRepository;
     private final ReceiptRepository receiptRepository;
-    private final Auctioneer auctioneer;
-
-    /**
-     * 1. 구매자 확인 <br> 2. 구매자 포인트를 감소 <br> 3. 판매자에게 포인트 지급 <br> 4. 구매 요청 <br> - 실패하면 -> 예외 발생 및 구매자와 판매자 포인트 롤백 <br> -
-     * 성공하면 -> Receipt 저장 및 구매자, 판매자 업데이트 적용
-     */
-    public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, LocalDateTime requestTime) {
-        auctioneer.process(buyerInfo, price, auctionId, quantity, requestTime);
-    }
 
     /**
      * 구매자는 자신의 입찰 내역에서 상품을 환불할 수 있다 <br> 1. 환불을 요청한 사용자가 구매자 권한이 맞는 지 확인한다 <br> 2. 환불할 입찰 내역의 구매자가 환불을 요청한 사용자인지 확인한다
