@@ -232,7 +232,20 @@ class PaymentServiceTest extends ServiceTest {
                 Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
                 Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
-                Auction auction = AuctionFixture.createSoldOutAuction();
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(99L)
+                        .maximumPurchaseLimitCount(10L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusHours(2))
+                        .finishedAt(now.minusHours(1))
+                        .isShowStock(true)
+                        .build();
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
@@ -250,7 +263,7 @@ class PaymentServiceTest extends ServiceTest {
                 receiptRepository.save(receipt);
 
                 // when
-                paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L);
+                paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now);
 
                 // then
                 Receipt savedReceipt = receiptRepository.findById(1L).get();
@@ -261,7 +274,7 @@ class PaymentServiceTest extends ServiceTest {
                         () -> assertThat(savedReceipt.getReceiptStatus()).isEqualTo(ReceiptStatus.REFUND),
                         () -> assertThat(savedBuyer.getPoint().getAmount()).isEqualTo(1100L),
                         () -> assertThat(savedSeller.getPoint().getAmount()).isEqualTo(900L),
-                        () -> assertThat(savedAuction.getCurrentStock()).isEqualTo(1L)
+                        () -> assertThat(savedAuction.getCurrentStock()).isEqualTo(100L)
                 );
             }
         }
@@ -293,7 +306,7 @@ class PaymentServiceTest extends ServiceTest {
                 receiptRepository.save(receipt);
 
                 // expect
-                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(seller.getId(), Role.SELLER), 1L))
+                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(seller.getId(), Role.SELLER), 1L, now))
                         .isInstanceOf(AuthorizationException.class)
                         .hasMessage("구매자만 환불을 할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -313,7 +326,7 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 // expect
-                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L))
+                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now))
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -330,7 +343,7 @@ class PaymentServiceTest extends ServiceTest {
                 Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
                 Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
-                Auction auction = AuctionFixture.createSoldOutAuction();
+                Auction auction = AuctionFixture.createFinishedAuction();
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
@@ -348,7 +361,7 @@ class PaymentServiceTest extends ServiceTest {
                 receiptRepository.save(receipt);
 
                 // expect
-                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L))
+                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("이미 환불된 입찰 내역입니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -365,7 +378,7 @@ class PaymentServiceTest extends ServiceTest {
                 Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
                 Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
-                Auction auction = AuctionFixture.createSoldOutAuction();
+                Auction auction = AuctionFixture.createFinishedAuction();
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
@@ -392,11 +405,46 @@ class PaymentServiceTest extends ServiceTest {
                         .build();
 
                 assertThatThrownBy(
-                        () -> paymentService.refund(new SignInInfo(unPurchasedBuyer.getId(), Role.BUYER), 1L))
+                        () -> paymentService.refund(new SignInInfo(unPurchasedBuyer.getId(), Role.BUYER), 1L, now))
                         .isInstanceOf(AuthorizationException.class)
                         .hasMessage("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.P004));
+            }
+        }
+
+        @Nested
+        class 만약_아직_종료되지_않은_경매상품을_환불하려_하면 {
+
+            @Test
+            void 예외가_발생한다() {
+                // given
+                Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
+                Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
+
+                Auction auction = AuctionFixture.createSoldOutAuction();
+                auctionRepository.save(auction);
+
+                Receipt receipt = Receipt.builder()
+                        .id(1L)
+                        .auctionId(1L)
+                        .productName("test")
+                        .price(100L)
+                        .quantity(1L)
+                        .receiptStatus(ReceiptStatus.PURCHASED)
+                        .sellerId(seller.getId())
+                        .buyerId(buyer.getId())
+                        .createdAt(now)
+                        .updatedAt(now)
+                        .build();
+                receiptRepository.save(receipt);
+
+                // expect
+                assertThatThrownBy(
+                        () -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now))
+                        .isInstanceOf(BadRequestException.class)
+                        .hasMessage("종료된 경매만 환불할 수 있습니다.")
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.P007);
             }
         }
     }

@@ -65,8 +65,11 @@ public class BuyerAuctionController {
      */
     @BuyerOnly
     @PutMapping("/receipts/{receiptId}/refund")
-    public ResponseEntity<Void> refundAuction(@Login SignInInfo buyerInfo, @PathVariable("receiptId") Long receiptId) {
-        paymentService.refund(buyerInfo, receiptId);
+    public ResponseEntity<Void> refundAuction(@Login SignInInfo buyerInfo,
+                                              @PathVariable("receiptId") Long receiptId,
+                                              @CurrentTime LocalDateTime now) {
+
+        paymentService.refund(buyerInfo, receiptId, now);
         return ResponseEntity.ok().build();
     }
 }
