@@ -1,5 +1,6 @@
 package com.wootecam.luckyvickyauction.core.payment.service;
 
+import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
@@ -11,6 +12,7 @@ import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,27 +25,17 @@ public class PaymentService {
     private final MemberRepository memberRepository;
     private final ReceiptRepository receiptRepository;
 
-    /**
-     * 구매자는 자신의 입찰 내역에서 상품을 환불할 수 있다 <br> 1. 환불을 요청한 사용자가 구매자 권한이 맞는 지 확인한다 <br> 2. 환불할 입찰 내역의 구매자가 환불을 요청한 사용자인지 확인한다
-     * <br> 3. 환불 금액과 수량을 받아와서 교환한다 <br> 4. 경매 서비스에 환불 요청한다 <br> 5. 환불 이후 정보들을 저장한다
-     *
-     * @param buyerInfo 환불을 요청한 사용자
-     * @param receiptId 환불할 거래 내역의 id
-     */
     @Transactional
-    public void refund(SignInInfo buyerInfo, long receiptId) {
-        if (!buyerInfo.isType(Role.BUYER)) {
-            throw new AuthorizationException("구매자만 환불을 할 수 있습니다.", ErrorCode.P000);
-        }
+    public void refund(SignInInfo buyerInfo, long receiptId, LocalDateTime requestTime) {
+        verifyHasBuyerRole(buyerInfo);
 
         Receipt refundTargetReceipt = findRefundTargetReceipt(receiptId);
+        verifyEndAuction(requestTime, refundTargetReceipt.getAuctionId());
+
         refundTargetReceipt.markAsRefund();
 
-        if (!(buyerInfo.id() == refundTargetReceipt.getBuyerId())) {
-            throw new AuthorizationException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
-        }
+        verifySameBuyer(buyerInfo, refundTargetReceipt.getBuyerId());
 
-        // 사용자 포인트 변경
         long price = refundTargetReceipt.getPrice();
         long quantity = refundTargetReceipt.getQuantity();
 
@@ -63,17 +55,31 @@ public class PaymentService {
         receiptRepository.save(refundTargetReceipt);  // 정상적으로 환불 처리된 경우 해당 이력을 '환불' 상태로 변경
     }
 
+    private void verifyHasBuyerRole(SignInInfo buyerInfo) {
+        if (!buyerInfo.isType(Role.BUYER)) {
+            throw new AuthorizationException("구매자만 환불을 할 수 있습니다.", ErrorCode.P000);
+        }
+    }
+
+    private void verifyEndAuction(LocalDateTime requestTime, long auctionId) {
+        AuctionInfo auction = auctionService.getAuction(auctionId);
+
+        if (requestTime.isBefore(auction.finishedAt())) {
+            throw new BadRequestException("종료된 경매만 환불할 수 있습니다.", ErrorCode.P007);
+        }
+    }
+
+    private void verifySameBuyer(SignInInfo buyerInfo, long receiptBuyerId) {
+        if (!(buyerInfo.id() == receiptBuyerId)) {
+            throw new AuthorizationException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
+        }
+    }
+
     private Receipt findRefundTargetReceipt(long receiptId) {
         return receiptRepository.findById(receiptId).orElseThrow(
                 () -> new NotFoundException("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=" + receiptId, ErrorCode.P002));
     }
 
-    /**
-     * 사용자의 포인트를 충전한다 - 포인트가 음수이면 예외가 발생한다
-     *
-     * @param memberInfo  포인트를 충전할 사용자
-     * @param chargePoint 충전할 포인트
-     */
     @Transactional
     public void chargePoint(SignInInfo memberInfo, long chargePoint) {
         if (chargePoint < 0) {
