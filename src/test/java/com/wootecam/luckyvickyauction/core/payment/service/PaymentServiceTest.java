@@ -20,7 +20,6 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +34,6 @@ class PaymentServiceTest extends ServiceTest {
             @Test
             void 입찰이_진행된다() {
                 // given
-                LocalDateTime now = LocalDateTime.now();
                 Member seller = Member.builder()
                         .signInId("sellerId")
                         .password("password0")
@@ -88,7 +86,6 @@ class PaymentServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                LocalDateTime now = LocalDateTime.now();
                 Member seller = Member.builder()
                         .signInId("sellerId")
                         .password("password0")
@@ -135,7 +132,6 @@ class PaymentServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                LocalDateTime now = LocalDateTime.now();
                 Member seller = Member.builder()
                         .signInId("sellerId")
                         .password("password0")
@@ -182,7 +178,6 @@ class PaymentServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                LocalDateTime now = LocalDateTime.now();
                 Member seller = Member.builder()
                         .signInId("sellerId")
                         .password("password0")
@@ -240,7 +235,6 @@ class PaymentServiceTest extends ServiceTest {
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
-                LocalDateTime now = LocalDateTime.now();
                 Receipt receipt = Receipt.builder()
                         .id(1L)
                         .auctionId(1L)
@@ -284,7 +278,6 @@ class PaymentServiceTest extends ServiceTest {
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
-                LocalDateTime now = LocalDateTime.now();
                 Receipt receipt = Receipt.builder()
                         .id(1L)
                         .auctionId(1L)
@@ -340,7 +333,6 @@ class PaymentServiceTest extends ServiceTest {
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
-                LocalDateTime now = LocalDateTime.now();
                 Receipt receipt = Receipt.builder()
                         .id(1L)
                         .auctionId(1L)
@@ -376,7 +368,6 @@ class PaymentServiceTest extends ServiceTest {
                 Auction auction = AuctionFixture.createSoldOutAuction();
                 auctionRepository.save(auction);
 
-                LocalDateTime now = LocalDateTime.now();
                 Receipt receipt = Receipt.builder()
                         .id(1L)
                         .auctionId(1L)
@@ -455,8 +446,6 @@ class PaymentServiceTest extends ServiceTest {
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.P005));
             }
-
-
         }
     }
 }

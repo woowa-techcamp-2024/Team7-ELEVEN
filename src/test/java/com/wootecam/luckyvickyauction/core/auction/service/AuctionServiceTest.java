@@ -55,12 +55,12 @@ class AuctionServiceTest extends ServiceTest {
                 Duration varitationDuration = Duration.ofMinutes(10L);  // 변동 시간 단위
                 PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-                LocalDateTime startedAt = LocalDateTime.now().plusHours(1);
+                LocalDateTime startedAt = now.plusHours(1);
                 LocalDateTime finishedAt = startedAt.plusHours(1);
 
                 SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
                 CreateAuctionCommand command = new CreateAuctionCommand(productName, originPrice, stock,
-                        maximumPurchaseLimitCount, pricePolicy, varitationDuration, LocalDateTime.now(), startedAt,
+                        maximumPurchaseLimitCount, pricePolicy, varitationDuration, now, startedAt,
                         finishedAt,
                         true
                 );
@@ -106,13 +106,13 @@ class AuctionServiceTest extends ServiceTest {
                 Duration varitationDuration = Duration.ofMinutes(10L);
                 PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-                LocalDateTime startedAt = LocalDateTime.now().plusHours(1);
+                LocalDateTime startedAt = now.plusHours(1);
                 LocalDateTime finishedAt = startedAt.plusMinutes(durationTime);
 
                 SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
                 CreateAuctionCommand command = new CreateAuctionCommand(
                         productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                        varitationDuration, LocalDateTime.now(), startedAt, finishedAt, true
+                        varitationDuration, now, startedAt, finishedAt, true
                 );
 
                 // expect
@@ -137,13 +137,13 @@ class AuctionServiceTest extends ServiceTest {
                 Duration varitationDuration = Duration.ofMinutes(1L);
                 PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
 
-                LocalDateTime startedAt = LocalDateTime.now().plusHours(1);
+                LocalDateTime startedAt = now.plusHours(1);
                 LocalDateTime finishedAt = startedAt.plusMinutes(invalidDurationTime);
 
                 SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
                 CreateAuctionCommand command = new CreateAuctionCommand(
                         productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                        varitationDuration, LocalDateTime.now(), startedAt, finishedAt, true
+                        varitationDuration, now, startedAt, finishedAt, true
                 );
 
                 // expect
@@ -165,7 +165,6 @@ class AuctionServiceTest extends ServiceTest {
             @Test
             void 구매를_완료한다() {
                 // given
-                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -197,7 +196,7 @@ class AuctionServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // expect
-                assertThatThrownBy(() -> auctionService.submitPurchase(1L, 1000L, 10L, LocalDateTime.now()))
+                assertThatThrownBy(() -> auctionService.submitPurchase(1L, 1000L, 10L, now))
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("경매(Auction)를 찾을 수 없습니다. AuctionId: 1")
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A010);
@@ -210,7 +209,6 @@ class AuctionServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -240,7 +238,6 @@ class AuctionServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("Test Product")
@@ -259,7 +256,7 @@ class AuctionServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(
-                        () -> auctionService.submitPurchase(savedAuction.getId(), 7000L, 10L, LocalDateTime.now()))
+                        () -> auctionService.submitPurchase(savedAuction.getId(), 7000L, 10L, now))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("진행 중인 경매에만 입찰할 수 있습니다. 현재상태: " + AuctionStatus.WAITING)
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A013);
@@ -276,7 +273,6 @@ class AuctionServiceTest extends ServiceTest {
             @Test
             void 입찰을_취소한다() {
                 // given
-                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -308,7 +304,6 @@ class AuctionServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -339,7 +334,6 @@ class AuctionServiceTest extends ServiceTest {
             @Test
             void 예외가_발생한다() {
                 // given
-                LocalDateTime now = LocalDateTime.now();
                 Auction auction = Auction.builder()
                         .sellerId(1L)
                         .productName("productName")
@@ -376,7 +370,6 @@ class AuctionServiceTest extends ServiceTest {
                 // given
                 Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
-                LocalDateTime now = LocalDateTime.now();
                 Auction action = Auction.builder()
                         .sellerId(seller.getId())
                         .productName("productName")
@@ -433,7 +426,7 @@ class AuctionServiceTest extends ServiceTest {
         void 정상적으로_취소되어_경매가_삭제된다() {
             // given
             SignInInfo signInInfo = new SignInInfo(1L, Role.SELLER);
-            CancelAuctionCommand command = new CancelAuctionCommand(LocalDateTime.now(), 1L);
+            CancelAuctionCommand command = new CancelAuctionCommand(now, 1L);
             Auction auction = AuctionFixture.createWaitingAuction();
             auctionRepository.save(auction);
 
@@ -456,7 +449,7 @@ class AuctionServiceTest extends ServiceTest {
         void 판매자가_권한이_없는_사용자_접근시_예외가_발생한다() {
             // given
             SignInInfo signInInfo = new SignInInfo(1L, Role.BUYER);
-            CancelAuctionCommand command = new CancelAuctionCommand(LocalDateTime.now(), 1L);
+            CancelAuctionCommand command = new CancelAuctionCommand(now, 1L);
 
             // expect
             assertThatThrownBy(
@@ -471,7 +464,7 @@ class AuctionServiceTest extends ServiceTest {
         void 경매를_등록한_판매자와_경매를_수정하려는_판매자가_다른_경우_예외가_발생한다() {
             // given
             SignInInfo signInInfo = new SignInInfo(2L, Role.SELLER);
-            CancelAuctionCommand command = new CancelAuctionCommand(LocalDateTime.now(), 1L);
+            CancelAuctionCommand command = new CancelAuctionCommand(now, 1L);
             Auction auction = AuctionFixture.createWaitingAuction();
             auctionRepository.save(auction);
 
@@ -489,7 +482,7 @@ class AuctionServiceTest extends ServiceTest {
         void 경매_상태가_시작전이_아닌경우_예외가_발생한다(String displayName, Auction auction) {
             // given
             SignInInfo signInInfo = new SignInInfo(1L, Role.SELLER);
-            CancelAuctionCommand command = new CancelAuctionCommand(LocalDateTime.now(), 1L);
+            CancelAuctionCommand command = new CancelAuctionCommand(now, 1L);
 
             auctionRepository.save(auction);
 
