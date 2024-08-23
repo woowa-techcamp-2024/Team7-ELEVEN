@@ -48,6 +48,7 @@ public class BasicAuctioneer implements Auctioneer {
                 .receiptStatus(ReceiptStatus.PURCHASED)
                 .sellerId(savedSeller.getId())
                 .buyerId(savedBuyer.getId())
+                .auctionId(auctionId)
                 .build();
         receiptRepository.save(receipt);
     }
