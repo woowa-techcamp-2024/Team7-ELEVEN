@@ -3,7 +3,6 @@ import {ChargePointsRequest} from "./type";
 async function chargePointsApi(
     baseUrl: string,
     data: ChargePointsRequest,
-    sessionId: string,
     onSuccess: () => void,
     onFailure: () => void
 ) {
@@ -15,7 +14,6 @@ async function chargePointsApi(
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 'Accept': 'application/json',
-                'Cookie': `JSESSIONID=${sessionId}`,
             },
             body: JSON.stringify(data),
         });
