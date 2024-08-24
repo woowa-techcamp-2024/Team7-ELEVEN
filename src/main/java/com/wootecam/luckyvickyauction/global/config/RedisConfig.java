@@ -19,25 +19,25 @@ public class RedisConfig {
     private String redisHost;
 
     @Value("${spring.data.redis.port}")
-    private String redisPort;
+    private int redisPort;
 
     @Value("${spring.data.redis.password}")
     private String redisPassword;
 
     @Bean
     public RedissonClient redissonClient() {
-        RedissonClient redisson = null;
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://" + redisHost + ":" + redisPort);
-        redisson = Redisson.create(config);
-        return redisson;
+        config.useSingleServer()
+                .setAddress("redis://" + redisHost + ":" + redisPort)
+                .setPassword(redisPassword);
+        return Redisson.create(config);
     }
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisHost);
-        redisStandaloneConfiguration.setPort(Integer.parseInt(redisPort));
+        redisStandaloneConfiguration.setPort(redisPort);
         redisStandaloneConfiguration.setPassword(redisPassword);
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
