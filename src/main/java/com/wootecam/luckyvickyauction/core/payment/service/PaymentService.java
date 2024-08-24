@@ -91,4 +91,20 @@ public class PaymentService {
         member.chargePoint(chargePoint);
         memberRepository.save(member);
     }
+
+    @Transactional
+    public void pointTransfer(long senderId, long recipientId, long amount) {
+        Member sender = findMemberObject(senderId);
+        Member recipient = findMemberObject(recipientId);
+
+        sender.pointTransfer(recipient, amount);
+
+        memberRepository.save(sender);
+        memberRepository.save(recipient);
+    }
+
+    private Member findMemberObject(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다. id=" + id, ErrorCode.M002));
+    }
 }
