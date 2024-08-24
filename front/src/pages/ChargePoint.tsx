@@ -27,7 +27,7 @@ function ChargePointPage() {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-slate-50">
+        <div className="flex items-center justify-center min-h-screen">
             <div className="w-full max-w-xs">
                 <div className="card bg-base-100 shadow-xl border border-gray-300">
                     <div className="card-body">
