@@ -18,18 +18,18 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RedisStreamConsumer implements StreamListener<String, MapRecord<String, String, String>> {
+public class RedisStreamConsumer implements StreamListener<String, MapRecord<String, Object, Object>> {
 
     private final RedisOperator redisOperator;
     private final RedisStreamConfig redisStreamConfig;
-    private StreamMessageListenerContainer<String, MapRecord<String, String, String>> listenerContainer;
+    private StreamMessageListenerContainer<String, MapRecord<String, Object, Object>> listenerContainer;
     private Subscription subscription;
 
     @Override
-    public void onMessage(MapRecord<String, String, String> message) {
-        System.out.println("MessageId: " + message.getId());
-        System.out.println("Stream: " + message.getStream());
-        System.out.println("Body: " + message.getValue());
+    public void onMessage(MapRecord<String, Object, Object> message) {
+        log.info("MessageId: {}", message.getId());
+        log.info("Stream: {}", message.getStream());
+        log.info("Body: {}", message.getValue());
         redisOperator.acknowledge(redisStreamConfig.getConsumerGroupName(), message);
     }
 
