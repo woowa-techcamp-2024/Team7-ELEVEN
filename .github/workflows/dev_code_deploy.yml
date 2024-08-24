@@ -24,14 +24,6 @@ jobs:
         run: chmod +x ./deploy.sh
 
       - name: Run deploy script
-        env:
-          DB_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
         run: ./deploy.sh
 
       - name: Add SSH fixkey to known hosts
