@@ -47,6 +47,6 @@ jobs:
           ACTIVE_PROFILE: dev
         run: |
           echo "$PEM_KEY" > private_key
-          scp -i “$PEM_KEY” ./build/libs/*.jar ubuntu@$SSH_HOST:~/
           chmod 600 private_key
+          scp -i “$PEM_KEY” ./build/libs/*.jar ubuntu@$SSH_HOST:~/
           ssh -i private_key ubuntu@$SSH_HOST "bash $SCRIPT_PATH $ACTIVE_PROFILE"
