@@ -1,4 +1,4 @@
-name: Java Tests with Gradle
+name: Dev code deploy
 
 on:
   push:
