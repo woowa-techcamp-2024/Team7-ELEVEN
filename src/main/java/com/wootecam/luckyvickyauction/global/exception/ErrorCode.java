@@ -70,6 +70,7 @@ public enum ErrorCode {
     // Global 예외
     G000("DTO 생성 시, 필드의 값이 NULL인 경우 예외가 발생합니다."),
     G001("목록 조회시, 과도한 데이터를 조회할 수 없습니다."),
+    G002("Lock 획득 시, TimeOut 시간을 초과하였습니다."),
 
     // 서버 예외
     SERVER_ERROR("서버에서 예기치 못한 예외가 발생한 경우");

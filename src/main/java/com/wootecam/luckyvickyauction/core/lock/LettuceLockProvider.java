@@ -1,19 +1,19 @@
 package com.wootecam.luckyvickyauction.core.lock;
 
-import com.wootecam.luckyvickyauction.core.auction.infra.AuctionLockOperation;
 import com.wootecam.luckyvickyauction.global.aop.LockProvider;
+import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
+import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class LettuceLockProvider implements LockProvider {
 
-    private static final Logger log = LoggerFactory.getLogger(AuctionLockOperation.class);
     private static final int LOCK_RETRY_DURATION = 50;
     private static final int LOCK_MAX_RETRY = 5;
     private static final int LOCK_EXPIRE_TIME = 5;
@@ -25,7 +25,7 @@ public class LettuceLockProvider implements LockProvider {
         int retry = 0;
         while (!lock(key)) {
             if (++retry == LOCK_MAX_RETRY) {
-                throw new IllegalStateException("최대 시도 횟수에 도달했습니다. 재시도: " + LOCK_MAX_RETRY);
+                throw new BadRequestException("TimeOut에 도달했습니다. 최대재시도 횟수: " + LOCK_MAX_RETRY, ErrorCode.G002);
             }
 
             try {
@@ -35,7 +35,7 @@ public class LettuceLockProvider implements LockProvider {
             }
         }
 
-        log.debug("레투스 락을 획득! LOCK: " + key);
+        log.debug("레투스 락 획득! LOCK: " + key);
     }
 
     @Override
