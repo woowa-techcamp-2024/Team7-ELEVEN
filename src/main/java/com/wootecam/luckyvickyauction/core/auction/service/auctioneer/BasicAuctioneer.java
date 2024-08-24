@@ -32,15 +32,18 @@ public class BasicAuctioneer implements Auctioneer {
      */
     @Transactional
     public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, LocalDateTime requestTime) {
-        Member buyer = findMemberObject(buyerInfo.id());
         AuctionInfo auctionInfo = auctionService.getAuction(auctionId);
-        Member seller = findMemberObject(auctionInfo.sellerId());
-        buyer.usePoint(price * quantity);
-        seller.chargePoint(price * quantity);
-
         auctionService.submitPurchase(auctionId, price, quantity, requestTime);
+
+        // Point Transfer
+        Member buyer = findMemberObject(buyerInfo.id());
+        Member seller = findMemberObject(auctionInfo.sellerId());
+
+        buyer.pointTransfer(seller, price * quantity); 
+
         Member savedBuyer = memberRepository.save(buyer);
         Member savedSeller = memberRepository.save(seller);
+
         Receipt receipt = Receipt.builder()
                 .productName(auctionInfo.productName())
                 .price(price)
