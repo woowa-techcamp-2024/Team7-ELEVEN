@@ -34,10 +34,10 @@ jobs:
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
         run: ./deploy.sh
 
-      - name: Add SSH key to known hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+#      - name: Add SSH key to known hosts
+#        run: |
+#          mkdir -p ~/.ssh
+#          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy To EC2
         env:
@@ -49,4 +49,4 @@ jobs:
           echo "$PEM_KEY" > private_key
           chmod 600 private_key
           scp -i “$PEM_KEY” ./build/libs/*.jar ubuntu@$SSH_HOST:~/
-          ssh -i private_key ubuntu@$SSH_HOST "bash $SCRIPT_PATH $ACTIVE_PROFILE"
+          ssh -i private_key -o StrictHostKeyChecking=no ubuntu@$SSH_HOST "bash $SCRIPT_PATH $ACTIVE_PROFILE"
