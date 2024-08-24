@@ -1,8 +1,8 @@
 package com.wootecam.luckyvickyauction.core.lock;
 
 import com.wootecam.luckyvickyauction.global.aop.LockProvider;
-import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.exception.ServiceUnavailableException;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +22,11 @@ public class RedissonLockProvider implements LockProvider {
         try {
             boolean available = rLock.tryLock(5, 5, TimeUnit.SECONDS);
             if (!available) {
-                throw new BadRequestException("TimeOut에 도달했습니다.", ErrorCode.G002);
+                throw new ServiceUnavailableException("TimeOut에 도달했습니다.", ErrorCode.G002);
             }
             log.debug("==> 레디슨 락 획득! LOCK: {}", key);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);  // TODO ... InternalServerError인 것 같은데..?
+            throw new ServiceUnavailableException("시스템 문제로 락을 획득할 수 없습니다.", ErrorCode.G003);
         }
     }
 

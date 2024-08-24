@@ -1,8 +1,8 @@
 package com.wootecam.luckyvickyauction.core.lock;
 
 import com.wootecam.luckyvickyauction.global.aop.LockProvider;
-import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.exception.ServiceUnavailableException;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +23,13 @@ public class LettuceLockProvider implements LockProvider {
         int retry = 0;
         while (!lock(key)) {
             if (++retry == LOCK_MAX_RETRY) {
-                throw new BadRequestException("TimeOut에 도달했습니다. 최대재시도 횟수: " + LOCK_MAX_RETRY, ErrorCode.G002);
+                throw new ServiceUnavailableException("TimeOut에 도달했습니다. 최대재시도 횟수: " + LOCK_MAX_RETRY, ErrorCode.G002);
             }
 
             try {
                 Thread.sleep(LOCK_RETRY_DURATION);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                throw new ServiceUnavailableException("시스템 문제로 락을 획득할 수 없습니다.", ErrorCode.G003);
             }
         }
 
