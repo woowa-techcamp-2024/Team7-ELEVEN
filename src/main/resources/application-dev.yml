@@ -8,7 +8,7 @@ spring:
     password: ${DB_PASSWORD }
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: off
     hibernate:
       ddl-auto: none
