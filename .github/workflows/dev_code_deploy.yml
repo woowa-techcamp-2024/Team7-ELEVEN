@@ -48,5 +48,4 @@ jobs:
         run: |
           echo "$PEM_KEY" > private_key
           chmod 600 private_key
-          scp -i “$PEM_KEY” ./build/libs/*.jar $SSH_FULL_INFO:~/
           ssh -i private_key $SSH_FULL_INFO "bash $SCRIPT_PATH $ACTIVE_PROFILE"
