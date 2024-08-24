@@ -3,8 +3,10 @@ package com.wootecam.luckyvickyauction.consumer.presentation;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import java.time.Duration;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.stream.Consumer;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
@@ -22,9 +24,12 @@ public class RedisStreamConsumer implements StreamListener<String, MapRecord<Str
     private final RedisOperator redisOperator;
     private StreamMessageListenerContainer<String, MapRecord<String, String, String>> listenerContainer;
     private Subscription subscription;
+
+    @Value("${stream.key}")
     private String streamKey;
+    @Value("${stream.consumer.group.name}")
     private String consumerGroupName;
-    private String consumerName;
+    private String consumerName = UUID.randomUUID().toString();
 
     @PostConstruct
     public void init() throws InterruptedException {
