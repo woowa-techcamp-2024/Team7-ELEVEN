@@ -39,14 +39,14 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Create SSH key
+        run: |
+          echo "${{ secrets.PEM_KEY }}" > private_key
+          chmod 600 private_key
+
       - name: Deploy To EC2
         env:
-          PEM_KEY: ${{ secrets.PEM_KEY }}
-          SCRIPT_PATH: ${{ secrets.SCRIPT_PATH }}
-          SSH_FULL_INFO: ${{ secrets.SSH_FULL_INFO }}
           ACTIVE_PROFILE: dev
         run: |
-          echo "$PEM_KEY" > private_key
-          chmod 600 private_key
-          scp -i “$PEM_KEY” ./build/libs/*.jar $SSH_FULL_INFO:~/
-          ssh -i private_key $SSH_FULL_INFO "sudo bash $SCRIPT_PATH $ACTIVE_PROFILE"
+          scp -i private_key ./build/libs/*.jar ${{ secrets.SSH_FULL_INFO }}:~/
+          ssh -i private_key ${{ secrets.SSH_FULL_INFO }} "sudo bash ${{ secrets.SCRIPT_PATH }} $ACTIVE_PROFILE"
