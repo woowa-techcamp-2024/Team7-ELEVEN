@@ -11,11 +11,9 @@ import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Primary
 @Service
 @RequiredArgsConstructor
 public class BasicAuctioneer implements Auctioneer {
