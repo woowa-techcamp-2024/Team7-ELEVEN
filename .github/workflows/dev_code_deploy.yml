@@ -41,13 +41,12 @@ jobs:
 
       - name: Deploy To EC2
         env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          PUBLIC_DNS: ${{ secrets.PUBLIC_DNS }}
           PEM_KEY: ${{ secrets.PEM_KEY }}
           SCRIPT_PATH: ${{ secrets.SCRIPT_PATH }}
+          SSH_FULL_INFO: ${{ secrets.SSH_FULL_INFO }}
           ACTIVE_PROFILE: dev
         run: |
           echo "$PEM_KEY" > private_key
           chmod 600 private_key
-          scp -i “$PEM_KEY” ./build/libs/*.jar $PUBLIC_DNS:~/
-          ssh -i private_key $PUBLIC_DNS "bash $SCRIPT_PATH $ACTIVE_PROFILE"
+          scp -i “$PEM_KEY” ./build/libs/*.jar $SSH_FULL_INFO:~/
+          ssh -i private_key $SSH_FULL_INFO "bash $SCRIPT_PATH $ACTIVE_PROFILE"
