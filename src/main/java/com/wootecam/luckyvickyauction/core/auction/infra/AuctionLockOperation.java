@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @AllArgsConstructor
+@Deprecated
 public class AuctionLockOperation {
     private static final Logger log = LoggerFactory.getLogger(AuctionLockOperation.class);
     private static final String KEY_SUFFIX = "auction:lock";
