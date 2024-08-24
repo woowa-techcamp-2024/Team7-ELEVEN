@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: lucky-vicky-auction
+
+  datasource:
+    url: jdbc:mysql://${DB_ENDPOINT}:${DB_PORT}/
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD }
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: off
+    hibernate:
+      ddl-auto: none
+
+  data:
+    redis:
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      host: ${REDIS_HOST}
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: 'prometheus'
+
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true

@@ -17,6 +17,3 @@ cd ..
 
 # Step 6: Build the Spring Boot project
 ./gradlew clean build
-
-# Step 7: Run the Spring Boot application
-java -jar build/libs/backend-0.0.1-SNAPSHOT.jar
