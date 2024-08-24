@@ -15,10 +15,12 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -102,6 +104,9 @@ public class PaymentService {
         Member recipient = findMemberObject(recipientId);
 
         sender.pointTransfer(recipient, amount);
+        log.debug("  - Member.{}의 포인트 {}원을 Member.{} 에게 전달합니다.", sender.getId(), amount, recipientId);
+        log.debug("  - Member.{}의 잔고: {}, Member.{}의 잔고: {}", sender.getId(), sender.getPoint().getAmount(),
+                recipientId, recipient.getPoint().getAmount());
 
         memberRepository.save(sender);
         memberRepository.save(recipient);

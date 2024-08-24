@@ -24,7 +24,7 @@ public class RedissonLockProvider implements LockProvider {
             if (!available) {
                 throw new BadRequestException("TimeOut에 도달했습니다.", ErrorCode.G002);
             }
-            log.debug("레디슨 락 획득! LOCK: {}", key);
+            log.debug("==> 레디슨 락 획득! LOCK: {}", key);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);  // TODO ... InternalServerError인 것 같은데..?
         }
@@ -34,5 +34,6 @@ public class RedissonLockProvider implements LockProvider {
     public void unlock(String key) {
         RLock rLock = redissonClient.getLock(key);
         rLock.unlock();
+        log.debug("<== 레디슨 락 해제! LOCK: {}", key);
     }
 }
