@@ -105,7 +105,7 @@ function SignUpPage() {
 
                     <div className="text-center">
                         <button
-                            className="btn btn-primary w-full bg-[#62CBC6]"
+                            className="btn btn-primary w-full bg-[#62CBC6] text-white"
                             type="button"
                             onClick={requestSignUp}
                         >회원가입
