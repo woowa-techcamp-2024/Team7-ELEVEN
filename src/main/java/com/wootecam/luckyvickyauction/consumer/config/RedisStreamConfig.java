@@ -1,5 +1,7 @@
 package com.wootecam.luckyvickyauction.consumer.config;
 
+import java.util.UUID;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,6 +20,15 @@ public class RedisStreamConfig {
     @Value("${spring.data.redis.password}")
     private String redisPassword;
 
+    @Getter
+    @Value("${stream.key}")
+    private String streamKey;
+    @Getter
+    @Value("${stream.consumer.groupName}")
+    private String consumerGroupName;
+    @Getter
+    private String consumerName = UUID.randomUUID().toString();
+
     // todo [추후 서버를 분리하면 모듈이 분리될 상황을 가정한 빈입니다.] [2024-08-23] [yudonggeun]
 //    @Bean
     public RedisConnectionFactory redisConnectionFactory() {
@@ -28,4 +39,5 @@ public class RedisStreamConfig {
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
+
 }
