@@ -8,6 +8,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
+import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -28,6 +29,7 @@ public class BasicAuctioneer implements Auctioneer {
      * 성공하면 -> Receipt 저장 및 구매자, 판매자 업데이트 적용
      */
     @Transactional
+    @DistributedLock("#auctionId + ':auction:lock'")
     public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, LocalDateTime requestTime) {
         AuctionInfo auctionInfo = auctionService.getAuction(auctionId);
         auctionService.submitPurchase(auctionId, price, quantity, requestTime);

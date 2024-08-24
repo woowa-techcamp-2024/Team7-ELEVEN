@@ -8,12 +8,14 @@ import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
+import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
 import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ public class PaymentService {
     private final AuctionService auctionService;
     private final MemberRepository memberRepository;
     private final ReceiptRepository receiptRepository;
+    private final RedissonClient redissonClient;
 
     @Transactional
     public void refund(SignInInfo buyerInfo, long receiptId, LocalDateTime requestTime) {
@@ -93,6 +96,7 @@ public class PaymentService {
     }
 
     @Transactional
+    @DistributedLock("#recipientId + ':point:lock'")
     public void pointTransfer(long senderId, long recipientId, long amount) {
         Member sender = findMemberObject(senderId);
         Member recipient = findMemberObject(recipientId);
