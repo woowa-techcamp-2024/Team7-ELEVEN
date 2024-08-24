@@ -1,9 +1,7 @@
 package com.wootecam.luckyvickyauction.core.lock;
 
 import com.wootecam.luckyvickyauction.global.aop.LockProvider;
-import org.springframework.stereotype.Component;
 
-@Component
 public class NoOperationLockProvider implements LockProvider {
 
     @Override

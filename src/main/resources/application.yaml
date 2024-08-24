@@ -36,6 +36,9 @@ server:
     mbeanregistry:
       enabled: true
 
+lock:
+  provider: redisson
+
 logging:
   level:
     org:
