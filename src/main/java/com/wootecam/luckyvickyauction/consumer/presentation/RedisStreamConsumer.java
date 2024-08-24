@@ -27,17 +27,12 @@ public class RedisStreamConsumer implements StreamListener<String, MapRecord<Str
 
     @Value("${stream.key}")
     private String streamKey;
-    @Value("${stream.consumer.group.name}")
+    @Value("${stream.consumer.groupName}")
     private String consumerGroupName;
     private String consumerName = UUID.randomUUID().toString();
 
     @PostConstruct
     public void init() throws InterruptedException {
-        // Stream 기본 정보
-        this.streamKey = "mystream";
-        this.consumerGroupName = "consumerGroupName";
-        this.consumerName = "consumerName";
-
         // Consumer Group 설정
         this.redisOperator.createStreamConsumerGroup(streamKey, consumerGroupName);
 
