@@ -9,6 +9,8 @@ import io.lettuce.core.protocol.CommandType;
 import java.time.Duration;
 import java.util.Iterator;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RedisOperator {
 
+    private static final Logger log = LoggerFactory.getLogger(RedisOperator.class);
     private final RedisConnectionFactory redisConnectionFactory;
     private final StringRedisTemplate redisTemplate;
 
@@ -71,4 +74,12 @@ public class RedisOperator {
         );
     }
 
+    public void acknowledge(String consumerGroup, MapRecord<String, String, String> message) {
+        Long ack = this.redisTemplate.opsForStream().acknowledge(consumerGroup, message);
+        if (ack == 0) {
+            log.error("Acknowledge failed. MessageId: {}", message.getId());
+        } else {
+            log.info("Acknowledge success. MessageId: {}", message.getId());
+        }
+    }
 }

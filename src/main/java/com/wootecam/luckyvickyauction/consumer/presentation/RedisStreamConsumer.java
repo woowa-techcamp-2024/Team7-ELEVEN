@@ -31,6 +31,14 @@ public class RedisStreamConsumer implements StreamListener<String, MapRecord<Str
     private String consumerGroupName;
     private String consumerName = UUID.randomUUID().toString();
 
+    @Override
+    public void onMessage(MapRecord<String, String, String> message) {
+        System.out.println("MessageId: " + message.getId());
+        System.out.println("Stream: " + message.getStream());
+        System.out.println("Body: " + message.getValue());
+        redisOperator.acknowledge(consumerGroupName, message);
+    }
+
     @PostConstruct
     public void init() throws InterruptedException {
         // Consumer Group 설정
@@ -51,13 +59,6 @@ public class RedisStreamConsumer implements StreamListener<String, MapRecord<Str
 
         // redis listen 시작
         this.listenerContainer.start();
-    }
-
-    @Override
-    public void onMessage(MapRecord<String, String, String> message) {
-        System.out.println("MessageId: " + message.getId());
-        System.out.println("Stream: " + message.getStream());
-        System.out.println("Body: " + message.getValue());
     }
 
     @PreDestroy
