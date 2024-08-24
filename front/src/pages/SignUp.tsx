@@ -69,6 +69,7 @@ function SignUpPage() {
                                     className="radio radio-primary"
                                     checked={request.userRole === 'SELLER'}
                                     onChange={handleUserTypeChange}
+                                    disabled
                                 />
                                 <span className="ml-2 text-gray-700">판매자</span>
                             </label>
