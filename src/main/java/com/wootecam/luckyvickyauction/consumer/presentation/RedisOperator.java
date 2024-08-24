@@ -8,14 +8,20 @@ import io.lettuce.core.protocol.CommandKeyword;
 import io.lettuce.core.protocol.CommandType;
 import java.time.Duration;
 import java.util.Iterator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Range;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.stream.Consumer;
 import org.springframework.data.redis.connection.stream.MapRecord;
+import org.springframework.data.redis.connection.stream.PendingMessages;
 import org.springframework.data.redis.connection.stream.ReadOffset;
+import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.connection.stream.StreamInfo;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer;
 import org.springframework.stereotype.Component;
 
@@ -65,21 +71,43 @@ public class RedisOperator {
         }
     }
 
-    public StreamMessageListenerContainer<String, MapRecord<String, String, String>> createStreamMessageListenerContainer() {
+    public StreamMessageListenerContainer createStreamMessageListenerContainer() {
         return StreamMessageListenerContainer.create(redisConnectionFactory,
                 StreamMessageListenerContainer
                         .StreamMessageListenerContainerOptions.builder()
+                        .hashKeySerializer(new StringRedisSerializer())
+                        .hashValueSerializer(new StringRedisSerializer())
                         .pollTimeout(Duration.ofMillis(20))
                         .build()
         );
     }
 
-    public void acknowledge(String consumerGroup, MapRecord<String, String, String> message) {
+    public void acknowledge(String consumerGroup, MapRecord<String, Object, Object> message) {
         Long ack = this.redisTemplate.opsForStream().acknowledge(consumerGroup, message);
         if (ack == 0) {
             log.error("Acknowledge failed. MessageId: {}", message.getId());
         } else {
             log.info("Acknowledge success. MessageId: {}", message.getId());
         }
+    }
+
+    public PendingMessages getPendingMessage(String streamKey, String consumerGroup, String consumerName) {
+        return this.redisTemplate.opsForStream()
+                .pending(streamKey,
+                        Consumer.from(consumerGroup, consumerName),
+                        Range.unbounded(),
+                        100L
+                );
+    }
+
+    public List<MapRecord<String, Object, Object>> claim(String streamKey,
+                                                         String consumerGroup, String consumerName,
+                                                         Duration minIdleTime, RecordId... messageIds) {
+        if (messageIds.length < 1) {
+            return List.of();
+        }
+
+        return this.redisTemplate.opsForStream()
+                .claim(streamKey, consumerGroup, consumerName, minIdleTime, messageIds);
     }
 }
