@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,12 +16,17 @@ public class RedissonLockProvider implements LockProvider {
 
     private final RedissonClient redissonClient;
 
+    @Value("${lock.redisson.wait_time:500}")
+    private int waitTime;
+    @Value("${lock.redisson.lease_time:200}")
+    private int leaseTime;
+
     @Override
     public void tryLock(String key) {
         RLock rLock = redissonClient.getLock(key);
 
         try {
-            boolean available = rLock.tryLock(5, 5, TimeUnit.SECONDS);
+            boolean available = rLock.tryLock(waitTime, leaseTime, TimeUnit.MILLISECONDS);
             if (!available) {
                 throw new ServiceUnavailableException("TimeOut에 도달했습니다.", ErrorCode.G002);
             }

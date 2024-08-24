@@ -27,13 +27,13 @@ public class LockProviderConfig {
     public LockProvider lockProvider() {
         switch (lockProviderType) {
             case "lettuce":
-                log.debug("Lettuce Lock Provider로 락을 관리합니다.");
+                log.info("Lettuce Lock Provider로 락을 관리합니다.");
                 return new LettuceLockProvider(redisOperations);
             case "redisson":
-                log.debug("Redisson Lock Provider로 락을 관리합니다.");
+                log.info("Redisson Lock Provider로 락을 관리합니다.");
                 return new RedissonLockProvider(redissonClient);
             case "none":
-                log.debug("락을 관리하지 않습니다.");
+                log.info("락을 사용하지 않습니다.");
                 return new NoOperationLockProvider();
             default:
                 throw new IllegalArgumentException("Unknown lock provider type: " + lockProviderType);
