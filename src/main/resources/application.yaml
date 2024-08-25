@@ -20,9 +20,8 @@ spring:
   data:
     redis:
       port: 6379
-      password: 1q2w3e4r
+      password: 1q2w3e
       host: localhost
-#      host: localhost
 
 management:
   server:
@@ -37,9 +36,23 @@ server:
     mbeanregistry:
       enabled: true
 
+lock:
+  provider: redisson
+  lettuce:
+    max_retry: 10
+    retry_duration: 50
+    lease_time: 200
+  redisson:
+    wait_time: 500
+    lease_time: 200
+
 logging:
   level:
-    root: debug
-#    org:
-#      hibernate:
-#        SQL: debug
+    org:
+      hibernate:
+        SQL: debug
+
+stream:
+  key: LVA-Stream
+  consumer:
+    groupName: LVA-Group

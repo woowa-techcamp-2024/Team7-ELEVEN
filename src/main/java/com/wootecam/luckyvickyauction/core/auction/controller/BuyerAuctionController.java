@@ -10,8 +10,10 @@ import com.wootecam.luckyvickyauction.core.member.controller.BuyerOnly;
 import com.wootecam.luckyvickyauction.core.member.controller.Login;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
+import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,7 +55,15 @@ public class BuyerAuctionController {
                                               @CurrentTime LocalDateTime now,
                                               @PathVariable(name = "auctionId") Long auctionId,
                                               @RequestBody PurchaseRequest purchaseRequest) {
-        auctioneer.process(signInInfo, purchaseRequest.price(), auctionId, purchaseRequest.quantity(), now);
+        var message = new AuctionPurchaseRequestMessage(
+                UUID.randomUUID().toString(),
+                signInInfo.id(),
+                purchaseRequest.price(),
+                auctionId,
+                purchaseRequest.quantity(),
+                now
+        );
+        auctioneer.process(message);
         return ResponseEntity.ok().build();
     }
 

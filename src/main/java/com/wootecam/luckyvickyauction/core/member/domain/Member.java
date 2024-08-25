@@ -85,6 +85,18 @@ public class Member {
         }
     }
 
+    /**
+     * 다른 사용자에게 포인트를 송금합니다.
+     *
+     * @param recipient 포인트를 받을 사용자
+     * @param amount    지불할 포인트
+     * @throws BadRequestException 포인트가 부족하거나, 포인트 최대 보유량을 초과하는 경우
+     */
+    public void pointTransfer(Member recipient, long amount) {
+        point.minus(amount);
+        recipient.point.plus(amount);
+    }
+
     public static Member createMemberWithRole(String signInId, String password, String userRole) {
         Role role = Role.find(userRole);
 

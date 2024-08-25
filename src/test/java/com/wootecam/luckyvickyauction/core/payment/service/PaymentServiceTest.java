@@ -15,6 +15,7 @@ import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
+import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
 import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -65,8 +66,15 @@ class PaymentServiceTest extends ServiceTest {
                 Auction savedAuction = auctionRepository.save(runningAuction);
 
                 // when
-                auctioneer.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L, savedAuction.getId(), 1L,
-                        now.minusMinutes(30));
+                var message = new AuctionPurchaseRequestMessage(
+                        "test",
+                        savedBuyer.getId(),
+                        savedAuction.getId(),
+                        10000L,
+                        1L,
+                        now.minusMinutes(30)
+                );
+                auctioneer.process(message);
 
                 // then
                 Auction auction = auctionRepository.findById(savedAuction.getId()).get();
@@ -118,8 +126,17 @@ class PaymentServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(
-                        () -> auctioneer.process(new SignInInfo(savedBuyer.getId() + 1L, Role.BUYER), 10000L,
-                                savedAuction.getId(), 1L, now.minusMinutes(30)))
+                        () -> {
+                            var message = new AuctionPurchaseRequestMessage(
+                                    "test",
+                                    savedBuyer.getId() + 1L,
+                                    savedAuction.getId(),
+                                    10000L,
+                                    1L,
+                                    now.minusMinutes(30)
+                            );
+                            auctioneer.process(message);
+                        })
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("사용자를 찾을 수 없습니다. id=" + (savedBuyer.getId() + 1L))
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.M002);
@@ -164,8 +181,17 @@ class PaymentServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(
-                        () -> auctioneer.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L,
-                                savedAuction.getId(), 1L, now.minusMinutes(30)))
+                        () -> {
+                            var message = new AuctionPurchaseRequestMessage(
+                                    "test",
+                                    savedBuyer.getId(),
+                                    savedAuction.getId(),
+                                    10000L,
+                                    1L,
+                                    now.minusMinutes(30)
+                            );
+                            auctioneer.process(message);
+                        })
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("사용자를 찾을 수 없습니다. id=" + runningAuction.getSellerId())
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.M002);
@@ -173,7 +199,7 @@ class PaymentServiceTest extends ServiceTest {
         }
 
         @Nested
-        class 만약_요청한_물건의_금액이_사용자가_가진_포인트보다_크다면 {
+        class 만약_요청한_물건의_금액이_사용자가_요청한_금액과_다르다면 {
 
             @Test
             void 예외가_발생한다() {
@@ -210,8 +236,17 @@ class PaymentServiceTest extends ServiceTest {
 
                 // expect
                 assertThatThrownBy(
-                        () -> auctioneer.process(new SignInInfo(savedBuyer.getId(), Role.BUYER), 10000L,
-                                savedAuction.getId(), 1L, now.minusMinutes(30)))
+                        () -> {
+                            var message = new AuctionPurchaseRequestMessage(
+                                    "test",
+                                    savedBuyer.getId(),
+                                    savedAuction.getId(),
+                                    10000L,
+                                    1L,
+                                    now.minusMinutes(30)
+                            );
+                            auctioneer.process(message);
+                        })
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage(String.format("입력한 가격으로 상품을 구매할 수 없습니다. 현재가격: %d 입력가격: %d",
                                 savedAuction.getCurrentPrice(), 10000L))

@@ -1,7 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.service;
 
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import java.time.LocalDateTime;
+import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
+import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 
 /**
  * 경매 입찰 로직 분리
@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
  */
 public interface Auctioneer {
 
-    void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, LocalDateTime requestTime);
+    void process(AuctionPurchaseRequestMessage message);
+
+    void refund(AuctionRefundRequestMessage message);
 
 }
