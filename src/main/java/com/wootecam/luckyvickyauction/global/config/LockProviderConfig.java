@@ -25,19 +25,21 @@ public class LockProviderConfig {
 
     @Bean
     public LockProvider lockProvider() {
-        switch (lockProviderType) {
-            case "lettuce":
+        return switch (lockProviderType) {
+            case "lettuce" -> {
                 log.info("Lettuce Lock Provider로 락을 관리합니다.");
-                return new LettuceLockProvider(redisOperations);
-            case "redisson":
+                yield new LettuceLockProvider(redisOperations);
+            }
+            case "redisson" -> {
                 log.info("Redisson Lock Provider로 락을 관리합니다.");
-                return new RedissonLockProvider(redissonClient);
-            case "none":
+                yield new RedissonLockProvider(redissonClient);
+            }
+            case "none" -> {
                 log.info("락을 사용하지 않습니다.");
-                return new NoOperationLockProvider();
-            default:
-                throw new IllegalArgumentException("Unknown lock provider type: " + lockProviderType);
-        }
+                yield new NoOperationLockProvider();
+            }
+            default -> throw new IllegalArgumentException("Unknown lock provider type: " + lockProviderType);
+        };
     }
 
 }
