@@ -10,10 +10,12 @@ public class Point {
     private long amount;
 
     public Point(final long amount) {
+        validatePositiveAmount(amount);
         this.amount = amount;
     }
 
     public void minus(final long minusAmount) {
+        validatePositiveAmount(minusAmount);
         if (amount < minusAmount) {
             throw new BadRequestException("포인트가 부족합니다.", ErrorCode.P001);
         }
@@ -21,10 +23,17 @@ public class Point {
     }
 
     public void plus(final long price) {
+        validatePositiveAmount(price);
         if (price > 0 && amount > Long.MAX_VALUE - price) {
             throw new BadRequestException("포인트가 최대치를 초과하였습니다.", ErrorCode.P006);
         }
         amount += price;
+    }
+
+    private void validatePositiveAmount(final long amount) {
+        if (amount < 0) {
+            throw new BadRequestException("금액은 양수여야 합니다.", ErrorCode.P008);
+        }
     }
 
     @Override

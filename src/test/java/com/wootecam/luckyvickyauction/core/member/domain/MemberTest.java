@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.util.stream.Stream;
@@ -228,4 +229,35 @@ class MemberTest {
                 .isInstanceOf(BadRequestException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.M005);
     }
+
+    @Nested
+    class pointTransfer_메소드는 {
+
+        @Test
+        void 다른_사용자에게_포인트를_송금할_수_있다() {
+            // given
+            Member buyer = MemberFixture.createBuyerWithDefaultPoint();
+            Member seller = MemberFixture.createSellerWithDefaultPoint();
+
+            // when
+            buyer.pointTransfer(seller, 500);
+
+            // then
+            assertThat(buyer.getPoint()).isEqualTo(new Point(500));
+            assertThat(seller.getPoint()).isEqualTo(new Point(1500));
+        }
+
+        @Test
+        void 포인트가_부족한_경우_예외가_발생한다() {
+            // given
+            Member buyer = MemberFixture.createBuyerWithDefaultPoint();
+
+            // expect
+            assertThatThrownBy(() -> buyer.pointTransfer(buyer, 1234567890))
+                    .isInstanceOf(BadRequestException.class)
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.P001);
+        }
+
+    }
+
 }
