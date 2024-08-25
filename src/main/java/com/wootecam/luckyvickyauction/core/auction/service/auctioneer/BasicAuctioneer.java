@@ -3,27 +3,23 @@ package com.wootecam.luckyvickyauction.core.auction.service.auctioneer;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
+import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Primary
 @Service
 @RequiredArgsConstructor
 public class BasicAuctioneer implements Auctioneer {
 
     private final AuctionService auctionService;
-    private final MemberRepository memberRepository;
+    private final PaymentService paymentService;
     private final ReceiptRepository receiptRepository;
 
     /**
@@ -31,30 +27,25 @@ public class BasicAuctioneer implements Auctioneer {
      * 성공하면 -> Receipt 저장 및 구매자, 판매자 업데이트 적용
      */
     @Transactional
+    @DistributedLock("#auctionId + ':auction:lock'")
     public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, LocalDateTime requestTime) {
-        Member buyer = findMemberObject(buyerInfo.id());
         AuctionInfo auctionInfo = auctionService.getAuction(auctionId);
-        Member seller = findMemberObject(auctionInfo.sellerId());
-        buyer.usePoint(price * quantity);
-        seller.chargePoint(price * quantity);
-
         auctionService.submitPurchase(auctionId, price, quantity, requestTime);
-        Member savedBuyer = memberRepository.save(buyer);
-        Member savedSeller = memberRepository.save(seller);
+
+        long buyerId = buyerInfo.id();
+        long sellerId = auctionInfo.sellerId();
+        paymentService.pointTransfer(buyerId, sellerId, price * quantity);
+
         Receipt receipt = Receipt.builder()
                 .productName(auctionInfo.productName())
                 .price(price)
                 .quantity(quantity)
                 .receiptStatus(ReceiptStatus.PURCHASED)
-                .sellerId(savedSeller.getId())
-                .buyerId(savedBuyer.getId())
+                .sellerId(sellerId)
+                .buyerId(buyerId)
                 .auctionId(auctionId)
                 .build();
         receiptRepository.save(receipt);
     }
 
-    private Member findMemberObject(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다. id=" + id, ErrorCode.M002));
-    }
 }
