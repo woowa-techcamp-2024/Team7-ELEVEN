@@ -87,8 +87,8 @@ public class PaymentService {
 
     @Transactional
     public void chargePoint(SignInInfo memberInfo, long chargePoint) {
-        if (chargePoint < 0) {
-            throw new BadRequestException("포인트는 음수가 될 수 없습니다. 충전 포인트=" + chargePoint, ErrorCode.P005);
+        if (chargePoint <= 0) {
+            throw new BadRequestException("포인트는 0원 이하로 충전할 수 없습니다. 충전 포인트=" + chargePoint, ErrorCode.P005);
         }
         Member member = memberRepository.findById(memberInfo.id())
                 .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다. 사용자 id=" + memberInfo.id(), ErrorCode.M002));
