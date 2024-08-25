@@ -829,20 +829,20 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 330
+Content-Length: 329
 
 [ {
   "id" : 1,
   "title" : "쓸만한 경매품 1",
   "price" : 2000,
-  "startedAt" : "2024-08-24T18:27:02.505299",
-  "finishedAt" : "2024-08-24T18:57:02.505311"
+  "startedAt" : "2024-08-25T15:48:35.395812",
+  "finishedAt" : "2024-08-25T16:18:35.395818"
 }, {
   "id" : 2,
   "title" : "쓸만한 경매품 2",
   "price" : 4000,
-  "startedAt" : "2024-08-24T18:27:02.505336",
-  "finishedAt" : "2024-08-24T18:57:02.505338"
+  "startedAt" : "2024-08-25T15:48:35.39584",
+  "finishedAt" : "2024-08-25T16:18:35.395841"
 } ]</code></pre>
 </div>
 </div>
@@ -1336,8 +1336,8 @@ Cookie: JSESSIONID=sessionId
     "variationWidth" : 100
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-24T19:27:02.769887",
-  "finishedAt" : "2024-08-24T20:27:02.769887",
+  "startedAt" : "2024-08-25T16:48:35.675345",
+  "finishedAt" : "2024-08-25T17:48:35.675345",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1505,8 +1505,8 @@ Cookie: JSESSIONID=sessionId
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-24T19:27:02.751227",
-  "finishedAt" : "2024-08-24T20:27:02.751227",
+  "startedAt" : "2024-08-25T16:48:35.656276",
+  "finishedAt" : "2024-08-25T17:48:35.656276",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1741,7 +1741,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 502
+Content-Length: 501
 
 [ {
   "id" : 1,
@@ -1750,8 +1750,8 @@ Content-Length: 502
   "currentPrice" : 1500,
   "totalStock" : 100,
   "currentStock" : 30,
-  "startedAt" : "2024-08-24T18:27:02.714049",
-  "finishedAt" : "2024-08-24T18:57:02.714053"
+  "startedAt" : "2024-08-25T15:48:35.616465",
+  "finishedAt" : "2024-08-25T16:18:35.61647"
 }, {
   "id" : 2,
   "title" : "내가 판매하는 경매품 2",
@@ -1759,8 +1759,8 @@ Content-Length: 502
   "currentPrice" : 3500,
   "totalStock" : 200,
   "currentStock" : 60,
-  "startedAt" : "2024-08-24T18:27:02.714075",
-  "finishedAt" : "2024-08-24T18:57:02.714076"
+  "startedAt" : "2024-08-25T15:48:35.616486",
+  "finishedAt" : "2024-08-25T16:18:35.616488"
 } ]</code></pre>
 </div>
 </div>
@@ -1928,8 +1928,8 @@ Content-Length: 420
     "variationWidth" : 10
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-24T18:27:02.676071",
-  "finishedAt" : "2024-08-24T19:27:02.676085",
+  "startedAt" : "2024-08-25T15:48:35.570808",
+  "finishedAt" : "2024-08-25T16:48:35.570813",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2115,7 +2115,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 421
+Content-Length: 422
 
 {
   "auctionId" : 1,
@@ -2130,8 +2130,8 @@ Content-Length: 421
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-24T18:27:02.69489",
-  "finishedAt" : "2024-08-24T19:27:02.694894",
+  "startedAt" : "2024-08-25T15:48:35.596496",
+  "finishedAt" : "2024-08-25T16:48:35.596501",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2840,8 +2840,8 @@ Content-Length: 267
   "auctionId" : 1,
   "sellerId" : 1,
   "buyerId" : 2,
-  "createdAt" : "2024-08-24T18:27:02.606491",
-  "updatedAt" : "2024-08-24T19:27:02.606503"
+  "createdAt" : "2024-08-25T15:48:35.504664",
+  "updatedAt" : "2024-08-25T16:48:35.504673"
 }</code></pre>
 </div>
 </div>
@@ -3207,6 +3207,10 @@ Content-Length: 267
 <td class="tableblock halign-left valign-top"><p class="tableblock">환불 요청 시, 종료된 경매에 대한 환불이 아닌 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>P008</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포이늩 연산 시, 음수 값을 연산에 사용하는 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>AU00</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">API 요청 시, 비로그인 사용자가 허락되지 않은 엔드포인트에 접근 할 경우 예외가 발생합니다.</p></td>
 </tr>
@@ -3229,6 +3233,14 @@ Content-Length: 267
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>G001</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">목록 조회시, 과도한 데이터를 조회할 수 없습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G002</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lock 획득 시, TimeOut 시간을 초과하면 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>G003</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lock 획득 시, 시스템 문제로 락을 획득하지 못한 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>SERVER_ERROR</code></p></td>
