@@ -11,6 +11,7 @@ import com.wootecam.luckyvickyauction.core.member.controller.Login;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
+import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -78,8 +79,8 @@ public class BuyerAuctionController {
     public ResponseEntity<Void> refundAuction(@Login SignInInfo buyerInfo,
                                               @PathVariable("receiptId") Long receiptId,
                                               @CurrentTime LocalDateTime now) {
-
-        paymentService.refund(buyerInfo, receiptId, now);
+        var message = new AuctionRefundRequestMessage(buyerInfo, receiptId, now);
+        auctioneer.refund(message);
         return ResponseEntity.ok().build();
     }
 }
