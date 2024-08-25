@@ -1,0 +1,54 @@
+name: Dev code deploy
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'  # 또는 프로젝트에서 사용하는 Node.js 버전
+
+      - name: Install dependencies
+        run: |
+          cd front
+          npm install
+
+      - name: Make deploy script executable
+        run: chmod +x ./deploy.sh
+
+      - name: Run deploy script
+        run: ./deploy.sh
+
+      - name: Add SSH fixkey to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create SSH key
+        run: |
+          echo "${{ secrets.PEM_KEY }}" > private_key
+          chmod 600 private_key
+
+      - name: Deploy To EC2
+        env:
+          ACTIVE_PROFILE: dev
+        run: |
+          scp -i private_key ./build/libs/*.jar ${{ secrets.SSH_FULL_INFO }}:~/
+          ssh -i private_key ${{ secrets.SSH_FULL_INFO }} "sudo bash ${{ secrets.SCRIPT_PATH }} $ACTIVE_PROFILE"
