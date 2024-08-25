@@ -37,7 +37,7 @@ public class LettuceLockProvider implements LockProvider {
             }
         }
 
-        log.debug("레투스 락 획득! LOCK: " + key);
+        log.debug("레투스 락 획득! LOCK: {}", key);
     }
 
     @Override
