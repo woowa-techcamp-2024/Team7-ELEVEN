@@ -3,11 +3,15 @@ package com.wootecam.luckyvickyauction.core.auction.service.auctioneer;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
+import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
+import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
+import java.time.LocalDateTime;
 import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
 import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -23,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BasicAuctioneer implements Auctioneer {
 
     private final AuctionService auctionService;
+    private final PaymentService paymentService;
     private final MemberRepository memberRepository;
     private final ReceiptRepository receiptRepository;
 
@@ -31,6 +36,7 @@ public class BasicAuctioneer implements Auctioneer {
      * 성공하면 -> Receipt 저장 및 구매자, 판매자 업데이트 적용
      */
     @Transactional
+    @DistributedLock("#auctionId + ':auction:lock'")
     public void process(AuctionPurchaseRequestMessage message) {
         Member buyer = findMemberObject(message.buyerId());
         AuctionInfo auctionInfo = auctionService.getAuction(message.auctionId());
