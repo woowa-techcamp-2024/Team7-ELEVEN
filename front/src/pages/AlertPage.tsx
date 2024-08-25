@@ -1,15 +1,15 @@
 import React, {useEffect} from 'react';
 import {useAlertStore} from '../store/AlertStore';
+import alertCircleIcon from '../img/alert-circle.svg';
 
 const AlertPage = () => {
-
     const {isShow, message, setShow, setMessage} = useAlertStore();
 
     useEffect(() => {
         if (isShow) {
             const timer = setTimeout(() => {
                 setShow(false);
-            }, 1000);
+            }, 1500);
 
             return () => clearTimeout(timer);
         }
@@ -21,36 +21,24 @@ const AlertPage = () => {
     }
 
     if (!isShow) {
-        return (<> </>);
+        return null;
     }
 
     return (
         <div
-            className={`absolute h-[10000000px] w-screen bg-slate-50/50 z-50 overflow-hidden`}
+            className={`fixed inset-0 w-screen h-screen bg-slate-50/50 z-[9999] transition-opacity duration-200 ease-in-out ${isShow ? 'opacity-100' : 'opacity-0'}`}
             onClick={onClick}
         >
-            <div
-                className={`p-[10px] fixed w-full`}
-            >
+            <div className={`p-4 fixed w-full top-0 z-[10000] transition-opacity duration-200 ease-in-out ${isShow ? 'opacity-100' : 'opacity-0'}`}>
                 <div role="alert" className="alert">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        className="stroke-info h-6 w-6 shrink-0"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        ></path>
-                    </svg>
+                    <img
+                        src={alertCircleIcon}
+                        alt=""
+                    />
                     <span>{message}</span>
                 </div>
             </div>
         </div>
-
     );
 };
 

@@ -40,6 +40,9 @@ function ReceiptDetailPage() {
     }
 
     const onClickRefund = () => {
+        if (!window.confirm("정말로 환불을 진행할까요?")) {
+            return;
+        }
         requestRefund(
             baseUrl,
             receiptId!,
@@ -118,7 +121,7 @@ function ReceiptDetailPage() {
                                 <button
                                     className="btn btn-primary bg-[#62CBC6] border-0 text-white"
                                     onClick={onClickRefund}
-                                >취소하기
+                                >환불요청
                                 </button>
                             </div>
                     }

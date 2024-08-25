@@ -69,7 +69,7 @@ function AuctionList() {
             <div className="flex flex-col navbar bg-base-100 p-4 relative">
 
                 <div className="navbar-center w-full flex justify-center">
-                    <span className="text-lg font-bold">Lucky Vicky</span>
+                    <h1>럭키비키 경매</h1>
                 </div>
 
                 {/*<div className="flex justify-center gap-2 p-4">*/}

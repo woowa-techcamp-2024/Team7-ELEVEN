@@ -69,6 +69,7 @@ function SignUpPage() {
                                     className="radio radio-primary"
                                     checked={request.userRole === 'SELLER'}
                                     onChange={handleUserTypeChange}
+                                    disabled
                                 />
                                 <span className="ml-2 text-gray-700">판매자</span>
                             </label>
@@ -105,7 +106,7 @@ function SignUpPage() {
 
                     <div className="text-center">
                         <button
-                            className="btn btn-primary w-full bg-[#62CBC6]"
+                            className="btn btn-primary w-full bg-[#62CBC6] text-white"
                             type="button"
                             onClick={requestSignUp}
                         >회원가입

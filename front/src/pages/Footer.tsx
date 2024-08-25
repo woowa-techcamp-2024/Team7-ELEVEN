@@ -1,17 +1,21 @@
-import {usePageStore} from "../store/PageStore";
+import { usePageStore } from "../store/PageStore";
 import React from "react";
-import {useLoginStore} from "../store/LoginStatusStore";
-import {signOut} from "../api/user/api";
+import { useLoginStore } from "../store/LoginStatusStore";
+import { signOut } from "../api/user/api";
+import shoppingBagIcon from '../img/shopping-bag.svg';
+import creditCardIcon from '../img/credit-card.svg';
+import listIcon from '../img/list.svg';
+import logInIcon from '../img/log-in.svg';
+import logOutIcon from '../img/log-out.svg';
 
 function Footer() {
-
-    const {currentPage, setPage} = usePageStore();
-    const {isLogin, setIsLogin} = useLoginStore();
+    const { currentPage, setPage } = usePageStore();
+    const { isLogin, setIsLogin } = useLoginStore();
     const baseUrl = process.env.REACT_APP_API_URL || '';
 
     const changePage = (page: string) => {
         setPage(page);
-    }
+    };
 
     const logout = () => {
         signOut(
@@ -23,108 +27,119 @@ function Footer() {
             () => {
                 console.log('Failed to sign out.');
             }
-        )
-    }
+        );
+    };
+
+    // Function to determine the appropriate filter for each tab
+    const getFilter = (page: string) => {
+        if (currentPage === page) {
+            // Activate color #61CBC6
+            return 'invert(43%) sepia(48%) saturate(5533%) hue-rotate(167deg) brightness(99%) contrast(101%)'; // #61CBC6
+        } else {
+            // Inactive color gray
+            return 'invert(60%) brightness(97%)'; // Gray out effect
+        }
+    };
 
     return (
-        <div className="btm-nav">
+        <div className="btm-nav border-t border-gray-300">
             <button
-                className={`text-[#62CBC6] ${currentPage === 'home' ? "active" : ""}`}
+                className={`flex flex-col items-center ${currentPage === 'home' ? "relative" : ""}`}
                 onClick={() => changePage('home')}
             >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        d="M12 3L4 9v12h5v-7h6v7h5V9l-8-6zM12 0L0 9h4v15h8v-7h2v7h8V9h4L12 0z"
-                    />
-                </svg>
-                <span className="btm-nav-label">경매</span>
+                <img
+                    src={shoppingBagIcon}
+                    alt="Home"
+                    className={`h-6 w-6 ${currentPage === 'home' ? '' : 'filter'}`}
+                    style={{ filter: getFilter('home') }}
+                />
+                <span className={`btm-nav-label text-sm ${currentPage === 'home' ? 'text-[#61CBC6]' : 'text-gray-400'}`}>
+                    경매
+                </span>
+                {currentPage === 'home' && (
+                    <div className="absolute top-0 left-0 w-full h-1 bg-[#61CBC6] rounded-t-lg"></div>
+                )}
             </button>
             {
-                isLogin ?
-                    <button
-                        className={`text-[#62CBC6] ${currentPage === 'charge' ? "active" : ""}`}
-                        onClick={() => changePage('charge')}
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M21.71 20.29L16.9 15.5A8.48 8.48 0 0018 10.5 8.5 8.5 0 109.5 19a8.48 8.48 0 005-.6l4.79 4.79a1 1 0 001.42-1.42zM10.5 17A6.5 6.5 0 1117 10.5 6.51 6.51 0 0110.5 17z"
-                            />
-                        </svg>
-                        <span className="btm-nav-label">포인트 충전</span>
-                    </button>
-                    : ''
+                isLogin &&
+                <button
+                    className={`flex flex-col items-center ${currentPage === 'charge' ? "relative" : ""}`}
+                    onClick={() => changePage('charge')}
+                >
+                    <img
+                        src={creditCardIcon}
+                        alt="Charge"
+                        className={`h-6 w-6 ${currentPage === 'charge' ? '' : 'filter'}`}
+                        style={{ filter: getFilter('charge') }}
+                    />
+                    <span className={`btm-nav-label text-sm ${currentPage === 'charge' ? 'text-[#61CBC6]' : 'text-gray-400'}`}>
+                        포인트 충전
+                    </span>
+                    {currentPage === 'charge' && (
+                        <div className="absolute top-0 left-0 w-full h-1 bg-[#61CBC6] rounded-t-lg"></div>
+                    )}
+                </button>
             }
-
             {
-                isLogin ?
-
-                    <button
-                        className={`text-[#62CBC6] ${currentPage === 'receiptList' ? "active" : ""}`}
-                        onClick={() => changePage('receiptList')}
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M12 3L2 9v12h20V9l-10-6zm0 2.18L19 9l-7 4.09L5 9l7-3.82zM4 20V9.36l8 4.64 8-4.64V20H4z"
-                            />
-                        </svg>
-                        <span className="btm-nav-label">구매 내역</span>
-                    </button>
-                    : ''
+                isLogin &&
+                <button
+                    className={`flex flex-col items-center ${currentPage === 'receiptList' ? "relative" : ""}`}
+                    onClick={() => changePage('receiptList')}
+                >
+                    <img
+                        src={listIcon}
+                        alt="Receipt List"
+                        className={`h-6 w-6 ${currentPage === 'receiptList' ? '' : 'filter'}`}
+                        style={{ filter: getFilter('receiptList') }}
+                    />
+                    <span className={`btm-nav-label text-sm ${currentPage === 'receiptList' ? 'text-[#61CBC6]' : 'text-gray-400'}`}>
+                        구매 내역
+                    </span>
+                    {currentPage === 'receiptList' && (
+                        <div className="absolute top-0 left-0 w-full h-1 bg-[#61CBC6] rounded-t-lg"></div>
+                    )}
+                </button>
             }
-
             {
                 isLogin ?
                     <button
-                        className={`text-[#62CBC6] ${currentPage === 'login' ? "active" : ""}`}
+                        className={`flex flex-col items-center ${currentPage === 'login' ? "relative" : ""}`}
                         onClick={() => logout()}
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M12 12a5 5 0 11-5 5 5 5 0 015-5m0-2a7 7 0 107 7 7 7 0 00-7-7zm0-4a4 4 0 11-4 4 4 4 0 014-4m0-2a6 6 0 106 6 6 6 0 00-6-6zm0 6a2 2 0 112-2 2 2 0 01-2 2z"
-                            />
-                        </svg>
-                        <span className="btm-nav-label">로그아웃</span>
+                        <img
+                            src={logOutIcon}
+                            alt="Log Out"
+                            className={`h-6 w-6 ${currentPage === 'login' ? '' : 'filter'}`}
+                            style={{ filter: getFilter('login') }}
+                        />
+                        <span className={`btm-nav-label text-sm ${currentPage === 'login' ? 'text-[#61CBC6]' : 'text-gray-400'}`}>
+                            로그아웃
+                        </span>
+                        {currentPage === 'login' && (
+                            <div className="absolute top-0 left-0 w-full h-1 bg-[#61CBC6] rounded-t-lg"></div>
+                        )}
                     </button>
                     :
                     <button
-                        className={`text-[#62CBC6] ${currentPage === 'login' ? "active" : ""}`}
+                        className={`flex flex-col items-center ${currentPage === 'login' ? "relative" : ""}`}
                         onClick={() => changePage('login')}
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                d="M12 12a5 5 0 11-5 5 5 5 0 015-5m0-2a7 7 0 107 7 7 7 0 00-7-7zm0-4a4 4 0 11-4 4 4 4 0 014-4m0-2a6 6 0 106 6 6 6 0 00-6-6zm0 6a2 2 0 112-2 2 2 0 01-2 2z"
-                            />
-                        </svg>
-                        <span className="btm-nav-label">로그인</span>
+                        <img
+                            src={logInIcon}
+                            alt="Log In"
+                            className={`h-6 w-6 ${currentPage === 'login' ? '' : 'filter'}`}
+                            style={{ filter: getFilter('login') }}
+                        />
+                        <span className={`btm-nav-label text-sm ${currentPage === 'login' ? 'text-[#61CBC6]' : 'text-gray-400'}`}>
+                            로그인
+                        </span>
+                        {currentPage === 'login' && (
+                            <div className="absolute top-0 left-0 w-full h-1 bg-[#61CBC6] rounded-t-lg"></div>
+                        )}
                     </button>
             }
         </div>
     );
 }
 
-export default Footer
+export default Footer;

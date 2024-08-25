@@ -6,6 +6,6 @@ interface PageStore {
 }
 
 export const usePageStore = create<PageStore>((set) => ({
-    currentPage: 'home', // 기본 페이지 설정
-    setPage: (page: string) => set({currentPage: page}),
+    currentPage: 'home', // 기본 페이지를 '경매'로 설정
+    setPage: (page: string) => set({ currentPage: page }),
 }));

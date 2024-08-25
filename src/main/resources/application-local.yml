@@ -51,3 +51,8 @@ logging:
     org:
       hibernate:
         SQL: debug
+
+stream:
+  key: LVA-Stream
+  consumer:
+    groupName: LVA-Group
