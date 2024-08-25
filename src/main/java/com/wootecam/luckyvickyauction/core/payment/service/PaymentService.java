@@ -1,17 +1,14 @@
 package com.wootecam.luckyvickyauction.core.payment.service;
 
-import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
 import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private final AuctionService auctionService;
     private final MemberRepository memberRepository;
-    private final ReceiptRepository receiptRepository;
-    private final RedissonClient redissonClient;
 
     @Transactional
     public void chargePoint(SignInInfo memberInfo, long chargePoint) {
