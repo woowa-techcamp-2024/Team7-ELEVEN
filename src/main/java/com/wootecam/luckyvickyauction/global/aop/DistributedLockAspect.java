@@ -46,8 +46,7 @@ public class DistributedLockAspect {
 
         // SpEL 파싱
         ExpressionParser parser = new SpelExpressionParser();
-        String key = parser.parseExpression(distributedLock.value()).getValue(context, String.class);
-        return key;
+        return parser.parseExpression(distributedLock.value()).getValue(context, String.class);
     }
 
 }

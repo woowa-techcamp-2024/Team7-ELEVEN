@@ -16,6 +16,7 @@ import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
+import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -298,7 +299,8 @@ class PaymentServiceTest extends ServiceTest {
                 receiptRepository.save(receipt);
 
                 // when
-                paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now);
+                auctioneer.refund(message);
 
                 // then
                 Receipt savedReceipt = receiptRepository.findById(1L).get();
@@ -341,7 +343,8 @@ class PaymentServiceTest extends ServiceTest {
                 receiptRepository.save(receipt);
 
                 // expect
-                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(seller.getId(), Role.SELLER), 1L, now))
+                var message = new AuctionRefundRequestMessage(new SignInInfo(seller.getId(), Role.SELLER), 1L, now);
+                assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(AuthorizationException.class)
                         .hasMessage("구매자만 환불을 할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -361,7 +364,8 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 // expect
-                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now))
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now);
+                assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(NotFoundException.class)
                         .hasMessage("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -396,7 +400,8 @@ class PaymentServiceTest extends ServiceTest {
                 receiptRepository.save(receipt);
 
                 // expect
-                assertThatThrownBy(() -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now))
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now);
+                assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("이미 환불된 입찰 내역입니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -439,8 +444,10 @@ class PaymentServiceTest extends ServiceTest {
                         .point(new Point(1000L))
                         .build();
 
+                var message = new AuctionRefundRequestMessage(new SignInInfo(unPurchasedBuyer.getId(), Role.BUYER), 1L,
+                        now);
                 assertThatThrownBy(
-                        () -> paymentService.refund(new SignInInfo(unPurchasedBuyer.getId(), Role.BUYER), 1L, now))
+                        () -> auctioneer.refund(message))
                         .isInstanceOf(AuthorizationException.class)
                         .hasMessage("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -475,8 +482,9 @@ class PaymentServiceTest extends ServiceTest {
                 receiptRepository.save(receipt);
 
                 // expect
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now);
                 assertThatThrownBy(
-                        () -> paymentService.refund(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now))
+                        () -> auctioneer.refund(message))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("종료된 경매만 환불할 수 있습니다.")
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.P007);

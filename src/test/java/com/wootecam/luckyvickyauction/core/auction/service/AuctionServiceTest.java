@@ -149,9 +149,8 @@ class AuctionServiceTest extends ServiceTest {
                 // expect
                 assertThatThrownBy(() -> auctionService.createAuction(sellerInfo, command))
                         .isInstanceOf(BadRequestException.class)
-                        .satisfies(exception -> {
-                            assertThat(exception).hasFieldOrPropertyWithValue("errorCode", ErrorCode.A007);
-                        });
+                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
+                                ErrorCode.A007));
             }
         }
     }

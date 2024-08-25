@@ -13,6 +13,7 @@ import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondit
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
+import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
 import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -98,6 +99,7 @@ public class AuctionService {
      * @param quantity  환불할 수량
      */
     @Transactional
+    @DistributedLock("#auctionId + ':auction:lock'")
     public void cancelPurchase(long auctionId, long quantity) {
         Auction auction = findAuctionObject(auctionId);
         auction.refundStock(quantity);
