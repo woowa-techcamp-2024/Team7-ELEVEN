@@ -25,7 +25,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",
                         "http://localhost:3001",
-                        "http://front.dbsg.co.kr:3000"
+                        "http://lucky.dbsg.co.kr:3000",
+                        "http://lucky.dbsg.co.kr:3001",
+                        "http://tomcat.dbsg.co.kr:3000",
+                        "http://tomcat.dbsg.co.kr:3001"
                 )
                 .allowedHeaders("*")
                 .allowCredentials(true)
