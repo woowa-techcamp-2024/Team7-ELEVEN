@@ -74,6 +74,7 @@ class PaymentServiceTest extends ServiceTest {
                         1L,
                         now.minusMinutes(30)
                 );
+                auctioneer.process(message);
 
                 // then
                 Auction auction = auctionRepository.findById(savedAuction.getId()).get();
@@ -198,7 +199,7 @@ class PaymentServiceTest extends ServiceTest {
         }
 
         @Nested
-        class 만약_요청한_물건의_금액이_사용자가_가진_포인트보다_크다면 {
+        class 만약_요청한_물건의_금액이_사용자가_요청한_금액과_다르다면 {
 
             @Test
             void 예외가_발생한다() {
@@ -240,7 +241,7 @@ class PaymentServiceTest extends ServiceTest {
                                     "test",
                                     savedBuyer.getId(),
                                     savedAuction.getId(),
-                                    10001L,
+                                    10000L,
                                     1L,
                                     now.minusMinutes(30)
                             );
