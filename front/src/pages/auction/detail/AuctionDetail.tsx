@@ -5,7 +5,8 @@ import PricePolicyElement from "./PricePolicyElement";
 import {requestAuctionBid, requestAuctionDetail} from "../../../api/auction/api";
 import {usePageStore} from "../../../store/PageStore";
 import useAlert from "../../../hooks/useAlert";
-import {getAuctionProgress} from "../../../util/NumberUtil";
+import {getAuctionProgress} from "../../../util/NumberUtil"
+import arrowLeftIcon from '../../../img/arrow-left.svg';
 
 
 function AuctionDetail({auctionId}: { auctionId?: number }) {
@@ -45,8 +46,8 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
                     auctionId: auctionDetailItem.auctionId,
                     sellerId: auctionDetailItem.sellerId,
                     productName: auctionDetailItem.productName,
-                    description: "이 1970년식 혼다 CB750 K0는 매우 희귀하고 오리지널 상태의 바이크입니다. 이 바이크는 2009년에 미국에서 영국으로 수입되었습니다.",
-                    imageUrl: "https://cdn.usegalileo.ai/stability/441b95f1-3714-46e5-b38e-7570c57700cd.png",
+                    description: "",
+                    imageUrl: "https://sitem.ssgcdn.com/75/03/86/item/1000551860375_i1_750.jpg",
                     originPrice: auctionDetailItem.originPrice,
                     currentPrice: auctionDetailItem.currentPrice,
                     currentStock: auctionDetailItem.currentStock,
@@ -90,6 +91,18 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
 
     return (
         <>
+            <div className="fixed top-0 left-0 right-0 bg-white shadow-lg p-2 flex items-center justify-center z-50">
+                <button
+                    className="absolute left-2 bg-white border-none p-2"
+                    onClick={() => window.location.href = '/'}
+                >
+                    <img src={arrowLeftIcon} alt="뒤로가기" className="w-5 h-5"/>
+                </button>
+                <h1 className="text-sm font-bold">
+                    {auction.productName}
+                </h1>
+            </div>
+
             <div className="card bg-base-100 shadow-xl">
                 <figure>
                     <img
@@ -106,13 +119,13 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
                     <div className="flex items-center gap-4 py-2">
                         <div>
                             <p className="text-base font-medium">경매 종료 시간</p>
-                            <p className="text-sm text-primary">{getKrDateFormat(auction.finishedAt)}</p>
+                            <p className="text-sm text-[#61CBC6]">{getKrDateFormat(auction.finishedAt)}</p>
                         </div>
                     </div>
 
                     <div className="mb-4">
                         <p className="text-base font-medium">변동 주기</p>
-                        <p className="text-sm text-primary">{formatVariationDuration(auction.variationDuration)}</p>
+                        <p className="text-sm text-[#61CBC6]">{formatVariationDuration(auction.variationDuration)}</p>
                     </div>
 
                     <div>
@@ -134,43 +147,50 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
                         setAuction={setAuction}
                     />
 
-                    <div className="mt-4">
-                        <div className="flex justify-end">
-                            <button
-                                className="btn btn-outline btn-square"
-                                onClick={() => decreaseQuantity()}
-                            >-
-                            </button>
-                            <div className="h-full">
-                                <input
-                                    type="number"
-                                    min="1"
-                                    max={auction.maximumPurchaseLimitCount}
-                                    value={quantity}
-                                    className="input input-bordered text-center mx-2"
-                                />
-                            </div>
-                            <button
-                                className="btn btn-outline btn-square"
-                                onClick={() => increaseQuantity(auction.maximumPurchaseLimitCount)}
-                            >+
-                            </button>
 
-                        </div>
-
-                        <div className="mt-2 text-sm text-end">
-                            최대 구매 가능 수량은 <span className="text-primary">{auction.maximumPurchaseLimitCount}개</span>입니다.
-                        </div>
-                        <div className="card-actions justify-end ml-4 mt-4">
-                            <button
-                                className="btn btn-primary"
-                                onClick={onClickBidButton}
-                            >입찰하기
-                            </button>
-                        </div>
-
-
+                    <div className="text-sm text-left mt-2">
+                        최대 구매 가능 수량은 <span
+                        className="text-[#61CBC6]">{auction.maximumPurchaseLimitCount}개</span>입니다.
                     </div>
+
+                    <div
+                        className="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 flex justify-between items-center z-50">
+                        <div className="flex flex-col">
+                            <div className="flex items-center">
+                                <button
+                                    className="btn btn-outline btn-square"
+                                    onClick={() => decreaseQuantity()}
+                                >
+                                    -
+                                </button>
+                                <div className="h-full">
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max={auction.maximumPurchaseLimitCount}
+                                        value={quantity}
+                                        className="input input-bordered text-center mx-2"
+                                    />
+                                </div>
+                                <button
+                                    className="btn btn-outline btn-square"
+                                    onClick={() => increaseQuantity(auction.maximumPurchaseLimitCount)}
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button
+                                className="btn bg-[#61CBC6] text-white"
+                                onClick={onClickBidButton}
+                            >
+                                입찰하기
+                            </button>
+                        </div>
+                    </div>
+
 
                 </div>
             </div>
