@@ -37,3 +37,6 @@ out/
 .vscode/
 
 .DS_Store
+
+# front 빌드 이후 배포 공간
+src/main/resources/static/

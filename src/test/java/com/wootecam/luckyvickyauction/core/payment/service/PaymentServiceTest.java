@@ -525,7 +525,7 @@ class PaymentServiceTest extends ServiceTest {
                 assertThatThrownBy(
                         () -> paymentService.chargePoint(new SignInInfo(savedMember.getId(), Role.BUYER), -1L))
                         .isInstanceOf(BadRequestException.class)
-                        .hasMessage("포인트는 음수가 될 수 없습니다. 충전 포인트=-1")
+                        .hasMessage("포인트는 0원 이하로 충전할 수 없습니다. 충전 포인트=-1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.P005));
             }

@@ -1,7 +1,9 @@
 package com.wootecam.luckyvickyauction.global.dto;
 
 import java.time.LocalDateTime;
+import lombok.Builder;
 
+@Builder
 public record AuctionPurchaseRequestMessage(
         String requestId,
         Long buyerId,

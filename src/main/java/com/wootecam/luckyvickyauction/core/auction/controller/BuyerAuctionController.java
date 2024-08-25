@@ -55,15 +55,15 @@ public class BuyerAuctionController {
                                               @CurrentTime LocalDateTime now,
                                               @PathVariable(name = "auctionId") Long auctionId,
                                               @RequestBody PurchaseRequest purchaseRequest) {
-        var message = new AuctionPurchaseRequestMessage(
-                UUID.randomUUID().toString(),
-                signInInfo.id(),
-                purchaseRequest.price(),
-                auctionId,
-                purchaseRequest.quantity(),
-                now
-        );
-        auctioneer.process(message);
+        AuctionPurchaseRequestMessage requestMessage = AuctionPurchaseRequestMessage.builder()
+                .requestId(UUID.randomUUID().toString())
+                .buyerId(signInInfo.id())
+                .auctionId(auctionId)
+                .price(purchaseRequest.price())
+                .quantity(purchaseRequest.quantity())
+                .requestTime(now)
+                .build();
+        auctioneer.process(requestMessage);
         return ResponseEntity.ok().build();
     }
 
