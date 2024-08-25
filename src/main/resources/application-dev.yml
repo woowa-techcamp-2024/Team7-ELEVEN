@@ -27,6 +27,11 @@ management:
       exposure:
         include: 'prometheus'
 
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
+
 lock:
   provider: redisson
   lettuce:
@@ -37,7 +42,7 @@ lock:
     wait_time: 500
     lease_time: 200
 
-server:
-  tomcat:
-    mbeanregistry:
-      enabled: true
+stream:
+  key: LVA-Stream
+  consumer:
+    groupName: LVA-Group
