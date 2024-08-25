@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
 import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
 import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
+import jakarta.transaction.Transactional;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public class MessageRouterService {
     private final Auctioneer auctioneer;
     private final ObjectMapper objectMapper;
 
+    @Transactional
     public void consume(MapRecord<String, Object, Object> mapRecord, Runnable postProcess) {
 
         log.debug("MessageId: {}", mapRecord.getId());
