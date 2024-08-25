@@ -76,7 +76,7 @@ tasks.named('test') {
 }
 
 asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')
+    delete file('src/main/resources/docs')
 }
 
 asciidoctor {
@@ -94,7 +94,7 @@ task createDocument(type: Copy) {
     dependsOn asciidoctor
 
     from asciidoctor.outputDir
-    into file("src/main/resources/static")
+    into file("src/main/resources/docs")
 }
 
 bootJar {

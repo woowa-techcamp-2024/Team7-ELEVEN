@@ -22,7 +22,7 @@ spring:
       port: 6379
       password: 1q2w3e
       host: localhost
-    
+
 management:
   server:
     port: 8081
@@ -51,3 +51,8 @@ logging:
     org:
       hibernate:
         SQL: debug
+
+stream:
+  key: LVA-Stream
+  consumer:
+    groupName: LVA-Group
