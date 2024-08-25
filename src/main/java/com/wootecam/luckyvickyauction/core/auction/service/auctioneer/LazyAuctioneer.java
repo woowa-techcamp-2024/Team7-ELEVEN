@@ -3,11 +3,9 @@ package com.wootecam.luckyvickyauction.core.auction.service.auctioneer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
-import java.time.LocalDateTime;
+import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import java.util.Map;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.stream.StreamRecords;
@@ -25,18 +23,9 @@ public class LazyAuctioneer implements Auctioneer {
     private String streamKey;
 
     @Override
-    public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, LocalDateTime requestTime) {
+    public void process(AuctionPurchaseRequestMessage message) {
 
         String messageType = "purchase";
-
-        var message = new AuctionPurchaseRequestMessage(
-                UUID.randomUUID().toString(),
-                buyerInfo.id(),
-                price,
-                auctionId,
-                quantity,
-                requestTime
-        );
 
         try {
             String stringMessage = objectMapper.writeValueAsString(message);
@@ -50,5 +39,10 @@ public class LazyAuctioneer implements Auctioneer {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void refund(AuctionRefundRequestMessage message) {
+
     }
 }

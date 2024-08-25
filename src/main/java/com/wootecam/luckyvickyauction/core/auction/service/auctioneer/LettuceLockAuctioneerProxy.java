@@ -1,8 +1,8 @@
 package com.wootecam.luckyvickyauction.core.auction.service.auctioneer;
 
 import com.wootecam.luckyvickyauction.core.auction.infra.AuctionLockOperation;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import java.time.LocalDateTime;
+import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
+import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +14,19 @@ public class LettuceLockAuctioneerProxy implements AuctioneerProxy {
     private final AuctionLockOperation auctionLockOperation;
 
     @Override
-    public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, LocalDateTime requestTime) {
+    public void process(AuctionPurchaseRequestMessage message) {
+        Long auctionId = message.auctionId();
         auctionLockOperation.lockLimitTry(auctionId, 30);
 
         try {
-            basicAuctioneer.process(buyerInfo, price, auctionId, quantity, requestTime);
+            basicAuctioneer.process(message);
         } finally {
             auctionLockOperation.unLock(auctionId);
         }
+    }
+
+    @Override
+    public void refund(AuctionRefundRequestMessage message) {
+
     }
 }

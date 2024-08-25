@@ -1,7 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.service.auctioneer;
 
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import java.time.LocalDateTime;
+import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
+import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,20 +18,25 @@ public class RedissonLockAuctioneerProxy implements AuctioneerProxy {
     private final RedissonClient redissonClient;
 
     @Override
-    public void process(SignInInfo buyerInfo, long price, long auctionId, long quantity, LocalDateTime requestTime) {
-        RLock rLock = redissonClient.getLock(auctionId + ":auction:lock");
+    public void process(AuctionPurchaseRequestMessage message) {
+        RLock rLock = redissonClient.getLock(message.auctionId() + ":auction:lock");
 
         try {
             boolean available = rLock.tryLock(5, 5, TimeUnit.SECONDS);
             if (!available) {
                 throw new IllegalStateException("TimeOut에 도달했습니다.");
             }
-            log.debug("레디슨 락 획득! 경매번호: {}", buyerInfo.id());
-            basicAuctioneer.process(buyerInfo, price, auctionId, quantity, requestTime);
+            log.debug("레디슨 락 획득! 경매번호: {}", message.buyerId());
+            basicAuctioneer.process(message);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
             rLock.unlock();
         }
+    }
+
+    @Override
+    public void refund(AuctionRefundRequestMessage message) {
+
     }
 }

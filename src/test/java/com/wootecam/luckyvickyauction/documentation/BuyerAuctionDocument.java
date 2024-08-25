@@ -2,7 +2,6 @@ package com.wootecam.luckyvickyauction.documentation;
 
 import static com.wootecam.luckyvickyauction.documentation.DocumentFormatGenerator.getAttribute;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -187,7 +186,7 @@ class BuyerAuctionDocument extends DocumentationTest {
             PurchaseRequest purchaseRequest = new PurchaseRequest(10000L, 20L);
             SignInInfo buyerInfo = new SignInInfo(1L, Role.BUYER);
             willDoNothing().given(auctioneer)
-                    .process(any(SignInInfo.class), anyLong(), anyLong(), anyLong(), any(LocalDateTime.class));
+                    .process(any());
             given(authenticationContext.getPrincipal()).willReturn(buyerInfo);
 
             mockMvc.perform(post("/auctions/{auctionId}/purchase", auctionId)
