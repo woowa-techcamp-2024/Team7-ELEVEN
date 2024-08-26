@@ -5,13 +5,14 @@ import {
     getMsFromIso8601Duration, getTimeDifferenceInMs
 } from "../../../util/DateUtil";
 import {useEffect, useState} from "react";
-import {AuctionDetailInfo} from "./type";
+import {AuctionDetailInfo, ConstantPricePolicy, PercentagePricePolicy} from "./type";
 import PricePolicyElement from "./PricePolicyElement";
 import {requestAuctionBid, requestAuctionDetail} from "../../../api/auction/api";
 import {usePageStore} from "../../../store/PageStore";
 import useAlert from "../../../hooks/useAlert";
 import {getAuctionProgress} from "../../../util/NumberUtil"
 import arrowLeftIcon from '../../../img/arrow-left.svg';
+import Confetti from 'react-confetti';
 
 
 function AuctionDetail({auctionId}: { auctionId?: number }) {
@@ -22,7 +23,11 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
     const [auction, setAuction] = useState<AuctionDetailInfo | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [leftInfo, setLeftInfo] = useState<String>("불러오는 중...");
+
     const [isFinished, setIsFinished] = useState<boolean>(true);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+    const [countdown, setCountdown] = useState(0);
+    const [showConfetti, setShowConfetti] = useState(false);
 
     const increaseQuantity = (maximum: number) => {
         if (quantity >= maximum) {
@@ -116,18 +121,94 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
         return () => clearInterval(intervalId);
     }, [auction]);
 
+    useEffect(() => {
+        if (isButtonDisabled) {
+            const timer = setInterval(() => {
+                setCountdown((prevCount) => {
+                    if (prevCount <= 1) {
+                        clearInterval(timer);
+                        setIsButtonDisabled(false);
+                        return 0;
+                    }
+                    return prevCount - 1;
+                });
+            }, 1000);
+
+            return () => clearInterval(timer);
+        }
+    }, [isButtonDisabled]);
+
+    useEffect(() => {
+        if (showConfetti) {
+            const timer = setTimeout(() => setShowConfetti(false), 5000); // 5초 후에 confetti 효과 종료
+            return () => clearTimeout(timer);
+        }
+    }, [showConfetti]);
+
+    function getCurrentPrice(): number {
+        if (!auction) {
+            return 1;
+        }
+
+        // 가격 하락 정책이 종료되었는지 체크
+        const now = new Date();
+        let isLastTime = false;
+        if (now >= auction.finishedAt) {
+            isLastTime = true;
+        }
+
+        // 현재 가격 계산 로직
+        const durationMs = getMsFromIso8601Duration(auction.variationDuration);
+        const diffMsBetweenStartedAndNow = getTimeDifferenceInMs(
+            auction.startedAt, isLastTime ? auction.finishedAt : now
+        );
+        const times = Math.floor(diffMsBetweenStartedAndNow / durationMs);
+
+        let currentPrice = auction.originPrice;
+        for (let i = 0; i < times; i++) {   // times번 만큼 할인된 가격을 구하는 로직
+            const calculatePrice = calculateNextPrice(currentPrice);
+            currentPrice = calculatePrice;
+        }
+
+        return currentPrice;
+    }
+
+    function calculateNextPrice(currentPrice: number): number {
+        if (!auction) {
+            return 1;
+        }
+
+        if (auction.pricePolicy.type === "CONSTANT") {
+            return currentPrice - (auction.pricePolicy as ConstantPricePolicy).variationWidth;
+        } else if (auction.pricePolicy.type === "PERCENTAGE") {
+            return currentPrice - (currentPrice * (auction.pricePolicy as PercentagePricePolicy).discountRate / 100);
+        } else {
+            return -1;
+        }
+    }
+
     const onClickBidButton = () => {
+        const currentPrice = getCurrentPrice();
+
         requestAuctionBid(
             baseUrl,
             auction?.auctionId!,
-            {quantity: quantity, price: auction!.currentPrice},
+            {quantity: quantity, price: currentPrice},
             () => {
-                setPage('home');
+                setShowConfetti(true);  // 성공 시 confetti 효과 시작
+                setIsButtonDisabled(true);  // 버튼 비활성화
+                setCountdown(5);  // 5초 카운트다운 시작
             },
             () => {
                 showAlert("입찰에 실패했습니다.");
             }
         );
+    }
+
+    const getButtonText = () => {
+        if (isFinished) return '경매 종료';
+        if (isButtonDisabled) return `${countdown}초 남음`;
+        return '입찰하기';
     }
 
     const onClickBackButton = () => {
@@ -146,6 +227,14 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
 
     return (
         <>
+            {showConfetti && (
+                <Confetti
+                    width={window.innerWidth}
+                    height={window.innerHeight}
+                    recycle={false}
+                    numberOfPieces={400}
+                />
+            )}
             <div className="fixed top-0 left-0 right-0 bg-white shadow-lg p-2 flex items-center justify-center z-50">
                 <button
                     className="absolute left-2 bg-white border-none p-2"
@@ -225,6 +314,13 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
                                         max={auction.maximumPurchaseLimitCount}
                                         value={quantity}
                                         className="input input-bordered text-center mx-2"
+                                        disabled
+                                        style={{
+                                            backgroundColor: 'white',
+                                            color: 'black',
+                                            opacity: 1,
+                                            cursor: 'default'
+                                        }}
                                     />
                                 </div>
                                 <button
@@ -238,11 +334,11 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
 
                         <div>
                             <button
-                                className={`btn text-white ${isFinished ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#61CBC6]'} `}
+                                className={`btn text-white ${isFinished || isButtonDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#61CBC6]'} `}
                                 onClick={onClickBidButton}
-                                disabled={isFinished}
+                                disabled={isFinished || isButtonDisabled}
                             >
-                                {isFinished ? '입찰하기' : '입찰하기'}
+                                {getButtonText()}  {/*입찰하기 버튼*/}
                             </button>
                         </div>
 
