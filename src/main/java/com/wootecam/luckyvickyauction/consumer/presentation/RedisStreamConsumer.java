@@ -1,6 +1,7 @@
 package com.wootecam.luckyvickyauction.consumer.presentation;
 
 import com.wootecam.luckyvickyauction.consumer.config.RedisStreamConfig;
+import com.wootecam.luckyvickyauction.consumer.service.MessageRouterService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import java.time.Duration;
@@ -22,15 +23,17 @@ public class RedisStreamConsumer implements StreamListener<String, MapRecord<Str
 
     private final RedisOperator redisOperator;
     private final RedisStreamConfig redisStreamConfig;
+    private final MessageRouterService messageRouterService;
+
     private StreamMessageListenerContainer<String, MapRecord<String, Object, Object>> listenerContainer;
     private Subscription subscription;
 
     @Override
     public void onMessage(MapRecord<String, Object, Object> message) {
-        log.info("MessageId: {}", message.getId());
-        log.info("Stream: {}", message.getStream());
-        log.info("Body: {}", message.getValue());
-        redisOperator.acknowledge(redisStreamConfig.getConsumerGroupName(), message);
+        messageRouterService.consume(
+                message,
+                () -> redisOperator.acknowledge(redisStreamConfig.getConsumerGroupName(), message)
+        );
     }
 
     @PostConstruct

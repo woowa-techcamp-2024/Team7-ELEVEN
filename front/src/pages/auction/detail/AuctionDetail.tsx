@@ -79,6 +79,10 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
         );
     }
 
+    const onClickBackButton = () => {
+        setPage('home');
+    }
+
     if (auction === null) {
         return <div className="container mx-auto p-6">
             <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -94,7 +98,7 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
             <div className="fixed top-0 left-0 right-0 bg-white shadow-lg p-2 flex items-center justify-center z-50">
                 <button
                     className="absolute left-2 bg-white border-none p-2"
-                    onClick={() => window.location.href = '/'}
+                    onClick={onClickBackButton}
                 >
                     <img src={arrowLeftIcon} alt="뒤로가기" className="w-5 h-5"/>
                 </button>
