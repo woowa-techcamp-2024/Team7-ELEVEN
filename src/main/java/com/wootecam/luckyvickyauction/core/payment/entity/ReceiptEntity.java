@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,8 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReceiptEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
     private String productName;
     private long price;
     private long quantity;
@@ -31,7 +32,7 @@ public class ReceiptEntity {
     private LocalDateTime updatedAt;
 
     @Builder
-    private ReceiptEntity(Long id, String productName, long price, long quantity, ReceiptStatus receiptStatus,
+    private ReceiptEntity(UUID id, String productName, long price, long quantity, ReceiptStatus receiptStatus,
                           long auctionId,
                           Long sellerId, Long buyerId, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;

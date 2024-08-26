@@ -13,6 +13,7 @@ import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ public class ReceiptService {
 
     private final ReceiptRepository receiptRepository;
 
-    public ReceiptInfo getReceiptInfo(SignInInfo memberInfo, long receiptId) {
+    public ReceiptInfo getReceiptInfo(SignInInfo memberInfo, UUID receiptId) {
         Receipt receipt = receiptRepository.findById(receiptId)
                 .orElseThrow(() -> new NotFoundException("거래 내역을 찾을 수 없습니다. id=" + receiptId, ErrorCode.R000));
 
