@@ -66,7 +66,7 @@ class BasicAuctioneerTest extends ServiceTest {
                     executorService.execute(() -> {
                         try {
                             auctioneer.process(
-                                    new AuctionPurchaseRequestMessage(UUID.randomUUID().toString(), buyer.getId(),
+                                    new AuctionPurchaseRequestMessage(UUID.randomUUID(), buyer.getId(),
                                             auction.getId(), 1000L, 2L, now));
                             successCount.getAndIncrement();
                         } catch (Exception e) {
@@ -138,11 +138,11 @@ class BasicAuctioneerTest extends ServiceTest {
                         try {
                             if (currentIndex == randomNumber) {
                                 auctioneer.process(
-                                        new AuctionPurchaseRequestMessage(UUID.randomUUID().toString(), buyer1.getId(),
+                                        new AuctionPurchaseRequestMessage(UUID.randomUUID(), buyer1.getId(),
                                                 auction.getId(), 1000L, 1L, now));
                             } else {
                                 auctioneer.process(
-                                        new AuctionPurchaseRequestMessage(UUID.randomUUID().toString(), buyer2.getId(),
+                                        new AuctionPurchaseRequestMessage(UUID.randomUUID(), buyer2.getId(),
                                                 auction.getId(), 1000L, 1L, now));
                             }
 
