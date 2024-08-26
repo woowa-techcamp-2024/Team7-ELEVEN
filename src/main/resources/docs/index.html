@@ -829,20 +829,20 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 329
+Content-Length: 330
 
 [ {
   "id" : 1,
   "title" : "쓸만한 경매품 1",
   "price" : 2000,
-  "startedAt" : "2024-08-25T15:48:35.395812",
-  "finishedAt" : "2024-08-25T16:18:35.395818"
+  "startedAt" : "2024-08-26T20:43:17.982923",
+  "finishedAt" : "2024-08-26T21:13:17.982951"
 }, {
   "id" : 2,
   "title" : "쓸만한 경매품 2",
   "price" : 4000,
-  "startedAt" : "2024-08-25T15:48:35.39584",
-  "finishedAt" : "2024-08-25T16:18:35.395841"
+  "startedAt" : "2024-08-26T20:43:17.983002",
+  "finishedAt" : "2024-08-26T21:13:17.983009"
 } ]</code></pre>
 </div>
 </div>
@@ -1336,8 +1336,8 @@ Cookie: JSESSIONID=sessionId
     "variationWidth" : 100
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-25T16:48:35.675345",
-  "finishedAt" : "2024-08-25T17:48:35.675345",
+  "startedAt" : "2024-08-26T21:43:18.493389",
+  "finishedAt" : "2024-08-26T22:43:18.493389",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1505,8 +1505,8 @@ Cookie: JSESSIONID=sessionId
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-25T16:48:35.656276",
-  "finishedAt" : "2024-08-25T17:48:35.656276",
+  "startedAt" : "2024-08-26T21:43:18.447071",
+  "finishedAt" : "2024-08-26T22:43:18.447071",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1741,7 +1741,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 501
+Content-Length: 502
 
 [ {
   "id" : 1,
@@ -1750,8 +1750,8 @@ Content-Length: 501
   "currentPrice" : 1500,
   "totalStock" : 100,
   "currentStock" : 30,
-  "startedAt" : "2024-08-25T15:48:35.616465",
-  "finishedAt" : "2024-08-25T16:18:35.61647"
+  "startedAt" : "2024-08-26T20:43:18.362521",
+  "finishedAt" : "2024-08-26T21:13:18.362529"
 }, {
   "id" : 2,
   "title" : "내가 판매하는 경매품 2",
@@ -1759,8 +1759,8 @@ Content-Length: 501
   "currentPrice" : 3500,
   "totalStock" : 200,
   "currentStock" : 60,
-  "startedAt" : "2024-08-25T15:48:35.616486",
-  "finishedAt" : "2024-08-25T16:18:35.616488"
+  "startedAt" : "2024-08-26T20:43:18.362566",
+  "finishedAt" : "2024-08-26T21:13:18.362569"
 } ]</code></pre>
 </div>
 </div>
@@ -1928,8 +1928,8 @@ Content-Length: 420
     "variationWidth" : 10
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-25T15:48:35.570808",
-  "finishedAt" : "2024-08-25T16:48:35.570813",
+  "startedAt" : "2024-08-26T20:43:18.280344",
+  "finishedAt" : "2024-08-26T21:43:18.280359",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2130,8 +2130,8 @@ Content-Length: 422
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-25T15:48:35.596496",
-  "finishedAt" : "2024-08-25T16:48:35.596501",
+  "startedAt" : "2024-08-26T20:43:18.317248",
+  "finishedAt" : "2024-08-26T21:43:18.317254",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2326,7 +2326,13 @@ Cookie: JSESSIONID=sessionId
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers</code></pre>
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 58
+
+{
+  "receiptId" : "384ea4aa-c386-47f7-9cb1-a44aa6ec02b8"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -2417,7 +2423,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <h4 id="_경매_환불_http_request"><a class="link" href="#_경매_환불_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /receipts/1/refund HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /receipts/ac8ebf9c-53d6-485c-9031-48e9cd6ce0b4/refund HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Host: localhost:8080
@@ -2507,24 +2513,24 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 425
+Content-Length: 536
 
 [ {
-  "id" : 1,
+  "id" : "2a4b776b-6074-476c-bcf5-76a31542d42e",
   "auctionId" : 1,
   "type" : "PURCHASED",
   "productName" : "내가 구매한 상품1",
   "quantity" : 10,
   "price" : 1000
 }, {
-  "id" : 2,
+  "id" : "3d6146df-92f1-4a10-a95e-8cc54327e666",
   "auctionId" : 2,
   "type" : "REFUND",
   "productName" : "내가 구매한 상품2",
   "quantity" : 20,
   "price" : 2000
 }, {
-  "id" : 3,
+  "id" : "f0a267da-04dd-4965-96f7-ce7c416b7fd2",
   "auctionId" : 3,
   "type" : "PURCHASED",
   "productName" : "내가 구매한 상품3",
@@ -2602,7 +2608,7 @@ Content-Length: 425
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 ID</p></td>
@@ -2668,24 +2674,24 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 422
+Content-Length: 533
 
 [ {
-  "id" : 1,
+  "id" : "c47b6be2-c5ed-489e-93ad-169f94561283",
   "auctionId" : 1,
   "type" : "REFUND",
   "productName" : "내가 판매한 상품1",
   "price" : 1000,
   "quantity" : 10
 }, {
-  "id" : 2,
+  "id" : "0a211fd4-a701-48d2-b1f7-54c53e091662",
   "auctionId" : 2,
   "type" : "PURCHASED",
   "productName" : "내가 판매한 상품2",
   "price" : 2000,
   "quantity" : 20
 }, {
-  "id" : 3,
+  "id" : "5c16487a-60fc-4002-b4d5-8df9e270a361",
   "auctionId" : 3,
   "type" : "REFUND",
   "productName" : "내가 판매한 상품3",
@@ -2763,7 +2769,7 @@ Content-Length: 422
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 ID</p></td>
@@ -2813,7 +2819,7 @@ Content-Length: 422
 <h4 id="_거래_상세_조회판매자_구매자_권한_필요_http_request"><a class="link" href="#_거래_상세_조회판매자_구매자_권한_필요_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /receipts/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /receipts/5de59338-8216-490e-a412-ce8151e2586d HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
 Cookie: JSESSIONID=sessionId</code></pre>
@@ -2829,10 +2835,10 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 267
+Content-Length: 304
 
 {
-  "receiptId" : 1,
+  "receiptId" : "5de59338-8216-490e-a412-ce8151e2586d",
   "productName" : "상품명",
   "price" : 1000,
   "quantity" : 1,
@@ -2840,8 +2846,8 @@ Content-Length: 267
   "auctionId" : 1,
   "sellerId" : 1,
   "buyerId" : 2,
-  "createdAt" : "2024-08-25T15:48:35.504664",
-  "updatedAt" : "2024-08-25T16:48:35.504673"
+  "createdAt" : "2024-08-26T20:43:18.160396",
+  "updatedAt" : "2024-08-26T21:43:18.160407"
 }</code></pre>
 </div>
 </div>
@@ -2911,7 +2917,7 @@ Content-Length: 267
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>receiptId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">거래 내역 ID</p></td>
@@ -3255,7 +3261,7 @@ Content-Length: 267
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-24 16:24:00 +0900
+  Last updated 2024-08-22 14:58:53 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
