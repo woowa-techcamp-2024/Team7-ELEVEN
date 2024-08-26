@@ -2,9 +2,9 @@ package com.wootecam.luckyvickyauction.core.auction.service.auctioneer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wootecam.core.dto.auction.message.AuctionPurchaseRequestMessage;
+import com.wootecam.core.dto.auction.message.AuctionRefundRequestMessage;
 import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
-import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
-import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

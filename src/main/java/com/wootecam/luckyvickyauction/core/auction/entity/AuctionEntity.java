@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.entity;
 
-import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
+import com.wootecam.core.domain.type.PricePolicy;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,8 +1,8 @@
 package com.wootecam.luckyvickyauction.core.lock;
 
+import com.wootecam.core.exception.ErrorCode;
+import com.wootecam.core.exception.ServiceUnavailableException;
 import com.wootecam.luckyvickyauction.global.aop.LockProvider;
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import com.wootecam.luckyvickyauction.global.exception.ServiceUnavailableException;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

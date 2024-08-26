@@ -3,8 +3,8 @@ package com.wootecam.luckyvickyauction.global.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
-import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
+import com.wootecam.core.domain.Auction;
+import com.wootecam.core.domain.type.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import java.time.Duration;
 import java.time.LocalDateTime;

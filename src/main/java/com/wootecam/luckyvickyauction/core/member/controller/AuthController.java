@@ -1,9 +1,9 @@
 package com.wootecam.luckyvickyauction.core.member.controller;
 
-import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInResponseInfo;
-import com.wootecam.luckyvickyauction.core.member.controller.dto.SignUpRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
+import com.wootecam.core.dto.member.info.SignInInfo;
+import com.wootecam.core.dto.member.info.SignInRequestInfo;
+import com.wootecam.core.dto.member.info.SignInResponseInfo;
+import com.wootecam.core.dto.member.info.SignUpRequestInfo;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

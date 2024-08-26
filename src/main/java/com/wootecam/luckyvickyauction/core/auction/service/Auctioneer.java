@@ -1,7 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.service;
 
-import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
-import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
+import com.wootecam.core.dto.auction.message.AuctionPurchaseRequestMessage;
+import com.wootecam.core.dto.auction.message.AuctionRefundRequestMessage;
 
 /**
  * 경매 입찰 로직 분리

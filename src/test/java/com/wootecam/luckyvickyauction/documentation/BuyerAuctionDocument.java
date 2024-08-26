@@ -21,13 +21,13 @@ import static org.springframework.restdocs.request.RequestDocumentation.queryPar
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.wootecam.core.domain.type.PricePolicy;
+import com.wootecam.core.domain.type.Role;
+import com.wootecam.core.dto.auction.info.BuyerAuctionInfo;
+import com.wootecam.core.dto.auction.info.BuyerAuctionSimpleInfo;
+import com.wootecam.core.dto.member.info.SignInInfo;
 import com.wootecam.luckyvickyauction.core.auction.controller.dto.PurchaseRequest;
-import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
-import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
-import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
-import com.wootecam.luckyvickyauction.core.auction.fixture.BuyerAuctionInfoFixture;
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
+import com.wootecam.test.fixture.BuyerAuctionInfoFixture;
 import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

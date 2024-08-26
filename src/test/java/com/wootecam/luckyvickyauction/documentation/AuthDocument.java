@@ -11,10 +11,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.controller.dto.SignUpRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
+import com.wootecam.core.domain.type.Role;
+import com.wootecam.core.dto.member.info.SignInInfo;
+import com.wootecam.core.dto.member.info.SignInRequestInfo;
+import com.wootecam.core.dto.member.info.SignUpRequestInfo;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

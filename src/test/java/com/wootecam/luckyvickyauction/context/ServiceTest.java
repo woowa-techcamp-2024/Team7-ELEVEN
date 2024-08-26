@@ -1,11 +1,11 @@
 package com.wootecam.luckyvickyauction.context;
 
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
+import com.wootecam.core.repository.AuctionRepository;
+import com.wootecam.core.repository.MemberRepository;
+import com.wootecam.core.repository.ReceiptRepository;
 import com.wootecam.luckyvickyauction.core.auction.service.AuctionService;
 import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
-import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.service.MemberService;
-import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import com.wootecam.luckyvickyauction.core.payment.service.ReceiptService;
 import java.time.LocalDateTime;

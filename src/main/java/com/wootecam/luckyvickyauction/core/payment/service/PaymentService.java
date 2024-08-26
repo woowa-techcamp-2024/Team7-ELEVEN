@@ -1,12 +1,12 @@
 package com.wootecam.luckyvickyauction.core.payment.service;
 
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
+import com.wootecam.core.domain.Member;
+import com.wootecam.core.dto.member.info.SignInInfo;
+import com.wootecam.core.exception.BadRequestException;
+import com.wootecam.core.exception.ErrorCode;
+import com.wootecam.core.exception.NotFoundException;
+import com.wootecam.core.repository.MemberRepository;
 import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
-import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

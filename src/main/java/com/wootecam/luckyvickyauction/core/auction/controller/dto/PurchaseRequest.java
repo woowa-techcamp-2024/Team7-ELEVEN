@@ -1,7 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.controller.dto;
 
-import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.core.exception.BadRequestException;
+import com.wootecam.core.exception.ErrorCode;
 
 public record PurchaseRequest(
         long price,

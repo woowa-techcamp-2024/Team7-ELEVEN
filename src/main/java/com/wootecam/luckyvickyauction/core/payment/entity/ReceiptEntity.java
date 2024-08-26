@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.payment.entity;
 
-import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
+import com.wootecam.core.domain.type.ReceiptStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

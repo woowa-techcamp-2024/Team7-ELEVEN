@@ -3,9 +3,9 @@ package com.wootecam.luckyvickyauction.core.payment.infra;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.core.domain.Receipt;
+import com.wootecam.core.domain.type.ReceiptStatus;
 import com.wootecam.luckyvickyauction.context.RepositoryTest;
-import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
-import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Nested;

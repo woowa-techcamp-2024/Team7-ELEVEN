@@ -21,16 +21,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wootecam.core.domain.Member;
+import com.wootecam.core.domain.Point;
+import com.wootecam.core.domain.type.ConstantPricePolicy;
+import com.wootecam.core.domain.type.PercentagePricePolicy;
+import com.wootecam.core.domain.type.Role;
+import com.wootecam.core.dto.auction.condition.AuctionSearchCondition;
+import com.wootecam.core.dto.auction.info.SellerAuctionInfo;
+import com.wootecam.core.dto.auction.info.SellerAuctionSimpleInfo;
+import com.wootecam.core.dto.member.info.SignInInfo;
 import com.wootecam.luckyvickyauction.core.auction.controller.dto.CreateAuctionRequest;
-import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
-import com.wootecam.luckyvickyauction.core.auction.domain.PercentagePricePolicy;
-import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
-import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionInfo;
-import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.Point;
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import jakarta.servlet.http.Cookie;
 import java.time.Duration;
 import java.time.LocalDateTime;

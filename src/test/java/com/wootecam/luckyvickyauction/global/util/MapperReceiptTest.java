@@ -3,8 +3,8 @@ package com.wootecam.luckyvickyauction.global.util;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
-import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
+import com.wootecam.core.domain.Receipt;
+import com.wootecam.core.domain.type.ReceiptStatus;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import java.time.LocalDateTime;
 import java.util.UUID;

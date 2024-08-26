@@ -16,14 +16,14 @@ import static org.springframework.restdocs.request.RequestDocumentation.queryPar
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
-import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
-import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
-import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptInfo;
-import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
-import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
+import com.wootecam.core.domain.type.ReceiptStatus;
+import com.wootecam.core.domain.type.Role;
+import com.wootecam.core.dto.member.info.SignInInfo;
+import com.wootecam.core.dto.receipt.condition.BuyerReceiptSearchCondition;
+import com.wootecam.core.dto.receipt.condition.SellerReceiptSearchCondition;
+import com.wootecam.core.dto.receipt.info.BuyerReceiptSimpleInfo;
+import com.wootecam.core.dto.receipt.info.ReceiptInfo;
+import com.wootecam.core.dto.receipt.info.SellerReceiptSimpleInfo;
 import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

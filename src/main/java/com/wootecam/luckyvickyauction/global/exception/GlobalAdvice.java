@@ -1,6 +1,12 @@
 package com.wootecam.luckyvickyauction.global.exception;
 
 
+import com.wootecam.core.exception.AuthenticationException;
+import com.wootecam.core.exception.AuthorizationException;
+import com.wootecam.core.exception.BusinessException;
+import com.wootecam.core.exception.ErrorCode;
+import com.wootecam.core.exception.ErrorResponse;
+import com.wootecam.core.exception.InfraStructureException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import lombok.extern.slf4j.Slf4j;

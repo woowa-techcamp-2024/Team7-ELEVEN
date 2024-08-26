@@ -1,7 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.infra;
 
-import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
-import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
+import com.wootecam.core.dto.auction.condition.AuctionSearchCondition;
+import com.wootecam.core.dto.auction.condition.SellerAuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import java.util.List;
 

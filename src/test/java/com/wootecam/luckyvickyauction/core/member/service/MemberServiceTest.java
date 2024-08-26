@@ -4,15 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.core.domain.Member;
+import com.wootecam.core.domain.Point;
+import com.wootecam.core.domain.type.Role;
+import com.wootecam.core.dto.member.info.SignInInfo;
+import com.wootecam.core.dto.member.info.SignInRequestInfo;
+import com.wootecam.core.dto.member.info.SignUpRequestInfo;
+import com.wootecam.core.exception.BadRequestException;
+import com.wootecam.core.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.context.ServiceTest;
-import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.controller.dto.SignUpRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.Point;
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

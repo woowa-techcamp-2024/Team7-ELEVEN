@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.member.controller;
 
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.core.domain.type.Role;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

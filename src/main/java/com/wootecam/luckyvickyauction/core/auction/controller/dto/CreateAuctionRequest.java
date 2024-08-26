@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.auction.controller.dto;
 
-import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
+import com.wootecam.core.domain.type.PricePolicy;
 import java.time.Duration;
 import java.time.LocalDateTime;
 

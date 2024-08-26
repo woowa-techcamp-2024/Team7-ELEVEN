@@ -12,9 +12,9 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.core.payment.dto.BuyerChargePointCommand;
+import com.wootecam.core.domain.type.Role;
+import com.wootecam.core.dto.member.info.SignInInfo;
+import com.wootecam.core.dto.payment.command.BuyerChargePointCommand;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;

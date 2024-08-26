@@ -1,12 +1,12 @@
 package com.wootecam.luckyvickyauction.core.member.service;
 
-import com.wootecam.luckyvickyauction.core.member.controller.dto.SignInRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.controller.dto.SignUpRequestInfo;
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.core.domain.Member;
+import com.wootecam.core.dto.member.info.SignInInfo;
+import com.wootecam.core.dto.member.info.SignInRequestInfo;
+import com.wootecam.core.dto.member.info.SignUpRequestInfo;
+import com.wootecam.core.exception.BadRequestException;
+import com.wootecam.core.exception.ErrorCode;
+import com.wootecam.core.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

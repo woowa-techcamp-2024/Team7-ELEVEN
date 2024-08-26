@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.member.entity;
 
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.core.domain.type.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

@@ -1,16 +1,16 @@
 package com.wootecam.luckyvickyauction.core.payment.service;
 
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
-import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
-import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
-import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
-import com.wootecam.luckyvickyauction.core.payment.dto.ReceiptInfo;
-import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
-import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSimpleInfo;
-import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
-import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import com.wootecam.core.domain.Receipt;
+import com.wootecam.core.dto.member.info.SignInInfo;
+import com.wootecam.core.dto.receipt.condition.BuyerReceiptSearchCondition;
+import com.wootecam.core.dto.receipt.condition.SellerReceiptSearchCondition;
+import com.wootecam.core.dto.receipt.info.BuyerReceiptSimpleInfo;
+import com.wootecam.core.dto.receipt.info.ReceiptInfo;
+import com.wootecam.core.dto.receipt.info.SellerReceiptSimpleInfo;
+import com.wootecam.core.exception.AuthorizationException;
+import com.wootecam.core.exception.ErrorCode;
+import com.wootecam.core.exception.NotFoundException;
+import com.wootecam.core.repository.ReceiptRepository;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.util.List;
 import java.util.UUID;

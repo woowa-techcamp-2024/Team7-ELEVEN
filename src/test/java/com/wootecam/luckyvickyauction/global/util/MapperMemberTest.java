@@ -3,9 +3,9 @@ package com.wootecam.luckyvickyauction.global.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.Point;
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.core.domain.Member;
+import com.wootecam.core.domain.Point;
+import com.wootecam.core.domain.type.Role;
 import com.wootecam.luckyvickyauction.core.member.entity.MemberEntity;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

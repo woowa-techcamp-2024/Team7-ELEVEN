@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.core.member.domain;
 
-import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
+import com.wootecam.core.dto.member.info.SignInInfo;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;

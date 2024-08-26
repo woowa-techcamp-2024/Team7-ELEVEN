@@ -3,12 +3,12 @@ package com.wootecam.luckyvickyauction.core.auction.infra;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.core.domain.Auction;
+import com.wootecam.core.domain.type.ConstantPricePolicy;
+import com.wootecam.core.dto.auction.condition.AuctionSearchCondition;
+import com.wootecam.core.dto.auction.condition.SellerAuctionSearchCondition;
+import com.wootecam.core.repository.AuctionRepository;
 import com.wootecam.luckyvickyauction.context.RepositoryTest;
-import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
-import com.wootecam.luckyvickyauction.core.auction.domain.AuctionRepository;
-import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
-import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
-import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import java.time.Duration;
 import java.time.LocalDateTime;

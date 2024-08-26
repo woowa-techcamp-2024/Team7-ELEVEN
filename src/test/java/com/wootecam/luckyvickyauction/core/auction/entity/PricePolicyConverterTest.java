@@ -3,9 +3,9 @@ package com.wootecam.luckyvickyauction.core.auction.entity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.luckyvickyauction.core.auction.domain.PercentagePricePolicy;
-import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicy;
-import com.wootecam.luckyvickyauction.core.auction.domain.PricePolicyType;
+import com.wootecam.core.domain.type.PercentagePricePolicy;
+import com.wootecam.core.domain.type.PricePolicy;
+import com.wootecam.core.domain.type.PricePolicyType;
 import org.junit.jupiter.api.Test;
 
 public class PricePolicyConverterTest {

@@ -1,9 +1,9 @@
 package com.wootecam.luckyvickyauction.consumer.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wootecam.core.dto.auction.message.AuctionPurchaseRequestMessage;
+import com.wootecam.core.dto.auction.message.AuctionRefundRequestMessage;
 import com.wootecam.luckyvickyauction.core.auction.service.Auctioneer;
-import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
-import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import jakarta.transaction.Transactional;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

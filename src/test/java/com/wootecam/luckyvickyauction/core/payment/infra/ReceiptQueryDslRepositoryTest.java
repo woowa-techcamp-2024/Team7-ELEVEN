@@ -2,10 +2,10 @@ package com.wootecam.luckyvickyauction.core.payment.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.wootecam.core.domain.type.ReceiptStatus;
+import com.wootecam.core.dto.receipt.condition.BuyerReceiptSearchCondition;
+import com.wootecam.core.dto.receipt.condition.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.context.RepositoryTest;
-import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
-import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
-import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import java.time.LocalDateTime;
 import java.util.List;

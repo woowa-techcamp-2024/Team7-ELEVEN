@@ -1,7 +1,7 @@
 package com.wootecam.luckyvickyauction.core.member.infra;
 
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
+import com.wootecam.core.domain.Member;
+import com.wootecam.core.repository.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.entity.MemberEntity;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.util.Optional;

@@ -1,9 +1,9 @@
 package com.wootecam.luckyvickyauction.core.payment.infra;
 
-import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
-import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
-import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSearchCondition;
-import com.wootecam.luckyvickyauction.core.payment.dto.SellerReceiptSearchCondition;
+import com.wootecam.core.domain.Receipt;
+import com.wootecam.core.dto.receipt.condition.BuyerReceiptSearchCondition;
+import com.wootecam.core.dto.receipt.condition.SellerReceiptSearchCondition;
+import com.wootecam.core.repository.ReceiptRepository;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import com.wootecam.luckyvickyauction.global.util.Mapper;
 import java.util.List;

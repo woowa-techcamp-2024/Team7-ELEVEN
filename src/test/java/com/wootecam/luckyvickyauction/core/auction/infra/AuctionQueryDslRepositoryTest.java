@@ -2,8 +2,8 @@ package com.wootecam.luckyvickyauction.core.auction.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.wootecam.core.dto.auction.condition.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.context.RepositoryTest;
-import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import java.util.List;
 import org.junit.jupiter.api.Nested;

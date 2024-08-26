@@ -1,6 +1,6 @@
 package com.wootecam.luckyvickyauction.documentation.errorcode;
 
-import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.core.exception.ErrorCode;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

@@ -1,8 +1,8 @@
 package com.wootecam.luckyvickyauction.core.auction.infra;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
-import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondition;
+import com.wootecam.core.dto.auction.condition.AuctionSearchCondition;
+import com.wootecam.core.dto.auction.condition.SellerAuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import com.wootecam.luckyvickyauction.core.auction.entity.QAuctionEntity;
 import java.util.List;

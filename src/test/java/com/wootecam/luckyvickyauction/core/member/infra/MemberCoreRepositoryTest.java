@@ -2,12 +2,12 @@ package com.wootecam.luckyvickyauction.core.member.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.wootecam.core.domain.Member;
+import com.wootecam.core.domain.Point;
+import com.wootecam.core.domain.type.Role;
+import com.wootecam.core.repository.MemberRepository;
 import com.wootecam.luckyvickyauction.context.RepositoryTest;
-import com.wootecam.luckyvickyauction.core.member.domain.Member;
-import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
-import com.wootecam.luckyvickyauction.core.member.domain.Point;
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
-import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
+import com.wootecam.test.fixture.MemberFixture;
 import java.util.Optional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
