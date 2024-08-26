@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class ReceiptTest {
@@ -15,7 +16,7 @@ class ReceiptTest {
         // given
         LocalDateTime now = LocalDateTime.now();
         Receipt refundReceipt = Receipt.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .auctionId(1L)
                 .productName("test")
                 .price(100L)

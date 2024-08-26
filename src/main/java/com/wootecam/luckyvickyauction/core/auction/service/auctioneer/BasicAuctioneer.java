@@ -17,6 +17,7 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,7 @@ public class BasicAuctioneer implements Auctioneer {
         paymentService.pointTransfer(buyerId, sellerId, message.price() * message.quantity());
 
         Receipt receipt = Receipt.builder()
+                .id(message.requestId())
                 .productName(auctionInfo.productName())
                 .price(message.price())
                 .quantity(message.quantity())
@@ -101,7 +103,7 @@ public class BasicAuctioneer implements Auctioneer {
         }
     }
 
-    private Receipt findRefundTargetReceipt(long receiptId) {
+    private Receipt findRefundTargetReceipt(UUID receiptId) {
         return receiptRepository.findById(receiptId).orElseThrow(
                 () -> new NotFoundException("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=" + receiptId, ErrorCode.P002));
     }

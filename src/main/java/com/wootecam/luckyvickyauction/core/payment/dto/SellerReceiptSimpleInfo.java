@@ -1,6 +1,7 @@
 package com.wootecam.luckyvickyauction.core.payment.dto;
 
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
+import java.util.UUID;
 import lombok.Builder;
 
 /**
@@ -15,7 +16,7 @@ import lombok.Builder;
  */
 @Builder
 public record SellerReceiptSimpleInfo(
-        Long id,
+        UUID id,
         Long auctionId,
         ReceiptStatus type,
         String productName,

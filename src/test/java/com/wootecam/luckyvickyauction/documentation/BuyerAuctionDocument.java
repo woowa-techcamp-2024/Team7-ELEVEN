@@ -32,6 +32,7 @@ import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -208,6 +209,10 @@ class BuyerAuctionDocument extends DocumentationTest {
                                             .description("입찰을 희망하는 가격"),
                                     fieldWithPath("quantity").type(JsonFieldType.NUMBER)
                                             .description("입찰을 희망하는 수량")
+                            ),
+                            responseFields(
+                                    fieldWithPath("receiptId").type(JsonFieldType.STRING)
+                                            .description("구매 완료된 영수증의 id값 (UUID)")
                             )
                     ))
                     .andExpect(status().isOk());
@@ -219,7 +224,7 @@ class BuyerAuctionDocument extends DocumentationTest {
 
         @Test
         void 성공시() throws Exception {
-            Long receiptId = 1L;
+            UUID receiptId = UUID.randomUUID();
             SignInInfo signInInfo = new SignInInfo(1L, Role.BUYER);
 
             mockMvc.perform(put("/receipts/{receiptId}/refund", receiptId)

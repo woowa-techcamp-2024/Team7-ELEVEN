@@ -3,7 +3,7 @@
 
 === 경매 입찰
 
-operation::buyerAuctions/purchase/success[snippets='http-request,http-response,request-cookies,path-parameters,request-fields']
+operation::buyerAuctions/purchase/success[snippets='http-request,http-response,request-cookies,path-parameters,request-fields,response-fields']
 
 === 경매 환불
 
