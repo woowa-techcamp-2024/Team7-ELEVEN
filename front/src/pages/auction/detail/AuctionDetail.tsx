@@ -1,4 +1,9 @@
-import {formatVariationDuration, getKrDateFormat} from "../../../util/DateUtil";
+import {
+    formatVariationDuration,
+    getAuctionStatus,
+    getKrDateFormat,
+    getMsFromIso8601Duration, getTimeDifferenceInMs
+} from "../../../util/DateUtil";
 import {useEffect, useState} from "react";
 import {AuctionDetailInfo} from "./type";
 import PricePolicyElement from "./PricePolicyElement";
@@ -16,6 +21,8 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
     const {showAlert} = useAlert();
     const [auction, setAuction] = useState<AuctionDetailInfo | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
+    const [leftInfo, setLeftInfo] = useState<String>("불러오는 중...");
+    const [isFinished, setIsFinished] = useState<boolean>(true);
 
     const increaseQuantity = (maximum: number) => {
         if (quantity >= maximum) {
@@ -63,7 +70,29 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
                 showAlert("상품 정보를 가져오는데 실패했습니다.");
             }
         );
+
     }, []);
+
+    useEffect(() => {
+        if (!auction) {
+            return;
+        }
+
+        // 현재 가격 갱신 타이머
+        const intervalId = setInterval(() => {
+            const { status, timeInfo } = getAuctionStatus(auction.startedAt, auction.finishedAt);
+            if (status === "종료") {
+                let krDateFormat = "경매 종료 (" + getKrDateFormat(auction.finishedAt) + ")";
+                setLeftInfo(krDateFormat);
+            } else {
+                setLeftInfo(status + " (" + timeInfo + ")");
+                setIsFinished(false);  // 입찰 버튼 활성화
+            }
+
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, [auction]);
 
     const onClickBidButton = () => {
         requestAuctionBid(
@@ -122,15 +151,15 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
 
                     <div className="flex items-center gap-4 py-2">
                         <div>
-                            <p className="text-base font-medium">경매 종료 시간</p>
-                            <p className="text-sm text-[#61CBC6]">{getKrDateFormat(auction.finishedAt)}</p>
+                            <p className="text-base font-medium">경매 진행 상황</p>
+                            <p className="text-sm text-[#61CBC6]">{leftInfo}</p>
                         </div>
                     </div>
 
-                    <div className="mb-4">
-                        <p className="text-base font-medium">변동 주기</p>
-                        <p className="text-sm text-[#61CBC6]">{formatVariationDuration(auction.variationDuration)}</p>
-                    </div>
+                    {/*<div className="mb-4">*/}
+                    {/*    <p className="text-base font-medium">변동 주기</p>*/}
+                    {/*    <p className="text-sm text-[#61CBC6]">{formatVariationDuration(auction.variationDuration)}</p>*/}
+                    {/*</div>*/}
 
                     <div>
                         <div className="flex justify-between">
@@ -187,15 +216,15 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
 
                         <div>
                             <button
-                                className="btn bg-[#61CBC6] text-white"
+                                className={`btn text-white ${isFinished ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#61CBC6]'} `}
                                 onClick={onClickBidButton}
+                                disabled={isFinished}
                             >
-                                입찰하기
+                                {isFinished ? '입찰하기' : '입찰하기'}
                             </button>
                         </div>
+
                     </div>
-
-
                 </div>
             </div>
         </>
