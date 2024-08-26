@@ -835,14 +835,14 @@ Content-Length: 329
   "id" : 1,
   "title" : "쓸만한 경매품 1",
   "price" : 2000,
-  "startedAt" : "2024-08-26T20:14:24.56717",
-  "finishedAt" : "2024-08-26T20:44:24.567177"
+  "startedAt" : "2024-08-26T21:18:34.51341",
+  "finishedAt" : "2024-08-26T21:48:34.513414"
 }, {
   "id" : 2,
   "title" : "쓸만한 경매품 2",
   "price" : 4000,
-  "startedAt" : "2024-08-26T20:14:24.567196",
-  "finishedAt" : "2024-08-26T20:44:24.567198"
+  "startedAt" : "2024-08-26T21:18:34.513429",
+  "finishedAt" : "2024-08-26T21:48:34.513431"
 } ]</code></pre>
 </div>
 </div>
@@ -1336,8 +1336,8 @@ Cookie: JSESSIONID=sessionId
     "variationWidth" : 100
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-26T21:14:24.840049",
-  "finishedAt" : "2024-08-26T22:14:24.840049",
+  "startedAt" : "2024-08-26T22:18:34.772453",
+  "finishedAt" : "2024-08-26T23:18:34.772453",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1491,7 +1491,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /auctions HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 339
+Content-Length: 341
 Host: localhost:8080
 Cookie: JSESSIONID=sessionId
 
@@ -1505,8 +1505,8 @@ Cookie: JSESSIONID=sessionId
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-26T21:14:24.81752",
-  "finishedAt" : "2024-08-26T22:14:24.81752",
+  "startedAt" : "2024-08-26T22:18:34.753005",
+  "finishedAt" : "2024-08-26T23:18:34.753005",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -1750,8 +1750,8 @@ Content-Length: 500
   "currentPrice" : 1500,
   "totalStock" : 100,
   "currentStock" : 30,
-  "startedAt" : "2024-08-26T20:14:24.778696",
-  "finishedAt" : "2024-08-26T20:44:24.7787"
+  "startedAt" : "2024-08-26T21:18:34.716375",
+  "finishedAt" : "2024-08-26T21:48:34.716379"
 }, {
   "id" : 2,
   "title" : "내가 판매하는 경매품 2",
@@ -1759,8 +1759,8 @@ Content-Length: 500
   "currentPrice" : 3500,
   "totalStock" : 200,
   "currentStock" : 60,
-  "startedAt" : "2024-08-26T20:14:24.778718",
-  "finishedAt" : "2024-08-26T20:44:24.778719"
+  "startedAt" : "2024-08-26T21:18:34.716398",
+  "finishedAt" : "2024-08-26T21:48:34.7164"
 } ]</code></pre>
 </div>
 </div>
@@ -1928,8 +1928,8 @@ Content-Length: 420
     "variationWidth" : 10
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-26T20:14:24.740312",
-  "finishedAt" : "2024-08-26T21:14:24.740317",
+  "startedAt" : "2024-08-26T21:18:34.677127",
+  "finishedAt" : "2024-08-26T22:18:34.677132",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2130,8 +2130,8 @@ Content-Length: 422
     "discountRate" : 10.0
   },
   "variationDuration" : "PT10M",
-  "startedAt" : "2024-08-26T20:14:24.758193",
-  "finishedAt" : "2024-08-26T21:14:24.758202",
+  "startedAt" : "2024-08-26T21:18:34.696537",
+  "finishedAt" : "2024-08-26T22:18:34.696543",
   "isShowStock" : true
 }</code></pre>
 </div>
@@ -2840,8 +2840,8 @@ Content-Length: 267
   "auctionId" : 1,
   "sellerId" : 1,
   "buyerId" : 2,
-  "createdAt" : "2024-08-26T20:14:24.674291",
-  "updatedAt" : "2024-08-26T21:14:24.674297"
+  "createdAt" : "2024-08-26T21:18:34.618016",
+  "updatedAt" : "2024-08-26T22:18:34.618021"
 }</code></pre>
 </div>
 </div>
@@ -3032,7 +3032,7 @@ Content-Length: 267
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>A007</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">경매 생성 시, 경매 지속시간은 10, 20, 30, 40, 50, 60분이 아닌 경우 예외가 발생합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 생성 시, 경매 지속시간이 60분을 넘기는 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>A008</code></p></td>
@@ -3121,6 +3121,10 @@ Content-Length: 267
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>A029</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">경매 생성 시, 경매 할인 주기 시간이 경매 지속 시간보다 크거나 같은 경우 예외가 발생합니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>A030</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경매 생성 시, 경매 지속 시간이 정확히 분 단위가 아닌 경우 예외가 발생합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>R000</code></p></td>

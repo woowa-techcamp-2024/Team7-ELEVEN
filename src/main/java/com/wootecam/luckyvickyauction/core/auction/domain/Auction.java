@@ -11,6 +11,8 @@ import lombok.Getter;
 public class Auction {
 
     private static final int MINIMUM_STOCK_COUNT = 1;
+    private static final long NANOS_IN_MINUTE = 60_000_000_000L; // 1분의 나노초
+    private static final long MAX_AUCTION_DURATION_NANOS = 60 * NANOS_IN_MINUTE; // 60분의 나노초
 
     private Long id;
     private final Long sellerId;
@@ -62,14 +64,19 @@ public class Auction {
     }
 
     private void validateAuctionTime(LocalDateTime startedAt, LocalDateTime finishedAt) {
-        Duration diff = Duration.between(startedAt, finishedAt);
-        long diffNanos = diff.toMillis();
-        long tenMinutesInNanos = 10L * 60 * 1_000;
+        Duration duration = Duration.between(startedAt, finishedAt);
+        long durationNanos = duration.toNanos();
 
-        if (!(diffNanos % tenMinutesInNanos == 0 && diffNanos / tenMinutesInNanos <= 6)) {
-            String message = String.format("경매 지속 시간은 10분 단위여야하고, 최대 60분까지만 가능합니다. 현재: %.9f분",
-                    diffNanos / (60.0 * 1_000));
+        if (durationNanos > MAX_AUCTION_DURATION_NANOS) {
+            long leftNanoSeconds = durationNanos % NANOS_IN_MINUTE;
+            String message = String.format("경매 지속 시간은 최대 60분까지만 가능합니다. 현재 초과되는 나노초: %d초", leftNanoSeconds);
             throw new BadRequestException(message, ErrorCode.A007);
+        }
+
+        if (durationNanos % NANOS_IN_MINUTE != 0) {
+            long leftNanoSeconds = durationNanos % NANOS_IN_MINUTE;
+            String message = String.format("경매 지속 시간은 정확히 분 단위여야 합니다. 현재 남는 나노초: %d초", leftNanoSeconds);
+            throw new BadRequestException(message, ErrorCode.A030);
         }
     }
 

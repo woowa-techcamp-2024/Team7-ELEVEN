@@ -119,40 +119,6 @@ class AuctionServiceTest extends ServiceTest {
                 assertThatNoException().isThrownBy(() -> auctionService.createAuction(sellerInfo, command));
             }
         }
-
-        @Nested
-        class 만약_경매_지속시간이_10분_단위가_아니라면 {
-
-            @ParameterizedTest
-            @ValueSource(ints = {9, 11, 19, 21, 29, 31, 39, 41, 49, 51, 59, 61})
-            void 예외가_발생한다(int invalidDurationTime) {
-                // given
-                Long sellerId = 1L;
-                String productName = "상품이름";
-                int originPrice = 10000;
-                int stock = 999999;
-                int maximumPurchaseLimitCount = 10;
-
-                int variationWidth = 1000;
-                Duration varitationDuration = Duration.ofMinutes(1L);
-                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
-
-                LocalDateTime startedAt = now.plusHours(1);
-                LocalDateTime finishedAt = startedAt.plusMinutes(invalidDurationTime);
-
-                SignInInfo sellerInfo = new SignInInfo(sellerId, Role.SELLER);
-                CreateAuctionCommand command = new CreateAuctionCommand(
-                        productName, originPrice, stock, maximumPurchaseLimitCount, pricePolicy,
-                        varitationDuration, now, startedAt, finishedAt, true
-                );
-
-                // expect
-                assertThatThrownBy(() -> auctionService.createAuction(sellerInfo, command))
-                        .isInstanceOf(BadRequestException.class)
-                        .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
-                                ErrorCode.A007));
-            }
-        }
     }
 
     @Nested
