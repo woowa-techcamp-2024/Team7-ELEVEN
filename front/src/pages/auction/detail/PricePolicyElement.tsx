@@ -37,7 +37,7 @@ function PricePolicyElement(
 
         const intervalId = setInterval(() => {
 
-            if (diffMs % durationMs === 0) {
+            if (diffMsBetweenStartedAndNow % durationMs === 0) {
                 const nextPrice = calculateNextPrice();
                 if (priceLimit <= nextPrice) {
                     setAuction({...auction, currentPrice: nextPrice});
