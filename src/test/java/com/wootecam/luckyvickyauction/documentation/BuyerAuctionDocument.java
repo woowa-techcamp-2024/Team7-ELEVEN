@@ -209,6 +209,10 @@ class BuyerAuctionDocument extends DocumentationTest {
                                             .description("입찰을 희망하는 가격"),
                                     fieldWithPath("quantity").type(JsonFieldType.NUMBER)
                                             .description("입찰을 희망하는 수량")
+                            ),
+                            responseFields(
+                                    fieldWithPath("receiptId").type(JsonFieldType.STRING)
+                                            .description("구매 완료된 영수증의 id값 (UUID)")
                             )
                     ))
                     .andExpect(status().isOk());

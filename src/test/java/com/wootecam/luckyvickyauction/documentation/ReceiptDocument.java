@@ -68,7 +68,7 @@ public class ReceiptDocument extends DocumentationTest {
                                     ),
                                     responseFields(
                                             fieldWithPath("[].id").type(JsonFieldType.STRING)
-                                                    .description("거래 내역 ID"),
+                                                    .description("거래 내역 ID (UUID)"),
                                             fieldWithPath("[].auctionId").type(JsonFieldType.NUMBER)
                                                     .description("구매한 경매의 ID"),
                                             fieldWithPath("[].type").type(JsonFieldType.STRING)
@@ -131,7 +131,7 @@ public class ReceiptDocument extends DocumentationTest {
                             ),
                             responseFields(
                                     fieldWithPath("[].id").type(JsonFieldType.STRING)
-                                            .description("거래 내역 ID"),
+                                            .description("거래 내역 ID (UUID)"),
                                     fieldWithPath("[].auctionId").type(JsonFieldType.NUMBER)
                                             .description("구매한 경매의 ID"),
                                     fieldWithPath("[].type").type(JsonFieldType.STRING)
