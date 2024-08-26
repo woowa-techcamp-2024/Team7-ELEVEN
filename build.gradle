@@ -5,17 +5,15 @@ plugins {
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
-group = 'com.wootecam'
-version = '0.0.1-SNAPSHOT'
+allprojects {
+    group = 'com.wootecam'
+    version = '0.0.1-SNAPSHOT'
+}
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
-}
-
-jar {
-    enabled = false
 }
 
 configurations {

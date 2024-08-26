@@ -1,1 +1,3 @@
 rootProject.name = 'lucky-vicky-auction'
+
+include 'core'
