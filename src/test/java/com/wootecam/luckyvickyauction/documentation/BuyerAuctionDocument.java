@@ -32,6 +32,7 @@ import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -219,7 +220,7 @@ class BuyerAuctionDocument extends DocumentationTest {
 
         @Test
         void 성공시() throws Exception {
-            Long receiptId = 1L;
+            UUID receiptId = UUID.randomUUID();
             SignInInfo signInInfo = new SignInInfo(1L, Role.BUYER);
 
             mockMvc.perform(put("/receipts/{receiptId}/refund", receiptId)

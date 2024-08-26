@@ -10,6 +10,7 @@ import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,6 +112,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
 
             for (int i = 0; i < size + 1; i++) {
                 repository.save(ReceiptEntity.builder()
+                        .id(UUID.randomUUID())
                         .productName("상품1")
                         .price(1000)
                         .quantity(1)
