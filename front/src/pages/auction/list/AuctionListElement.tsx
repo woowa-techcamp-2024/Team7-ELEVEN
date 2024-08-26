@@ -67,7 +67,7 @@ const AuctionListElement: React.FC<AuctionSimpleInfo> = ({
                 <h2 className="text-xl font-semibold mb-2">{title}</h2>
                 <p className="text-gray-600 text-sm mb-1">시작 시간: {getKrDateFormat(startedAt)}</p>
                 <p className="text-gray-600 text-sm mb-1">종료 시간: {getKrDateFormat(endedAt)}</p>
-                <p className={`text-lg font-bold mb-2 ${priceColor}`}>현재가: {getPriceFormatted(price)}</p>
+                <p className={`text-lg font-bold mb-2 ${priceColor}`}>시작 가격: {getPriceFormatted(price)}</p>
                 <p className="text-gray-600 text-sm">{timeInfo}</p>
             </div>
         </div>
