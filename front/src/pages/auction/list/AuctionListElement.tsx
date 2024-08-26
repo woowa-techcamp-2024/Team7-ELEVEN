@@ -54,7 +54,7 @@ const AuctionListElement: React.FC<AuctionSimpleInfo> = ({
             <div className="relative">
                 {/* 이미지 영역 */}
                 <img
-                    src="https://via.placeholder.com/400x200" // 이미지 URL을 여기에 입력하세요
+                    src="https://woowahan-cdn.woowahan.com/new_resources/image/card/c263eb7ff44f4fe081bfe5365f3dea5a.png" // 이미지 URL을 여기에 입력하세요
                     alt="Auction Item"
                     className="w-full h-40 object-cover"
                 />
