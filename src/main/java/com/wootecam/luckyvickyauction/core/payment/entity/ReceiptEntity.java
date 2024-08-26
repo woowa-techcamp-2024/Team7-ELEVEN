@@ -2,6 +2,8 @@ package com.wootecam.luckyvickyauction.core.payment.entity;
 
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,6 +25,7 @@ public class ReceiptEntity {
     private String productName;
     private long price;
     private long quantity;
+    @Enumerated(value = EnumType.STRING)
     private ReceiptStatus receiptStatus;
     private long auctionId;
     private Long sellerId;

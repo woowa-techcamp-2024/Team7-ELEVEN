@@ -24,7 +24,7 @@ abstract class MapperMemberTest {
                     .id(1L)
                     .signInId("helloworld")
                     .password("password1234")
-                    .role("BUYER")
+                    .role(Role.BUYER)
                     .point(12345L)
                     .build();
 
@@ -63,7 +63,7 @@ abstract class MapperMemberTest {
                     () -> assertThat(entity.getId()).isEqualTo(1L),
                     () -> assertThat(entity.getSignInId()).isEqualTo("helloworld"),
                     () -> assertThat(entity.getPassword()).isEqualTo("password1234"),
-                    () -> assertThat(entity.getRole()).isEqualTo(Role.BUYER.name()),
+                    () -> assertThat(entity.getRole()).isEqualTo(Role.BUYER),
                     () -> assertThat(entity.getPoint()).isEqualTo(12345L)
             );
         }

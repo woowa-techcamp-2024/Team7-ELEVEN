@@ -1,7 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.service.auctioneer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.context.ServiceTest;
 import com.wootecam.luckyvickyauction.core.auction.domain.Auction;
@@ -12,7 +12,6 @@ import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;

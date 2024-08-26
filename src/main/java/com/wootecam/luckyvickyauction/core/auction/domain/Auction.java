@@ -83,7 +83,7 @@ public class Auction {
     private void validateVariationDuration(Duration variationDuration, Duration auctionDuration) {
         if (!isAllowedDuration(variationDuration, auctionDuration)) {
             String message = String.format("경매 할인 주기는 경매 지속 시간에서 나누었을때 나누어 떨어져야 합니다. 할인 주기 시간(초): %d, 경매 주기 시간(초): %d",
-            variationDuration.getSeconds(), auctionDuration.getSeconds());
+                    variationDuration.getSeconds(), auctionDuration.getSeconds());
             throw new BadRequestException(message, ErrorCode.A028);
         }
 

@@ -9,7 +9,6 @@ import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.auction.entity.AuctionEntity;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
-import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.entity.MemberEntity;
 import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
@@ -198,7 +197,7 @@ public final class Mapper {
                 .id(entity.getId())
                 .signInId(entity.getSignInId())
                 .password(entity.getPassword())
-                .role(Role.find(entity.getRole()))
+                .role(entity.getRole())
                 .point(new Point(entity.getPoint()))
                 .build();
     }
@@ -208,7 +207,7 @@ public final class Mapper {
                 .id(member.getId())
                 .signInId(member.getSignInId())
                 .password(member.getPassword())
-                .role(member.getRole().name())
+                .role(member.getRole())
                 .point(member.getPoint().getAmount())
                 .build();
     }
