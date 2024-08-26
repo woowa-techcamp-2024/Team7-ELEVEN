@@ -1,6 +1,9 @@
 package com.wootecam.luckyvickyauction.core.member.entity;
 
+import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,11 +23,12 @@ public class MemberEntity {
     private Long id;
     private String signInId;
     private String password;
-    private String role;
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
     private Long point;
 
     @Builder
-    private MemberEntity(Long id, String signInId, String password, String role, Long point) {
+    private MemberEntity(Long id, String signInId, String password, Role role, Long point) {
         this.id = id;
         this.signInId = signInId;
         this.password = password;

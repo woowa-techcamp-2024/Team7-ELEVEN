@@ -62,7 +62,7 @@ class AuctionTest {
                 PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
                 LocalDateTime now = LocalDateTime.now();
 
-                // when & then
+                // expect
                 assertThatThrownBy(() ->
                         Auction.builder()
                                 .sellerId(1L)
@@ -251,7 +251,7 @@ class AuctionTest {
                 PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
                 LocalDateTime now = LocalDateTime.now();
 
-                // when & then
+                // expect
                 assertThatThrownBy(() ->
                         Auction.builder()
                                 .sellerId(1L)
@@ -273,10 +273,10 @@ class AuctionTest {
         }
 
         @Nested
-        class 만약_경매_할인_주기_시간이_1분_5분_10분이_아니라면 {
+        class 경매_시간에서_할인_주기_시간이_나누어_떨어지지_않는다면 {
 
             @ParameterizedTest
-            @ValueSource(ints = {0, 2, 3, 4, 6, 7, 8, 9, 11})
+            @ValueSource(ints = {11, 7, 13, 21, 31, 14})
             void 예외가_발생한다(int invalidVariationDuration) {
                 // given
                 int originPrice = 10000;
@@ -284,11 +284,11 @@ class AuctionTest {
                 int maximumPurchaseLimitCount = 10;
 
                 int variationWidth = 10000;
-                Duration varitationDuration = Duration.ofMinutes(invalidVariationDuration);
+                Duration varitationDuration = Duration.ofSeconds(invalidVariationDuration);
                 PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
                 LocalDateTime now = LocalDateTime.now();
 
-                // when & then
+                // expect
                 assertThatThrownBy(() ->
                         Auction.builder()
                                 .sellerId(1L)
@@ -300,12 +300,116 @@ class AuctionTest {
                                 .pricePolicy(pricePolicy)
                                 .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
                                 .variationDuration(varitationDuration)
-                                .startedAt(now.plusMinutes(10L))
-                                .finishedAt(now.plusMinutes(70L))
+                                .startedAt(now)
+                                .finishedAt(now.plusMinutes(60L))
                                 .isShowStock(true)
                                 .build())
                         .isInstanceOf(BadRequestException.class)
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A028);
+            }
+        }
+
+        @Nested
+        class 경매_주기_시간이_60분을_넘긴다면 {
+
+            @Test
+            void 예외가_발생합니다() {
+                // given
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(60).plusNanos(1L);
+                int originPrice = 10000;
+                int stock = 999999;
+                int maximumPurchaseLimitCount = 10;
+
+                int variationWidth = 1000;
+                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+
+                // expect
+                assertThatThrownBy(() -> Auction.builder()
+                        .sellerId(1L)
+                        .productName("상품이름")
+                        .originPrice(originPrice)
+                        .currentPrice(originPrice)
+                        .originStock(stock)
+                        .currentStock(stock)
+                        .pricePolicy(pricePolicy)
+                        .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
+                        .variationDuration(Duration.ofMinutes(10))
+                        .startedAt(startedAt)
+                        .finishedAt(finishedAt)
+                        .isShowStock(true)
+                        .build())
+                        .isInstanceOf(BadRequestException.class)
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A007);
+            }
+        }
+
+        @Nested
+        class 경매_주기_시간이_분_단위가_아니라면 {
+
+            @Test
+            void 예외가_발생합니다() {
+                // given
+                LocalDateTime startedAt = LocalDateTime.now();
+                LocalDateTime finishedAt = startedAt.plusMinutes(1).plusNanos(1L);
+                int originPrice = 10000;
+                int stock = 999999;
+                int maximumPurchaseLimitCount = 10;
+
+                int variationWidth = 1000;
+                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+
+                // expect
+                assertThatThrownBy(() -> Auction.builder()
+                        .sellerId(1L)
+                        .productName("상품이름")
+                        .originPrice(originPrice)
+                        .currentPrice(originPrice)
+                        .originStock(stock)
+                        .currentStock(stock)
+                        .pricePolicy(pricePolicy)
+                        .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
+                        .variationDuration(Duration.ofSeconds(1L))
+                        .startedAt(startedAt)
+                        .finishedAt(finishedAt)
+                        .isShowStock(true)
+                        .build())
+                        .isInstanceOf(BadRequestException.class)
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A030);
+            }
+        }
+
+        @Nested
+        class 경매_시간에서_할인_주기_시간이_나누어_떨어진다면 {
+
+            @ParameterizedTest
+            @ValueSource(ints = {10, 6, 12, 30, 20, 15})
+            void 경매를_정상_생성한다(int invalidVariationDuration) {
+                // given
+                int originPrice = 10000;
+                int stock = 999999;
+                int maximumPurchaseLimitCount = 10;
+
+                int variationWidth = 1000;
+                Duration varitationDuration = Duration.ofSeconds(invalidVariationDuration);
+                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
+                LocalDateTime now = LocalDateTime.now();
+
+                // expect
+                assertThatNoException().isThrownBy(() -> Auction.builder()
+                        .sellerId(1L)
+                        .productName("상품이름")
+                        .originPrice(originPrice)
+                        .currentPrice(originPrice)
+                        .originStock(stock)
+                        .currentStock(stock)
+                        .pricePolicy(pricePolicy)
+                        .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
+                        .variationDuration(varitationDuration)
+                        .startedAt(now)
+                        .finishedAt(now.plusMinutes(1L))
+                        .isShowStock(true)
+                        .build());
             }
         }
     }
