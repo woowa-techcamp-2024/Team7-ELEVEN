@@ -22,8 +22,7 @@ function PricePolicyElement(
     }: PricePolicyElementProps) {
 
     const [nowPrice, setNowPrice] = useState<number>(0);
-
-    // const { status, timeInfo } = getAuctionStatus(auction.startedAt, new Date());
+    const [isLastPrice, setIsLastPrice] = useState<boolean>(false);
 
     useEffect(() => {
         // 시작 가격을 설정한다.
@@ -32,9 +31,19 @@ function PricePolicyElement(
         // 현재 가격 갱신 타이머
         const intervalId = setInterval(() => {
 
+            // 가격 하락 정책이 종료되었는지 체크
+            const now = new Date();
+            let isLastTime = false;
+            if (now >= auction.finishedAt) {
+                isLastTime = true;
+                setIsLastPrice(true);
+            }
+
             // 현재 가격 계산 로직
             const durationMs = getMsFromIso8601Duration(auction.variationDuration);
-            const diffMsBetweenStartedAndNow = getTimeDifferenceInMs(auction.startedAt, new Date());
+            const diffMsBetweenStartedAndNow = getTimeDifferenceInMs(
+                auction.startedAt, isLastTime ? auction.finishedAt : now
+            );
             const times = Math.floor(diffMsBetweenStartedAndNow / durationMs);
 
             let currentPrice = auction.originPrice;
@@ -103,10 +112,17 @@ function PricePolicyElement(
                         <h2 className="text-2xl font-bold pt-5">현재 가격</h2>
                         <h1 className="text-2xl font-bold">{getPriceFormatted(nowPrice)}</h1>
                     </div>
-                    <div>
-                        <h2 className="text-2xl font-bold pt-5">다음 가격</h2>
-                        <h1 className="text-2xl font-bold">{getPriceFormatted(calculateNextPrice(nowPrice))}</h1>
-                    </div>
+                        {
+                            isLastPrice
+                                ? <div>
+                                    <h2 className="text-2xl font-bold pt-5">최종 가격</h2>
+                                    <h1 className="text-2xl font-bold">{getPriceFormatted(nowPrice)}</h1>
+                                </div>
+                                : <div>
+                                    <h2 className="text-2xl font-bold pt-5">다음 가격</h2>
+                                    <h1 className="text-2xl font-bold">{getPriceFormatted(calculateNextPrice(nowPrice))}</h1>
+                                </div>
+                        }
                 </div>
             </div>
         </div>
