@@ -14,6 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.data.redis.core.RedisTemplate;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 public abstract class ServiceTest {
@@ -47,8 +48,12 @@ public abstract class ServiceTest {
 
     protected LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
 
+    @Autowired
+    protected RedisTemplate<String, Long> redisTemplate;
+
     @AfterEach
     void tearDown() {
         databaseCleaner.clear();
+        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
     }
 }
