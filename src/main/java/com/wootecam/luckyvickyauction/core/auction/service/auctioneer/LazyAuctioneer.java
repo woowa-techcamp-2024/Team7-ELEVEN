@@ -43,6 +43,19 @@ public class LazyAuctioneer implements Auctioneer {
 
     @Override
     public void refund(AuctionRefundRequestMessage message) {
+        String messageType = "refund";
 
+        try {
+            String stringMessage = objectMapper.writeValueAsString(message);
+
+            StringRecord record = StreamRecords
+                    .string(Map.of(messageType, stringMessage))
+                    .withStreamKey(streamKey);
+            redisTemplate.opsForStream().add(record);
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

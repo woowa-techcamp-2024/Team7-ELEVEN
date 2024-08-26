@@ -1,6 +1,7 @@
 package com.wootecam.luckyvickyauction.consumer.presentation;
 
 import com.wootecam.luckyvickyauction.consumer.config.RedisStreamConfig;
+import com.wootecam.luckyvickyauction.consumer.service.MessageRouterService;
 import java.time.Duration;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class PendingMessageConsumer {
 
     private final RedisOperator redisOperator;
     private final RedisStreamConfig redisStreamConfig;
+    private final MessageRouterService messageRouterService;
 
     @Scheduled(fixedRate = 1000)
     public void consumePendingMessage() {
@@ -47,10 +49,10 @@ public class PendingMessageConsumer {
 
         // 메시지 처리
         messages.forEach(message -> {
-            log.info("MessageId: {}", message.getId());
-            log.info("Stream: {}", message.getStream());
-            log.info("Body: {}", message.getValue());
-            redisOperator.acknowledge(redisStreamConfig.getConsumerGroupName(), message);
+            messageRouterService.consume(
+                    message,
+                    () -> redisOperator.acknowledge(redisStreamConfig.getConsumerGroupName(), message)
+            );
         });
     }
 }
