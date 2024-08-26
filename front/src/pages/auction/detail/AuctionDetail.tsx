@@ -74,6 +74,28 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
     }, []);
 
     useEffect(() => {
+
+        if (auctionId === undefined) {
+            return;
+        }
+
+        // 재고 갱신
+        const intervalId = setInterval(() => {
+            requestAuctionDetail(baseUrl, auctionId,
+                (auctionDetailItem) => {
+                    setAuction(prevAuction =>
+                        prevAuction ? {...prevAuction, currentStock: auctionDetailItem.currentStock} : null
+                    );
+                    console.log("현재 재고: " + auctionDetailItem.currentStock);
+                },
+                () => {console.log("현재 재고량을 가져오는데 실패하였습니다.")}
+            );
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
+    useEffect(() => {
         if (!auction) {
             return;
         }
