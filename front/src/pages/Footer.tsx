@@ -18,6 +18,9 @@ function Footer() {
     };
 
     const logout = () => {
+        if(!window.confirm("정말로 로그아웃할까요?")) {
+            return;
+        }
         signOut(
             baseUrl,
             () => {
