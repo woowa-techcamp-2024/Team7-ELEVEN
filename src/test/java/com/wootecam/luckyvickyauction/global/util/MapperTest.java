@@ -15,6 +15,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.dto.BuyerReceiptSimpleInfo;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +40,7 @@ class MapperTest {
                 .build();
 
         Receipt history = Receipt.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .auctionId(232L)
                 .productName("상품 이름")
                 .price(1000L)

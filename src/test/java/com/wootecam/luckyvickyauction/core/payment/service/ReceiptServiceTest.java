@@ -20,6 +20,7 @@ import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -50,7 +51,7 @@ class ReceiptServiceTest extends ServiceTest {
             Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
             Receipt receipt = Receipt.builder()
-                    .id(1L)
+                    .id(UUID.randomUUID())
                     .productName("멋진 상품")
                     .price(1000000)
                     .quantity(1)
@@ -61,11 +62,11 @@ class ReceiptServiceTest extends ServiceTest {
                     .createdAt(now)
                     .updatedAt(now)
                     .build();
-            receiptRepository.save(receipt);
+            Receipt savedReceipt = receiptRepository.save(receipt);
 
             // when
             ReceiptInfo receiptInfo = receiptService.getReceiptInfo(
-                    new SignInInfo(seller.getId(), Role.SELLER), 1L);
+                    new SignInInfo(seller.getId(), Role.SELLER), savedReceipt.getId());
 
             // then
             assertAll(
@@ -84,7 +85,7 @@ class ReceiptServiceTest extends ServiceTest {
         void 존재하지않는_거래내역을_조회할때_예외가_발생한다() {
             // given
             Member member = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
-            long receiptId = 1L;
+            UUID receiptId = UUID.randomUUID();
 
             // expect
             assertThatThrownBy(
@@ -104,14 +105,13 @@ class ReceiptServiceTest extends ServiceTest {
             SignInInfo nonOwner = new SignInInfo(3L, Role.BUYER);
 
             Receipt receipt = Receipt.builder()
-                    .id(1L)
                     .sellerId(seller.getId())
                     .buyerId(buyer.getId())
                     .build();
-            receiptRepository.save(receipt);
+            Receipt savedReceipt = receiptRepository.save(receipt);
 
             // expect
-            assertThatThrownBy(() -> receiptService.getReceiptInfo(nonOwner, 1L))
+            assertThatThrownBy(() -> receiptService.getReceiptInfo(nonOwner, savedReceipt.getId()))
                     .isInstanceOf(AuthorizationException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.R001));
@@ -133,7 +133,7 @@ class ReceiptServiceTest extends ServiceTest {
                         .build();
 
                 Receipt receipt = Receipt.builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .build();
@@ -168,7 +168,7 @@ class ReceiptServiceTest extends ServiceTest {
                         .build();
 
                 Receipt receipt = Receipt.builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .build();

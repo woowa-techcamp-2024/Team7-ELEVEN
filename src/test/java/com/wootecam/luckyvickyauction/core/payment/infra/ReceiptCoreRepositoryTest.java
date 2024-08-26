@@ -7,6 +7,7 @@ import com.wootecam.luckyvickyauction.context.RepositoryTest;
 import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
         void 거래내역의_id로_거래내역을_조회한다() {
             // given
             Receipt receipt = Receipt.builder()
-                    .id(1L)
+                    .id(UUID.randomUUID())
                     .productName("상품 이름")
                     .price(1000L)
                     .quantity(1L)
@@ -57,7 +58,7 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
         @Test
         void 거래내역_id에_해당하는_거래내역이_없으면_empty를_반환한다() {
             // given
-            Long notExistId = 1L;
+            UUID notExistId = UUID.randomUUID();
 
             // when
             boolean found = receiptCoreRepository.findById(notExistId).isPresent();
@@ -74,6 +75,7 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
         void 거래내역을_저장한다() {
             // given
             Receipt receipt = Receipt.builder()
+                    .id(UUID.randomUUID())
                     .productName("상품 이름")
                     .price(1000L)
                     .quantity(1L)
@@ -106,7 +108,7 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
         void 이미_존재하는_id면_거래내역을_수정한다() {
             // given
             Receipt receipt = Receipt.builder()
-                    .id(1L)
+                    .id(UUID.randomUUID())
                     .productName("상품 이름")
                     .price(1000L)
                     .quantity(1L)

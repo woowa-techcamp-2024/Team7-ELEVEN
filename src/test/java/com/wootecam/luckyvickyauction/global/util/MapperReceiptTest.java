@@ -7,6 +7,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.Receipt;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import com.wootecam.luckyvickyauction.core.payment.entity.ReceiptEntity;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ abstract class MapperReceiptTest {
         void 정보가_동일하다() {
             // given
             ReceiptEntity entity = ReceiptEntity.builder()
-                    .id(1L)
+                    .id(UUID.randomUUID())
                     .auctionId(2L)
                     .productName("상품 이름")
                     .price(1000L)
@@ -60,7 +61,7 @@ abstract class MapperReceiptTest {
         void 정보가_동일하다() {
             // given
             Receipt domainEntity = Receipt.builder()
-                    .id(1L)
+                    .id(UUID.randomUUID())
                     .auctionId(2L)
                     .productName("상품 이름")
                     .price(1000L)
