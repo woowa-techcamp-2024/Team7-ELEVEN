@@ -16,4 +16,6 @@ public interface AuctionRepository {
     List<Auction> findAllBy(AuctionSearchCondition condition);
 
     List<Auction> findAllBy(SellerAuctionSearchCondition condition);
+
+    Optional<Auction> findByIdForUpdate(long auctionId);
 }
