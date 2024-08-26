@@ -23,6 +23,7 @@ function PricePolicyElement(
 
     const [nowPrice, setNowPrice] = useState<number>(0);
     const [isLastPrice, setIsLastPrice] = useState<boolean>(false);
+    const [timeUntilNextChange, setTimeUntilNextChange] = useState({ minutes: 0, seconds: 0 });
 
     useEffect(() => {
         // 시작 가격을 설정한다.
@@ -58,6 +59,16 @@ function PricePolicyElement(
 
             // 가격 설정
             setNowPrice(currentPrice);
+
+            // 다음 가격 변동까지 남은 시간 계산
+            const msUntilNextChange = durationMs - (diffMsBetweenStartedAndNow % durationMs);
+            const minutesUntilNextChange = Math.floor(msUntilNextChange / 60000);
+            const secondsUntilNextChange = Math.floor((msUntilNextChange % 60000) / 1000);
+
+            setTimeUntilNextChange({
+                minutes: minutesUntilNextChange,
+                seconds: secondsUntilNextChange
+            });
 
         }, 1000);
 
@@ -119,7 +130,7 @@ function PricePolicyElement(
                                     <h1 className="text-2xl font-bold">{getPriceFormatted(nowPrice)}</h1>
                                 </div>
                                 : <div>
-                                    <h2 className="text-2xl font-bold pt-5">다음 가격</h2>
+                                    <h2 className="text-2xl font-bold pt-5">{timeUntilNextChange.minutes}분 {timeUntilNextChange.seconds}초 뒤</h2>
                                     <h1 className="text-2xl font-bold">{getPriceFormatted(calculateNextPrice(nowPrice))}</h1>
                                 </div>
                         }
