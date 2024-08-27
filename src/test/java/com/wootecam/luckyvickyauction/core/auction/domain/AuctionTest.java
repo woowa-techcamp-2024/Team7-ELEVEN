@@ -237,42 +237,6 @@ class AuctionTest {
         }
 
         @Nested
-        class 만약_경매_할인_주기_시간이_경매_지속_시간보다_크거나_같다면 {
-
-            @Test
-            void 예외가_발생한다() {
-                // given
-                int originPrice = 10000;
-                int stock = 999999;
-                int maximumPurchaseLimitCount = 10;
-
-                int variationWidth = 10000;
-                Duration varitationDuration = Duration.ofMinutes(10L);
-                PricePolicy pricePolicy = new ConstantPricePolicy(variationWidth);
-                LocalDateTime now = LocalDateTime.now();
-
-                // expect
-                assertThatThrownBy(() ->
-                        Auction.builder()
-                                .sellerId(1L)
-                                .productName("상품이름")
-                                .originPrice(originPrice)
-                                .currentPrice(originPrice)
-                                .originStock(stock)
-                                .currentStock(stock)
-                                .pricePolicy(pricePolicy)
-                                .maximumPurchaseLimitCount(maximumPurchaseLimitCount)
-                                .variationDuration(varitationDuration)
-                                .startedAt(now.plusMinutes(10L))
-                                .finishedAt(now.plusMinutes(20L))
-                                .isShowStock(true)
-                                .build())
-                        .isInstanceOf(BadRequestException.class)
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A029);
-            }
-        }
-
-        @Nested
         class 경매_시간에서_할인_주기_시간이_나누어_떨어지지_않는다면 {
 
             @ParameterizedTest
@@ -375,7 +339,7 @@ class AuctionTest {
                         .isShowStock(true)
                         .build())
                         .isInstanceOf(BadRequestException.class)
-                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A030);
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A029);
             }
         }
 

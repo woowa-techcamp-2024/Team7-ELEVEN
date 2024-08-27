@@ -299,7 +299,8 @@ class PaymentServiceTest extends ServiceTest {
                 Receipt savedReceipt = receiptRepository.save(receipt);
 
                 // when
-                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), savedReceipt.getId(), now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER),
+                        savedReceipt.getId(), now);
                 auctioneer.refund(message);
 
                 // then
@@ -343,7 +344,8 @@ class PaymentServiceTest extends ServiceTest {
                 receiptRepository.save(receipt);
 
                 // expect
-                var message = new AuctionRefundRequestMessage(new SignInInfo(seller.getId(), Role.SELLER), UUID.randomUUID(), now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(seller.getId(), Role.SELLER),
+                        UUID.randomUUID(), now);
                 assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(AuthorizationException.class)
                         .hasMessage("구매자만 환불을 할 수 있습니다.")
@@ -364,7 +366,8 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 // expect
-                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), UUID.randomUUID(), now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER),
+                        UUID.randomUUID(), now);
                 assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(NotFoundException.class)
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -399,7 +402,8 @@ class PaymentServiceTest extends ServiceTest {
                 Receipt savedReceipt = receiptRepository.save(receipt);
 
                 // expect
-                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), savedReceipt.getId(), now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER),
+                        savedReceipt.getId(), now);
                 assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("이미 환불된 입찰 내역입니다.")
@@ -442,7 +446,8 @@ class PaymentServiceTest extends ServiceTest {
                         .point(new Point(1000L))
                         .build();
 
-                var message = new AuctionRefundRequestMessage(new SignInInfo(unPurchasedBuyer.getId(), Role.BUYER), savedReceipt.getId(),
+                var message = new AuctionRefundRequestMessage(new SignInInfo(unPurchasedBuyer.getId(), Role.BUYER),
+                        savedReceipt.getId(),
                         now);
                 assertThatThrownBy(
                         () -> auctioneer.refund(message))
@@ -479,7 +484,8 @@ class PaymentServiceTest extends ServiceTest {
                 Receipt savedReceipt = receiptRepository.save(receipt);
 
                 // expect
-                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), savedReceipt.getId(), now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER),
+                        savedReceipt.getId(), now);
                 assertThatThrownBy(
                         () -> auctioneer.refund(message))
                         .isInstanceOf(BadRequestException.class)
