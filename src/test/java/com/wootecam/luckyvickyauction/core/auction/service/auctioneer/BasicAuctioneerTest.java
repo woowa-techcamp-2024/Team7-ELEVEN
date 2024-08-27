@@ -14,7 +14,6 @@ import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
 import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -46,7 +45,6 @@ class BasicAuctioneerTest extends ServiceTest {
                         .point(new Point(1000000000L))
                         .build());
 
-                LocalDateTime now = LocalDateTime.now();
                 Auction auction = auctionRepository.save(Auction.builder()
                         .sellerId(seller.getId())
                         .productName("상품 이름")
@@ -88,6 +86,7 @@ class BasicAuctioneerTest extends ServiceTest {
                 doneSignal.await();
                 executorService.shutdown();
 
+                // then
                 assertAll(
                         () -> assertThat(successCount.get()).isEqualTo(5L),
                         () -> assertThat(failCount.get()).isEqualTo(5L)
@@ -115,7 +114,6 @@ class BasicAuctioneerTest extends ServiceTest {
                         .point(new Point(10000L))
                         .build());
 
-                LocalDateTime now = LocalDateTime.now();
                 Auction auction = auctionRepository.save(Auction.builder()
                         .sellerId(seller.getId())
                         .productName("상품 이름")
@@ -195,7 +193,6 @@ class BasicAuctioneerTest extends ServiceTest {
                         .point(new Point(1000000000L))
                         .build());
 
-                LocalDateTime now = LocalDateTime.now();
                 Auction auction = auctionRepository.save(Auction.builder()
                         .sellerId(seller.getId())
                         .productName("상품 이름")
@@ -214,7 +211,9 @@ class BasicAuctioneerTest extends ServiceTest {
                 for (int i = 0; i < 10; i++) {
                     UUID requestId = UUID.randomUUID();
                     requestIds.add(requestId);
-                    auctioneer.process(new AuctionPurchaseRequestMessage(requestId, buyer.getId(), auction.getId(), 1000L, 1L, now));
+                    auctioneer.process(
+                            new AuctionPurchaseRequestMessage(requestId, buyer.getId(), auction.getId(), 1000L, 1L,
+                                    now));
                 }
 
                 SignInInfo buyerInfo = new SignInInfo(buyer.getId(), Role.BUYER);

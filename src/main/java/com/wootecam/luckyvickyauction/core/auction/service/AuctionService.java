@@ -13,7 +13,6 @@ import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSearchCondit
 import com.wootecam.luckyvickyauction.core.auction.dto.SellerAuctionSimpleInfo;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
-import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
 import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
@@ -99,7 +98,6 @@ public class AuctionService {
      * @param quantity  환불할 수량
      */
     @Transactional
-    @DistributedLock("#auctionId + ':auction:lock'")
     public void cancelPurchase(long auctionId, long quantity) {
         Auction auction = findAuctionObjectForUpdate(auctionId);
         auction.refundStock(quantity);
@@ -108,7 +106,8 @@ public class AuctionService {
 
     private Auction findAuctionObjectForUpdate(long auctionId) {
         return auctionRepository.findByIdForUpdate(auctionId)
-                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A030));
+                .orElseThrow(
+                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A030));
     }
 
     private Auction findAuctionObject(long auctionId) {

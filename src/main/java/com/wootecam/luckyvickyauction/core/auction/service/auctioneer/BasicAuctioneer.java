@@ -67,7 +67,6 @@ public class BasicAuctioneer implements Auctioneer {
      */
     @Override
     @Transactional
-    @DistributedLock("#message.receiptId + ':receipt:lock'")
     public void refund(AuctionRefundRequestMessage message) {
         verifyHasBuyerRole(message.buyerInfo());
 
@@ -82,7 +81,7 @@ public class BasicAuctioneer implements Auctioneer {
         paymentService.pointTransfer(receipt.getSellerId(), receipt.getBuyerId(),
                 receipt.getPrice() * receipt.getQuantity());
 
-        receiptRepository.save(receipt);  // 정상적으로 환불 처리된 경우 해당 이력을 '환불' 상태로 변경
+        receiptRepository.save(receipt);
     }
 
     private void verifyHasBuyerRole(SignInInfo buyerInfo) {
@@ -101,11 +100,6 @@ public class BasicAuctioneer implements Auctioneer {
         if (buyerInfo.id() != receiptBuyerId) {
             throw new AuthorizationException("환불할 입찰 내역의 구매자만 환불을 할 수 있습니다.", ErrorCode.P004);
         }
-    }
-
-    private Receipt findRefundTargetReceipt(UUID receiptId) {
-        return receiptRepository.findById(receiptId).orElseThrow(
-                () -> new NotFoundException("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=" + receiptId, ErrorCode.P002));
     }
 
     private Receipt findRefundTargetReceiptForUpdate(UUID receiptId) {
