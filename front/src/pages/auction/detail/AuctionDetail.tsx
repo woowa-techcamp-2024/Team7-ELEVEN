@@ -105,16 +105,16 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
         }
 
         // 남은 시간 갱신 타이머
-        setIsNotRunning(true);
+        // setIsNotRunning(true);
         const {status, timeInfo} = getAuctionStatus(auction.startedAt, auction.finishedAt);
         if (status === "종료") {
             let krDateFormat = "경매 종료 (" + getKrDateFormat(auction.finishedAt) + ")";
             setLeftInfo(krDateFormat);
         }
-        if (status === "진행 예정") {
+        else if (status === "진행 예정") {
             setLeftInfo(status + " (" + timeInfo + ")");
         }
-        if (status === "곧 시작") {
+        else if (status === "곧 시작") {
             setLeftInfo(status + " (" + timeInfo + ")");
         } else {
             setLeftInfo(status + " (" + timeInfo + ")");
