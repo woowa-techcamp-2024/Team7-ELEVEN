@@ -72,13 +72,15 @@ public class BasicAuctioneer implements Auctioneer {
         verifyHasBuyerRole(message.buyerInfo());
 
         Receipt receipt = findRefundTargetReceiptForUpdate(message.receiptId());
-        verifyEndAuction(message.requestTime(), receipt.getAuctionId());
         verifySameBuyer(message.buyerInfo(), receipt.getBuyerId());
         receipt.markAsRefund();
 
+        AuctionInfo auction = auctionService.getAuctionForUpdate(receipt.getAuctionId());
+        verifyEndAuction(message.requestTime(), auction.finishedAt());
+
+        auctionService.cancelPurchase(receipt.getAuctionId(), receipt.getQuantity());
         paymentService.pointTransfer(receipt.getSellerId(), receipt.getBuyerId(),
                 receipt.getPrice() * receipt.getQuantity());
-        auctionService.cancelPurchase(receipt.getAuctionId(), receipt.getQuantity());
 
         receiptRepository.save(receipt);  // 정상적으로 환불 처리된 경우 해당 이력을 '환불' 상태로 변경
     }
@@ -89,10 +91,8 @@ public class BasicAuctioneer implements Auctioneer {
         }
     }
 
-    private void verifyEndAuction(LocalDateTime requestTime, long auctionId) {
-        AuctionInfo auction = auctionService.getAuction(auctionId);
-
-        if (requestTime.isBefore(auction.finishedAt())) {
+    private void verifyEndAuction(LocalDateTime requestTime, LocalDateTime auctionFinishedAt) {
+        if (requestTime.isBefore(auctionFinishedAt)) {
             throw new BadRequestException("종료된 경매만 환불할 수 있습니다.", ErrorCode.P007);
         }
     }

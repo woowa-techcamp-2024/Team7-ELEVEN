@@ -177,4 +177,10 @@ public class AuctionService {
                 .map(Mapper::convertToSellerAuctionSimpleInfo)
                 .toList();
     }
+
+    public AuctionInfo getAuctionForUpdate(long auctionId) {
+        Auction auction = findAuctionObjectForUpdate(auctionId);
+
+        return Mapper.convertToAuctionInfo(auction);
+    }
 }
