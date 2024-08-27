@@ -46,6 +46,7 @@ class BasicAuctioneerTest extends ServiceTest {
                         .point(new Point(1000000000L))
                         .build());
 
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = auctionRepository.save(Auction.builder()
                         .sellerId(seller.getId())
                         .productName("상품 이름")
@@ -114,6 +115,7 @@ class BasicAuctioneerTest extends ServiceTest {
                         .point(new Point(10000L))
                         .build());
 
+                LocalDateTime now = LocalDateTime.now();
                 Auction auction = auctionRepository.save(Auction.builder()
                         .sellerId(seller.getId())
                         .productName("상품 이름")
