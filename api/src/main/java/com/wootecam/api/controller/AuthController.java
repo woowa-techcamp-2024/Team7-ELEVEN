@@ -4,7 +4,7 @@ import com.wootecam.core.dto.member.info.SignInInfo;
 import com.wootecam.core.dto.member.info.SignInRequestInfo;
 import com.wootecam.core.dto.member.info.SignInResponseInfo;
 import com.wootecam.core.dto.member.info.SignUpRequestInfo;
-import com.wootecam.service.member.MemberService;
+import com.wootecam.core.service.member.MemberService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

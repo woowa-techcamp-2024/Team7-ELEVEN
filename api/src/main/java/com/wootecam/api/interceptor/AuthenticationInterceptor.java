@@ -1,11 +1,14 @@
 package com.wootecam.api.interceptor;
 
+import com.wootecam.api.context.AuthenticationContext;
+import com.wootecam.api.controller.BuyerOnly;
+import com.wootecam.api.controller.Roles;
+import com.wootecam.api.controller.SellerOnly;
 import com.wootecam.core.domain.entity.type.Role;
 import com.wootecam.core.dto.member.info.SignInInfo;
 import com.wootecam.core.exception.AuthenticationException;
 import com.wootecam.core.exception.AuthorizationException;
 import com.wootecam.core.exception.ErrorCode;
-import com.wootecam.luckyvickyauction.core.member.AuthenticationContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

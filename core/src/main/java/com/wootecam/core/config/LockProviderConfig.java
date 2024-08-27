@@ -1,6 +1,6 @@
 package com.wootecam.core.config;
 
-import com.wootecam.aop.LockProvider;
+import com.wootecam.core.aop.LockProvider;
 import com.wootecam.core.lock.LettuceLockProvider;
 import com.wootecam.core.lock.NoOperationLockProvider;
 import com.wootecam.core.lock.RedissonLockProvider;

@@ -1,18 +1,16 @@
 package com.wootecam.api.controller;
 
+import com.wootecam.api.dto.PurchaseRequest;
+import com.wootecam.api.dto.PurchaseResponse;
 import com.wootecam.core.dto.auction.condition.AuctionSearchCondition;
 import com.wootecam.core.dto.auction.info.BuyerAuctionInfo;
 import com.wootecam.core.dto.auction.info.BuyerAuctionSimpleInfo;
 import com.wootecam.core.dto.auction.message.AuctionPurchaseRequestMessage;
 import com.wootecam.core.dto.auction.message.AuctionRefundRequestMessage;
 import com.wootecam.core.dto.member.info.SignInInfo;
-import com.wootecam.luckyvickyauction.core.auction.controller.dto.PurchaseRequest;
-import com.wootecam.luckyvickyauction.core.auction.controller.dto.PurchaseResponse;
-import com.wootecam.service.auction.AuctionService;
-import com.wootecam.service.auctioneer.Auctioneer;
-import com.wootecam.luckyvickyauction.core.member.controller.BuyerOnly;
-import com.wootecam.luckyvickyauction.core.member.controller.Login;
-import com.wootecam.service.payment.PaymentService;
+import com.wootecam.core.service.auction.AuctionService;
+import com.wootecam.core.service.auctioneer.Auctioneer;
+import com.wootecam.core.service.payment.PaymentService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -31,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class BuyerAuctionController {
 
     private final AuctionService auctionService;
-    private final PaymentService paymentService;
     private final Auctioneer auctioneer;
 
     // 사용자는 경매 목록을 조회한다.

@@ -2,7 +2,7 @@ package com.wootecam.core.lock;
 
 import com.wootecam.core.exception.ErrorCode;
 import com.wootecam.core.exception.ServiceUnavailableException;
-import com.wootecam.aop.LockProvider;
+import com.wootecam.core.aop.LockProvider;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

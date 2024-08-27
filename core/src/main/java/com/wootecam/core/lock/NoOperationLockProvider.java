@@ -1,6 +1,6 @@
 package com.wootecam.core.lock;
 
-import com.wootecam.aop.LockProvider;
+import com.wootecam.core.aop.LockProvider;
 
 public class NoOperationLockProvider implements LockProvider {
 

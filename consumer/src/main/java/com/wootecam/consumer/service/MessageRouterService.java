@@ -3,7 +3,7 @@ package com.wootecam.consumer.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wootecam.core.dto.auction.message.AuctionPurchaseRequestMessage;
 import com.wootecam.core.dto.auction.message.AuctionRefundRequestMessage;
-import com.wootecam.service.auctioneer.Auctioneer;
+import com.wootecam.core.service.auctioneer.Auctioneer;
 import jakarta.transaction.Transactional;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

@@ -7,7 +7,7 @@ import com.wootecam.core.dto.receipt.condition.SellerReceiptSearchCondition;
 import com.wootecam.core.dto.receipt.info.BuyerReceiptSimpleInfo;
 import com.wootecam.core.dto.receipt.info.ReceiptInfo;
 import com.wootecam.core.dto.receipt.info.SellerReceiptSimpleInfo;
-import com.wootecam.service.receipt.ReceiptService;
+import com.wootecam.core.service.receipt.ReceiptService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

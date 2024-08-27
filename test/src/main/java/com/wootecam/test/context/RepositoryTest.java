@@ -1,11 +1,11 @@
 package com.wootecam.test.context;
 
 import com.wootecam.core.config.JpaConfig;
-import com.wootecam.infra.repository.auction.AuctionCoreRepository;
-import com.wootecam.infra.repository.auction.AuctionJpaRepository;
-import com.wootecam.infra.repository.member.MemberCoreRepository;
-import com.wootecam.infra.repository.receipt.ReceiptCoreRepository;
-import com.wootecam.infra.repository.receipt.ReceiptJpaRepository;
+import com.wootecam.core.infra.repository.auction.AuctionCoreRepository;
+import com.wootecam.core.infra.repository.auction.AuctionJpaRepository;
+import com.wootecam.core.infra.repository.member.MemberCoreRepository;
+import com.wootecam.core.infra.repository.receipt.ReceiptCoreRepository;
+import com.wootecam.core.infra.repository.receipt.ReceiptJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;

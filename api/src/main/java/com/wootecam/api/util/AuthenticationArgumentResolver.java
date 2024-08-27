@@ -1,6 +1,7 @@
 package com.wootecam.api.util;
 
-import com.wootecam.luckyvickyauction.core.member.AuthenticationContext;
+import com.wootecam.api.context.AuthenticationContext;
+import com.wootecam.api.controller.Login;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
