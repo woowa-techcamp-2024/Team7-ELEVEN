@@ -101,9 +101,14 @@ public class AuctionService {
     @Transactional
     @DistributedLock("#auctionId + ':auction:lock'")
     public void cancelPurchase(long auctionId, long quantity) {
-        Auction auction = findAuctionObject(auctionId);
+        Auction auction = findAuctionObjectForUpdate(auctionId);
         auction.refundStock(quantity);
         auctionRepository.save(auction);
+    }
+
+    private Auction findAuctionObjectForUpdate(long auctionId) {
+        return auctionRepository.findByIdForUpdate(auctionId)
+                .orElseThrow(() -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A030));
     }
 
     private Auction findAuctionObject(long auctionId) {
