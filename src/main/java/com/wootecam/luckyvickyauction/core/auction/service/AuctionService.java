@@ -107,7 +107,7 @@ public class AuctionService {
     private Auction findAuctionObjectForUpdate(long auctionId) {
         return auctionRepository.findByIdForUpdate(auctionId)
                 .orElseThrow(
-                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A030));
+                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A010));
     }
 
     private Auction findAuctionObject(long auctionId) {
