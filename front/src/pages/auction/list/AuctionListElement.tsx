@@ -24,12 +24,14 @@ const AuctionListElement: React.FC<AuctionSimpleInfo> = ({
 
     const [status, setStatus] = useState<string>('');
     const [timeInfo, setTimeInfo] = useState<string>('');
+    const [tagColor, setTagColor] = useState<string>('bg-gray-500');
 
     useEffect(() => {
         const updateStatus = () => {
-            const { status, timeInfo } = getAuctionStatus(startedAt, endedAt);
+            const { status, timeInfo, color } = getAuctionStatus(startedAt, endedAt);
             setStatus(status);
             setTimeInfo(timeInfo);
+            setTagColor(color);
         };
 
         updateStatus();
@@ -44,7 +46,8 @@ const AuctionListElement: React.FC<AuctionSimpleInfo> = ({
     }
 
     // 상태에 따라 현재가의 색상 설정
-    const priceColor = status === '종료' ? 'text-gray-400' : 'text-[#62CBC6]';
+    const priceColor = status !== '진행 중' ? 'text-gray-400' : 'text-[#62CBC6]';
+    const greyScale = status !== '진행 중' ? 'grayscale' : '';
 
     return (
         <div
@@ -54,12 +57,11 @@ const AuctionListElement: React.FC<AuctionSimpleInfo> = ({
             <div className="relative">
                 {/* 이미지 영역 */}
                 <img
-                    src="https://via.placeholder.com/400x200" // 이미지 URL을 여기에 입력하세요
+                    src="https://woowahan-cdn.woowahan.com/new_resources/image/card/c263eb7ff44f4fe081bfe5365f3dea5a.png" // 이미지 URL을 여기에 입력하세요
                     alt="Auction Item"
-                    className="w-full h-40 object-cover"
+                    className={`w-full h-40 object-cover ${greyScale}`} // Apply grayscale based on status
                 />
-                {/* 상태 태그 */}
-                <span className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                <span className={`absolute top-2 right-2 ${tagColor} text-white text-xs px-2 py-1 rounded-full`}>
                     {status}
                 </span>
             </div>
@@ -67,8 +69,8 @@ const AuctionListElement: React.FC<AuctionSimpleInfo> = ({
                 <h2 className="text-xl font-semibold mb-2">{title}</h2>
                 <p className="text-gray-600 text-sm mb-1">시작 시간: {getKrDateFormat(startedAt)}</p>
                 <p className="text-gray-600 text-sm mb-1">종료 시간: {getKrDateFormat(endedAt)}</p>
-                <p className={`text-lg font-bold mb-2 ${priceColor}`}>현재가: {getPriceFormatted(price)}</p>
-                <p className="text-gray-600 text-sm">{timeInfo}</p>
+                <p className={`text-lg font-bold mb-2 ${priceColor}`}>시작 가격: {getPriceFormatted(price)}</p>
+                <p className="text-gray-600 text-sm">{status}! {timeInfo}</p>
             </div>
         </div>
     );

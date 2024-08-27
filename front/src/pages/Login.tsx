@@ -29,9 +29,9 @@ function LoginPage() {
                 setIsLogin(true);
                 showAlert('로그인 성공하였습니다.');
             },
-            () => {
+            (response) => {
                 setIsLogin(false);
-                showAlert('로그인에 실패하였습니다.');
+                showAlert(response);
                 setRequest({signInId: '', password: ''});
             }
         );
