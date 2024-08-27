@@ -5,8 +5,10 @@ import {ReceiptDetailItem} from "../../../api/receipt/type";
 import {getPriceFormatted} from "../../../util/NumberUtil";
 import {getKrDateFormat} from "../../../util/DateUtil";
 import {usePageStore} from "../../../store/PageStore";
+import useAlert from "../../../hooks/useAlert";
 
 function ReceiptDetailPage() {
+    const {showAlert} = useAlert();
 
     const {receiptId, setReceiptId} = useReceiptStore();
     const {currentPage, setPage} = usePageStore();
@@ -50,8 +52,9 @@ function ReceiptDetailPage() {
                 console.log('Refund success.');
                 setPage('home');
             },
-            () => {
-                console.log('Refund failed.');
+            (message) => {
+                console.log('Refund failed. ' + message);
+                showAlert(message);
             }
         )
     }
@@ -102,17 +105,17 @@ function ReceiptDetailPage() {
                         <p className="text-lg font-semibold">{receiptDetail?.buyerId}</p>
                     </div>
 
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700">생성일</label>
-                        <p className="text-lg font-semibold">{getKrDateFormat(new Date(receiptDetail!.createdAt))}</p>
-                    </div>
+                    {/*<div className="mb-4">*/}
+                    {/*    <label className="block text-sm font-medium text-gray-700">생성일</label>*/}
+                    {/*    <p className="text-lg font-semibold">{getKrDateFormat(new Date(receiptDetail!.createdAt))}</p>*/}
+                    {/*</div>*/}
 
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700">수정일</label>
-                        <p className="text-lg font-semibold">
-                            {getKrDateFormat(new Date(receiptDetail!.updatedAt))}
-                        </p>
-                    </div>
+                    {/*<div className="mb-4">*/}
+                    {/*    <label className="block text-sm font-medium text-gray-700">수정일</label>*/}
+                    {/*    <p className="text-lg font-semibold">*/}
+                    {/*        {getKrDateFormat(new Date(receiptDetail!.updatedAt))}*/}
+                    {/*    </p>*/}
+                    {/*</div>*/}
 
                     {
                         receiptDetail?.receiptStatus === 'REFUND' ? ''

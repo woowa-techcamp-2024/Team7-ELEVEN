@@ -30,7 +30,7 @@ async function requestAuctionDetail(
     baseUrl: string,
     auctionId: number,
     onSuccess: (auctionDetail: AuctionDetailItem) => void,
-    onFailure: () => void
+    onFailure: (message: string) => void
 ) {
     try {
         const response = await fetch(`${baseUrl}/auctions/${auctionId}`, {
@@ -45,11 +45,12 @@ async function requestAuctionDetail(
             const auctionDetail: AuctionDetailItem = await response.json();
             onSuccess(auctionDetail);
         } else {
-            onFailure();
+            const errorMessage = await response.text();
+            onFailure(errorMessage);
         }
     } catch (error) {
         console.error('Failed to fetch auction detail.', error);
-        onFailure();
+        onFailure("REQUEST AUCTION DETAIL.");
     }
 }
 
@@ -58,7 +59,7 @@ async function requestAuctionBid(
     auctionId: number,
     request: AuctionPurchaseRequest,
     onSuccess: () => void,
-    onFailure: () => void
+    onFailure: (message: string) => void
 ) {
     try {
         const response = await fetch(`${baseUrl}/auctions/${auctionId}/purchase`, {
@@ -78,12 +79,13 @@ async function requestAuctionBid(
         if (response.ok) {
             onSuccess();
         } else {
-            onFailure();
+            const errorMessage = await response.text();
+            onFailure(errorMessage);
         }
 
     } catch (error) {
         console.error('Failed to bid auction.', error);
-        onFailure();
+        onFailure("BID REQUEST FAILED");
     }
 }
 

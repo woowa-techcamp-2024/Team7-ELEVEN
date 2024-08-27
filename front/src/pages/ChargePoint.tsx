@@ -20,8 +20,8 @@ function ChargePointPage() {
                 showAlert("포인트 충전 성공!")
                 setRequest({amount: 0});
             },
-            () => {
-                showAlert("포인트 충전 실패!")
+            (message) => {
+                showAlert("포인트 충전 실패! " + message)
             }
         );
     }
