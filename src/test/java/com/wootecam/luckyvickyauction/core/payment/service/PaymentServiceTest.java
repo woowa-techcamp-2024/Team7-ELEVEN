@@ -286,6 +286,7 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
+                        .id(UUID.randomUUID())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -421,6 +422,7 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
+                        .id(UUID.randomUUID())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -466,6 +468,7 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
+                        .id(UUID.randomUUID())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
