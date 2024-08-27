@@ -88,14 +88,14 @@ const getAuctionStatus = (startedAt: Date, endedAt: Date): { status: string; tim
             return {
                 status: '곧 시작',
                 timeInfo: formatTime(timeUntilStart),
-                color: 'text-red-500'
+                color: 'bg-red-500'
             };
         } else {
             // 5분 이상
             return {
                 status: '진행 예정',
                 timeInfo: formatTime(timeUntilStart),
-                color: 'text-blue-500'
+                color: 'bg-blue-500'
             };
         }
     } else if (now >= startedAt && now <= endedAt) {
@@ -104,7 +104,7 @@ const getAuctionStatus = (startedAt: Date, endedAt: Date): { status: string; tim
         return {
             status: '진행 중',
             timeInfo: `남은 시간: ${formatTime(timeRemaining)}`,
-            color: 'text-red-500'
+            color: 'bg-red-500'
         };
     } else {
         // 경매 종료
@@ -112,7 +112,7 @@ const getAuctionStatus = (startedAt: Date, endedAt: Date): { status: string; tim
         return {
             status: '종료',
             timeInfo: formatEndTime(timeElapsed),
-            color: 'text-gray-500'
+            color: 'bg-gray-500'
         };
     }
 };
@@ -142,13 +142,17 @@ function getMsFromIso8601Duration(duration: string): number {
 }
 
 function getTimeDifferenceInMs(date1: Date, date2: Date): number {
-    const timeDifference = date2.getTime() - date1.getTime();
-    if (timeDifference < 0) {
-        return -timeDifference;
-    } else {
-        return timeDifference;
-    }
+    return date2.getTime() - date1.getTime();
 }
+
+// function getTimeDifferenceInMs(date1: Date, date2: Date): number {
+//     const timeDifference = date2.getTime() - date1.getTime();
+//     if (timeDifference < 0) {
+//         return -timeDifference;
+//     } else {
+//         return timeDifference;
+//     }
+// }
 
 export {
     getKrDateFormat,

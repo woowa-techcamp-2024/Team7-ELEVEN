@@ -24,12 +24,14 @@ const AuctionListElement: React.FC<AuctionSimpleInfo> = ({
 
     const [status, setStatus] = useState<string>('');
     const [timeInfo, setTimeInfo] = useState<string>('');
+    const [tagColor, setTagColor] = useState<string>('bg-gray-500');
 
     useEffect(() => {
         const updateStatus = () => {
-            const { status, timeInfo } = getAuctionStatus(startedAt, endedAt);
+            const { status, timeInfo, color } = getAuctionStatus(startedAt, endedAt);
             setStatus(status);
             setTimeInfo(timeInfo);
+            setTagColor(color);
         };
 
         updateStatus();
@@ -59,8 +61,7 @@ const AuctionListElement: React.FC<AuctionSimpleInfo> = ({
                     alt="Auction Item"
                     className={`w-full h-40 object-cover ${greyScale}`} // Apply grayscale based on status
                 />
-                {/* 상태 태그 */}
-                <span className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                <span className={`absolute top-2 right-2 ${tagColor} text-white text-xs px-2 py-1 rounded-full`}>
                     {status}
                 </span>
             </div>

@@ -24,6 +24,7 @@ function PricePolicyElement(
     const [nowPrice, setNowPrice] = useState<number>(0);
     const [isLastPrice, setIsLastPrice] = useState<boolean>(false);
     const [timeUntilNextChange, setTimeUntilNextChange] = useState({ minutes: 0, seconds: 0 });
+    const [isStarted, setIsStarted] = useState<boolean>(false);
 
     useEffect(() => {
         // 시작 가격을 설정한다.
@@ -31,7 +32,6 @@ function PricePolicyElement(
 
         // 현재 가격 갱신 타이머
         const intervalId = setInterval(() => {
-
             // 가격 하락 정책이 종료되었는지 체크
             const now = new Date();
             let isLastTime = false;
@@ -70,6 +70,10 @@ function PricePolicyElement(
                 seconds: secondsUntilNextChange
             });
 
+            // 경매 시작했는지 확인하는 로직
+            if (now >= auction.startedAt) {
+                setIsStarted(true);
+            }
         }, 1000);
 
         return () => clearInterval(intervalId);
@@ -130,7 +134,11 @@ function PricePolicyElement(
                                     <h1 className="text-2xl font-bold">{getPriceFormatted(nowPrice)}</h1>
                                 </div>
                                 : <div>
-                                    <h2 className="text-2xl font-bold pt-5">{timeUntilNextChange.minutes}분 {timeUntilNextChange.seconds}초 뒤</h2>
+                                    {
+                                        isStarted
+                                            ? <h2 className="text-2xl font-bold pt-5">{timeUntilNextChange.minutes}분 {timeUntilNextChange.seconds}초 뒤</h2>
+                                            : <h2 className="text-2xl font-bold pt-5">첫 할인가!</h2>
+                                    }
                                     <h1 className="text-2xl font-bold">{getPriceFormatted(calculateNextPrice(nowPrice))}</h1>
                                 </div>
                         }

@@ -24,7 +24,7 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
     const [quantity, setQuantity] = useState<number>(1);
     const [leftInfo, setLeftInfo] = useState<String>("불러오는 중...");
 
-    const [isFinished, setIsFinished] = useState<boolean>(true);
+    const [isNotRunning, setIsNotRunning] = useState<boolean>(true);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const [countdown, setCountdown] = useState(0);
     const [showConfetti, setShowConfetti] = useState(false);
@@ -106,6 +106,7 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
         }
 
         // 현재 가격 갱신 타이머
+        setIsNotRunning(true);
         const intervalId = setInterval(() => {
             const { status, timeInfo } = getAuctionStatus(auction.startedAt, auction.finishedAt);
             if (status === "종료") {
@@ -117,13 +118,13 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
                 setLeftInfo(status + " (" + timeInfo + ")");
             } else {
                 setLeftInfo(status + " (" + timeInfo + ")");
-                setIsFinished(false);  // 입찰 버튼 활성화
+                setIsNotRunning(false);  // 입찰 버튼 활성화
             }
 
         }, 1000);
 
         return () => clearInterval(intervalId);
-    }, [auction]);
+    }, []);
 
     useEffect(() => {
         if (isButtonDisabled) {
@@ -337,9 +338,9 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
 
                         <div>
                             <button
-                                className={`btn text-white ${isFinished || isButtonDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#61CBC6]'} `}
+                                className={`btn text-white ${isNotRunning || isButtonDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#61CBC6]'} `}
                                 onClick={onClickBidButton}
-                                disabled={isFinished || isButtonDisabled}
+                                disabled={isNotRunning || isButtonDisabled}
                             >
                                 {getButtonText()}  {/*입찰하기 버튼*/}
                             </button>
