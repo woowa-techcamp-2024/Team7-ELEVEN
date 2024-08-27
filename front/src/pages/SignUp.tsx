@@ -44,6 +44,7 @@ function SignUpPage() {
             baseUrl,
             request,
             () => {
+                showAlert("회원가입에 성공했습니다!");
                 setPage('login');
             },
             (message) => {
