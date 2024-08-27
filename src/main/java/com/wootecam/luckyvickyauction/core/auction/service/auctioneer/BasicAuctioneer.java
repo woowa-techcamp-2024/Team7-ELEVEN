@@ -71,7 +71,7 @@ public class BasicAuctioneer implements Auctioneer {
     public void refund(AuctionRefundRequestMessage message) {
         verifyHasBuyerRole(message.buyerInfo());
 
-        Receipt receipt = findRefundTargetReceipt(message.receiptId());
+        Receipt receipt = findRefundTargetReceiptForUpdate(message.receiptId());
         verifyEndAuction(message.requestTime(), receipt.getAuctionId());
         verifySameBuyer(message.buyerInfo(), receipt.getBuyerId());
         receipt.markAsRefund();
@@ -108,4 +108,8 @@ public class BasicAuctioneer implements Auctioneer {
                 () -> new NotFoundException("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=" + receiptId, ErrorCode.P002));
     }
 
+    private Receipt findRefundTargetReceiptForUpdate(long receiptId) {
+        return receiptRepository.findByIdForUpdate(receiptId).orElseThrow(
+                () -> new NotFoundException("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=" + receiptId, ErrorCode.P002));
+    }
 }
