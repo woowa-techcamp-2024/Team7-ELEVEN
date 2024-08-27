@@ -105,17 +105,17 @@ function ReceiptDetailPage() {
                         <p className="text-lg font-semibold">{receiptDetail?.buyerId}</p>
                     </div>
 
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700">생성일</label>
-                        <p className="text-lg font-semibold">{getKrDateFormat(new Date(receiptDetail!.createdAt))}</p>
-                    </div>
+                    {/*<div className="mb-4">*/}
+                    {/*    <label className="block text-sm font-medium text-gray-700">생성일</label>*/}
+                    {/*    <p className="text-lg font-semibold">{getKrDateFormat(new Date(receiptDetail!.createdAt))}</p>*/}
+                    {/*</div>*/}
 
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700">수정일</label>
-                        <p className="text-lg font-semibold">
-                            {getKrDateFormat(new Date(receiptDetail!.updatedAt))}
-                        </p>
-                    </div>
+                    {/*<div className="mb-4">*/}
+                    {/*    <label className="block text-sm font-medium text-gray-700">수정일</label>*/}
+                    {/*    <p className="text-lg font-semibold">*/}
+                    {/*        {getKrDateFormat(new Date(receiptDetail!.updatedAt))}*/}
+                    {/*    </p>*/}
+                    {/*</div>*/}
 
                     {
                         receiptDetail?.receiptStatus === 'REFUND' ? ''
