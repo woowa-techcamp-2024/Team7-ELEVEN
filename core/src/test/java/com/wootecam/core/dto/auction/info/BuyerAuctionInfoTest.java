@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.core.domain.Auction;
-import com.wootecam.core.domain.type.ConstantPricePolicy;
-import com.wootecam.core.domain.type.PricePolicy;
+import com.wootecam.core.domain.entity.Auction;
+import com.wootecam.core.domain.entity.type.ConstantPricePolicy;
+import com.wootecam.core.domain.entity.type.PricePolicy;
 import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
 import java.time.Duration;

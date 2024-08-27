@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.2'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 java {
@@ -14,6 +15,22 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    asciidoctorExt
+}
+
 dependencies {
     implementation project(":core")
+    implementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.github.codemonstur:embedded-redis:1.4.3'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // spring-rest-docs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.1'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.1'
 }

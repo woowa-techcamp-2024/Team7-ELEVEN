@@ -1,6 +1,6 @@
 package com.wootecam.core.dto.auction.info;
 
-import com.wootecam.core.domain.type.PricePolicy;
+import com.wootecam.core.domain.entity.type.PricePolicy;
 import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
 import java.time.Duration;

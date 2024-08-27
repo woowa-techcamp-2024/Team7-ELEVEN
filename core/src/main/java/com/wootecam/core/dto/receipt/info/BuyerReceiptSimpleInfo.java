@@ -1,6 +1,6 @@
 package com.wootecam.core.dto.receipt.info;
 
-import com.wootecam.core.domain.type.ReceiptStatus;
+import com.wootecam.core.domain.entity.type.ReceiptStatus;
 import java.util.UUID;
 import lombok.Builder;
 

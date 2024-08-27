@@ -3,7 +3,7 @@ package com.wootecam.core.dto.auction.info;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.wootecam.core.domain.type.PricePolicy;
+import com.wootecam.core.domain.entity.type.PricePolicy;
 import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
 import java.time.Duration;

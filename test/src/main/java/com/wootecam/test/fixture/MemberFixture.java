@@ -1,8 +1,8 @@
 package com.wootecam.test.fixture;
 
-import com.wootecam.core.domain.Member;
-import com.wootecam.core.domain.Point;
-import com.wootecam.core.domain.type.Role;
+import com.wootecam.core.domain.entity.Member;
+import com.wootecam.core.domain.entity.Point;
+import com.wootecam.core.domain.entity.type.Role;
 
 public class MemberFixture {
 

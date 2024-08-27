@@ -23,12 +23,30 @@ configurations {
     asciidoctorExt
 }
 
-repositories {
-    mavenCentral()
-}
-
 ext {
     set('snippetsDir', file("build/generated-snippets"))
+}
+
+allprojects {
+
+    repositories {
+        mavenCentral()
+    }
+
+}
+
+subprojects {
+    apply {
+        plugin 'java'
+        plugin 'org.springframework.boot'
+        plugin 'io.spring.dependency-management'
+    }
+
+    dependencies {
+        // lombok
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+    }
 }
 
 dependencies {
@@ -59,7 +77,6 @@ dependencies {
 
     // spring-rest-docs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.1'
     testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.1'
 
     // test

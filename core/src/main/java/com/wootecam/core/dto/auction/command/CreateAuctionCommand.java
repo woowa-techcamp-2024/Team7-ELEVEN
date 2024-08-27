@@ -2,7 +2,7 @@ package com.wootecam.core.dto.auction.command;
 
 // 명령 단위 : 옥션 생성할때 쓰기 위한 파라미터 들
 
-import com.wootecam.core.domain.type.PricePolicy;
+import com.wootecam.core.domain.entity.type.PricePolicy;
 import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
 import java.time.Duration;

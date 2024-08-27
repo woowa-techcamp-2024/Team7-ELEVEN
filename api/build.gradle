@@ -1,0 +1,77 @@
+plugins {
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    asciidoctorExt
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    implementation project(":core")
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // prometheus
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    testImplementation project(':test')
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // spring-rest-docs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.1'
+    testImplementation 'io.rest-assured:spring-mock-mvc:5.3.2'
+}
+
+tasks.named('test') {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/docs')
+}
+
+asciidoctor {
+    configurations 'asciidoctorExt'
+    sources {
+        include("**/index.adoc")
+    }
+    baseDirFollowsSourceFile()
+    inputs.dir snippetsDir
+
+    dependsOn test
+}
+
+task createDocument(type: Copy) {
+    dependsOn asciidoctor
+
+    from asciidoctor.outputDir
+    into file("src/main/resources/docs")
+}
+
+bootJar {
+    dependsOn createDocument
+}
+
+
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
+}

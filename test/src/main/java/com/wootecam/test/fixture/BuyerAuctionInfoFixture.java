@@ -1,6 +1,6 @@
 package com.wootecam.test.fixture;
 
-import com.wootecam.core.domain.type.PricePolicy;
+import com.wootecam.core.domain.entity.type.PricePolicy;
 import com.wootecam.core.dto.auction.info.BuyerAuctionInfo;
 import java.time.Duration;
 import java.time.LocalDateTime;

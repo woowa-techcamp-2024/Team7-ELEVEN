@@ -3,10 +3,10 @@ package com.wootecam.core.dto.receipt.info;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.core.domain.Member;
-import com.wootecam.core.domain.Point;
-import com.wootecam.core.domain.type.ReceiptStatus;
-import com.wootecam.core.domain.type.Role;
+import com.wootecam.core.domain.entity.Member;
+import com.wootecam.core.domain.entity.Point;
+import com.wootecam.core.domain.entity.type.ReceiptStatus;
+import com.wootecam.core.domain.entity.type.Role;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;

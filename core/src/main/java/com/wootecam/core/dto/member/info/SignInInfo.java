@@ -1,6 +1,6 @@
 package com.wootecam.core.dto.member.info;
 
-import com.wootecam.core.domain.type.Role;
+import com.wootecam.core.domain.entity.type.Role;
 import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
 import java.util.Objects;
