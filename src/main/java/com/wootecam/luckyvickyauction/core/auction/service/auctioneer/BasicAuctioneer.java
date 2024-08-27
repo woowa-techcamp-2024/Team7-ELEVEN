@@ -108,7 +108,7 @@ public class BasicAuctioneer implements Auctioneer {
                 () -> new NotFoundException("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=" + receiptId, ErrorCode.P002));
     }
 
-    private Receipt findRefundTargetReceiptForUpdate(long receiptId) {
+    private Receipt findRefundTargetReceiptForUpdate(UUID receiptId) {
         return receiptRepository.findByIdForUpdate(receiptId).orElseThrow(
                 () -> new NotFoundException("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=" + receiptId, ErrorCode.P002));
     }

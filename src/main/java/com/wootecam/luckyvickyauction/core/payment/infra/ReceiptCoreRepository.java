@@ -44,4 +44,10 @@ public class ReceiptCoreRepository implements ReceiptRepository {
                 .map(Mapper::convertToReceipt)
                 .toList();
     }
+
+    @Override
+    public Optional<Receipt> findByIdForUpdate(UUID receiptId) {
+        Optional<ReceiptEntity> found = receiptJpaRepository.findByIdForUpdate(receiptId);
+        return found.map(Mapper::convertToReceipt);
+    }
 }
