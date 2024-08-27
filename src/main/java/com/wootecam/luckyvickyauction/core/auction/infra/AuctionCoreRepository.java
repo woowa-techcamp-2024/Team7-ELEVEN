@@ -49,10 +49,4 @@ public class AuctionCoreRepository implements AuctionRepository {
                 .map(Mapper::convertToAuction)
                 .toList();
     }
-
-    @Override
-    public Optional<Auction> findByIdForUpdate(long auctionId) {
-        Optional<AuctionEntity> auction = auctionJpaRepository.findByIdForUpdate(auctionId);
-        return auction.map(Mapper::convertToAuction);
-    }
 }

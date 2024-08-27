@@ -67,21 +67,20 @@ public class BasicAuctioneer implements Auctioneer {
      */
     @Override
     @Transactional
+    @DistributedLock("#message.receiptId + ':receipt:lock'")
     public void refund(AuctionRefundRequestMessage message) {
         verifyHasBuyerRole(message.buyerInfo());
 
-        Receipt receipt = findRefundTargetReceiptForUpdate(message.receiptId());
+        Receipt receipt = findRefundTargetReceipt(message.receiptId());
+        verifyEndAuction(message.requestTime(), receipt.getAuctionId());
         verifySameBuyer(message.buyerInfo(), receipt.getBuyerId());
         receipt.markAsRefund();
 
-        AuctionInfo auction = auctionService.getAuctionForUpdate(receipt.getAuctionId());
-        verifyEndAuction(message.requestTime(), auction.finishedAt());
-
-        auctionService.cancelPurchase(receipt.getAuctionId(), receipt.getQuantity());
         paymentService.pointTransfer(receipt.getSellerId(), receipt.getBuyerId(),
                 receipt.getPrice() * receipt.getQuantity());
+        auctionService.cancelPurchase(receipt.getAuctionId(), receipt.getQuantity());
 
-        receiptRepository.save(receipt);
+        receiptRepository.save(receipt);  // 정상적으로 환불 처리된 경우 해당 이력을 '환불' 상태로 변경
     }
 
     private void verifyHasBuyerRole(SignInInfo buyerInfo) {
@@ -90,8 +89,10 @@ public class BasicAuctioneer implements Auctioneer {
         }
     }
 
-    private void verifyEndAuction(LocalDateTime requestTime, LocalDateTime auctionFinishedAt) {
-        if (requestTime.isBefore(auctionFinishedAt)) {
+    private void verifyEndAuction(LocalDateTime requestTime, long auctionId) {
+        AuctionInfo auction = auctionService.getAuction(auctionId);
+
+        if (requestTime.isBefore(auction.finishedAt())) {
             throw new BadRequestException("종료된 경매만 환불할 수 있습니다.", ErrorCode.P007);
         }
     }
@@ -102,8 +103,9 @@ public class BasicAuctioneer implements Auctioneer {
         }
     }
 
-    private Receipt findRefundTargetReceiptForUpdate(UUID receiptId) {
-        return receiptRepository.findByIdForUpdate(receiptId).orElseThrow(
+    private Receipt findRefundTargetReceipt(UUID receiptId) {
+        return receiptRepository.findById(receiptId).orElseThrow(
                 () -> new NotFoundException("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=" + receiptId, ErrorCode.P002));
     }
+
 }
