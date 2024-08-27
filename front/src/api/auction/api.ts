@@ -58,7 +58,7 @@ async function requestAuctionBid(
     baseUrl: string,
     auctionId: number,
     request: AuctionPurchaseRequest,
-    onSuccess: () => void,
+    onSuccess: (uuid: string) => void,
     onFailure: (message: string) => void
 ) {
     try {
@@ -86,7 +86,7 @@ async function requestAuctionBid(
                 onFailure(`Error: ${bidResponse.message}`);
             } else {
                 // Success handling
-                onSuccess();
+                onSuccess(bidResponse.uuid);
             }
         } else {
             const errorMessage = await response.text();
