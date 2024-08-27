@@ -22,6 +22,7 @@ import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
 import java.time.Duration;
+import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -68,7 +69,7 @@ class PaymentServiceTest extends ServiceTest {
 
                 // when
                 var message = new AuctionPurchaseRequestMessage(
-                        "test",
+                        UUID.randomUUID(),
                         savedBuyer.getId(),
                         savedAuction.getId(),
                         10000L,
@@ -129,7 +130,7 @@ class PaymentServiceTest extends ServiceTest {
                 assertThatThrownBy(
                         () -> {
                             var message = new AuctionPurchaseRequestMessage(
-                                    "test",
+                                    UUID.randomUUID(),
                                     savedBuyer.getId() + 1L,
                                     savedAuction.getId(),
                                     10000L,
@@ -184,7 +185,7 @@ class PaymentServiceTest extends ServiceTest {
                 assertThatThrownBy(
                         () -> {
                             var message = new AuctionPurchaseRequestMessage(
-                                    "test",
+                                    UUID.randomUUID(),
                                     savedBuyer.getId(),
                                     savedAuction.getId(),
                                     10000L,
@@ -239,7 +240,7 @@ class PaymentServiceTest extends ServiceTest {
                 assertThatThrownBy(
                         () -> {
                             var message = new AuctionPurchaseRequestMessage(
-                                    "test",
+                                    UUID.randomUUID(),
                                     savedBuyer.getId(),
                                     savedAuction.getId(),
                                     10000L,
@@ -285,7 +286,7 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -296,22 +297,23 @@ class PaymentServiceTest extends ServiceTest {
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
-                receiptRepository.save(receipt);
+                Receipt savedReceipt = receiptRepository.save(receipt);
 
                 // when
-                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER),
+                        savedReceipt.getId(), now);
                 auctioneer.refund(message);
 
                 // then
-                Receipt savedReceipt = receiptRepository.findById(1L).get();
-                Member savedBuyer = memberRepository.findById(savedReceipt.getBuyerId()).get();
-                Member savedSeller = memberRepository.findById(savedReceipt.getSellerId()).get();
-                Auction savedAuction = auctionRepository.findById(savedReceipt.getAuctionId()).get();
+                Receipt findedReceipt = receiptRepository.findById(savedReceipt.getId()).get();
+                Member findedBuyer = memberRepository.findById(savedReceipt.getBuyerId()).get();
+                Member findedSeller = memberRepository.findById(savedReceipt.getSellerId()).get();
+                Auction findedAuction = auctionRepository.findById(savedReceipt.getAuctionId()).get();
                 assertAll(
-                        () -> assertThat(savedReceipt.getReceiptStatus()).isEqualTo(ReceiptStatus.REFUND),
-                        () -> assertThat(savedBuyer.getPoint().getAmount()).isEqualTo(1100L),
-                        () -> assertThat(savedSeller.getPoint().getAmount()).isEqualTo(900L),
-                        () -> assertThat(savedAuction.getCurrentStock()).isEqualTo(100L)
+                        () -> assertThat(findedReceipt.getReceiptStatus()).isEqualTo(ReceiptStatus.REFUND),
+                        () -> assertThat(findedBuyer.getPoint().getAmount()).isEqualTo(1100L),
+                        () -> assertThat(findedSeller.getPoint().getAmount()).isEqualTo(900L),
+                        () -> assertThat(findedAuction.getCurrentStock()).isEqualTo(100L)
                 );
             }
         }
@@ -329,7 +331,7 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -343,7 +345,8 @@ class PaymentServiceTest extends ServiceTest {
                 receiptRepository.save(receipt);
 
                 // expect
-                var message = new AuctionRefundRequestMessage(new SignInInfo(seller.getId(), Role.SELLER), 1L, now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(seller.getId(), Role.SELLER),
+                        UUID.randomUUID(), now);
                 assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(AuthorizationException.class)
                         .hasMessage("구매자만 환불을 할 수 있습니다.")
@@ -364,10 +367,10 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 // expect
-                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER),
+                        UUID.randomUUID(), now);
                 assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(NotFoundException.class)
-                        .hasMessage("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=1")
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                                 ErrorCode.P002));
             }
@@ -386,7 +389,7 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -397,10 +400,11 @@ class PaymentServiceTest extends ServiceTest {
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
-                receiptRepository.save(receipt);
+                Receipt savedReceipt = receiptRepository.save(receipt);
 
                 // expect
-                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER),
+                        savedReceipt.getId(), now);
                 assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(BadRequestException.class)
                         .hasMessage("이미 환불된 입찰 내역입니다.")
@@ -422,7 +426,7 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -433,7 +437,7 @@ class PaymentServiceTest extends ServiceTest {
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
-                receiptRepository.save(receipt);
+                Receipt savedReceipt = receiptRepository.save(receipt);
 
                 // expect
                 Member unPurchasedBuyer = Member.builder()
@@ -444,7 +448,8 @@ class PaymentServiceTest extends ServiceTest {
                         .point(new Point(1000L))
                         .build();
 
-                var message = new AuctionRefundRequestMessage(new SignInInfo(unPurchasedBuyer.getId(), Role.BUYER), 1L,
+                var message = new AuctionRefundRequestMessage(new SignInInfo(unPurchasedBuyer.getId(), Role.BUYER),
+                        savedReceipt.getId(),
                         now);
                 assertThatThrownBy(
                         () -> auctioneer.refund(message))
@@ -468,7 +473,7 @@ class PaymentServiceTest extends ServiceTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -479,10 +484,11 @@ class PaymentServiceTest extends ServiceTest {
                         .createdAt(now)
                         .updatedAt(now)
                         .build();
-                receiptRepository.save(receipt);
+                Receipt savedReceipt = receiptRepository.save(receipt);
 
                 // expect
-                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER), 1L, now);
+                var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER),
+                        savedReceipt.getId(), now);
                 assertThatThrownBy(
                         () -> auctioneer.refund(message))
                         .isInstanceOf(BadRequestException.class)

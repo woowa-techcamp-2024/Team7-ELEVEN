@@ -11,7 +11,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: off
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
 
   data:
     redis:

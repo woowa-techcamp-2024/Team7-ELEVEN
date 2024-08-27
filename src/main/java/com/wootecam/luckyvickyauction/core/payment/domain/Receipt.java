@@ -3,13 +3,14 @@ package com.wootecam.luckyvickyauction.core.payment.domain;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class Receipt {
 
-    private Long id;
+    private UUID id;
     private String productName;
     private long price;
     private long quantity;
@@ -24,7 +25,7 @@ public class Receipt {
 
     @Builder
     public Receipt(
-            final Long id,
+            final UUID id,
             final String productName,
             final long price,
             final long quantity,

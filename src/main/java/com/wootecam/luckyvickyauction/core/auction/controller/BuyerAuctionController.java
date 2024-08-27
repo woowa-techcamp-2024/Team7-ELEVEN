@@ -1,6 +1,7 @@
 package com.wootecam.luckyvickyauction.core.auction.controller;
 
 import com.wootecam.luckyvickyauction.core.auction.controller.dto.PurchaseRequest;
+import com.wootecam.luckyvickyauction.core.auction.controller.dto.PurchaseResponse;
 import com.wootecam.luckyvickyauction.core.auction.dto.AuctionSearchCondition;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionInfo;
 import com.wootecam.luckyvickyauction.core.auction.dto.BuyerAuctionSimpleInfo;
@@ -52,12 +53,12 @@ public class BuyerAuctionController {
     // 사용자는 경매에 입찰한다.
     @BuyerOnly
     @PostMapping("/auctions/{auctionId}/purchase")
-    public ResponseEntity<Void> submitAuction(@Login SignInInfo signInInfo,
-                                              @CurrentTime LocalDateTime now,
-                                              @PathVariable(name = "auctionId") Long auctionId,
-                                              @RequestBody PurchaseRequest purchaseRequest) {
+    public ResponseEntity<PurchaseResponse> submitAuction(@Login SignInInfo signInInfo,
+                                                          @CurrentTime LocalDateTime now,
+                                                          @PathVariable(name = "auctionId") Long auctionId,
+                                                          @RequestBody PurchaseRequest purchaseRequest) {
         AuctionPurchaseRequestMessage requestMessage = AuctionPurchaseRequestMessage.builder()
-                .requestId(UUID.randomUUID().toString())
+                .requestId(UUID.randomUUID())
                 .buyerId(signInInfo.id())
                 .auctionId(auctionId)
                 .price(purchaseRequest.price())
@@ -65,7 +66,9 @@ public class BuyerAuctionController {
                 .requestTime(now)
                 .build();
         auctioneer.process(requestMessage);
-        return ResponseEntity.ok().build();
+
+        PurchaseResponse response = new PurchaseResponse(requestMessage.requestId());
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -77,7 +80,7 @@ public class BuyerAuctionController {
     @BuyerOnly
     @PutMapping("/receipts/{receiptId}/refund")
     public ResponseEntity<Void> refundAuction(@Login SignInInfo buyerInfo,
-                                              @PathVariable("receiptId") Long receiptId,
+                                              @PathVariable("receiptId") UUID receiptId,
                                               @CurrentTime LocalDateTime now) {
         var message = new AuctionRefundRequestMessage(buyerInfo, receiptId, now);
         auctioneer.refund(message);

@@ -8,6 +8,7 @@ import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class ReceiptInfoTest {
@@ -15,7 +16,6 @@ class ReceiptInfoTest {
     @Test
     void 입찰_내역_생성_요청을_정상적으로_처리한다() {
         // given
-        Long id = 1L;
         String productName = "상품이름";
         long price = 10000L;
         long quantity = 1L;
@@ -39,6 +39,7 @@ class ReceiptInfoTest {
         LocalDateTime updatedAt = LocalDateTime.now();
 
         // when
+        UUID id = UUID.randomUUID();
         ReceiptInfo receiptInfo = new ReceiptInfo(id, productName, price, quantity, receiptStatus, auctionId,
                 seller.getId(), buyer.getId(), createdAt, updatedAt);
 

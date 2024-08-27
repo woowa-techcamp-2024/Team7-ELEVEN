@@ -28,6 +28,7 @@ import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -66,8 +67,8 @@ public class ReceiptDocument extends DocumentationTest {
                                                     .attributes(key("constraints").value("최소: 1 ~ 최대: 100"))
                                     ),
                                     responseFields(
-                                            fieldWithPath("[].id").type(JsonFieldType.NUMBER)
-                                                    .description("거래 내역 ID"),
+                                            fieldWithPath("[].id").type(JsonFieldType.STRING)
+                                                    .description("거래 내역 ID (UUID)"),
                                             fieldWithPath("[].auctionId").type(JsonFieldType.NUMBER)
                                                     .description("구매한 경매의 ID"),
                                             fieldWithPath("[].type").type(JsonFieldType.STRING)
@@ -89,7 +90,7 @@ public class ReceiptDocument extends DocumentationTest {
 
             for (long i = 1; i <= 3; i++) {
                 BuyerReceiptSimpleInfo receipt = BuyerReceiptSimpleInfo.builder()
-                        .id(i)
+                        .id(UUID.randomUUID())
                         .auctionId(i)
                         .price(i * 1000)
                         .productName("내가 구매한 상품" + i)
@@ -129,8 +130,8 @@ public class ReceiptDocument extends DocumentationTest {
                                             .attributes(key("constraints").value("최소: 1 ~ 최대: 100"))
                             ),
                             responseFields(
-                                    fieldWithPath("[].id").type(JsonFieldType.NUMBER)
-                                            .description("거래 내역 ID"),
+                                    fieldWithPath("[].id").type(JsonFieldType.STRING)
+                                            .description("거래 내역 ID (UUID)"),
                                     fieldWithPath("[].auctionId").type(JsonFieldType.NUMBER)
                                             .description("구매한 경매의 ID"),
                                     fieldWithPath("[].type").type(JsonFieldType.STRING)
@@ -151,7 +152,7 @@ public class ReceiptDocument extends DocumentationTest {
 
             for (long i = 1; i <= 3; i++) {
                 SellerReceiptSimpleInfo receipt = SellerReceiptSimpleInfo.builder()
-                        .id(i)
+                        .id(UUID.randomUUID())
                         .auctionId(i)
                         .price(i * 1000)
                         .productName("내가 판매한 상품" + i)
@@ -170,9 +171,9 @@ public class ReceiptDocument extends DocumentationTest {
 
         @Test
         void 거래내역_id에_해당하는_거래내역을_조회한다() throws Exception {
-            String receiptId = "1";
+            UUID receiptId = UUID.randomUUID();
             ReceiptInfo receiptInfo = ReceiptInfo.builder()
-                    .receiptId(1L)
+                    .receiptId(receiptId)
                     .productName("상품명")
                     .price(1000L)
                     .quantity(1L)
@@ -185,7 +186,7 @@ public class ReceiptDocument extends DocumentationTest {
                     .build();
             SignInInfo memberInfo = new SignInInfo(1L, Role.SELLER);
             given(authenticationContext.getPrincipal()).willReturn(memberInfo);
-            given(receiptService.getReceiptInfo(memberInfo, 1L)).willReturn(receiptInfo);
+            given(receiptService.getReceiptInfo(memberInfo, receiptId)).willReturn(receiptInfo);
 
             mockMvc.perform(get("/receipts/{receiptId}", receiptId)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))
@@ -202,7 +203,7 @@ public class ReceiptDocument extends DocumentationTest {
                                             parameterWithName("receiptId").description("조회할 거래내역 ID")
                                     ),
                                     responseFields(
-                                            fieldWithPath("receiptId").type(JsonFieldType.NUMBER)
+                                            fieldWithPath("receiptId").type(JsonFieldType.STRING)
                                                     .description("거래 내역 ID"),
                                             fieldWithPath("productName").type(JsonFieldType.STRING)
                                                     .description("상품명"),
