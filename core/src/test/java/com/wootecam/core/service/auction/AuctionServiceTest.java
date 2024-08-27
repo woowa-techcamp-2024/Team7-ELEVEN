@@ -5,15 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.core.context.DatabaseCleaner;
+import com.wootecam.core.context.ServiceTest;
 import com.wootecam.core.domain.entity.Auction;
 import com.wootecam.core.domain.entity.Member;
 import com.wootecam.core.domain.entity.type.AuctionStatus;
 import com.wootecam.core.domain.entity.type.ConstantPricePolicy;
 import com.wootecam.core.domain.entity.type.PricePolicy;
 import com.wootecam.core.domain.entity.type.Role;
-import com.wootecam.core.domain.repository.AuctionRepository;
-import com.wootecam.core.domain.repository.MemberRepository;
 import com.wootecam.core.dto.auction.command.CancelAuctionCommand;
 import com.wootecam.core.dto.auction.command.CreateAuctionCommand;
 import com.wootecam.core.dto.auction.info.SellerAuctionInfo;
@@ -22,38 +20,24 @@ import com.wootecam.core.exception.AuthorizationException;
 import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
 import com.wootecam.core.exception.NotFoundException;
-import com.wootecam.test.context.ServiceTest;
-import com.wootecam.test.fixture.AuctionFixture;
-import com.wootecam.test.fixture.MemberFixture;
+import com.wootecam.core.fixture.AuctionFixture;
+import com.wootecam.core.fixture.MemberFixture;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.assertj.core.api.AssertionsForClassTypes;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class AuctionServiceTest extends ServiceTest {
-
-    @Autowired
-    public AuctionService auctionService;
-    @Autowired
-    public AuctionRepository auctionRepository;
-    @Autowired
-    public MemberRepository memberRepository;
-    @Autowired
-    public DatabaseCleaner databaseCleaner;
-
-    @AfterEach
-    void tearDown() {
-        databaseCleaner.clear();
-    }
 
     @Nested
     class createAuction_메소드는 {

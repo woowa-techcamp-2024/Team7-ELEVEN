@@ -4,14 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 
-import com.wootecam.core.domain.entity.Auction;
 import com.wootecam.core.domain.entity.type.AuctionStatus;
 import com.wootecam.core.domain.entity.type.ConstantPricePolicy;
 import com.wootecam.core.domain.entity.type.PercentagePricePolicy;
 import com.wootecam.core.domain.entity.type.PricePolicy;
 import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
-import com.wootecam.test.fixture.AuctionFixture;
+import com.wootecam.core.fixture.AuctionFixture;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;

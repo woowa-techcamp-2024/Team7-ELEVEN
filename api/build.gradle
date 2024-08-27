@@ -20,7 +20,10 @@ java {
 }
 
 dependencies {
+    // multi-module
     implementation project(":core")
+
+    // spring
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
@@ -32,9 +35,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.redisson:redisson-spring-boot-starter:3.34.1'
 
-    testImplementation project(':test')
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // test
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // spring-rest-docs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'

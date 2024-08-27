@@ -1,8 +1,8 @@
 package com.wootecam.api.config;
 
-import com.wootecam.api.controller.CurrentTimeArgumentResolver;
+import com.wootecam.api.controller.annotation.AuthenticationArgumentResolver;
+import com.wootecam.api.controller.annotation.CurrentTimeArgumentResolver;
 import com.wootecam.api.interceptor.AuthenticationInterceptor;
-import com.wootecam.api.util.AuthenticationArgumentResolver;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

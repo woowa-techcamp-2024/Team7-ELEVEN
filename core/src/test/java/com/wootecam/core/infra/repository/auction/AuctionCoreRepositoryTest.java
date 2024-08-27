@@ -9,7 +9,7 @@ import com.wootecam.core.dto.auction.condition.AuctionSearchCondition;
 import com.wootecam.core.dto.auction.condition.SellerAuctionSearchCondition;
 import com.wootecam.core.domain.repository.AuctionRepository;
 import com.wootecam.core.infra.entity.auction.AuctionEntity;
-import com.wootecam.test.context.RepositoryTest;
+import com.wootecam.core.context.RepositoryTest;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

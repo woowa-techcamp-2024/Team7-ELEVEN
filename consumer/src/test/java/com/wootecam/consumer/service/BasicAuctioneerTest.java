@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.consumer.context.DatabaseCleaner;
+import com.wootecam.consumer.fixture.AuctionFixture;
+import com.wootecam.consumer.fixture.MemberFixture;
 import com.wootecam.core.domain.entity.Auction;
 import com.wootecam.core.domain.entity.Member;
 import com.wootecam.core.domain.entity.Point;
@@ -23,10 +25,9 @@ import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
 import com.wootecam.core.exception.NotFoundException;
 import com.wootecam.core.service.auctioneer.Auctioneer;
-import com.wootecam.test.context.ServiceTest;
-import com.wootecam.test.fixture.AuctionFixture;
-import com.wootecam.test.fixture.MemberFixture;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -38,19 +39,28 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-class BasicAuctioneerTest extends ServiceTest {
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+class BasicAuctioneerTest {
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
+
     @Autowired
-    AuctionRepository auctionRepository;
+    private AuctionRepository auctionRepository;
+
     @Autowired
-    ReceiptRepository receiptRepository;
+    private ReceiptRepository receiptRepository;
+
     @Autowired
-    Auctioneer auctioneer;
+    private Auctioneer auctioneer;
+
     @Autowired
-    DatabaseCleaner databaseCleaner;
+    private DatabaseCleaner databaseCleaner;
+
+    private LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
 
     @BeforeEach
     public void tearDown(){

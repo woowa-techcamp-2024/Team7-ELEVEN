@@ -4,12 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.core.domain.entity.Member;
-import com.wootecam.core.domain.entity.Point;
 import com.wootecam.core.domain.entity.type.Role;
 import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
-import com.wootecam.test.fixture.MemberFixture;
+import com.wootecam.core.fixture.MemberFixture;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

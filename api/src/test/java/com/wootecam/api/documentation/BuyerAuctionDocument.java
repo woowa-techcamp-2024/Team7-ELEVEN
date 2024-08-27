@@ -7,12 +7,12 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.wootecam.api.dto.PurchaseRequest;
+import com.wootecam.api.fixture.BuyerAuctionInfoFixture;
 import com.wootecam.core.domain.entity.type.PricePolicy;
 import com.wootecam.core.domain.entity.type.Role;
 import com.wootecam.core.dto.auction.info.BuyerAuctionInfo;
 import com.wootecam.core.dto.auction.info.BuyerAuctionSimpleInfo;
 import com.wootecam.core.dto.member.info.SignInInfo;
-import com.wootecam.test.fixture.BuyerAuctionInfoFixture;
 import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -116,10 +116,12 @@ class BuyerAuctionDocument extends DocumentationTest {
                                             getAttribute("format", "재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨")),
                                     PayloadDocumentation.fieldWithPath("currentStock").description("현재 재고").attributes(
                                             getAttribute("format", "재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨")),
-                                    PayloadDocumentation.fieldWithPath("maximumPurchaseLimitCount").description("최대 구매 수량 제한"),
+                                    PayloadDocumentation.fieldWithPath("maximumPurchaseLimitCount")
+                                            .description("최대 구매 수량 제한"),
                                     PayloadDocumentation.fieldWithPath("pricePolicy").description("가격 정책"),
                                     PayloadDocumentation.fieldWithPath("pricePolicy.type").description("가격 정책 타입"),
-                                    PayloadDocumentation.fieldWithPath("pricePolicy.variationWidth").description("절대 변동 폭"),
+                                    PayloadDocumentation.fieldWithPath("pricePolicy.variationWidth")
+                                            .description("절대 변동 폭"),
                                     PayloadDocumentation.fieldWithPath("variationDuration").description("가격 변동 주기"),
                                     PayloadDocumentation.fieldWithPath("startedAt").description("경매 시작 시간"),
                                     PayloadDocumentation.fieldWithPath("finishedAt").description("경매 종료 시간")
@@ -157,10 +159,12 @@ class BuyerAuctionDocument extends DocumentationTest {
                                             getAttribute("format", "재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨")),
                                     PayloadDocumentation.fieldWithPath("currentStock").description("현재 재고").attributes(
                                             getAttribute("format", "재고를 보여주지 않는다면 NULL이고 응답 값에서 제외됨")),
-                                    PayloadDocumentation.fieldWithPath("maximumPurchaseLimitCount").description("최대 구매 수량 제한"),
+                                    PayloadDocumentation.fieldWithPath("maximumPurchaseLimitCount")
+                                            .description("최대 구매 수량 제한"),
                                     PayloadDocumentation.fieldWithPath("pricePolicy").description("가격 정책"),
                                     PayloadDocumentation.fieldWithPath("pricePolicy.type").description("가격 정책 타입"),
-                                    PayloadDocumentation.fieldWithPath("pricePolicy.discountRate").description("가격 변동 할인율"),
+                                    PayloadDocumentation.fieldWithPath("pricePolicy.discountRate")
+                                            .description("가격 변동 할인율"),
                                     PayloadDocumentation.fieldWithPath("variationDuration").description("가격 변동 주기"),
                                     PayloadDocumentation.fieldWithPath("startedAt").description("경매 시작 시간"),
                                     PayloadDocumentation.fieldWithPath("finishedAt").description("경매 종료 시간")

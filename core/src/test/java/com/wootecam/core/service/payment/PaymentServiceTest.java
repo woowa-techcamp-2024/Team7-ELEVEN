@@ -2,41 +2,18 @@ package com.wootecam.core.service.payment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.wootecam.core.domain.entity.Auction;
+import com.wootecam.core.context.ServiceTest;
 import com.wootecam.core.domain.entity.Member;
 import com.wootecam.core.domain.entity.Point;
-import com.wootecam.core.domain.entity.Receipt;
-import com.wootecam.core.domain.entity.type.ConstantPricePolicy;
-import com.wootecam.core.domain.entity.type.ReceiptStatus;
 import com.wootecam.core.domain.entity.type.Role;
-import com.wootecam.core.domain.repository.AuctionRepository;
-import com.wootecam.core.domain.repository.MemberRepository;
-import com.wootecam.core.domain.repository.ReceiptRepository;
-import com.wootecam.core.dto.auction.message.AuctionPurchaseRequestMessage;
-import com.wootecam.core.dto.auction.message.AuctionRefundRequestMessage;
 import com.wootecam.core.dto.member.info.SignInInfo;
-import com.wootecam.core.exception.AuthorizationException;
 import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
-import com.wootecam.core.exception.NotFoundException;
-import com.wootecam.core.service.auctioneer.Auctioneer;
-import com.wootecam.test.context.ServiceTest;
-import com.wootecam.test.fixture.AuctionFixture;
-import com.wootecam.test.fixture.MemberFixture;
-import java.time.Duration;
-import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 class PaymentServiceTest extends ServiceTest {
-
-    @Autowired
-    public PaymentService paymentService;
-    @Autowired
-    public MemberRepository memberRepository;
 
     @Nested
     class chargePoint_메소드는 {

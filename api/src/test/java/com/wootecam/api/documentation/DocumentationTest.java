@@ -5,7 +5,7 @@ import com.wootecam.api.config.JsonConfig;
 import com.wootecam.api.context.AuthenticationContext;
 import com.wootecam.api.controller.AuthController;
 import com.wootecam.api.controller.BuyerAuctionController;
-import com.wootecam.api.controller.CurrentTimeArgumentResolver;
+import com.wootecam.api.controller.annotation.CurrentTimeArgumentResolver;
 import com.wootecam.api.controller.PaymentController;
 import com.wootecam.api.controller.ReceiptController;
 import com.wootecam.api.controller.SellerAuctionController;

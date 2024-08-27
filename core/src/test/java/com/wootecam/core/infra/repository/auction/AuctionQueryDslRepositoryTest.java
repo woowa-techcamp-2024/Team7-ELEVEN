@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.wootecam.core.dto.auction.condition.AuctionSearchCondition;
 import com.wootecam.core.infra.entity.auction.AuctionEntity;
-import com.wootecam.test.context.RepositoryTest;
+import com.wootecam.core.context.RepositoryTest;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

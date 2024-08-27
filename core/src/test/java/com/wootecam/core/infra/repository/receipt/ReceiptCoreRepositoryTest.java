@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.core.domain.entity.Receipt;
 import com.wootecam.core.domain.entity.type.ReceiptStatus;
-import com.wootecam.core.infra.repository.receipt.ReceiptCoreRepository;
-import com.wootecam.test.context.RepositoryTest;
+import com.wootecam.core.context.RepositoryTest;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Nested;

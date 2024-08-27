@@ -1,9 +1,9 @@
 package com.wootecam.api.interceptor;
 
 import com.wootecam.api.context.AuthenticationContext;
-import com.wootecam.api.controller.BuyerOnly;
-import com.wootecam.api.controller.Roles;
-import com.wootecam.api.controller.SellerOnly;
+import com.wootecam.api.controller.annotation.BuyerOnly;
+import com.wootecam.api.controller.annotation.Roles;
+import com.wootecam.api.controller.annotation.SellerOnly;
 import com.wootecam.core.domain.entity.type.Role;
 import com.wootecam.core.dto.member.info.SignInInfo;
 import com.wootecam.core.exception.AuthenticationException;
