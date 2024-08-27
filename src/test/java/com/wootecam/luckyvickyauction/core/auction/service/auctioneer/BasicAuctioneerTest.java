@@ -9,9 +9,13 @@ import com.wootecam.luckyvickyauction.core.auction.domain.ConstantPricePolicy;
 import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.Point;
 import com.wootecam.luckyvickyauction.core.member.domain.Role;
+import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.core.member.fixture.MemberFixture;
 import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
+import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -20,6 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 class BasicAuctioneerTest extends ServiceTest {
 
@@ -81,6 +86,7 @@ class BasicAuctioneerTest extends ServiceTest {
                 doneSignal.await();
                 executorService.shutdown();
 
+                // then
                 assertAll(
                         () -> assertThat(successCount.get()).isEqualTo(5L),
                         () -> assertThat(failCount.get()).isEqualTo(5L)
@@ -169,6 +175,77 @@ class BasicAuctioneerTest extends ServiceTest {
                         () -> assertThat(buyer1Point).isEqualTo(999L),
                         () -> assertThat(buyer2Point).isEqualTo(0L),
                         () -> assertThat(currentStock).isEqualTo(0L)
+                );
+            }
+        }
+
+        @Nested
+        class 다수가_동시에_같은_경매에_환불을_하는_경우 {
+
+            @Test
+            void 정상적으로_재고와_포인트가_수정되어야_한다() throws InterruptedException {
+                // given
+                Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
+                Member buyer = memberRepository.save(Member.builder()
+                        .signInId("buyerId")
+                        .password("password00")
+                        .role(Role.BUYER)
+                        .point(new Point(1000000000L))
+                        .build());
+
+                Auction auction = auctionRepository.save(Auction.builder()
+                        .sellerId(seller.getId())
+                        .productName("상품 이름")
+                        .originPrice(1000L)
+                        .currentPrice(1000L)
+                        .originStock(10L)
+                        .currentStock(10L)
+                        .maximumPurchaseLimitCount(5)
+                        .pricePolicy(new ConstantPricePolicy(100L))
+                        .variationDuration(Duration.ofMinutes(10))
+                        .startedAt(now)
+                        .finishedAt(now.plusHours(1))
+                        .build());
+
+                List<UUID> requestIds = new ArrayList<>();
+                for (int i = 0; i < 10; i++) {
+                    UUID requestId = UUID.randomUUID();
+                    requestIds.add(requestId);
+                    auctioneer.process(
+                            new AuctionPurchaseRequestMessage(requestId, buyer.getId(), auction.getId(), 1000L, 1L,
+                                    now));
+                }
+
+                SignInInfo buyerInfo = new SignInInfo(buyer.getId(), Role.BUYER);
+
+                int numThreads = 10;
+                CountDownLatch doneSignal = new CountDownLatch(numThreads);
+                ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+
+                // when
+                for (int i = 0; i < numThreads; i++) {
+                    UUID finalI = requestIds.get(i);
+                    executorService.execute(() -> {
+                        try {
+                            auctioneer.refund(new AuctionRefundRequestMessage(buyerInfo, finalI, now.plusHours(2)));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            doneSignal.countDown();
+                        }
+                    });
+                }
+                doneSignal.await();
+                executorService.shutdown();
+
+                // then
+                Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
+                Member updatedSeller = memberRepository.findById(seller.getId()).get();
+                Member updatedBuyer = memberRepository.findById(buyer.getId()).get();
+                assertAll(
+                        () -> assertThat(updatedAuction.getCurrentStock()).isEqualTo(10L),
+                        () -> assertThat(updatedSeller.getPoint().getAmount()).isEqualTo(1000L),
+                        () -> assertThat(updatedBuyer.getPoint().getAmount()).isEqualTo(1000000000L)
                 );
             }
         }

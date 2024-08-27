@@ -105,6 +105,7 @@ class ReceiptServiceTest extends ServiceTest {
             SignInInfo nonOwner = new SignInInfo(3L, Role.BUYER);
 
             Receipt receipt = Receipt.builder()
+                    .id(UUID.randomUUID())
                     .sellerId(seller.getId())
                     .buyerId(buyer.getId())
                     .build();

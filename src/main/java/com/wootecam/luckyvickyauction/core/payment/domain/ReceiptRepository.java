@@ -15,4 +15,6 @@ public interface ReceiptRepository {
     List<Receipt> findAllByBuyerId(Long buyerId, BuyerReceiptSearchCondition condition);
 
     List<Receipt> findAllBySellerId(Long sellerId, SellerReceiptSearchCondition condition);
+
+    Optional<Receipt> findByIdForUpdate(UUID receiptId);
 }
