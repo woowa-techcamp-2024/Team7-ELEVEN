@@ -41,6 +41,13 @@ public class GlobalAdvice {
                 .body(ErrorResponse.of(e.getMessage(), e.getErrorCode().name()));
     }
 
+    @ExceptionHandler(SuccessfulOperationException.class)
+    public ResponseEntity<ErrorResponse> handleSuccessfulOperationException(final SuccessfulOperationException e) {
+        log.warn("SUCCESS RESULT CODE {} : {}", e.getErrorCode(), e.getMessage());
+        return ResponseEntity.ok()
+                .body(ErrorResponse.of(e.getMessage(), e.getErrorCode().name()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleInternalServerError(final Exception e) {
         StringWriter out = new StringWriter();

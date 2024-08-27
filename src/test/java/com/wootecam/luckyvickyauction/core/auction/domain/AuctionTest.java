@@ -7,6 +7,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException
 import com.wootecam.luckyvickyauction.core.auction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.global.exception.SuccessfulOperationException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
@@ -531,7 +532,7 @@ class AuctionTest {
         }
 
         @Nested
-        class 구매_불가능한_숫자만큼_요청이_오면 {
+        class 최대_구매_가능_수량보다_크거나_0이하의_구매_요청이_오면 {
 
             @ParameterizedTest
             @ValueSource(longs = {0L, 31L, 101L})
@@ -556,8 +557,40 @@ class AuctionTest {
                 // expect
                 assertThatThrownBy(() -> auction.submit(7000L, requestQuantity, now))
                         .isInstanceOf(BadRequestException.class)
-                        .hasMessage(String.format("해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d",
-                                auction.getCurrentStock(), requestQuantity, auction.getMaximumPurchaseLimitCount()))
+                        .hasMessage(String.format("구매 가능 갯수를 초과하거나 0이하의 갯수만큼 구매할 수 없습니다. 요청: %d, 인당구매제한: %d",
+                                requestQuantity, auction.getMaximumPurchaseLimitCount()))
+                        .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A030);
+            }
+        }
+
+        @Nested
+        class 현재_재고보다_요청한_수량이_많다면 {
+
+            @ParameterizedTest
+            @ValueSource(longs = {11L, 12L, 30L})
+            void 예외가_발생한다(long requestQuantity) {
+                // given
+                LocalDateTime now = LocalDateTime.now();
+                Auction auction = Auction.builder()
+                        .sellerId(1L)
+                        .productName("productName")
+                        .originPrice(10000L)
+                        .currentPrice(10000L)
+                        .originStock(100L)
+                        .currentStock(10L)
+                        .maximumPurchaseLimitCount(30L)
+                        .pricePolicy(new ConstantPricePolicy(1000L))
+                        .variationDuration(Duration.ofMinutes(10L))
+                        .startedAt(now.minusMinutes(30))
+                        .finishedAt(now.plusMinutes(30))
+                        .isShowStock(true)
+                        .build();
+
+                // expect
+                assertThatThrownBy(() -> auction.submit(7000L, requestQuantity, now))
+                        .isInstanceOf(SuccessfulOperationException.class)
+                        .hasMessage(String.format("재고가 부족합니다. 현재 재고: %d, 요청 구매 수량: %d", auction.getCurrentStock(),
+                                requestQuantity))
                         .hasFieldOrPropertyWithValue("errorCode", ErrorCode.A012);
             }
         }
