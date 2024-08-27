@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.consumer.context.DatabaseCleaner;
 import com.wootecam.core.domain.entity.Auction;
 import com.wootecam.core.domain.entity.Member;
 import com.wootecam.core.domain.entity.Point;
@@ -32,6 +33,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -47,6 +49,13 @@ class BasicAuctioneerTest extends ServiceTest {
     ReceiptRepository receiptRepository;
     @Autowired
     Auctioneer auctioneer;
+    @Autowired
+    DatabaseCleaner databaseCleaner;
+
+    @BeforeEach
+    public void tearDown(){
+        databaseCleaner.clear();
+    }
 
     @Nested
     class 동시성_테스트 {

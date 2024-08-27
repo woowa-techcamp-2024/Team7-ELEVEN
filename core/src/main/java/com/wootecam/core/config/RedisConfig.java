@@ -1,4 +1,4 @@
-package com.wootecam.api.config;
+package com.wootecam.core.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
