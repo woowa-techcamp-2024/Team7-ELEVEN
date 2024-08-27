@@ -104,18 +104,20 @@ function SignUpPage() {
                                 />
                                 <span className="ml-2 text-gray-700">구매자</span>
                             </label>
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="userType"
-                                    value="SELLER"
-                                    className="radio radio-primary"
-                                    checked={request.userRole === 'SELLER'}
-                                    onChange={handleUserTypeChange}
-                                    disabled
-                                />
-                                <span className="ml-2 text-gray-700">판매자</span>
-                            </label>
+
+                            {/*<label className="flex items-center">*/}
+                            {/*    <input*/}
+                            {/*        type="radio"*/}
+                            {/*        name="userType"*/}
+                            {/*        value="SELLER"*/}
+                            {/*        className="radio radio-primary"*/}
+                            {/*        checked={request.userRole === 'SELLER'}*/}
+                            {/*        onChange={handleUserTypeChange}*/}
+                            {/*        disabled*/}
+                            {/*    />*/}
+                            {/*    <span className="ml-2 text-gray-700">판매자</span>*/}
+                            {/*</label>*/}
+
                         </div>
                     </div>
 
