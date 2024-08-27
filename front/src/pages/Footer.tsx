@@ -7,8 +7,11 @@ import creditCardIcon from '../img/credit-card.svg';
 import listIcon from '../img/list.svg';
 import logInIcon from '../img/log-in.svg';
 import logOutIcon from '../img/log-out.svg';
+import useAlert from "../hooks/useAlert";
 
 function Footer() {
+    const {showAlert} = useAlert();
+
     const { currentPage, setPage } = usePageStore();
     const { isLogin, setIsLogin } = useLoginStore();
     const baseUrl = process.env.REACT_APP_API_URL || '';
@@ -27,8 +30,9 @@ function Footer() {
                 setIsLogin(false);
                 setPage('home');
             },
-            () => {
+            (message) => {
                 console.log('Failed to sign out.');
+                showAlert(message);
             }
         );
     };

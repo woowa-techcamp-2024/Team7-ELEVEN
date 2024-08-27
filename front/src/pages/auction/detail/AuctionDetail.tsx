@@ -111,6 +111,10 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
             if (status === "종료") {
                 let krDateFormat = "경매 종료 (" + getKrDateFormat(auction.finishedAt) + ")";
                 setLeftInfo(krDateFormat);
+            } if (status === "진행 예정") {
+                setLeftInfo(status + " (" + timeInfo + ")");
+            } if (status === "곧 시작") {
+                setLeftInfo(status + " (" + timeInfo + ")");
             } else {
                 setLeftInfo(status + " (" + timeInfo + ")");
                 setIsFinished(false);  // 입찰 버튼 활성화
@@ -199,14 +203,13 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
                 setIsButtonDisabled(true);  // 버튼 비활성화
                 setCountdown(5);  // 5초 카운트다운 시작
             },
-            () => {
-                showAlert("입찰에 실패했습니다.");
+            (message) => {
+                showAlert(message);
             }
         );
     }
 
     const getButtonText = () => {
-        if (isFinished) return '경매 종료';
         if (isButtonDisabled) return `${countdown}초 남음`;
         return '입찰하기';
     }

@@ -5,8 +5,10 @@ import {ReceiptDetailItem} from "../../../api/receipt/type";
 import {getPriceFormatted} from "../../../util/NumberUtil";
 import {getKrDateFormat} from "../../../util/DateUtil";
 import {usePageStore} from "../../../store/PageStore";
+import useAlert from "../../../hooks/useAlert";
 
 function ReceiptDetailPage() {
+    const {showAlert} = useAlert();
 
     const {receiptId, setReceiptId} = useReceiptStore();
     const {currentPage, setPage} = usePageStore();
@@ -50,8 +52,9 @@ function ReceiptDetailPage() {
                 console.log('Refund success.');
                 setPage('home');
             },
-            () => {
-                console.log('Refund failed.');
+            (message) => {
+                console.log('Refund failed. ' + message);
+                showAlert(message);
             }
         )
     }

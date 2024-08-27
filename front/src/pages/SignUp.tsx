@@ -46,8 +46,8 @@ function SignUpPage() {
             () => {
                 setPage('login');
             },
-            () => {
-                showAlert('회원가입에 실패했습니다.');
+            (message) => {
+                showAlert(message);
             }
         );
     }
