@@ -76,7 +76,7 @@ public class Auction {
         if (durationNanos % NANOS_IN_MINUTE != 0) {
             long leftNanoSeconds = durationNanos % NANOS_IN_MINUTE;
             String message = String.format("경매 지속 시간은 정확히 분 단위여야 합니다. 현재 남는 나노초: %d초", leftNanoSeconds);
-            throw new BadRequestException(message, ErrorCode.A030);
+            throw new BadRequestException(message, ErrorCode.A029);
         }
     }
 
@@ -85,11 +85,6 @@ public class Auction {
             String message = String.format("경매 할인 주기는 경매 지속 시간에서 나누었을때 나누어 떨어져야 합니다. 할인 주기 시간(초): %d, 경매 주기 시간(초): %d",
                     variationDuration.getSeconds(), auctionDuration.getSeconds());
             throw new BadRequestException(message, ErrorCode.A028);
-        }
-
-        if (auctionDuration.minus(variationDuration).isZero()
-                || auctionDuration.minus(variationDuration).isNegative()) {
-            throw new BadRequestException("경매 할인 주기 시간은 경매 지속 시간보다 작아야 합니다.", ErrorCode.A029);
         }
     }
 
