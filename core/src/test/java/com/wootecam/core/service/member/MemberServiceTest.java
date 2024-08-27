@@ -4,19 +4,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.core.context.DatabaseCleaner;
 import com.wootecam.core.domain.entity.Member;
 import com.wootecam.core.domain.entity.Point;
 import com.wootecam.core.domain.entity.type.Role;
+import com.wootecam.core.domain.repository.MemberRepository;
 import com.wootecam.core.dto.member.info.SignInInfo;
 import com.wootecam.core.dto.member.info.SignInRequestInfo;
 import com.wootecam.core.dto.member.info.SignUpRequestInfo;
 import com.wootecam.core.exception.BadRequestException;
 import com.wootecam.core.exception.ErrorCode;
 import com.wootecam.test.context.ServiceTest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 class MemberServiceTest extends ServiceTest {
+
+    @Autowired
+    public MemberRepository memberRepository;
+    @Autowired
+    public MemberService memberService;
+    @Autowired
+    public DatabaseCleaner databaseCleaner;
+
+    @AfterEach
+    void tearDown() {
+        databaseCleaner.clear();
+    }
 
     @Nested
     class signUp_메소드는 {

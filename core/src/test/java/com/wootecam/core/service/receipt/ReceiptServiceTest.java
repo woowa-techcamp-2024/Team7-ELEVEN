@@ -4,10 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.wootecam.core.context.DatabaseCleaner;
 import com.wootecam.core.domain.entity.Member;
 import com.wootecam.core.domain.entity.Receipt;
 import com.wootecam.core.domain.entity.type.ReceiptStatus;
 import com.wootecam.core.domain.entity.type.Role;
+import com.wootecam.core.domain.repository.MemberRepository;
+import com.wootecam.core.domain.repository.ReceiptRepository;
 import com.wootecam.core.dto.member.info.SignInInfo;
 import com.wootecam.core.dto.receipt.condition.BuyerReceiptSearchCondition;
 import com.wootecam.core.dto.receipt.condition.SellerReceiptSearchCondition;
@@ -22,13 +25,29 @@ import com.wootecam.test.fixture.MemberFixture;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 class ReceiptServiceTest extends ServiceTest {
+
+    @Autowired
+    public MemberRepository memberRepository;
+    @Autowired
+    public ReceiptRepository receiptRepository;
+    @Autowired
+    public ReceiptService receiptService;
+    @Autowired
+    public DatabaseCleaner databaseCleaner;
+
+    @AfterEach
+    void tearDown() {
+        databaseCleaner.clear();
+    }
 
     @Nested
     class getReceiptInfo_메서드는 {

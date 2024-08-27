@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: lucky-vicky-auction
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: off
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    redis:
+      port: 6379
+      password: 1q2w3e
+      host: localhost
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: 'prometheus'
+
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
+
+lock:
+  provider: redisson
+  lettuce:
+    max_retry: 10
+    retry_duration: 50
+    lease_time: 200
+  redisson:
+    wait_time: 500
+    lease_time: 200
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+
+stream:
+  key: LVA-Stream
+  consumer:
+    groupName: LVA-Group

@@ -5,6 +5,7 @@ import com.wootecam.core.dto.auction.condition.AuctionSearchCondition;
 import com.wootecam.core.dto.auction.condition.SellerAuctionSearchCondition;
 import com.wootecam.core.domain.repository.AuctionRepository;
 import com.wootecam.core.infra.entity.auction.AuctionEntity;
+import com.wootecam.core.service.payment.PaymentService;
 import com.wootecam.core.util.Mapper;
 import java.util.List;
 import java.util.Optional;
