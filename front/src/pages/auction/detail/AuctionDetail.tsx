@@ -79,7 +79,6 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
     }, []);
 
     useEffect(() => {
-
         if (auctionId === undefined) {
             return;
         }
@@ -105,26 +104,23 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
             return;
         }
 
-        // 현재 가격 갱신 타이머
+        // 남은 시간 갱신 타이머
         setIsNotRunning(true);
-        const intervalId = setInterval(() => {
-            const { status, timeInfo } = getAuctionStatus(auction.startedAt, auction.finishedAt);
-            if (status === "종료") {
-                let krDateFormat = "경매 종료 (" + getKrDateFormat(auction.finishedAt) + ")";
-                setLeftInfo(krDateFormat);
-            } if (status === "진행 예정") {
-                setLeftInfo(status + " (" + timeInfo + ")");
-            } if (status === "곧 시작") {
-                setLeftInfo(status + " (" + timeInfo + ")");
-            } else {
-                setLeftInfo(status + " (" + timeInfo + ")");
-                setIsNotRunning(false);  // 입찰 버튼 활성화
-            }
-
-        }, 1000);
-
-        return () => clearInterval(intervalId);
-    }, []);
+        const {status, timeInfo} = getAuctionStatus(auction.startedAt, auction.finishedAt);
+        if (status === "종료") {
+            let krDateFormat = "경매 종료 (" + getKrDateFormat(auction.finishedAt) + ")";
+            setLeftInfo(krDateFormat);
+        }
+        if (status === "진행 예정") {
+            setLeftInfo(status + " (" + timeInfo + ")");
+        }
+        if (status === "곧 시작") {
+            setLeftInfo(status + " (" + timeInfo + ")");
+        } else {
+            setLeftInfo(status + " (" + timeInfo + ")");
+            setIsNotRunning(false);  // 입찰 버튼 활성화
+        }
+    }, [auction]);
 
     useEffect(() => {
         if (isButtonDisabled) {
