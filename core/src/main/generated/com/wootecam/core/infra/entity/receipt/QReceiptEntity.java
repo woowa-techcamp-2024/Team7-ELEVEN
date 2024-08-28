@@ -1,4 +1,4 @@
-package com.wootecam.core.infra.entity.receipt;
+package com.wootecam.luckyvickyauction.infra.entity.receipt;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -23,7 +23,8 @@ public class QReceiptEntity extends EntityPathBase<ReceiptEntity> {
 
     public final NumberPath<Long> buyerId = createNumber("buyerId", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt",
+            java.time.LocalDateTime.class);
 
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
@@ -33,11 +34,13 @@ public class QReceiptEntity extends EntityPathBase<ReceiptEntity> {
 
     public final NumberPath<Long> quantity = createNumber("quantity", Long.class);
 
-    public final EnumPath<com.wootecam.core.domain.entity.type.ReceiptStatus> receiptStatus = createEnum("receiptStatus", com.wootecam.core.domain.entity.type.ReceiptStatus.class);
+    public final EnumPath<com.wootecam.luckyvickyauction.domain.entity.type.ReceiptStatus> receiptStatus = createEnum(
+            "receiptStatus", com.wootecam.luckyvickyauction.domain.entity.type.ReceiptStatus.class);
 
     public final NumberPath<Long> sellerId = createNumber("sellerId", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt",
+            java.time.LocalDateTime.class);
 
     public QReceiptEntity(String variable) {
         super(ReceiptEntity.class, forVariable(variable));

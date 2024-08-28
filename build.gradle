@@ -2,29 +2,11 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.2'
     id 'io.spring.dependency-management' version '1.1.6'
-    id 'org.asciidoctor.jvm.convert' version '3.3.2'
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-    asciidoctorExt
-}
-
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
 }
 
 allprojects {
 
-    group = 'com.wootecam'
+    group = 'com.wootecam.luckyvickyauction'
     version = '0.0.1-SNAPSHOT'
 
     repositories {
@@ -41,86 +23,36 @@ subprojects {
     }
 
     dependencies {
+        // spring
+        implementation 'org.springframework.boot:spring-boot-starter'
+
         // lombok
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
+
+        // test
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    jar.enabled = true
+}
+
+project(':core') {
+    dependencies {
     }
 }
 
-dependencies {
-    // spring
-    implementation project(":core")
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-    // lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    // db
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'com.mysql:mysql-connector-j'
-
-    // query dsl library add
-    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
-    // prometheus
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-    // spring-rest-docs
-    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured:3.0.1'
-
-    // test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'io.rest-assured:spring-mock-mvc:5.3.2'
-
-    // redis
-    implementation 'org.redisson:redisson-spring-boot-starter:3.34.1'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    testImplementation 'com.github.codemonstur:embedded-redis:1.4.3'
-}
-
-tasks.named('test') {
-    outputs.dir snippetsDir
-    useJUnitPlatform()
-}
-
-asciidoctor.doFirst {
-    delete file('src/main/resources/docs')
-}
-
-asciidoctor {
-    configurations 'asciidoctorExt'
-    sources {
-        include("**/index.adoc")
+project(':api') {
+    dependencies {
+        implementation project(':core')
     }
-    baseDirFollowsSourceFile()
-    inputs.dir snippetsDir
-
-    dependsOn test
 }
 
-task createDocument(type: Copy) {
-    dependsOn asciidoctor
-
-    from asciidoctor.outputDir
-    into file("src/main/resources/docs")
+project(':consumer') {
+    dependencies {
+        implementation project(':core')
+    }
 }
 
-bootJar {
-    dependsOn createDocument
-}
-
-
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    dependsOn test
-}
+bootJar.enabled = false

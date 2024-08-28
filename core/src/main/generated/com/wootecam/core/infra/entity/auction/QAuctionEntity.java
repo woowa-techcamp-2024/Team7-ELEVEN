@@ -1,4 +1,4 @@
-package com.wootecam.core.infra.entity.auction;
+package com.wootecam.luckyvickyauction.infra.entity.auction;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -23,7 +23,8 @@ public class QAuctionEntity extends EntityPathBase<AuctionEntity> {
 
     public final NumberPath<Long> currentStock = createNumber("currentStock", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> finishedAt = createDateTime("finishedAt", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.LocalDateTime> finishedAt = createDateTime("finishedAt",
+            java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -35,15 +36,18 @@ public class QAuctionEntity extends EntityPathBase<AuctionEntity> {
 
     public final NumberPath<Long> originStock = createNumber("originStock", Long.class);
 
-    public final SimplePath<com.wootecam.core.domain.entity.type.PricePolicy> pricePolicy = createSimple("pricePolicy", com.wootecam.core.domain.entity.type.PricePolicy.class);
+    public final SimplePath<com.wootecam.luckyvickyauction.domain.entity.type.PricePolicy> pricePolicy = createSimple(
+            "pricePolicy", com.wootecam.luckyvickyauction.domain.entity.type.PricePolicy.class);
 
     public final StringPath productName = createString("productName");
 
     public final NumberPath<Long> sellerId = createNumber("sellerId", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> startedAt = createDateTime("startedAt", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.LocalDateTime> startedAt = createDateTime("startedAt",
+            java.time.LocalDateTime.class);
 
-    public final ComparablePath<java.time.Duration> variationDuration = createComparable("variationDuration", java.time.Duration.class);
+    public final ComparablePath<java.time.Duration> variationDuration = createComparable("variationDuration",
+            java.time.Duration.class);
 
     public QAuctionEntity(String variable) {
         super(AuctionEntity.class, forVariable(variable));

@@ -1,4 +1,4 @@
-package com.wootecam.core.infra.entity.member;
+package com.wootecam.luckyvickyauction.infra.entity.member;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -25,7 +25,8 @@ public class QMemberEntity extends EntityPathBase<MemberEntity> {
 
     public final NumberPath<Long> point = createNumber("point", Long.class);
 
-    public final EnumPath<com.wootecam.core.domain.entity.type.Role> role = createEnum("role", com.wootecam.core.domain.entity.type.Role.class);
+    public final EnumPath<com.wootecam.luckyvickyauction.domain.entity.type.Role> role = createEnum("role",
+            com.wootecam.luckyvickyauction.domain.entity.type.Role.class);
 
     public final StringPath signInId = createString("signInId");
 
