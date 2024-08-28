@@ -17,7 +17,7 @@ class ReceiptTest {
         // given
         LocalDateTime now = LocalDateTime.now();
         Receipt refundReceipt = Receipt.builder()
-                .id(UUID.randomUUID())
+                .id(UUID.randomUUID().toString())
                 .auctionId(1L)
                 .productName("test")
                 .price(100L)

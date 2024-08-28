@@ -110,7 +110,7 @@ class BasicAuctioneerTest {
 
                 // when
                 var message = new AuctionPurchaseRequestMessage(
-                        UUID.randomUUID(),
+                        UUID.randomUUID().toString(),
                         savedBuyer.getId(),
                         savedAuction.getId(),
                         10000L,
@@ -171,7 +171,7 @@ class BasicAuctioneerTest {
                 assertThatThrownBy(
                         () -> {
                             var message = new AuctionPurchaseRequestMessage(
-                                    UUID.randomUUID(),
+                                    UUID.randomUUID().toString(),
                                     savedBuyer.getId() + 1L,
                                     savedAuction.getId(),
                                     10000L,
@@ -226,7 +226,7 @@ class BasicAuctioneerTest {
                 assertThatThrownBy(
                         () -> {
                             var message = new AuctionPurchaseRequestMessage(
-                                    UUID.randomUUID(),
+                                    UUID.randomUUID().toString(),
                                     savedBuyer.getId(),
                                     savedAuction.getId(),
                                     10000L,
@@ -281,7 +281,7 @@ class BasicAuctioneerTest {
                 assertThatThrownBy(
                         () -> {
                             var message = new AuctionPurchaseRequestMessage(
-                                    UUID.randomUUID(),
+                                    UUID.randomUUID().toString(),
                                     savedBuyer.getId(),
                                     savedAuction.getId(),
                                     10000L,
@@ -327,7 +327,7 @@ class BasicAuctioneerTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -372,7 +372,7 @@ class BasicAuctioneerTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -387,7 +387,7 @@ class BasicAuctioneerTest {
 
                 // expect
                 var message = new AuctionRefundRequestMessage(new SignInInfo(seller.getId(), Role.SELLER),
-                        UUID.randomUUID(), now);
+                        UUID.randomUUID().toString(), now);
                 assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(AuthorizationException.class)
                         .hasMessage("구매자만 환불을 할 수 있습니다.")
@@ -409,7 +409,7 @@ class BasicAuctioneerTest {
 
                 // expect
                 var message = new AuctionRefundRequestMessage(new SignInInfo(buyer.getId(), Role.BUYER),
-                        UUID.randomUUID(), now);
+                        UUID.randomUUID().toString(), now);
                 assertThatThrownBy(() -> auctioneer.refund(message))
                         .isInstanceOf(NotFoundException.class)
                         .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
@@ -430,7 +430,7 @@ class BasicAuctioneerTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -467,7 +467,7 @@ class BasicAuctioneerTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -514,7 +514,7 @@ class BasicAuctioneerTest {
                 auctionRepository.save(auction);
 
                 Receipt receipt = Receipt.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .auctionId(1L)
                         .productName("test")
                         .price(100L)
@@ -582,7 +582,7 @@ class BasicAuctioneerTest {
                     executorService.execute(() -> {
                         try {
                             auctioneer.process(
-                                    new AuctionPurchaseRequestMessage(UUID.randomUUID(), buyer.getId(),
+                                    new AuctionPurchaseRequestMessage(UUID.randomUUID().toString(), buyer.getId(),
                                             auction.getId(), 1000L, 2L, now));
                             successCount.getAndIncrement();
                         } catch (Exception e) {
@@ -655,11 +655,11 @@ class BasicAuctioneerTest {
                         try {
                             if (currentIndex == randomNumber) {
                                 auctioneer.process(
-                                        new AuctionPurchaseRequestMessage(UUID.randomUUID(), buyer1.getId(),
+                                        new AuctionPurchaseRequestMessage(UUID.randomUUID().toString(), buyer1.getId(),
                                                 auction.getId(), 1000L, 1L, now));
                             } else {
                                 auctioneer.process(
-                                        new AuctionPurchaseRequestMessage(UUID.randomUUID(), buyer2.getId(),
+                                        new AuctionPurchaseRequestMessage(UUID.randomUUID().toString(), buyer2.getId(),
                                                 auction.getId(), 1000L, 1L, now));
                             }
 
@@ -723,7 +723,8 @@ class BasicAuctioneerTest {
                     UUID requestId = UUID.randomUUID();
                     requestIds.add(requestId);
                     auctioneer.process(
-                            new AuctionPurchaseRequestMessage(requestId, buyer.getId(), auction.getId(), 1000L, 1L,
+                            new AuctionPurchaseRequestMessage(requestId.toString(), buyer.getId(), auction.getId(),
+                                    1000L, 1L,
                                     now));
                 }
 
@@ -738,7 +739,8 @@ class BasicAuctioneerTest {
                     UUID finalI = requestIds.get(i);
                     executorService.execute(() -> {
                         try {
-                            auctioneer.refund(new AuctionRefundRequestMessage(buyerInfo, finalI, now.plusHours(2)));
+                            auctioneer.refund(
+                                    new AuctionRefundRequestMessage(buyerInfo, finalI.toString(), now.plusHours(2)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         } finally {

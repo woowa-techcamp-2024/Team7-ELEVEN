@@ -86,7 +86,7 @@ public class ReceiptDocument extends DocumentationTest {
 
             for (long i = 1; i <= 3; i++) {
                 BuyerReceiptSimpleInfo receipt = BuyerReceiptSimpleInfo.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .auctionId(i)
                         .price(i * 1000)
                         .productName("내가 구매한 상품" + i)
@@ -148,7 +148,7 @@ public class ReceiptDocument extends DocumentationTest {
 
             for (long i = 1; i <= 3; i++) {
                 SellerReceiptSimpleInfo receipt = SellerReceiptSimpleInfo.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .auctionId(i)
                         .price(i * 1000)
                         .productName("내가 판매한 상품" + i)
@@ -169,7 +169,7 @@ public class ReceiptDocument extends DocumentationTest {
         void 거래내역_id에_해당하는_거래내역을_조회한다() throws Exception {
             UUID receiptId = UUID.randomUUID();
             ReceiptInfo receiptInfo = ReceiptInfo.builder()
-                    .receiptId(receiptId)
+                    .receiptId(receiptId.toString())
                     .productName("상품명")
                     .price(1000L)
                     .quantity(1L)
@@ -182,7 +182,7 @@ public class ReceiptDocument extends DocumentationTest {
                     .build();
             SignInInfo memberInfo = new SignInInfo(1L, Role.SELLER);
             given(authenticationContext.getPrincipal()).willReturn(memberInfo);
-            given(receiptService.getReceiptInfo(memberInfo, receiptId)).willReturn(receiptInfo);
+            given(receiptService.getReceiptInfo(memberInfo, receiptId.toString())).willReturn(receiptInfo);
 
             mockMvc.perform(RestDocumentationRequestBuilders.get("/receipts/{receiptId}", receiptId)
                             .cookie(new Cookie("JSESSIONID", "sessionId"))

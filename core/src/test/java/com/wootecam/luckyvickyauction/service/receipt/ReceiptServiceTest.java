@@ -45,13 +45,13 @@ class ReceiptServiceTest extends ServiceTest {
 
         @ParameterizedTest(name = "{1} 시 성공한다")
         @MethodSource("provideMembersForSuccess")
-        void 소유자가_거래내역_조회시_성공한다(Long memberId, String description) {
+        void 소유자가_거래내역_조회시_성공한다() {
             // given
             Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
             Member seller = memberRepository.save(MemberFixture.createSellerWithDefaultPoint());
 
             Receipt receipt = Receipt.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .productName("멋진 상품")
                     .price(1000000)
                     .quantity(1)
@@ -89,7 +89,8 @@ class ReceiptServiceTest extends ServiceTest {
 
             // expect
             assertThatThrownBy(
-                    () -> receiptService.getReceiptInfo(new SignInInfo(member.getId(), Role.BUYER), receiptId))
+                    () -> receiptService.getReceiptInfo(new SignInInfo(member.getId(), Role.BUYER),
+                            receiptId.toString()))
                     .isInstanceOf(NotFoundException.class)
                     .satisfies(exception -> assertThat(exception).hasFieldOrPropertyWithValue("errorCode",
                             ErrorCode.R000));
@@ -105,7 +106,7 @@ class ReceiptServiceTest extends ServiceTest {
             SignInInfo nonOwner = new SignInInfo(3L, Role.BUYER);
 
             Receipt receipt = Receipt.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .sellerId(seller.getId())
                     .buyerId(buyer.getId())
                     .build();
@@ -134,7 +135,7 @@ class ReceiptServiceTest extends ServiceTest {
                         .build();
 
                 Receipt receipt = Receipt.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .build();
@@ -169,7 +170,7 @@ class ReceiptServiceTest extends ServiceTest {
                         .build();
 
                 Receipt receipt = Receipt.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .sellerId(seller.getId())
                         .buyerId(buyer.getId())
                         .build();

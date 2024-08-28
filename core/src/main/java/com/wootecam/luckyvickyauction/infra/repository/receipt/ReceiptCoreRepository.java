@@ -8,7 +8,6 @@ import com.wootecam.luckyvickyauction.infra.entity.receipt.ReceiptEntity;
 import com.wootecam.luckyvickyauction.util.Mapper;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +25,7 @@ public class ReceiptCoreRepository implements ReceiptRepository {
     }
 
     @Override
-    public Optional<Receipt> findById(UUID receiptId) {
+    public Optional<Receipt> findById(String receiptId) {
         Optional<ReceiptEntity> found = receiptJpaRepository.findById(receiptId);
         return found.map(Mapper::convertToReceipt);
     }
@@ -46,7 +45,7 @@ public class ReceiptCoreRepository implements ReceiptRepository {
     }
 
     @Override
-    public Optional<Receipt> findByIdForUpdate(UUID receiptId) {
+    public Optional<Receipt> findByIdForUpdate(String receiptId) {
         Optional<ReceiptEntity> found = receiptJpaRepository.findByIdForUpdate(receiptId);
         return found.map(Mapper::convertToReceipt);
     }
