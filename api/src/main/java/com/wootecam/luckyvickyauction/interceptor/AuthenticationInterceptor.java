@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 @Component
@@ -55,7 +56,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     private boolean preProcessing(final Object handler, final HttpServletRequest request) {
-        return handler instanceof ResourceHttpRequestHandler || CorsUtils.isPreFlightRequest(request);
+        return handler instanceof ResourceHttpRequestHandler
+                || handler instanceof ParameterizableViewController
+                || CorsUtils.isPreFlightRequest(request);
     }
 
     private boolean isPublicPath(HandlerMethod handlerMethod) {
