@@ -7,11 +7,11 @@ cd front
 npm run build
 
 # Step 3: Remove old static resources in the Spring Boot project
-rm -rf ../src/main/resources/static/*
+rm -rf ../api/src/main/resources/static/*
 
 # Step 4: Copy new build files to the Spring Boot static resources directory
-mkdir ../src/main/resources/static
-cp -r build/* ../src/main/resources/static
+mkdir ../api/src/main/resources/static
+cp -r build/* ../api/src/main/resources/static
 
 # Step 5: Navigate to the Spring Boot project directory
 cd ..

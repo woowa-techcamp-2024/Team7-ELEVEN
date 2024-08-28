@@ -1,0 +1,6 @@
+[[paymentPoint]]
+== 포인트(구매자, 판매자 권한 필요)
+
+=== 포인트 충전
+
+operation::payment/chargePoint/success[snippets='http-request,http-response,request-cookies,request-fields']

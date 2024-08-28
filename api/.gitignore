@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# front 빌드 이후 배포 공간
+src/main/resources/static/

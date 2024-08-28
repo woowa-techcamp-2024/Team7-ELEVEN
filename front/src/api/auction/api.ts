@@ -1,4 +1,4 @@
-import {AuctionDetailItem, AuctionItem, AuctionPurchaseRequest, AuctionsRequest} from "./type";
+import {AuctionBidResponse, AuctionDetailItem, AuctionItem, AuctionPurchaseRequest, AuctionsRequest} from "./type";
 
 async function requestAuctionList(
     baseUrl: string,
@@ -30,7 +30,7 @@ async function requestAuctionDetail(
     baseUrl: string,
     auctionId: number,
     onSuccess: (auctionDetail: AuctionDetailItem) => void,
-    onFailure: () => void
+    onFailure: (message: string) => void
 ) {
     try {
         const response = await fetch(`${baseUrl}/auctions/${auctionId}`, {
@@ -45,11 +45,12 @@ async function requestAuctionDetail(
             const auctionDetail: AuctionDetailItem = await response.json();
             onSuccess(auctionDetail);
         } else {
-            onFailure();
+            const errorMessage = await response.text();
+            onFailure(errorMessage);
         }
     } catch (error) {
         console.error('Failed to fetch auction detail.', error);
-        onFailure();
+        onFailure("REQUEST AUCTION DETAIL.");
     }
 }
 
@@ -57,8 +58,8 @@ async function requestAuctionBid(
     baseUrl: string,
     auctionId: number,
     request: AuctionPurchaseRequest,
-    onSuccess: () => void,
-    onFailure: () => void
+    onSuccess: (uuid: string) => void,
+    onFailure: (message: string) => void
 ) {
     try {
         const response = await fetch(`${baseUrl}/auctions/${auctionId}/purchase`, {
@@ -76,14 +77,25 @@ async function requestAuctionBid(
         });
 
         if (response.ok) {
-            onSuccess();
+            const bidResponse: AuctionBidResponse = await response.json();
+            console.log(bidResponse);
+
+            // Check for the specific errorCode
+            if (bidResponse.errorCode === 'A012') {
+                // Treat this as a failure
+                onFailure(`Error: ${bidResponse.message}`);
+            } else {
+                // Success handling
+                onSuccess(bidResponse.uuid);
+            }
         } else {
-            onFailure();
+            const errorMessage = await response.text();
+            onFailure(errorMessage);
         }
 
     } catch (error) {
         console.error('Failed to bid auction.', error);
-        onFailure();
+        onFailure("BID REQUEST FAILED");
     }
 }
 

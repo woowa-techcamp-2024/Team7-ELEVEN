@@ -88,14 +88,14 @@ const getAuctionStatus = (startedAt: Date, endedAt: Date): { status: string; tim
             return {
                 status: '곧 시작',
                 timeInfo: formatTime(timeUntilStart),
-                color: 'text-red-500'
+                color: 'bg-red-500'
             };
         } else {
             // 5분 이상
             return {
                 status: '진행 예정',
                 timeInfo: formatTime(timeUntilStart),
-                color: 'text-blue-500'
+                color: 'bg-blue-500'
             };
         }
     } else if (now >= startedAt && now <= endedAt) {
@@ -104,7 +104,7 @@ const getAuctionStatus = (startedAt: Date, endedAt: Date): { status: string; tim
         return {
             status: '진행 중',
             timeInfo: `남은 시간: ${formatTime(timeRemaining)}`,
-            color: 'text-red-500'
+            color: 'bg-red-500'
         };
     } else {
         // 경매 종료
@@ -112,43 +112,56 @@ const getAuctionStatus = (startedAt: Date, endedAt: Date): { status: string; tim
         return {
             status: '종료',
             timeInfo: formatEndTime(timeElapsed),
-            color: 'text-gray-500'
+            color: 'bg-gray-500'
         };
     }
 };
 
-// iso 8601 형식의 문자열을 n분으로 변환하는 함수
+// iso 8601 형식의 문자열을 분과 초로 변환하는 함수
 function formatVariationDuration(duration: string): string {
-    // 정규식을 사용해 "PTnM" 형식에서 n을 추출합니다.
-    const match = duration.match(/^PT(\d+)M$/);
+    // 정규식을 사용해 "PTnM" 또는 "PTnS" 형식에서 n을 추출합니다.
+    const match = duration.match(/^PT(?:(\d+)M)?(?:(\d+)S)?$/);
 
-    if (match && match[1]) {
-        const minutes = parseInt(match[1], 10);
-        return `${minutes}분`;
+    if (match) {
+        const minutes = match[1] ? parseInt(match[1], 10) : 0;
+        const seconds = match[2] ? parseInt(match[2], 10) : 0;
+
+        if (minutes === 0) {
+            return `${seconds}초`;
+        }
+        return `${minutes}분 ${seconds}초`;
     } else {
-        throw new Error("Invalid duration format. Expected format: PTnM");
+        throw new Error("Invalid duration format. Expected format: PTnM or PTnS or PTnMnS");
     }
 }
 
 function getMsFromIso8601Duration(duration: string): number {
-    const match = duration.match(/^PT(\d+)M$/);
+    // "PTnM" 또는 "PTnS" 또는 "PTnMnS" 형식에서 분과 초를 추출합니다.
+    const match = duration.match(/^PT(?:(\d+)M)?(?:(\d+)S)?$/);
 
-    if (match && match[1]) {
-        const minutes = parseInt(match[1], 10);
-        return minutes * 60 * 1000;
+    if (match) {
+        const minutes = match[1] ? parseInt(match[1], 10) : 0;
+        const seconds = match[2] ? parseInt(match[2], 10) : 0;
+
+        // 분과 초를 합쳐 밀리초로 변환합니다.
+        return (minutes * 60 + seconds) * 1000;
     } else {
-        throw new Error("Invalid duration format. Expected format: PTnM");
+        throw new Error("Invalid duration format. Expected format: PTnM or PTnS or PTnMnS");
     }
 }
 
 function getTimeDifferenceInMs(date1: Date, date2: Date): number {
-    const timeDifference = date2.getTime() - date1.getTime();
-    if (timeDifference < 0) {
-        return -timeDifference;
-    } else {
-        return timeDifference;
-    }
+    return date2.getTime() - date1.getTime();
 }
+
+// function getTimeDifferenceInMs(date1: Date, date2: Date): number {
+//     const timeDifference = date2.getTime() - date1.getTime();
+//     if (timeDifference < 0) {
+//         return -timeDifference;
+//     } else {
+//         return timeDifference;
+//     }
+// }
 
 export {
     getKrDateFormat,

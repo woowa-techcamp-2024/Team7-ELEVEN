@@ -1,12 +1,18 @@
-import {formatVariationDuration, getKrDateFormat} from "../../../util/DateUtil";
+import {
+    formatVariationDuration,
+    getAuctionStatus,
+    getKrDateFormat,
+    getMsFromIso8601Duration, getTimeDifferenceInMs
+} from "../../../util/DateUtil";
 import {useEffect, useState} from "react";
-import {AuctionDetailInfo} from "./type";
+import {AuctionDetailInfo, ConstantPricePolicy, PercentagePricePolicy} from "./type";
 import PricePolicyElement from "./PricePolicyElement";
 import {requestAuctionBid, requestAuctionDetail} from "../../../api/auction/api";
 import {usePageStore} from "../../../store/PageStore";
 import useAlert from "../../../hooks/useAlert";
 import {getAuctionProgress} from "../../../util/NumberUtil"
 import arrowLeftIcon from '../../../img/arrow-left.svg';
+import Confetti from 'react-confetti';
 
 
 function AuctionDetail({auctionId}: { auctionId?: number }) {
@@ -16,6 +22,12 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
     const {showAlert} = useAlert();
     const [auction, setAuction] = useState<AuctionDetailInfo | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
+    const [leftInfo, setLeftInfo] = useState<String>("불러오는 중...");
+
+    const [isNotRunning, setIsNotRunning] = useState<boolean>(true);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+    const [countdown, setCountdown] = useState(0);
+    const [showConfetti, setShowConfetti] = useState(false);
 
     const increaseQuantity = (maximum: number) => {
         if (quantity >= maximum) {
@@ -63,20 +75,145 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
                 showAlert("상품 정보를 가져오는데 실패했습니다.");
             }
         );
+
     }, []);
 
+    useEffect(() => {
+        if (auctionId === undefined) {
+            return;
+        }
+
+        // 재고 갱신
+        const intervalId = setInterval(() => {
+            requestAuctionDetail(baseUrl, auctionId,
+                (auctionDetailItem) => {
+                    setAuction(prevAuction =>
+                        prevAuction ? {...prevAuction, currentStock: auctionDetailItem.currentStock} : null
+                    );
+                    console.log("현재 재고: " + auctionDetailItem.currentStock);
+                },
+                () => {console.log("현재 재고량을 가져오는데 실패하였습니다.")}
+            );
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
+    useEffect(() => {
+        if (!auction) {
+            return;
+        }
+
+        // 남은 시간 갱신 타이머
+        // setIsNotRunning(true);
+        const {status, timeInfo} = getAuctionStatus(auction.startedAt, auction.finishedAt);
+        if (status === "종료") {
+            let krDateFormat = "경매 종료 (" + getKrDateFormat(auction.finishedAt) + ")";
+            setLeftInfo(krDateFormat);
+        }
+        else if (status === "진행 예정") {
+            setLeftInfo(status + " (" + timeInfo + ")");
+        }
+        else if (status === "곧 시작") {
+            setLeftInfo(status + " (" + timeInfo + ")");
+        } else {
+            setLeftInfo(status + " (" + timeInfo + ")");
+            setIsNotRunning(false);  // 입찰 버튼 활성화
+        }
+    }, [auction]);
+
+    useEffect(() => {
+        if (isButtonDisabled) {
+            const timer = setInterval(() => {
+                setCountdown((prevCount) => {
+                    if (prevCount <= 1) {
+                        clearInterval(timer);
+                        setIsButtonDisabled(false);
+                        return 0;
+                    }
+                    return prevCount - 1;
+                });
+            }, 1000);
+
+            return () => clearInterval(timer);
+        }
+    }, [isButtonDisabled]);
+
+    useEffect(() => {
+        if (showConfetti) {
+            const timer = setTimeout(() => setShowConfetti(false), 5000); // 5초 후에 confetti 효과 종료
+            return () => clearTimeout(timer);
+        }
+    }, [showConfetti]);
+
+    function getCurrentPrice(): number {
+        if (!auction) {
+            return 1;
+        }
+
+        // 가격 하락 정책이 종료되었는지 체크
+        const now = new Date();
+        let isLastTime = false;
+        if (now >= auction.finishedAt) {
+            isLastTime = true;
+        }
+
+        // 현재 가격 계산 로직
+        const durationMs = getMsFromIso8601Duration(auction.variationDuration);
+        const diffMsBetweenStartedAndNow = getTimeDifferenceInMs(
+            auction.startedAt, isLastTime ? auction.finishedAt : now
+        );
+        const times = Math.floor(diffMsBetweenStartedAndNow / durationMs);
+
+        let currentPrice = auction.originPrice;
+        for (let i = 0; i < times; i++) {   // times번 만큼 할인된 가격을 구하는 로직
+            const calculatePrice = calculateNextPrice(currentPrice);
+            currentPrice = calculatePrice;
+        }
+
+        return currentPrice;
+    }
+
+    function calculateNextPrice(currentPrice: number): number {
+        if (!auction) {
+            return 1;
+        }
+
+        if (auction.pricePolicy.type === "CONSTANT") {
+            return currentPrice - (auction.pricePolicy as ConstantPricePolicy).variationWidth;
+        } else if (auction.pricePolicy.type === "PERCENTAGE") {
+            return currentPrice - (currentPrice * (auction.pricePolicy as PercentagePricePolicy).discountRate / 100);
+        } else {
+            return -1;
+        }
+    }
+
     const onClickBidButton = () => {
+        const currentPrice = getCurrentPrice();
+
         requestAuctionBid(
             baseUrl,
             auction?.auctionId!,
-            {quantity: quantity, price: auction!.currentPrice},
-            () => {
-                setPage('home');
+            {quantity: quantity, price: currentPrice},
+            (uuid) => {
+                // [TODO] ver2
+                // UUID를 다른 페이지로 넘긴다.
+                // UUID를 전달받은 페이지는 주기적으로 요청하면서 거래이력이 정상 생성됬는지 확인한다.
+                // 거래 자체가 실패해서 정상 생성 안되는 경우는? ???? (거래이력에 실패 상태를 둬야하나...?)
+
+                setShowConfetti(true);  // 성공 시 confetti 효과 시작
+                setIsButtonDisabled(true);  // 버튼 비활성화
+                setCountdown(5);  // 5초 카운트다운 시작
             },
-            () => {
-                showAlert("입찰에 실패했습니다.");
+            (message) => {
+                showAlert(message);
             }
         );
+    }
+
+    const getButtonText = () => {
+        if (isButtonDisabled) return `${countdown}초 남음`;
+        return '입찰하기';
     }
 
     const onClickBackButton = () => {
@@ -95,6 +232,14 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
 
     return (
         <>
+            {showConfetti && (
+                <Confetti
+                    width={window.innerWidth}
+                    height={window.innerHeight}
+                    recycle={false}
+                    numberOfPieces={400}
+                />
+            )}
             <div className="fixed top-0 left-0 right-0 bg-white shadow-lg p-2 flex items-center justify-center z-50">
                 <button
                     className="absolute left-2 bg-white border-none p-2"
@@ -122,15 +267,15 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
 
                     <div className="flex items-center gap-4 py-2">
                         <div>
-                            <p className="text-base font-medium">경매 종료 시간</p>
-                            <p className="text-sm text-[#61CBC6]">{getKrDateFormat(auction.finishedAt)}</p>
+                            <p className="text-base font-medium">경매 진행 상황</p>
+                            <p className="text-sm text-[#61CBC6]">{leftInfo}</p>
                         </div>
                     </div>
 
-                    <div className="mb-4">
-                        <p className="text-base font-medium">변동 주기</p>
-                        <p className="text-sm text-[#61CBC6]">{formatVariationDuration(auction.variationDuration)}</p>
-                    </div>
+                    {/*<div className="mb-4">*/}
+                    {/*    <p className="text-base font-medium">변동 주기</p>*/}
+                    {/*    <p className="text-sm text-[#61CBC6]">{formatVariationDuration(auction.variationDuration)}</p>*/}
+                    {/*</div>*/}
 
                     <div>
                         <div className="flex justify-between">
@@ -174,6 +319,13 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
                                         max={auction.maximumPurchaseLimitCount}
                                         value={quantity}
                                         className="input input-bordered text-center mx-2"
+                                        disabled
+                                        style={{
+                                            backgroundColor: 'white',
+                                            color: 'black',
+                                            opacity: 1,
+                                            cursor: 'default'
+                                        }}
                                     />
                                 </div>
                                 <button
@@ -187,15 +339,15 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
 
                         <div>
                             <button
-                                className="btn bg-[#61CBC6] text-white"
+                                className={`btn text-white ${isNotRunning || isButtonDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#61CBC6]'} `}
                                 onClick={onClickBidButton}
+                                disabled={isNotRunning || isButtonDisabled}
                             >
-                                입찰하기
+                                {getButtonText()}  {/*입찰하기 버튼*/}
                             </button>
                         </div>
+
                     </div>
-
-
                 </div>
             </div>
         </>

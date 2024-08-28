@@ -5,6 +5,12 @@ interface AuctionsRequest {
     size: number;
 }
 
+interface AuctionBidResponse {
+    uuid: string;
+    message: string;
+    errorCode: string;
+}
+
 interface AuctionItem {
     id: number;
     title: string;
@@ -36,6 +42,7 @@ interface AuctionPurchaseRequest {
 
 export type {
     AuctionsRequest,
+    AuctionBidResponse,
     AuctionItem,
     AuctionDetailItem,
     AuctionPurchaseRequest,

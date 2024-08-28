@@ -4,7 +4,7 @@ async function chargePointsApi(
     baseUrl: string,
     data: ChargePointsRequest,
     onSuccess: () => void,
-    onFailure: () => void
+    onFailure: (message: string) => void
 ) {
     try {
         const response = await fetch(`${baseUrl}/payments/points/charge`, {
@@ -21,10 +21,11 @@ async function chargePointsApi(
         if (response.ok) {
             onSuccess();
         } else {
-            onFailure();
+            const errorMessage = await response.text();
+            onFailure(errorMessage);
         }
     } catch (error) {
-        onFailure();
+        onFailure("CHARGE POINT ERROR.");
     }
 }
 

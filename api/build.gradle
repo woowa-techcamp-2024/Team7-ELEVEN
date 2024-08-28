@@ -2,6 +2,12 @@ plugins {
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -13,15 +19,8 @@ ext {
     set('snippetsDir', file("build/generated-snippets"))
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 dependencies {
-    implementation project(":core")
-    implementation 'org.springframework.boot:spring-boot-starter'
+    // spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     // prometheus
@@ -31,10 +30,6 @@ dependencies {
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.redisson:redisson-spring-boot-starter:3.34.1'
-
-    testImplementation project(':test')
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // spring-rest-docs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1'
@@ -79,3 +74,9 @@ tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     dependsOn test
 }
+
+jar {
+    enabled = false
+}
+
+bootJar.enabled = true
