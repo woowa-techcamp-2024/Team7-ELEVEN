@@ -2,7 +2,9 @@ package com.wootecam.luckyvickyauction.service.receipt;
 
 import com.wootecam.luckyvickyauction.domain.entity.Receipt;
 import com.wootecam.luckyvickyauction.domain.repository.ReceiptRepository;
+import com.wootecam.luckyvickyauction.dto.auction.info.AuctionInfo;
 import com.wootecam.luckyvickyauction.dto.member.info.SignInInfo;
+import com.wootecam.luckyvickyauction.dto.receipt.command.CreateReceiptCommand;
 import com.wootecam.luckyvickyauction.dto.receipt.condition.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.dto.receipt.condition.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.dto.receipt.info.BuyerReceiptSimpleInfo;
@@ -11,6 +13,7 @@ import com.wootecam.luckyvickyauction.dto.receipt.info.SellerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.service.auction.AuctionService;
 import com.wootecam.luckyvickyauction.util.Mapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReceiptService {
 
     private final ReceiptRepository receiptRepository;
+    private final AuctionService auctionService;
 
     public ReceiptInfo getReceiptInfo(SignInInfo memberInfo, String receiptId) {
         Receipt receipt = receiptRepository.findById(receiptId)
@@ -49,5 +53,28 @@ public class ReceiptService {
         return receipts.stream()
                 .map(Mapper::convertToSellerReceiptSimpleInfo)
                 .toList();
+    }
+
+    @Transactional
+    public void createReceipt(CreateReceiptCommand message, Runnable... postProcesses) {
+
+        AuctionInfo auctionInfo = auctionService.getAuction(message.auctionId());
+
+        Receipt receipt = Receipt.builder()
+                .id(message.requestId())
+                .productName(auctionInfo.productName())
+                .price(message.price())
+                .quantity(message.quantity())
+                .receiptStatus(message.status())
+                .buyerId(message.buyerId())
+                .sellerId(auctionInfo.sellerId())
+                .auctionId(message.auctionId())
+                .build();
+
+        receiptRepository.save(receipt);
+
+        for (Runnable postProcess : postProcesses) {
+            postProcess.run();
+        }
     }
 }

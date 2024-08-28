@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.wootecam.luckyvickyauction.context.ServiceTest;
+import com.wootecam.luckyvickyauction.domain.entity.Auction;
 import com.wootecam.luckyvickyauction.domain.entity.Member;
 import com.wootecam.luckyvickyauction.domain.entity.Receipt;
 import com.wootecam.luckyvickyauction.domain.entity.type.ReceiptStatus;
 import com.wootecam.luckyvickyauction.domain.entity.type.Role;
 import com.wootecam.luckyvickyauction.dto.member.info.SignInInfo;
+import com.wootecam.luckyvickyauction.dto.receipt.command.CreateReceiptCommand;
 import com.wootecam.luckyvickyauction.dto.receipt.condition.BuyerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.dto.receipt.condition.SellerReceiptSearchCondition;
 import com.wootecam.luckyvickyauction.dto.receipt.info.BuyerReceiptSimpleInfo;
@@ -18,6 +20,7 @@ import com.wootecam.luckyvickyauction.dto.receipt.info.SellerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.exception.NotFoundException;
+import com.wootecam.luckyvickyauction.fixture.AuctionFixture;
 import com.wootecam.luckyvickyauction.fixture.MemberFixture;
 import java.util.List;
 import java.util.UUID;
@@ -187,6 +190,42 @@ class ReceiptServiceTest extends ServiceTest {
                         () -> assertThat(sellerReceiptSimpleInfos).hasSize(1)
                 );
             }
+        }
+    }
+
+    @Nested
+    class createReceipt_메소드는 {
+
+        @Test
+        void 생성_요청대로_거래_내역을_생성한다() {
+            // given
+            Auction auction = auctionRepository.save(AuctionFixture.createRunningAuction());
+            Member buyer = memberRepository.save(MemberFixture.createBuyerWithDefaultPoint());
+
+            CreateReceiptCommand command = CreateReceiptCommand.builder()
+                    .requestId(UUID.randomUUID().toString())
+                    .auctionId(1L)
+                    .buyerId(buyer.getId())
+                    .price(1000000L)
+                    .quantity(1L)
+                    .build();
+            // when
+            receiptService.createReceipt(
+                    command
+            );
+
+            // then
+            Receipt receipt = receiptRepository.findById(command.requestId()).get();
+            assertAll(
+                    () -> assertThat(receipt.getId()).isEqualTo(command.requestId()),
+                    () -> assertThat(receipt.getProductName()).isEqualTo(auction.getProductName()),
+                    () -> assertThat(receipt.getPrice()).isEqualTo(command.price()),
+                    () -> assertThat(receipt.getQuantity()).isEqualTo(command.quantity()),
+                    () -> assertThat(receipt.getReceiptStatus()).isEqualTo(command.status()),
+                    () -> assertThat(receipt.getBuyerId()).isEqualTo(command.buyerId()),
+                    () -> assertThat(receipt.getSellerId()).isEqualTo(auction.getSellerId()),
+                    () -> assertThat(receipt.getAuctionId()).isEqualTo(command.auctionId())
+            );
         }
     }
 }
