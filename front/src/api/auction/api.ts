@@ -1,4 +1,4 @@
-import {AuctionDetailItem, AuctionItem, AuctionPurchaseRequest, AuctionsRequest} from "./type";
+import {AuctionBidResponse, AuctionDetailItem, AuctionItem, AuctionPurchaseRequest, AuctionsRequest} from "./type";
 
 async function requestAuctionList(
     baseUrl: string,
@@ -58,7 +58,7 @@ async function requestAuctionBid(
     baseUrl: string,
     auctionId: number,
     request: AuctionPurchaseRequest,
-    onSuccess: () => void,
+    onSuccess: (uuid: string) => void,
     onFailure: (message: string) => void
 ) {
     try {
@@ -77,7 +77,17 @@ async function requestAuctionBid(
         });
 
         if (response.ok) {
-            onSuccess();
+            const bidResponse: AuctionBidResponse = await response.json();
+            console.log(bidResponse);
+
+            // Check for the specific errorCode
+            if (bidResponse.errorCode === 'A012') {
+                // Treat this as a failure
+                onFailure(`Error: ${bidResponse.message}`);
+            } else {
+                // Success handling
+                onSuccess(bidResponse.uuid);
+            }
         } else {
             const errorMessage = await response.text();
             onFailure(errorMessage);

@@ -74,7 +74,7 @@ function PricePolicyElement(
             if (now >= auction.startedAt) {
                 setIsStarted(true);
             }
-        }, 1000);
+        }, 500);
 
         return () => clearInterval(intervalId);
     }, []);
