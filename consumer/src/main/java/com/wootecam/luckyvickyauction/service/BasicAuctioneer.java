@@ -39,22 +39,23 @@ public class BasicAuctioneer implements Auctioneer {
     @Transactional
     @DistributedLock("#message.auctionId + ':auction:lock'")
     public void process(AuctionPurchaseRequestMessage message) {
-        AuctionInfo auctionInfo = auctionService.getAuction(message.auctionId());
-        auctionService.submitPurchase(message.auctionId(), message.price(), message.quantity(), message.requestTime());
+        AuctionInfo auctionInfo = auctionService.getAuction(message.getAuctionId());
+        auctionService.submitPurchase(message.getAuctionId(), message.getPrice(), message.getQuantity(),
+                message.getRequestTime());
 
-        long buyerId = message.buyerId();
+        long buyerId = message.getBuyerId();
         long sellerId = auctionInfo.sellerId();
-        paymentService.pointTransfer(buyerId, sellerId, message.price() * message.quantity());
+        paymentService.pointTransfer(buyerId, sellerId, message.getPrice() * message.getQuantity());
 
         Receipt receipt = Receipt.builder()
-                .id(message.requestId())
+                .id(message.getRequestId())
                 .productName(auctionInfo.productName())
-                .price(message.price())
-                .quantity(message.quantity())
+                .price(message.getPrice())
+                .quantity(message.getQuantity())
                 .receiptStatus(ReceiptStatus.PURCHASED)
                 .sellerId(sellerId)
                 .buyerId(buyerId)
-                .auctionId(message.auctionId())
+                .auctionId(message.getAuctionId())
                 .build();
         receiptRepository.save(receipt);
     }

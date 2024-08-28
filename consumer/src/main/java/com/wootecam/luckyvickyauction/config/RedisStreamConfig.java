@@ -1,14 +1,13 @@
 package com.wootecam.luckyvickyauction.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.UUID;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class RedisStreamConfig {
@@ -25,26 +24,20 @@ public class RedisStreamConfig {
     @Getter
     @Value("${stream.key}")
     private String streamKey;
+
     @Getter
     @Value("${stream.consumer.groupName}")
     private String consumerGroupName;
+
     @Getter
     private String consumerName = UUID.randomUUID().toString();
 
-    // todo [추후 서버를 분리하면 모듈이 분리될 상황을 가정한 빈입니다.] [2024-08-23] [yudonggeun]
-//    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(redisHost);
-        redisStandaloneConfiguration.setPort(Integer.parseInt(redisPort));
-        redisStandaloneConfiguration.setPassword(redisPassword);
-
-        return new LettuceConnectionFactory(redisStandaloneConfiguration);
-    }
-
     @Bean
+    @Primary
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
 
+        return objectMapper;
+    }
 }
