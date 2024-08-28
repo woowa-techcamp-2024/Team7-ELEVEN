@@ -38,7 +38,7 @@ public class BasicAuctioneer implements Auctioneer {
     @Override
     @Transactional
     @DistributedLock("#message.auctionId + ':auction:lock'")
-    public void process(AuctionPurchaseRequestMessage message) {
+    public void process(AuctionPurchaseRequestMessage message, Runnable... postProcesses) {
         AuctionInfo auctionInfo = auctionService.getAuction(message.getAuctionId());
         auctionService.submitPurchase(message.getAuctionId(), message.getPrice(), message.getQuantity(),
                 message.getRequestTime());
@@ -58,6 +58,10 @@ public class BasicAuctioneer implements Auctioneer {
                 .auctionId(message.getAuctionId())
                 .build();
         receiptRepository.save(receipt);
+
+        for (Runnable postProcess : postProcesses) {
+            postProcess.run();
+        }
     }
 
     /**
@@ -67,7 +71,7 @@ public class BasicAuctioneer implements Auctioneer {
      */
     @Override
     @Transactional
-    public void refund(AuctionRefundRequestMessage message) {
+    public void refund(AuctionRefundRequestMessage message, Runnable... postProcesses) {
         verifyHasBuyerRole(message.buyerInfo());
 
         Receipt receipt = findRefundTargetReceiptForUpdate(message.receiptId());
@@ -82,6 +86,10 @@ public class BasicAuctioneer implements Auctioneer {
                 receipt.getPrice() * receipt.getQuantity());
 
         receiptRepository.save(receipt);
+
+        for (Runnable postProcess : postProcesses) {
+            postProcess.run();
+        }
     }
 
     private void verifyHasBuyerRole(SignInInfo buyerInfo) {

@@ -1,7 +1,6 @@
 package com.wootecam.luckyvickyauction.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.wootecam.luckyvickyauction.dto.auction.message.AuctionPurchaseRequestMessage;
@@ -11,8 +10,6 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -30,7 +27,6 @@ public class MessageRouterService {
         this.objectMapper = objectMapper;
     }
 
-    @Transactional
     public void consume(MapRecord<String, Object, Object> mapRecord, Runnable postProcess) {
 
         log.debug("MessageId: {}", mapRecord.getId());
@@ -45,11 +41,11 @@ public class MessageRouterService {
                 switch (messageType) {
                     case "purchase":
                         auctioneer.process(objectMapper.readValue((String) message.get(messageType),
-                                AuctionPurchaseRequestMessage.class));
+                                AuctionPurchaseRequestMessage.class), postProcess);
                         break;
                     case "refund":
                         auctioneer.refund(objectMapper.readValue((String) message.get(messageType),
-                                AuctionRefundRequestMessage.class));
+                                AuctionRefundRequestMessage.class), postProcess);
                         break;
                     default:
                         log.warn("Unknown message type: {}", messageType);
@@ -57,16 +53,6 @@ public class MessageRouterService {
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-        }
-        postProcess.run();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void process(Map<Object, Object> message, String messageType) {
-        try {
-
-        } catch (Exception e) {
-
         }
     }
 }

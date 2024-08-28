@@ -9,8 +9,8 @@ import com.wootecam.luckyvickyauction.dto.auction.message.AuctionRefundRequestMe
  */
 public interface Auctioneer {
 
-    void process(AuctionPurchaseRequestMessage message);
+    void process(AuctionPurchaseRequestMessage message, Runnable... postProcess);
 
-    void refund(AuctionRefundRequestMessage message);
+    void refund(AuctionRefundRequestMessage message, Runnable... postProcess);
 
 }

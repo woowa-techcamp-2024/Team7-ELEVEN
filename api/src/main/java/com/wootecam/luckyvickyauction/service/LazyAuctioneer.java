@@ -33,7 +33,7 @@ public class LazyAuctioneer implements Auctioneer {
     }
 
     @Override
-    public void process(AuctionPurchaseRequestMessage message) {
+    public void process(AuctionPurchaseRequestMessage message, Runnable... postProcess) {
 
         String messageType = "purchase";
 
@@ -53,7 +53,7 @@ public class LazyAuctioneer implements Auctioneer {
     }
 
     @Override
-    public void refund(AuctionRefundRequestMessage message) {
+    public void refund(AuctionRefundRequestMessage message, Runnable... postProcess) {
         String messageType = "refund";
 
         try {
