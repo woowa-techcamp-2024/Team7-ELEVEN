@@ -4,6 +4,7 @@ import com.wootecam.luckyvickyauction.domain.entity.type.AuctionStatus;
 import com.wootecam.luckyvickyauction.domain.entity.type.PricePolicy;
 import com.wootecam.luckyvickyauction.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.exception.ErrorCode;
+import com.wootecam.luckyvickyauction.exception.SuccessfulOperationException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -181,29 +182,22 @@ public class Auction {
     }
 
     private void verifyPurchaseQuantity(long quantity) {
-        if (!canPurchase(quantity)) {
-            String message = String.format(
-                    "해당 수량만큼 구매할 수 없습니다. 재고: %d, 요청: %d, 인당구매제한: %d", currentStock, quantity,
+        if (isOutOfBoundQuantity(quantity)) {
+            String message = String.format("구매 가능 갯수를 초과하거나 0이하의 갯수만큼 구매할 수 없습니다. 요청: %d, 인당구매제한: %d", quantity,
                     maximumPurchaseLimitCount);
-            throw new BadRequestException(message, ErrorCode.A012);
+            throw new BadRequestException(message, ErrorCode.A030);
+        }
+        if (!hasEnoughStock(quantity)) {
+            String message = String.format("재고가 부족합니다. 현재 재고: %d, 요청 구매 수량: %d", currentStock, quantity);
+            throw new SuccessfulOperationException(message, ErrorCode.A012);
         }
     }
 
-    /**
-     * 해당 수량만큼 구매가 가능한지 확인한다. <br> 1. 구매 요청이 0보다 작은지 확인합니다. <br> 2. 인당 구매 수량 제한을 넘기지 않는지 확인합니다. <br> 3. 구매 요청 수량보다 햔재
-     * 재고가 많은지 확인합니다.
-     *
-     * @param quantity 구매를 원하는 수량
-     * @return 구매가 가능한 경우 True, 구매가 불가능한 경우 False를 반환한다.
-     */
-    private boolean canPurchase(long quantity) {
-        if (quantity <= 0) {
-            return false;
-        }
-        if (quantity > maximumPurchaseLimitCount) {
-            return false;
-        }
+    private boolean isOutOfBoundQuantity(long quantity) {
+        return quantity > maximumPurchaseLimitCount || quantity <= 0;
+    }
 
+    private boolean hasEnoughStock(long quantity) {
         return currentStock >= quantity;
     }
 

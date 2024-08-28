@@ -1,12 +1,12 @@
 package com.wootecam.luckyvickyauction.advice;
 
-
 import com.wootecam.luckyvickyauction.exception.AuthenticationException;
 import com.wootecam.luckyvickyauction.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.exception.BusinessException;
 import com.wootecam.luckyvickyauction.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.exception.ErrorResponse;
 import com.wootecam.luckyvickyauction.exception.InfraStructureException;
+import com.wootecam.luckyvickyauction.exception.SuccessfulOperationException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +44,13 @@ public class GlobalAdvice {
     public ResponseEntity<ErrorResponse> handleInfraStructure(final InfraStructureException e) {
         log.warn("ERROR CODE {} : {}", e.getErrorCode(), e.getMessage());
         return ResponseEntity.internalServerError()
+                .body(ErrorResponse.of(e.getMessage(), e.getErrorCode().name()));
+    }
+
+    @ExceptionHandler(SuccessfulOperationException.class)
+    public ResponseEntity<ErrorResponse> handleSuccessfulOperationException(final SuccessfulOperationException e) {
+        log.warn("SUCCESS RESULT CODE {} : {}", e.getErrorCode(), e.getMessage());
+        return ResponseEntity.ok()
                 .body(ErrorResponse.of(e.getMessage(), e.getErrorCode().name()));
     }
 
