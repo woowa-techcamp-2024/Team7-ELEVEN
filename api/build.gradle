@@ -65,7 +65,7 @@ task createDocument(type: Copy) {
     into file("src/main/resources/docs")
 }
 
-bootJar {
+build {
     dependsOn createDocument
 }
 

@@ -1,0 +1,16 @@
+= LuckyVickyAuction
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:docinfo: shared-head
+
+include::auth.adoc[]
+include::point.adoc[]
+include::memberAuctions.adoc[]
+include::sellerAuctions.adoc[]
+include::buyerAuctions.adoc[]
+include::receipts.adoc[]
+include::errorCode.adoc[]
