@@ -50,5 +50,6 @@ jobs:
         env:
           ACTIVE_PROFILE: dev
         run: |
-          scp -i private_key ./build/libs/*.jar ${{ secrets.SSH_FULL_INFO }}:~/
+          scp -i private_key ./api/build/libs/*.jar ${{ secrets.SSH_FULL_INFO }}:~/
+          scp -i private_key ./consumer/build/libs/*.jar ${{ secrets.SSH_FULL_INFO }}:~/
           ssh -i private_key ${{ secrets.SSH_FULL_INFO }} "sudo bash ${{ secrets.SCRIPT_PATH }} $ACTIVE_PROFILE"
