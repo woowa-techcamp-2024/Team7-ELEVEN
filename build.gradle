@@ -35,7 +35,7 @@ subprojects {
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
 
-    jar.enabled = true
+    bootJar.enabled = false;
 }
 
 project(':core') {
@@ -56,3 +56,4 @@ project(':consumer') {
 }
 
 bootJar.enabled = false
+jar.enabled = false

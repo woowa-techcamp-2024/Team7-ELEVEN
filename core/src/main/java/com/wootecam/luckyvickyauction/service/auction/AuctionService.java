@@ -1,6 +1,5 @@
 package com.wootecam.luckyvickyauction.service.auction;
 
-import com.wootecam.luckyvickyauction.aop.DistributedLock;
 import com.wootecam.luckyvickyauction.domain.entity.Auction;
 import com.wootecam.luckyvickyauction.domain.entity.type.Role;
 import com.wootecam.luckyvickyauction.domain.repository.AuctionRepository;
@@ -99,11 +98,16 @@ public class AuctionService {
      * @param quantity  환불할 수량
      */
     @Transactional
-    @DistributedLock("#auctionId + ':auction:lock'")
     public void cancelPurchase(long auctionId, long quantity) {
-        Auction auction = findAuctionObject(auctionId);
+        Auction auction = findAuctionObjectForUpdate(auctionId);
         auction.refundStock(quantity);
         auctionRepository.save(auction);
+    }
+
+    private Auction findAuctionObjectForUpdate(long auctionId) {
+        return auctionRepository.findByIdForUpdate(auctionId)
+                .orElseThrow(
+                        () -> new NotFoundException("경매(Auction)를 찾을 수 없습니다. AuctionId: " + auctionId, ErrorCode.A010));
     }
 
     private Auction findAuctionObject(long auctionId) {
@@ -171,5 +175,11 @@ public class AuctionService {
         return auctionRepository.findAllBy(condition).stream()
                 .map(Mapper::convertToSellerAuctionSimpleInfo)
                 .toList();
+    }
+
+    public AuctionInfo getAuctionForUpdate(long auctionId) {
+        Auction auction = findAuctionObjectForUpdate(auctionId);
+
+        return Mapper.convertToAuctionInfo(auction);
     }
 }
