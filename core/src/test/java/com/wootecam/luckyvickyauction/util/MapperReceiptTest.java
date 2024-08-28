@@ -23,7 +23,7 @@ abstract class MapperReceiptTest {
         void 정보가_동일하다() {
             // given
             ReceiptEntity entity = ReceiptEntity.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .auctionId(2L)
                     .productName("상품 이름")
                     .price(1000L)
@@ -61,7 +61,7 @@ abstract class MapperReceiptTest {
         void 정보가_동일하다() {
             // given
             Receipt domainEntity = Receipt.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .auctionId(2L)
                     .productName("상품 이름")
                     .price(1000L)

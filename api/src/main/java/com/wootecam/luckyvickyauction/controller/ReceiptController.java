@@ -13,7 +13,6 @@ import com.wootecam.luckyvickyauction.dto.receipt.info.ReceiptInfo;
 import com.wootecam.luckyvickyauction.dto.receipt.info.SellerReceiptSimpleInfo;
 import com.wootecam.luckyvickyauction.service.receipt.ReceiptService;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +54,7 @@ public class ReceiptController {
     @Roles({Role.BUYER, Role.SELLER})
     @GetMapping("/{receiptId}")
     public ResponseEntity<ReceiptInfo> getReceipt(@Login SignInInfo memberInfo,
-                                                  @PathVariable("receiptId") UUID receiptId) {
+                                                  @PathVariable("receiptId") String receiptId) {
         ReceiptInfo receiptInfo = receiptService.getReceiptInfo(memberInfo, receiptId);
         return ResponseEntity.ok(receiptInfo);
     }

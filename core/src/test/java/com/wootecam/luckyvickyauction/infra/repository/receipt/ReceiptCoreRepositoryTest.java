@@ -24,7 +24,7 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
         void 거래내역의_id로_거래내역을_조회한다() {
             // given
             Receipt receipt = Receipt.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .productName("상품 이름")
                     .price(1000L)
                     .quantity(1L)
@@ -61,7 +61,7 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
             UUID notExistId = UUID.randomUUID();
 
             // when
-            boolean found = receiptCoreRepository.findById(notExistId).isPresent();
+            boolean found = receiptCoreRepository.findById(notExistId.toString()).isPresent();
 
             // then
             assertThat(found).isFalse();
@@ -75,7 +75,7 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
         void 거래내역을_저장한다() {
             // given
             Receipt receipt = Receipt.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .productName("상품 이름")
                     .price(1000L)
                     .quantity(1L)
@@ -108,7 +108,7 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
         void 이미_존재하는_id면_거래내역을_수정한다() {
             // given
             Receipt receipt = Receipt.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .productName("상품 이름")
                     .price(1000L)
                     .quantity(1L)

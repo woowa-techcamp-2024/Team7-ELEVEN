@@ -40,12 +40,12 @@ class ReceiptInfoTest {
 
         // when
         UUID id = UUID.randomUUID();
-        ReceiptInfo receiptInfo = new ReceiptInfo(id, productName, price, quantity, receiptStatus, auctionId,
+        ReceiptInfo receiptInfo = new ReceiptInfo(id.toString(), productName, price, quantity, receiptStatus, auctionId,
                 seller.getId(), buyer.getId(), createdAt, updatedAt);
 
         // then
         assertAll(
-                () -> assertThat(receiptInfo.receiptId()).isEqualTo(id),
+                () -> assertThat(receiptInfo.receiptId()).isEqualTo(id.toString()),
                 () -> assertThat(receiptInfo.productName()).isEqualTo(productName),
                 () -> assertThat(receiptInfo.price()).isEqualTo(price),
                 () -> assertThat(receiptInfo.quantity()).isEqualTo(quantity),

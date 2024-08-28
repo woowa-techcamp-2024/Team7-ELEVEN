@@ -5,17 +5,16 @@ import com.wootecam.luckyvickyauction.dto.receipt.condition.BuyerReceiptSearchCo
 import com.wootecam.luckyvickyauction.dto.receipt.condition.SellerReceiptSearchCondition;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface ReceiptRepository {
 
     Receipt save(Receipt receipt);
 
-    Optional<Receipt> findById(UUID receiptId);
+    Optional<Receipt> findById(String receiptId);
 
     List<Receipt> findAllByBuyerId(Long buyerId, BuyerReceiptSearchCondition condition);
 
     List<Receipt> findAllBySellerId(Long sellerId, SellerReceiptSearchCondition condition);
 
-    Optional<Receipt> findByIdForUpdate(UUID receiptId);
+    Optional<Receipt> findByIdForUpdate(String receiptId);
 }

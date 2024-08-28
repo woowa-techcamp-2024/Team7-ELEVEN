@@ -34,7 +34,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
 
             for (int i = 0; i < size + 1; i++) {
                 repository.save(ReceiptEntity.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .productName("상품1")
                         .price(1000)
                         .quantity(1)
@@ -68,7 +68,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             var condition = new BuyerReceiptSearchCondition(size, offset);
 
             repository.save(ReceiptEntity.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
@@ -81,7 +81,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .build());
 
             repository.save(ReceiptEntity.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
@@ -115,7 +115,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
 
             for (int i = 0; i < size + 1; i++) {
                 repository.save(ReceiptEntity.builder()
-                        .id(UUID.randomUUID())
+                        .id(UUID.randomUUID().toString())
                         .productName("상품1")
                         .price(1000)
                         .quantity(1)
@@ -145,7 +145,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
             var condition = new SellerReceiptSearchCondition(offset, size);
 
             repository.save(ReceiptEntity.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)
@@ -158,7 +158,7 @@ class ReceiptQueryDslRepositoryTest extends RepositoryTest {
                     .build());
 
             repository.save(ReceiptEntity.builder()
-                    .id(UUID.randomUUID())
+                    .id(UUID.randomUUID().toString())
                     .productName("상품1")
                     .price(1000)
                     .quantity(1)

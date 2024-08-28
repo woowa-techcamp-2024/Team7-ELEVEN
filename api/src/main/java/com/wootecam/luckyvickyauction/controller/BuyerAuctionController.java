@@ -57,7 +57,7 @@ public class BuyerAuctionController {
                                                           @PathVariable(name = "auctionId") Long auctionId,
                                                           @RequestBody PurchaseRequest purchaseRequest) {
         AuctionPurchaseRequestMessage requestMessage = AuctionPurchaseRequestMessage.builder()
-                .requestId(UUID.randomUUID())
+                .requestId(UUID.randomUUID().toString())
                 .buyerId(signInInfo.id())
                 .auctionId(auctionId)
                 .price(purchaseRequest.price())
@@ -79,7 +79,7 @@ public class BuyerAuctionController {
     @BuyerOnly
     @PutMapping("/receipts/{receiptId}/refund")
     public ResponseEntity<Void> refundAuction(@Login SignInInfo buyerInfo,
-                                              @PathVariable("receiptId") UUID receiptId,
+                                              @PathVariable("receiptId") String receiptId,
                                               @CurrentTime LocalDateTime now) {
         var message = new AuctionRefundRequestMessage(buyerInfo, receiptId, now);
         auctioneer.refund(message);

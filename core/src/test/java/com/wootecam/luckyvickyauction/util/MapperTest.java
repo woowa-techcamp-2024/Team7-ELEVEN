@@ -40,7 +40,7 @@ class MapperTest {
                 .build();
 
         Receipt history = Receipt.builder()
-                .id(UUID.randomUUID())
+                .id(UUID.randomUUID().toString())
                 .auctionId(232L)
                 .productName("상품 이름")
                 .price(1000L)

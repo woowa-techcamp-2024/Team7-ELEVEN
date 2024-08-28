@@ -17,7 +17,6 @@ import com.wootecam.luckyvickyauction.service.auction.AuctionService;
 import com.wootecam.luckyvickyauction.service.auctioneer.Auctioneer;
 import com.wootecam.luckyvickyauction.service.payment.PaymentService;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -103,7 +102,7 @@ public class BasicAuctioneer implements Auctioneer {
         }
     }
 
-    private Receipt findRefundTargetReceiptForUpdate(UUID receiptId) {
+    private Receipt findRefundTargetReceiptForUpdate(String receiptId) {
         return receiptRepository.findByIdForUpdate(receiptId).orElseThrow(
                 () -> new NotFoundException("환불할 입찰 내역을 찾을 수 없습니다. 내역 id=" + receiptId, ErrorCode.P002));
     }
