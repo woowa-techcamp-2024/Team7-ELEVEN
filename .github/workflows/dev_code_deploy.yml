@@ -2,9 +2,9 @@ name: Dev code deploy
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "dev2" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "dev2" ]
 
 jobs:
   deploy:
@@ -39,7 +39,8 @@ jobs:
       - name: Add SSH fixkey to known hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.DEV_TWO_TOMCAT_SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.DEV_TWO_ASYNC_SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Create SSH key
         run: |
@@ -50,6 +51,7 @@ jobs:
         env:
           ACTIVE_PROFILE: dev
         run: |
-          scp -i private_key ./api/build/libs/*.jar ${{ secrets.SSH_FULL_INFO }}:~/
-          scp -i private_key ./consumer/build/libs/*.jar ${{ secrets.SSH_FULL_INFO }}:~/
-          ssh -i private_key ${{ secrets.SSH_FULL_INFO }} "sudo bash ${{ secrets.SCRIPT_PATH }} $ACTIVE_PROFILE"
+          scp -i private_key ./api/build/libs/*.jar ${{ secrets.DEV_TWO_TOMCAT_SSH_FULL_INFO }}:~/
+          scp -i private_key ./consumer/build/libs/*.jar ${{ secrets.DEV_TWO_ASYNC_SSH_FULL_INFO }}:~/
+          ssh -i private_key ${{ secrets.DEV_TWO_TOMCAT_SSH_FULL_INFO }} "sudo bash ${{ secrets.SCRIPT_PATH }} $ACTIVE_PROFILE"
+          ssh -i private_key ${{ secrets.DEV_TWO_ASYNC_SSH_FULL_INFO }} "sudo bash ${{ secrets.SCRIPT_PATH }} $ACTIVE_PROFILE"
