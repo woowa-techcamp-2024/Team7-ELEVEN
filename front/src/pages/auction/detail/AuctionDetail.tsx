@@ -195,7 +195,12 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
             baseUrl,
             auction?.auctionId!,
             {quantity: quantity, price: currentPrice},
-            () => {
+            (uuid) => {
+                // [TODO] ver2
+                // UUID를 다른 페이지로 넘긴다.
+                // UUID를 전달받은 페이지는 주기적으로 요청하면서 거래이력이 정상 생성됬는지 확인한다.
+                // 거래 자체가 실패해서 정상 생성 안되는 경우는? ???? (거래이력에 실패 상태를 둬야하나...?)
+
                 setShowConfetti(true);  // 성공 시 confetti 효과 시작
                 setIsButtonDisabled(true);  // 버튼 비활성화
                 setCountdown(5);  // 5초 카운트다운 시작

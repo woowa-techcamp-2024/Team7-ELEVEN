@@ -16,6 +16,7 @@ import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
+import io.micrometer.core.annotation.Timed;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class BasicAuctioneer implements Auctioneer {
      */
     @Override
     @Transactional
+    @Timed("purchase_process_time")
     @DistributedLock("#message.auctionId + ':auction:lock'")
     public void process(AuctionPurchaseRequestMessage message) {
         AuctionInfo auctionInfo = auctionService.getAuction(message.auctionId());
