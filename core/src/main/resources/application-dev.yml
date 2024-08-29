@@ -12,21 +12,12 @@ spring:
     open-in-view: off
     hibernate:
       ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
 
   data:
     redis:
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
       host: ${REDIS_HOST}
-
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: debug
 
 management:
   server:
