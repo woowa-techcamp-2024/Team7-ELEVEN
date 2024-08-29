@@ -22,6 +22,12 @@ spring:
       password: ${REDIS_PASSWORD}
       host: ${REDIS_HOST}
 
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+
 management:
   server:
     port: 8081

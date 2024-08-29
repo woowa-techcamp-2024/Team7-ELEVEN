@@ -12,12 +12,21 @@ spring:
     open-in-view: off
     hibernate:
       ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
 
   data:
     redis:
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
       host: ${REDIS_HOST}
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
 
 management:
   server:
@@ -39,8 +48,8 @@ lock:
     retry_duration: 50
     lease_time: 200
   redisson:
-    wait_time: 50
-    lease_time: 20
+    wait_time: 500
+    lease_time: 200
 
 stream:
   key: LVA-Stream
