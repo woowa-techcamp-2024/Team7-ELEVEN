@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.wootecam.luckyvickyauction.dto.auction.message.AuctionPurchaseRequestMessage;
 import com.wootecam.luckyvickyauction.dto.auction.message.AuctionRefundRequestMessage;
 import com.wootecam.luckyvickyauction.service.auctioneer.Auctioneer;
+import io.micrometer.core.annotation.Timed;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ public class LazyAuctioneer implements Auctioneer {
         this.streamKey = streamKey;
     }
 
+    @Timed("purchase_process_time")
     @Override
     public void process(AuctionPurchaseRequestMessage message, Runnable... postProcess) {
 
