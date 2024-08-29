@@ -4,6 +4,7 @@ import com.wootecam.luckyvickyauction.core.member.domain.Member;
 import com.wootecam.luckyvickyauction.core.member.domain.MemberRepository;
 import com.wootecam.luckyvickyauction.core.member.dto.SignInInfo;
 import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
+import com.wootecam.luckyvickyauction.global.aop.TransactionalTimeout;
 import com.wootecam.luckyvickyauction.global.exception.BadRequestException;
 import com.wootecam.luckyvickyauction.global.exception.ErrorCode;
 import com.wootecam.luckyvickyauction.global.exception.NotFoundException;
@@ -31,7 +32,7 @@ public class PaymentService {
         memberRepository.save(member);
     }
 
-    @Transactional
+    @TransactionalTimeout
     @DistributedLock("#recipientId + ':point:lock'")
     public void pointTransfer(long senderId, long recipientId, long amount) {
         Member sender = findMemberObject(senderId);

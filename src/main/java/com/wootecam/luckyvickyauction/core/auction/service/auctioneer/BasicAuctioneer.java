@@ -10,6 +10,7 @@ import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptRepository;
 import com.wootecam.luckyvickyauction.core.payment.domain.ReceiptStatus;
 import com.wootecam.luckyvickyauction.core.payment.service.PaymentService;
 import com.wootecam.luckyvickyauction.global.aop.DistributedLock;
+import com.wootecam.luckyvickyauction.global.aop.TransactionalTimeout;
 import com.wootecam.luckyvickyauction.global.dto.AuctionPurchaseRequestMessage;
 import com.wootecam.luckyvickyauction.global.dto.AuctionRefundRequestMessage;
 import com.wootecam.luckyvickyauction.global.exception.AuthorizationException;
@@ -38,7 +39,7 @@ public class BasicAuctioneer implements Auctioneer {
      * 성공하면 -> Receipt 저장 및 구매자, 판매자 업데이트 적용
      */
     @Override
-    @Transactional
+    @TransactionalTimeout
     @Timed("purchase_process_time")
     @DistributedLock("#message.auctionId + ':auction:lock'")
     public void process(AuctionPurchaseRequestMessage message) {
