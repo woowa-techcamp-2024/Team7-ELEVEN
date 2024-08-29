@@ -12,7 +12,7 @@ import {useAuctionStore} from "./store/AuctionStore";
 import ReceiptDetailPage from "./pages/receipt/detail/ReceiptDetail";
 import AlertPage from './pages/AlertPage';
 import ContentLayout from "./layout/ContentLayout";
-import Header from "./pages/Header";
+import WaitingPage from "./pages/auction/WaitingPage";
 
 function App() {
 
@@ -35,6 +35,8 @@ function App() {
                 return <ReceiptDetailPage/>;
             case 'signup':
                 return <SignUpPage/>;
+            case 'waiting':
+                return <WaitingPage/>;
         }
     }
 
@@ -42,7 +44,6 @@ function App() {
         <>
             <AlertPage/>
             <div className='flex flex-col h-screen'>
-                {/*<Header/>*/}
                 <ContentLayout>
                     {renderPage()}
                 </ContentLayout>

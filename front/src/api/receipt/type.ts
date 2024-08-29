@@ -6,7 +6,7 @@ interface ReceiptsRequest {
 interface ReceiptSimpleItem {
     id: number;
     auctionId: number;
-    type: 'PURCHASED' | 'REFUND';
+    type: 'PURCHASED' | 'REFUND' | 'FAILED'
     productName: string;
     quantity: number;
     price: number;
@@ -17,7 +17,7 @@ interface ReceiptDetailItem {
     productName: string;
     price: number;
     quantity: number;
-    receiptStatus: 'PURCHASED' | 'REFUND';
+    receiptStatus: 'PURCHASED' | 'REFUND' | 'FAILED';
     auctionId: number;
     sellerId: number;
     buyerId: number;
