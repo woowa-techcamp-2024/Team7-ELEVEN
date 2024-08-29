@@ -58,7 +58,7 @@ async function requestAuctionBid(
     baseUrl: string,
     auctionId: number,
     request: AuctionPurchaseRequest,
-    onSuccess: (uuid: string) => void,
+    onSuccess: (uuid: number) => void,
     onFailure: (message: string) => void
 ) {
     try {

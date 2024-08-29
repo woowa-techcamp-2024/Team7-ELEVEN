@@ -13,11 +13,13 @@ import useAlert from "../../../hooks/useAlert";
 import {getAuctionProgress} from "../../../util/NumberUtil"
 import arrowLeftIcon from '../../../img/arrow-left.svg';
 import Confetti from 'react-confetti';
+import {useReceiptStore} from "../../../store/ReceiptStore";
 
 
 function AuctionDetail({auctionId}: { auctionId?: number }) {
 
     const {currentPage, setPage} = usePageStore();
+    const {receiptId, setReceiptId} = useReceiptStore();
     const baseUrl = process.env.REACT_APP_API_URL || ''
     const {showAlert} = useAlert();
     const [auction, setAuction] = useState<AuctionDetailInfo | null>(null);
@@ -200,6 +202,7 @@ function AuctionDetail({auctionId}: { auctionId?: number }) {
                 setIsButtonDisabled(true);  // 버튼 비활성화
                 setCountdown(5);  // 5초 카운트다운 시작
                 setPage('waiting');
+                setReceiptId(uuid);
             },
             (message) => {
                 showAlert(message);
