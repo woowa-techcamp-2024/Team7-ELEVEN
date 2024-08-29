@@ -86,7 +86,7 @@ async function requestAuctionBid(
                 onFailure(`Error: ${bidResponse.message}`);
             } else {
                 // Success handling
-                onSuccess(bidResponse.uuid);
+                onSuccess(bidResponse.receiptId);
             }
         } else {
             const errorMessage = await response.text();

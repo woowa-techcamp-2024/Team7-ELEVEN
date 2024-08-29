@@ -6,7 +6,7 @@ interface AuctionsRequest {
 }
 
 interface AuctionBidResponse {
-    uuid: number;
+    receiptId: number;
     message: string;
     errorCode: string;
 }
