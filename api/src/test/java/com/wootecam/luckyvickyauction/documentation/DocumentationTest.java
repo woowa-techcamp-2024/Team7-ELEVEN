@@ -1,7 +1,6 @@
 package com.wootecam.luckyvickyauction.documentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wootecam.luckyvickyauction.config.JsonConfig;
 import com.wootecam.luckyvickyauction.context.AuthenticationContext;
 import com.wootecam.luckyvickyauction.controller.AuthController;
 import com.wootecam.luckyvickyauction.controller.BuyerAuctionController;
@@ -26,7 +25,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -45,7 +43,6 @@ import org.springframework.web.context.WebApplicationContext;
         PaymentController.class,
         ReceiptController.class
 })
-@Import(JsonConfig.class)
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs

@@ -30,6 +30,7 @@ public class RedisStreamConsumer implements StreamListener<String, MapRecord<Str
 
     @Override
     public void onMessage(MapRecord<String, Object, Object> message) {
+        log.info("도착한 메시지~ : {}", message.getValue());
         messageRouterService.consume(
                 message,
                 () -> redisOperator.acknowledge(redisStreamConfig.getConsumerGroupName(), message)

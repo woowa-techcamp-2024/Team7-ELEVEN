@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum ReceiptStatus {
 
     PURCHASED("구매완료"),
-    REFUND("환불완료");
+    REFUND("환불완료"),
+    FAILED("구매실패");
 
     private final String description;
 

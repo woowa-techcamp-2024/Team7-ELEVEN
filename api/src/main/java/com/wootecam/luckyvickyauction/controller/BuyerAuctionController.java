@@ -66,7 +66,7 @@ public class BuyerAuctionController {
                 .build();
         auctioneer.process(requestMessage);
 
-        PurchaseResponse response = new PurchaseResponse(requestMessage.requestId());
+        PurchaseResponse response = new PurchaseResponse(requestMessage.getRequestId());
         return ResponseEntity.ok(response);
     }
 
