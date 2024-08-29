@@ -23,8 +23,8 @@ public class DistributedLockAspect {
     public Object around(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
         String key = getLockName(joinPoint, distributedLock);
 
+        lockProvider.tryLock(key);
         try {
-            lockProvider.tryLock(key);
             return joinPoint.proceed();
         } finally {
             lockProvider.unlock(key);
