@@ -12,15 +12,6 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class RedisStreamConfig {
 
-    @Value("${spring.data.redis.host}")
-    private String redisHost;
-
-    @Value("${spring.data.redis.port}")
-    private String redisPort;
-
-    @Value("${spring.data.redis.password}")
-    private String redisPassword;
-
     @Getter
     @Value("${stream.key}")
     private String streamKey;
