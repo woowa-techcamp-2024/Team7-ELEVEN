@@ -43,9 +43,12 @@ public class TransactionalTimeoutAspect {
                 }
 
                 return result;  // 정상 수행한 결과 반환
-            } catch (Throwable throwable) {
+            } catch (RuntimeException ex) {
                 status.setRollbackOnly();
-                throw new RuntimeException(throwable);
+                throw ex;
+            } catch (Throwable e) {
+                log.error("message={}", e.getMessage(), e);
+                throw new RuntimeException("처리할 수 없습니다.");
             }
         });
     }
