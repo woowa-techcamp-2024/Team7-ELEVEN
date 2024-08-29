@@ -39,7 +39,8 @@ jobs:
       - name: Add SSH fixkey to known hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.DEV_ONE_FIRST_SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.DEV_ONE_SECOND_SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Create SSH key
         run: |
@@ -50,5 +51,7 @@ jobs:
         env:
           ACTIVE_PROFILE: dev
         run: |
-          scp -i private_key ./build/libs/*.jar ${{ secrets.SSH_FULL_INFO }}:~/
-          ssh -i private_key ${{ secrets.SSH_FULL_INFO }} "sudo bash ${{ secrets.SCRIPT_PATH }} $ACTIVE_PROFILE"
+          scp -i private_key ./build/libs/*.jar ${{ secrets.DEV_ONE_FIRST_SSH_FULL_INFO }}:~/
+          scp -i private_key ./build/libs/*.jar ${{ secrets.DEV_ONE_SECOND_SSH_FULL_INFO }}:~/
+          ssh -i private_key ${{ secrets.DEV_ONE_FIRST_SSH_FULL_INFO }} "sudo bash ${{ secrets.SCRIPT_PATH }} $ACTIVE_PROFILE"
+          ssh -i private_key ${{ secrets.DEV_ONE_SECOND_SSH_FULL_INFO }} "sudo bash ${{ secrets.SCRIPT_PATH }} $ACTIVE_PROFILE"
