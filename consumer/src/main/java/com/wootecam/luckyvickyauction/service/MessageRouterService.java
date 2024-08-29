@@ -48,8 +48,7 @@ public class MessageRouterService {
                         purchase(messageType, message, postProcess);
                         break;
                     case "refund":
-                        auctioneer.refund(objectMapper.readValue((String) message.get(messageType),
-                                AuctionRefundRequestMessage.class), postProcess);
+                        refund(messageType, message, postProcess);
                         break;
                     default:
                         log.warn("Unknown message type: {}", messageType);
@@ -57,6 +56,17 @@ public class MessageRouterService {
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    private void refund(String messageType, Map<Object, Object> message, Runnable postProcess)
+            throws JsonProcessingException {
+        try {
+            var objectMessage = objectMapper.readValue((String) message.get(messageType),
+                    AuctionRefundRequestMessage.class);
+            auctioneer.refund(objectMessage, postProcess);
+        } catch (RuntimeException ex) {
+            log.info("Refund failed : message=" + message.get(messageType));
         }
     }
 
