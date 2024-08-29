@@ -39,8 +39,8 @@ lock:
     retry_duration: 50
     lease_time: 200
   redisson:
-    wait_time: 500
-    lease_time: 200
+    wait_time: 50
+    lease_time: 20
 
 stream:
   key: LVA-Stream
