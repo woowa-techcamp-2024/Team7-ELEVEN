@@ -83,8 +83,6 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
                     .auctionId(1L)
                     .sellerId(1L)
                     .buyerId(2L)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
                     .build();
 
             // when
@@ -98,9 +96,7 @@ public class ReceiptCoreRepositoryTest extends RepositoryTest {
                     () -> assertThat(saved.getReceiptStatus()).isEqualTo(receipt.getReceiptStatus()),
                     () -> assertThat(saved.getAuctionId()).isEqualTo(receipt.getAuctionId()),
                     () -> assertThat(saved.getSellerId()).isEqualTo(receipt.getSellerId()),
-                    () -> assertThat(saved.getBuyerId()).isEqualTo(receipt.getBuyerId()),
-                    () -> assertThat(saved.getCreatedAt()).isEqualTo(receipt.getCreatedAt()),
-                    () -> assertThat(saved.getUpdatedAt()).isEqualTo(receipt.getUpdatedAt())
+                    () -> assertThat(saved.getBuyerId()).isEqualTo(receipt.getBuyerId())
             );
         }
 

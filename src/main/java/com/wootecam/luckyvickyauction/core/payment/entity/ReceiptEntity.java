@@ -14,6 +14,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -33,14 +36,15 @@ public class ReceiptEntity {
     private long auctionId;
     private Long sellerId;
     private Long buyerId;
-    @CreatedBy
+    @CreatedDate
     private LocalDateTime createdAt;
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @Builder
     private ReceiptEntity(UUID id, String productName, long price, long quantity, ReceiptStatus receiptStatus,
                           long auctionId,
-                          Long sellerId, Long buyerId, LocalDateTime createdAt) {
+                          Long sellerId, Long buyerId, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.productName = productName;
         this.price = price;
@@ -50,5 +54,6 @@ public class ReceiptEntity {
         this.sellerId = sellerId;
         this.buyerId = buyerId;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }
