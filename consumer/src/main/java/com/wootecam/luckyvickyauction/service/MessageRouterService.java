@@ -65,8 +65,8 @@ public class MessageRouterService {
             var objectMessage = objectMapper.readValue((String) message.get(messageType),
                     AuctionRefundRequestMessage.class);
             auctioneer.refund(objectMessage, postProcess);
-        } catch (RuntimeException ex) {
-            log.info("Refund failed : message=" + message.get(messageType));
+        } catch (RuntimeException e) {
+            log.warn("Refund failed : message={}, exception={}", message.get(messageType), e.getMessage());
         }
     }
 
@@ -77,6 +77,8 @@ public class MessageRouterService {
         try {
             auctioneer.process(objectMessage, postProcess);
         } catch (RuntimeException e) {
+            log.warn("Purchase failed : message={}, exception={}", message.get(messageType), e.getMessage());
+
             // 경매 입찰(구매) 요청이 실패하면 구매 실패 거래 내역을 생성한다.
             var command = CreateReceiptCommand.builder()
                     .requestId(objectMessage.getRequestId())
