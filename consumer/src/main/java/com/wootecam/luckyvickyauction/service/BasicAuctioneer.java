@@ -1,6 +1,7 @@
 package com.wootecam.luckyvickyauction.service;
 
 import com.wootecam.luckyvickyauction.aop.DistributedLock;
+import com.wootecam.luckyvickyauction.aop.TransactionalTimeout;
 import com.wootecam.luckyvickyauction.domain.entity.Receipt;
 import com.wootecam.luckyvickyauction.domain.entity.type.ReceiptStatus;
 import com.wootecam.luckyvickyauction.domain.entity.type.Role;
@@ -36,7 +37,7 @@ public class BasicAuctioneer implements Auctioneer {
      * 성공하면 -> Receipt 저장 및 구매자, 판매자 업데이트 적용
      */
     @Override
-    @Transactional
+    @TransactionalTimeout
     @DistributedLock("#message.auctionId + ':auction:lock'")
     public void process(AuctionPurchaseRequestMessage message, Runnable... postProcesses) {
         AuctionInfo auctionInfo = auctionService.getAuction(message.getAuctionId());
