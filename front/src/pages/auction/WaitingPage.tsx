@@ -1,6 +1,38 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import {requestReceiptDetail} from "../../api/receipt/api";
+import {useReceiptStore} from "../../store/ReceiptStore";
+import {usePageStore} from "../../store/PageStore";
+import useAlert from "../../hooks/useAlert";
 
 const WaitingPage: React.FC = () => {
+
+    const {showAlert} = useAlert();
+    const {currentPage, setPage} = usePageStore();
+
+    const {receiptId, setReceiptId} = useReceiptStore();
+    const baseUrl = process.env.REACT_APP_API_URL || '';
+    const pollingDurationMs = 500;
+
+    useEffect(() => {
+
+        const intervalId = setInterval(() => {
+            requestReceiptDetail(
+                baseUrl,
+                receiptId!,
+                (receipt) => {
+                    showAlert('처리가 완료되었습니다.');
+                    setPage('home');
+                },
+                () => {
+                    console.log('Failed to fetch receipt.');
+                }
+            )
+        }, pollingDurationMs);
+        return () => {
+            clearInterval(intervalId);
+        }
+    }, []);
+
     return (
         <>
             <style>
@@ -15,9 +47,6 @@ const WaitingPage: React.FC = () => {
             <div
                 className="fixed inset-0 w-full h-full bg-white flex flex-col items-center justify-center p-4 z-[9999]">
                 <div className="text-center">
-                    {/*<div className="w-20 h-20 bg-[#37DBCF] rounded-full flex items-center justify-center mb-6">*/}
-                    {/*    <Loader2 className="w-12 h-12 animate-spin text-white" />*/}
-                    {/*</div>*/}
                     <h1 className="text-2xl font-bold mb-2 text-gray-800">처리 중</h1>
                     <p className="text-sm text-gray-600 mb-8">잠시만 기다려 주세요...</p>
                     <div className="w-64 h-2 bg-gray-200 rounded-full overflow-hidden">
