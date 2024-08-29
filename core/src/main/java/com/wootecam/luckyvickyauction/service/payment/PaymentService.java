@@ -1,6 +1,7 @@
 package com.wootecam.luckyvickyauction.service.payment;
 
 import com.wootecam.luckyvickyauction.aop.DistributedLock;
+import com.wootecam.luckyvickyauction.aop.TransactionalTimeout;
 import com.wootecam.luckyvickyauction.domain.entity.Member;
 import com.wootecam.luckyvickyauction.domain.repository.MemberRepository;
 import com.wootecam.luckyvickyauction.dto.member.info.SignInInfo;
@@ -31,7 +32,7 @@ public class PaymentService {
         memberRepository.save(member);
     }
 
-    @Transactional
+    @TransactionalTimeout
     @DistributedLock("#recipientId + ':point:lock'")
     public void pointTransfer(long senderId, long recipientId, long amount) {
         Member sender = findMemberObject(senderId);
