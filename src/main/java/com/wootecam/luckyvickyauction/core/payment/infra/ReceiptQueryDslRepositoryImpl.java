@@ -21,7 +21,7 @@ public class ReceiptQueryDslRepositoryImpl implements ReceiptQueryDslRepository 
                 .select(receipt)
                 .from(receipt)
                 .where(receipt.buyerId.eq(buyerId))
-                .orderBy(receipt.id.desc())
+                .orderBy(receipt.createdAt.desc())
                 .limit(condition.size())
                 .offset(condition.offset())
                 .fetch();
@@ -35,7 +35,7 @@ public class ReceiptQueryDslRepositoryImpl implements ReceiptQueryDslRepository 
                 .select(receipt)
                 .from(receipt)
                 .where(receipt.sellerId.eq(sellerId))
-                .orderBy(receipt.id.desc())
+                .orderBy(receipt.createdAt.desc())
                 .limit(condition.size())
                 .offset(condition.offset())
                 .fetch();
