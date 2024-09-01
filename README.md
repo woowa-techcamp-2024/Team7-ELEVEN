@@ -57,10 +57,10 @@
 
 ### 서버 아키텍처
 **[dev (초기 버전)](https://github.com/woowa-techcamp-2024/Team7-ELEVEN/tree/dev)**
-  ![image](https://github.com/user-attachments/assets/36435b6d-153a-4fb2-abfa-d77d69a8d28c)
+![image](https://github.com/user-attachments/assets/36435b6d-153a-4fb2-abfa-d77d69a8d28c)
 
 **[dev2 (개선 버전)](https://github.com/woowa-techcamp-2024/Team7-ELEVEN/tree/dev2)**
-  ![image](https://github.com/user-attachments/assets/ef57d280-d60d-4e3b-a0af-1d5e8fb7badd)
+![image](https://github.com/user-attachments/assets/ef57d280-d60d-4e3b-a0af-1d5e8fb7badd)
 
 - EC2 T3.small 3대 (`Spring Boot 3.3.2` 2대, `Redis 7.2.5` 1대)
 - RDS T3.small 1대 (`MySQL 8.0.35`)
@@ -112,9 +112,9 @@
 <br>
 
 ### 도메인 이해: 비즈니스 로직 집중하기
-- 팀 내 경매 도메인 전문성 부족을 인식했습니다. 
+- 팀 내 경매 도메인 전문성 부족을 인식했습니다.
 - 이를 해결하기 위해, 프레임워크 의존성이 없는 순수 도메인 모델과 비즈니스 로직에 집중하는 환경에서 프로젝트를 시작했습니다.
-- 기술적인 부분을 배제하고 개발을 진행하여, 팀 전체가 경매 도메인의 핵심 개념을 빠르게 이해할 수 있었습니다. 
+- 기술적인 부분을 배제하고 개발을 진행하여, 팀 전체가 경매 도메인의 핵심 개념을 빠르게 이해할 수 있었습니다.
 
 <br>
 
@@ -158,6 +158,9 @@
 - 여러 명의 사용자가 동시에 같은 경매 입찰을 요청하는 경우 재고가 정상적으로 반영되지 못하게 됩니다.
 - 최악의 경우 제한된 물건의 양보다 더 많은 구입이 발생하고, 판매자는 제대로 돈을 정산받지 못하게 됩니다.
 
+**해결 방안**
+- 경매 재고, 판매자 구매자의 포인트 등 여러 곳에 락이 필요하므로 `Redisson Lock`을 이용해 분산락을 구현하여 해결함
+
 **아쉬운 점**
 - 문제를 해결하기 위한 여러 가지 Lock이 존재하는데 비교해 보지 못하고 바로 Redis Lock을 적용한 점이 아쉽습니다.
 
@@ -199,7 +202,7 @@
 
 <br>
 
-### 💰 분산락과 트랜잭션을 함께 사용
+### 💰 분산락과 트랜잭션을 함께 사용했을 때 원자성을 보장하기
 - 경매 입찰 시 재고와 포인트는 차감됐지만, 간헐적으로 경매 입찰에 실패하는 현상을 발견
 - 분산락의 유효시간보다 트랜잭션 실행시간이 길게 되어 임계구역이 공유됐던 것이 원인이었고 트랜잭션 타임아웃을 통해 해결함
 
