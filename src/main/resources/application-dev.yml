@@ -37,10 +37,10 @@ lock:
   lettuce:
     max_retry: 10
     retry_duration: 50
-    lease_time: 200000
+    lease_time: 160
   redisson:
-    wait_time: 500
-    lease_time: 200000
+    wait_time: 1500
+    lease_time: 160
 
 stream:
   key: LVA-Stream
